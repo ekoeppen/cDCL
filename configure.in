@@ -1,0 +1,18 @@
+nl Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+
+AC_INIT([libcdcl], [1.0], [eck@users.sourceforge.net])
+
+AM_INIT_AUTOMAKE([1.6 foreign])
+
+AC_PROG_CXX
+AC_PROG_LIBTOOL
+
+AC_CHECK_HEADER(cygwin/stdlib.h,[AC_DEFINE(TARGET_OS_CYGWIN)],,,)
+AC_CHECK_HEADER(Newton.h,[AC_DEFINE(TARGET_OS_NEWTON)],,,)
+AC_CHECK_HEADER(sys/appleapiopts.h,[AC_DEFINE(TARGET_OS_OPENSTEP)],,,)
+AC_CHECK_HEADER(linux/unistd.h,[AC_DEFINE(TARGET_OS_LINUX)],,,)
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
