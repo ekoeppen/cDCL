@@ -287,7 +287,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CXXFLAGS = -Wall -Wno-multichar -Wno-unknown-pragmas -W -Wshadow  \
-	-Wpointer-arith -Wwrite-strings -Wconversion -g -O0 \
+	-Wpointer-arith -Wwrite-strings -Wconversion -g -O0 -m32 \
 	-IK -IDCL
 
 lib_LTLIBRARIES = libcdcl.la
