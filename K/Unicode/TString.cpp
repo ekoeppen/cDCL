@@ -822,7 +822,7 @@ TString::Convert(
 									(const KUInt8*) mString,
 									theNewBuffer,
 									mBufferSize,
-									(size_t*) &mStringSize );
+									&mStringSize );
 					break;
 
 				case kUSASCII:
@@ -830,7 +830,7 @@ TString::Convert(
 									(const KUInt8*) mString,
 									theNewBuffer,
 									mBufferSize,
-									(size_t*) &mStringSize );
+									&mStringSize );
 					break;
 
 				case kISO88591:
@@ -838,7 +838,7 @@ TString::Convert(
 									(const KUInt8*) mString,
 									theNewBuffer,
 									mBufferSize,
-									(size_t*) &mStringSize );
+									&mStringSize );
 					break;
 
 				case kISO88592:
@@ -846,7 +846,7 @@ TString::Convert(
 									(const KUInt8*) mString,
 									theNewBuffer,
 									mBufferSize,
-									(size_t*) &mStringSize );
+									&mStringSize );
 					break;
 
 				case kMacRoman:
@@ -854,7 +854,7 @@ TString::Convert(
 									(const KUInt8*) mString,
 									theNewBuffer,
 									mBufferSize,
-									(size_t*) &mStringSize );
+									&mStringSize );
 					break;
 				
 				default:

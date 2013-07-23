@@ -244,8 +244,8 @@ private:
 	EEncoding			mEncoding;			///< Encodage de la cha”ne.
 	void*				mString;			///< MŽmoire tampon.
 	mutable KUInt32		mHashCode;			///< Valeur de hachage.
-	mutable KUInt32		mStringSize;		///< Taille de la cha”ne (en cache, en caractres).
-	KUInt32				mBufferSize;		///< Taille de la mŽmoire tampon (en octets).
+	mutable size_t		mStringSize;		///< Taille de la cha”ne (en cache, en caractres).
+	size_t				mBufferSize;		///< Taille de la mŽmoire tampon (en octets).
 	mutable Boolean		mHashCodeIsValid;	///< Si la valeur de hachage a ŽtŽ calculŽe.
 	mutable Boolean		mStringSizeIsValid;	///< Si la taille de la cha”ne a ŽtŽ calculŽe.
 };

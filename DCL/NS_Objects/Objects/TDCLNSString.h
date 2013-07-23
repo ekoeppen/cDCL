@@ -153,7 +153,7 @@ public:
 	///
 	/// \return la taille de la cha”ne.
 	///
-	inline KUInt32 GetStrLen( void ) const
+	inline size_t GetStrLen( void ) const
 		{
 			return UUTF16CStr::StrLen( GetString() );
 		}

@@ -115,8 +115,7 @@ TDCLDockCmdNewtonName::TDCLDockCmdNewtonName( KUInt32 inLength, const void* inDa
 	
 	(void) ::memcpy(
 			(void*) mNewtonName,
-			(const void*)
-				((KUInt32) inData + theLength + sizeof(mVersionInfo.fLength)),
+			&((const char*) inData)[theLength + sizeof(mVersionInfo.fLength)],
 			theNewtonNameLength );
 	
 	// Let's check it's null terminated.

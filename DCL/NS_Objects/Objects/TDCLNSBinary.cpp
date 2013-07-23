@@ -358,20 +358,20 @@ TDCLNSBinary::ToXML(
 	{
 		// Ai-je un terminateur dans la cha”ne?
 		KUInt16* theData = (KUInt16*) mBuffer;
-		KUInt32 strLen = nbBytes / 2;
+		size_t strLen = nbBytes / 2;
 		if (theData[ strLen ] == 0)
 		{
 			strLen--;
 		}
 		
 		// Conversion en UTF-8 (au maximum 3 fois la taille).
-		KUInt32 utf8Len = (3 * strLen) + 1;
+		size_t utf8Len = (3 * strLen) + 1;
 		KUInt8* theUTF8Str = (KUInt8*) new KUInt8[ utf8Len ];
 
 		// assert( ... != kInputExhausted)
 		(void) UUTF16Conv::ToUTF8(
-				theData, (size_t*) &strLen,
-				theUTF8Str, (size_t*) &utf8Len );
+				theData, &strLen,
+				theUTF8Str, &utf8Len );
 
 		// Ajout du terminateur.
 		theUTF8Str[utf8Len] = '\0';

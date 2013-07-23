@@ -475,14 +475,15 @@
 	#define _XOPEN_SOURCE_EXTENDED 1
 
 	// J'espère que ceci passe:
-	typedef	unsigned long			KUInt32;
-	typedef	signed long				KSInt32;
+	typedef	unsigned int			KUInt32;
+	typedef	signed int				KSInt32;
 	typedef	unsigned short			KUInt16;
 	typedef	signed short			KSInt16;
 	typedef	signed char				KSInt8;
 	typedef	unsigned char			KUInt8;
 	typedef	bool					Boolean;
 	#define FOUR_CHAR_CODE(x)		((long)(x))
+	#define KUIntPtr				unsigned long
 
 	// Détermination du sexe via endian.h
 	#include <endian.h>
@@ -521,14 +522,15 @@
 	#undef	TARGET_OS_UNDEFINED
 
 	// J'espère que ceci passe:
-	typedef	unsigned long			KUInt32;
-	typedef	signed long				KSInt32;
+	typedef	unsigned int			KUInt32;
+	typedef	signed int				KSInt32;
 	typedef	unsigned short			KUInt16;
 	typedef	signed short			KSInt16;
 	typedef	signed char				KSInt8;
 	typedef	unsigned char			KUInt8;
 	typedef	bool					Boolean;
 	#define FOUR_CHAR_CODE(x)		((long)(x))
+	#define KUIntPtr				unsigned long
 #endif
 
 // Entiers 64 bits.

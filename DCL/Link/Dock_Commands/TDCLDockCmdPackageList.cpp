@@ -83,7 +83,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 		}
 		
 		const SPackageInfo* thisPackageInfo =
-			(const SPackageInfo*) ((KUInt32) inData + inDataOffset);
+			(const SPackageInfo*) (((const char *) inData) + inDataOffset);
 		
 		KUInt32 theNameLength =
 			UByteSex_FromBigEndian( thisPackageInfo->fNameLength );
