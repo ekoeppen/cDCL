@@ -1,5 +1,5 @@
 AM_CXXFLAGS = -Wall -Wno-multichar -Wno-unknown-pragmas -W -Wshadow  \
-	-Wpointer-arith -Wwrite-strings -Wconversion -g -O0 -m32 \
+	-Wpointer-arith -Wwrite-strings -Wconversion -g \
 	-IK -IDCL
 
 lib_LTLIBRARIES = libcdcl.la
