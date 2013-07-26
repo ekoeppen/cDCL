@@ -39,14 +39,14 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(nobase_include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/configure COPYING config.guess config.sub \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+	depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -246,6 +246,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+arch_flags = @arch_flags@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -287,9 +288,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CXXFLAGS = -Wall -Wno-multichar -Wno-unknown-pragmas -W -Wshadow  \
-	-Wpointer-arith -Wwrite-strings -Wconversion -g -O0 -m32 \
-	-IK -IDCL
+	-Wpointer-arith -Wwrite-strings -Wconversion -g \
+	-IK -IDCL @arch_flags@
 
+AM_LDFLAGS = @arch_flags@
 lib_LTLIBRARIES = libcdcl.la
 libcdcl_la_SOURCES = DCL/Communication_Layers/TDCLBufferedPipe.cpp \
 	DCL/Communication_Layers/TDCLCommLayer.cpp \

@@ -615,6 +615,9 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+arch_flags
+I586_FALSE
+I586_TRUE
 CXXCPP
 CPP
 OTOOL64
@@ -14992,6 +14995,18 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 # Only expand once:
 
 
+ if test "$target_cpu"==i586; then
+  I586_TRUE=
+  I586_FALSE='#'
+else
+  I586_TRUE='#'
+  I586_FALSE=
+fi
+
+if test -z "$I586_TRUE"; then :
+  arch_flags="-m32"
+
+fi
 
 ac_fn_c_check_header_mongrel "$LINENO" "cygwin/stdlib.h" "ac_cv_header_cygwin_stdlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_cygwin_stdlib_h" = xyes; then :
@@ -15187,6 +15202,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${I586_TRUE}" && test -z "${I586_FALSE}"; then
+  as_fn_error $? "conditional \"I586\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
