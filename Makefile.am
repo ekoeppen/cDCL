@@ -2,6 +2,7 @@ AM_CXXFLAGS = -Wall -Wno-multichar -Wno-unknown-pragmas -W -Wshadow  \
 	-Wpointer-arith -Wwrite-strings -Wconversion -g \
 	-IK -IDCL @arch_flags@
 AM_LDFLAGS = @arch_flags@
+ACLOCAL_AMFLAGS=-I m4
 
 lib_LTLIBRARIES = libcdcl.la
 
