@@ -4,6 +4,12 @@ functionality provided by the DCL and K libraries is supported, if the
 full functionality is needed, the original DCL and K distributions are
 recommended.
 
+The library has to be compiled in 32 bit mode for now, as it contains hardcoded
+dependencies between pointer sizes and integers. To do so, run configure as
+follows:
+
+./configure CXX="gcc -m32"
+
 DCL README
 ==========
 
