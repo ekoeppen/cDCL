@@ -10,6 +10,8 @@ follows:
 
 ./configure CXX="gcc -m32"
 
+The library can also be built using CMake.
+
 DCL README
 ==========
 
