@@ -4,7 +4,7 @@ add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=1 -
 include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR}) 
 set(CMAKE_OSX_ARCHITECTURES "i386")
 
-add_library (cdcl STATIC
+add_library (cdcl SHARED
 DCL/Communication_Layers/TDCLBufferedPipe.cpp
 DCL/Communication_Layers/TDCLCommLayer.cpp
 DCL/Communication_Layers/TDCLMNPPipe.cpp
@@ -416,6 +416,6 @@ foreach(HEADER ${HEADERS})
    install(FILES ${HEADER} DESTINATION include/cDCL/${DIR})
 endforeach(HEADER ${HEADERS})
 
-install(TARGETS cdcl ARCHIVE DESTINATION lib)
+install(TARGETS cdcl LIBRARY DESTINATION lib)
 
 set_target_properties(cdcl PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
