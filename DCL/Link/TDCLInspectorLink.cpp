@@ -60,7 +60,8 @@
 #include <DCL/Link/Inspector_Commands/TDCLInspectorCmdLoadPkg.h>
 #include <DCL/Link/Inspector_Commands/TDCLInspectorCmdResult.h>
 #include <DCL/Link/Inspector_Commands/TDCLInspectorCmdStackFrame.h>
-#include <DCL/Link/Inspector_Commands/TDCLInspectorCmdText.h>#include <DCL/Link/Dock_Commands/TDCLDockCmdGeneric.h>
+#include <DCL/Link/Inspector_Commands/TDCLInspectorCmdText.h>
+#include <DCL/Link/Dock_Commands/TDCLDockCmdGeneric.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNoData.h>
 
 #define LOG(...) {printf(__VA_ARGS__); putchar(10);}
@@ -125,7 +126,7 @@ TDCLLink::EState TDCLInspectorLink::ProcessDockCommand(
 			break;
 		case TDCLInspectorCommand::kDText:
 			cmd = (TDCLInspectorCmdText*) inCommand;
-			LOG("%.*s", cmd->GetLength(), cmd->GetDataPtr());
+			LOG("%.*s", cmd->GetLength(), (char *) cmd->GetDataPtr());
 			break;
 		default:
 			break;
