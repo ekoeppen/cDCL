@@ -598,9 +598,21 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	}
 	
 	::free( theDirectoryData );
+
+	KUInt32 theRelocationSize = 0;
+	if (mPackageFlags && kDirRelocationFlag)
+	{
+		KUInt8* theRelocationData;
+		(void) inStream->GetLong(); // reserved
+		theRelocationSize = inStream->GetLong();
+		theRelocationData = (KUInt8*) ::malloc( theRelocationSize );
+		nbRead = theRelocationSize - 2 * sizeof(KUInt32);
+		inStream->Read( theRelocationData, &nbRead );
+		::free( theRelocationData );
+	}
 	
 	// Finalement, lecture des parties.
-	KUInt32 thePartDataSize = thePackageSize - theDirectorySize;
+	KUInt32 thePartDataSize = thePackageSize - theDirectorySize - theRelocationSize;
 	KUInt8* thePartData = (KUInt8*) ::malloc( thePartDataSize );
 	
 	// Lecture.
