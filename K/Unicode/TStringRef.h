@@ -186,9 +186,9 @@ public:
 			return
 				((mString == inAlter.mString)
 				||
-					(mString != nil)
+					((mString != nil)
 					&& (inAlter.mString != nil)
-					&& (*mString == *inAlter.mString));
+					&& (*mString == *inAlter.mString)));
 		}
 
 	///
@@ -202,9 +202,9 @@ public:
 			return
 				((mString == inAlter.GetString())
 				||
-					(mString != nil)
+					((mString != nil)
 					&& (inAlter.GetString() != nil)
-					&& (*mString == *inAlter.GetString()));
+					&& (*mString == *inAlter.GetString())));
 		}
 
 	///

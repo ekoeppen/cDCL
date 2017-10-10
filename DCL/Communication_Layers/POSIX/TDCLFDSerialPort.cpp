@@ -602,7 +602,7 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 	// 8 bits, pas de parité, un bit d'arrêt, pas de CTS/RTS (?)
 	theOptions.c_iflag = IGNBRK | INPCK;
 	theOptions.c_oflag = 0;
-	theOptions.c_cflag = CS8 | CREAD | HUPCL | CLOCAL & ~PARENB & ~PARODD & ~CSTOPB;
+	theOptions.c_cflag = ((((CS8 | CREAD | HUPCL | CLOCAL) & ~PARENB) & ~PARODD) & ~CSTOPB);
 	theOptions.c_lflag = 0;
 	
 	// Vitesse.
