@@ -2,7 +2,7 @@
 // Fichier:			KDebug.h
 // Projet:			K
 // 
-// Créé le:			3/8/2003
+// Cr√©√© le:			3/8/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -76,10 +76,10 @@
 #endif
 
 
-// Macros pour le déverminage.
+// Macros pour le d√©verminage.
 // Utilise certaines classes dans K Tests.
 
-// Ce fichier doit être inclus avec au préalable un certain nombre de macros définies.
+// Ce fichier doit √™tre inclus avec au pr√©alable un certain nombre de macros d√©finies.
 
 // -- KDebugOn/forDebug/NDEBUG
 // undef(KDebugOn) &&  TARGET_OS_NEWTON && forDebug		-> KDebugOn = 1
@@ -87,13 +87,13 @@
 // undef(KDebugOn) && !TARGET_OS_NEWTON && NDEBUG		-> KDebugOn = 0
 // undef(KDebugOn) && !TARGET_OS_NEWTON && !NDEBUG		-> KDebugOn = 1
 
-// Trois niveaux de déverminage (en fait indépendants).
-// - error -> on s'arrête lorsqu'une erreur est survenue (nécessite KDEBUGSTR)
-// - trace -> on raconte l'entrée/la sortie de méthodes (nécessite KDPRINTF)
-// - debug -> on raconte sa vie (nécessite KDPRINTF)
+// Trois niveaux de d√©verminage (en fait ind√©pendants).
+// - error -> on s'arr√™te lorsqu'une erreur est survenue (n√©cessite KDEBUGSTR)
+// - trace -> on raconte l'entr√©e/la sortie de m√©thodes (n√©cessite KDPRINTF)
+// - debug -> on raconte sa vie (n√©cessite KDPRINTF)
 
-// Les versions par défaut de ces macros sont définies plus loin et dependent de l'OS.
-// Elles peuvent être remplacées par d'autres méthodes.
+// Les versions par d√©faut de ces macros sont d√©finies plus loin et dependent de l'OS.
+// Elles peuvent √™tre remplac√©es par d'autres m√©thodes.
 
 // L'utilisation de chacun de ces niveaux se fait en ajoutant dans le fichier .cp:
 // 
@@ -118,7 +118,7 @@
 // #define KDEBUG_ENABLED 0
 // #endif
 //
-// En cas d'absence de ces lignes, on n'a que KERROR_ENABLED à un.
+// En cas d'absence de ces lignes, on n'a que KERROR_ENABLED √† un.
 #ifndef KERROR_ENABLED
 	#define KERROR_ENABLED 1
 #endif
@@ -129,14 +129,14 @@
 	#define KDEBUG_ENABLED 0
 #endif
 
-// On peut aussi définir directement ces macros.
+// On peut aussi d√©finir directement ces macros.
 // Ensuite, il suffit d'appler les macros KASSERT, KERROR, KERRORC,
 // KTRACE, KTRACE1, KTRACE2, KTRACE3, KTRACE4,
 // KDEBUG, KDEBUG1, KDEBUG2, KDEBUG3, KDEBUG4
-// Remarque: celles-ci ne sont définies par quelque chose que si (a) elles ne
-// sont pas précédemment définies et (b) KDebugOn vaut 1.
+// Remarque: celles-ci ne sont d√©finies par quelque chose que si (a) elles ne
+// sont pas pr√©c√©demment d√©finies et (b) KDebugOn vaut 1.
 
-// ---- détermine si on veut le déverminage ----
+// ---- d√©termine si on veut le d√©verminage ----
 
 #ifndef KDebugOn
 	// Sur Newton: forDebug
@@ -156,7 +156,7 @@
 	#endif
 #endif
 
-// ---- snprintf n'est pas forcément disponible. ----
+// ---- snprintf n'est pas forc√©ment disponible. ----
 #ifndef KSNPRINTF
 	#if HAS_C99_SNPRINTF
 		#define KSNPRINTF( output, size, format )						\
@@ -187,7 +187,7 @@
 	#endif
 #endif
 
-// ---- Valeurs par défaut de KDEBUGSTR et KDPRINTF ----
+// ---- Valeurs par d√©faut de KDEBUGSTR et KDPRINTF ----
 #ifndef KDPRINTF
 	#if TARGET_OS_NEWTON
 		// KDPRINTF va sur stdout
@@ -253,7 +253,7 @@
 		#endif
 	#else
 		#if KDebugOn
-			#warning KDPRINTF n´est pas défini
+			#warning KDPRINTF n¬¥est pas d√©fini
 		#endif
 	#endif
 #endif

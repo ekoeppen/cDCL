@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSFrame.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSFrame.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -121,7 +121,7 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 		mKeysAreSorted( inCopy.mKeysAreSorted ),
 		mIsFunction( inCopy.mIsFunction )
 {
-	// Copie des valeurs et des clés.
+	// Copie des valeurs et des cl√©s.
 	KUInt32 nbPairs = mLength;
 	mKeys = (TDCLNSRef*) ::malloc( nbPairs * sizeof (TDCLNSRef) );
 	mValues = (TDCLNSRef*) ::malloc( nbPairs * sizeof (TDCLNSRef) );
@@ -136,7 +136,7 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 		KUInt32 indexPairs;
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
-			// Copie de la clé.
+			// Copie de la cl√©.
 			new ( &mKeys[indexPairs] ) TDCLNSRef( inCopy.mKeys[indexPairs] );
 
 			// Copie de la valeur.
@@ -150,7 +150,7 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 // ------------------------------------------------------------------------- //
 TDCLNSFrame::~TDCLNSFrame( void )
 {
-	// Suppression des clés et des références.
+	// Suppression des cl√©s et des r√©f√©rences.
 	if ((mKeys != nil) && (mValues != nil))
 	{
 		KUInt32 nbPairs = mLength;
@@ -183,7 +183,7 @@ TDCLNSFrame::~TDCLNSFrame( void )
 TDCLNSFrame&
 TDCLNSFrame::operator = ( const TDCLNSFrame& inCopy )
 {
-	// Suppression des anciennes références.
+	// Suppression des anciennes r√©f√©rences.
 	KUInt32 nbPairs = mLength;
 	KUInt32 indexPairs;
 	for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
@@ -192,7 +192,7 @@ TDCLNSFrame::operator = ( const TDCLNSFrame& inCopy )
 		mValues[indexPairs].TDCLNSRef::~TDCLNSRef();
 	}
 
-	// Copie des nouvelles valeurs et des clés.
+	// Copie des nouvelles valeurs et des cl√©s.
 	nbPairs = inCopy.mLength;
 	mLength = nbPairs;
 	mKeys = (TDCLNSRef*) ::realloc( mKeys, nbPairs * sizeof (TDCLNSRef) );
@@ -207,7 +207,7 @@ TDCLNSFrame::operator = ( const TDCLNSFrame& inCopy )
 
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
-			// Copie de la clé.
+			// Copie de la cl√©.
 			new ( &mKeys[indexPairs] ) TDCLNSRef( inCopy.mKeys[indexPairs] );
 
 			// Copie de la valeur.
@@ -242,9 +242,9 @@ TDCLNSFrame::IsFunction( void ) const
 Boolean
 TDCLNSFrame::HasSlot( const TDCLNSSymbol& inSymbol ) const
 {
-	Boolean theResult = false;	// Supposons que la clé ne soit pas là.
+	Boolean theResult = false;	// Supposons que la cl√© ne soit pas l√†.
 	
-	// Index de la clé, si elle est dans le dictionnaire.
+	// Index de la cl√©, si elle est dans le dictionnaire.
 	KUInt32 indexKey;
 	theResult = GetKeyIndex( inSymbol, &indexKey );
 	
@@ -257,9 +257,9 @@ TDCLNSFrame::HasSlot( const TDCLNSSymbol& inSymbol ) const
 Boolean
 TDCLNSFrame::RemoveSlot( const TDCLNSSymbol& inSymbol )
 {
-	Boolean theResult = false;	// Supposons que la clé ne soit pas là.
+	Boolean theResult = false;	// Supposons que la cl√© ne soit pas l√†.
 	
-	// Index de la clé, si elle est dans le dictionnaire.
+	// Index de la cl√©, si elle est dans le dictionnaire.
 	KUInt32 indexKey;
 	theResult = GetKeyIndex( inSymbol, &indexKey );
 	
@@ -270,7 +270,7 @@ TDCLNSFrame::RemoveSlot( const TDCLNSSymbol& inSymbol )
 		
 		mLength--;
 
-		// Il faut donc tirer les clés/valeurs avant le point
+		// Il faut donc tirer les cl√©s/valeurs avant le point
 		// de suppression avec un memmove (les zones se recouvrent).
 		(void) ::memmove(
 				(void*) &mKeys[indexKey],
@@ -282,8 +282,8 @@ TDCLNSFrame::RemoveSlot( const TDCLNSSymbol& inSymbol )
 				(mLength - indexKey) * sizeof (TDCLNSRef) );
 		
 		
-		// Si la structure était une fonction et que l'élément
-		// supprimé est la classe, alors la structure n'est plus
+		// Si la structure √©tait une fonction et que l'√©l√©ment
+		// supprim√© est la classe, alors la structure n'est plus
 		// une fonction.
 		if (mIsFunction && (inSymbol == KDCLSYM::kSYMclass.ToSymbol()))
 		{
@@ -300,9 +300,9 @@ TDCLNSFrame::RemoveSlot( const TDCLNSSymbol& inSymbol )
 TDCLNSRef
 TDCLNSFrame::Get( const TDCLNSSymbol& inSymbol ) const
 {
-	TDCLNSRef theResult;	// Supposons que la clé ne soit pas là.
+	TDCLNSRef theResult;	// Supposons que la cl√© ne soit pas l√†.
 
-	// Index de la clé, si elle est dans le dictionnaire.
+	// Index de la cl√©, si elle est dans le dictionnaire.
 	KUInt32 indexKey;
 	if (GetKeyIndex( inSymbol, &indexKey ))
 	{
@@ -348,19 +348,19 @@ TDCLNSFrame::Set( const TDCLNSRef& inSymbol, const TDCLNSRef& inNewValue )
 {
 	TDCLNSSymbol& theSymbol = inSymbol.ToSymbol();
 
-	// Index de la clé, si elle est dans le dictionnaire.
+	// Index de la cl√©, si elle est dans le dictionnaire.
 	KUInt32 indexKey = mLength;
 	if (GetKeyIndex( theSymbol, &indexKey ))
 	{
-		// Ceci appelle l'opérateur d'assignation.
-		// Libération de l'ancienne valeur, copie de la nouvelle.
+		// Ceci appelle l'op√©rateur d'assignation.
+		// Lib√©ration de l'ancienne valeur, copie de la nouvelle.
 		mValues[indexKey] = inNewValue;
 	} else {
 		// Ici, il y a une petite astuce.
-		// Si la structure n'est pas triée mais devrait l'être avec l'ajout
+		// Si la structure n'est pas tri√©e mais devrait l'√™tre avec l'ajout
 		// de la nouvelle paire, il faut la trier.
 		
-		// Agrandissement de la structure si nécessaire.
+		// Agrandissement de la structure si n√©cessaire.
 		if (mLength == mCapacity)
 		{
 			mCapacity += kListChunkSize;
@@ -374,8 +374,8 @@ TDCLNSFrame::Set( const TDCLNSRef& inSymbol, const TDCLNSRef& inNewValue )
 
 		if (indexKey < mLength)
 		{
-			// Je rajoute la nouvelle clé au milieu.
-			// Il faut donc pousser les clés/valeurs avant le point
+			// Je rajoute la nouvelle cl√© au milieu.
+			// Il faut donc pousser les cl√©s/valeurs avant le point
 			// d'insertion avec un memmove (les zones se recouvrent).
 			(void) ::memmove(
 					(void*) &mKeys[indexKey + 1],
@@ -388,14 +388,14 @@ TDCLNSFrame::Set( const TDCLNSRef& inSymbol, const TDCLNSRef& inNewValue )
 		}
 		mLength++;
 
-		// Initialisation de ces éléments dans le tableau.
-		// (c'est une fausse assignation, les éléments ici sont
+		// Initialisation de ces √©l√©ments dans le tableau.
+		// (c'est une fausse assignation, les √©l√©ments ici sont
 		// des copies de ce qu'on a en indexKey + 1 ou les derniers
-		// éléments non intialisés).
+		// √©l√©ments non intialis√©s).
 		new ( &mKeys[indexKey] ) TDCLNSRef( inSymbol );
 		new ( &mValues[indexKey] ) TDCLNSRef( inNewValue );
 		
-		// Tri si nécessaire de la structure.
+		// Tri si n√©cessaire de la structure.
 		if (!mIsFunction && !mKeysAreSorted && (mLength > kSortThreshold))
 		{
 			// Vue la taille de la liste, on peut y aller avec un insertion sort.
@@ -412,7 +412,7 @@ TDCLNSFrame::Set( const TDCLNSRef& inSymbol, const TDCLNSRef& inNewValue )
 						indexInserted > 0;
 						indexInserted--)
 				{
-					// Si la clé supprimée est plus petite que la clé précédente,
+					// Si la cl√© supprim√©e est plus petite que la cl√© pr√©c√©dente,
 					// on inverse.
 					if (
 						removedKeySym.Compare(
@@ -451,19 +451,19 @@ TDCLNSFrame::Clone( void ) const
 Boolean
 TDCLNSFrame::GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) const
 {
-	// On suppose que la clé n'est pas présente.
+	// On suppose que la cl√© n'est pas pr√©sente.
 	Boolean theResult = false;
 	
-	// Boucle sur tous les symboles, sauf si le dictionnaire est trié.
+	// Boucle sur tous les symboles, sauf si le dictionnaire est tri√©.
 	// (remarque: on n'a pas d'index).
-	KUInt32 indexKeys;			// index pour itérer.
-	KUInt32 nbKeys = mLength;	// Nombre de clés (plus rapide)
-	Boolean sorted = mKeysAreSorted;	// Si les clés sont triées.
+	KUInt32 indexKeys;			// index pour it√©rer.
+	KUInt32 nbKeys = mLength;	// Nombre de cl√©s (plus rapide)
+	Boolean sorted = mKeysAreSorted;	// Si les cl√©s sont tri√©es.
 	
 	for (indexKeys = 0; indexKeys < nbKeys; indexKeys++)
 	{
-		// Cet entier vaut 0 si les symboles sont égaux,
-		// > 0 si la clé est supérieure au symbole, < 0 dans le cas inverse.
+		// Cet entier vaut 0 si les symboles sont √©gaux,
+		// > 0 si la cl√© est sup√©rieure au symbole, < 0 dans le cas inverse.
 		int comparison = ((TDCLNSSymbol&) mKeys[indexKeys]).Compare( inSymbol );
 		
 		if (comparison == 0)
@@ -474,15 +474,15 @@ TDCLNSFrame::GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) cons
 		
 		if (sorted && (comparison > 0))
 		{
-			// Les clés sont triées et le paramètre est supérieur à une clé:
+			// Les cl√©s sont tri√©es et le param√®tre est sup√©rieur √† une cl√©:
 			// il n'est pas dans le dictionnaire.
 			break;
 		}
 	}
 	
 	// Dans tous les cas, on met dans outIndex l'index courant.
-	// C'est l'index de la clé si elle a été trouvée, l'index suivant si la
-	// structure est triée, la taille de la structure sinon.
+	// C'est l'index de la cl√© si elle a √©t√© trouv√©e, l'index suivant si la
+	// structure est tri√©e, la taille de la structure sinon.
 	*outIndex = indexKeys;
 	
 	return theResult;
@@ -534,18 +534,18 @@ TDCLNSFrame::FromNSOF( TDCLNSOFDecoder* inDecoder )
 	KUInt32 nbPairs = theStream->GetXLong();
 	KUInt32 indexPairs;
 
-	// Création de l'objet.
+	// Cr√©ation de l'objet.
 	TDCLNSFrame* theResult = new TDCLNSFrame( nbPairs );
 	
-	// Cette structure n'est pas triée (vu que je vais ajouter les clés sans
-	// appeler la méthode Set).
+	// Cette structure n'est pas tri√©e (vu que je vais ajouter les cl√©s sans
+	// appeler la m√©thode Set).
 	theResult->mKeysAreSorted = false;
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
-	// Création des symboles
-	// Attention au risque de fuite de mémoire. On se protège avec un try/catch.
+	// Cr√©ation des symboles
+	// Attention au risque de fuite de m√©moire. On se prot√®ge avec un try/catch.
 	try {
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
@@ -562,7 +562,7 @@ TDCLNSFrame::FromNSOF( TDCLNSOFDecoder* inDecoder )
 		throw;	// rethrow
 	}
 
-	// Création des valeurs
+	// Cr√©ation des valeurs
 	try {
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
@@ -584,11 +584,11 @@ TDCLNSFrame::FromNSOF( TDCLNSOFDecoder* inDecoder )
 		throw;	// rethrow
 	}
 	
-	// Mise à jour de la taille.
+	// Mise √† jour de la taille.
 	theResult->mLength = nbPairs;
 	
 	// Est-ce une fonction?
-	// (même test que sur le Newton)
+	// (m√™me test que sur le Newton)
 	if (nbPairs >= 1)
 	{
 		if ((theResult->mKeys[0] == KDCLSYM::kSYMclass)
@@ -610,13 +610,13 @@ TDCLNSFrame::FromNSOFAsRect( TDCLNSOFDecoder* inDecoder )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 	
-	// Création de l'objet.
+	// Cr√©ation de l'objet.
 	TDCLNSFrame* theResult = new TDCLNSFrame( 4 );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
-	// Ici, on pourrait trier les clés.
+	// Ici, on pourrait trier les cl√©s.
 	theResult->mKeysAreSorted = false;
 	
 	// Haut
@@ -654,7 +654,7 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 {
 	TDCLRandomAccessStream* theStream = inDecoder->GetInputStream();
 
-	// Décalage de l'objet.
+	// D√©calage de l'objet.
 	KUInt32 theObjectOffset = inDecoder->GetCurrentStreamOffset();
 	
 	// D'abord, c'est la structure avec les valeurs.
@@ -663,16 +663,16 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 	KUInt32 theFirstLong = theStream->GetLong();
 	KUInt32 nbPairs = ((theFirstLong >> TDCLPkgDecoder::kSizeShift) - 12) / 4;
 	
-	// On passe le deuxième long.
+	// On passe le deuxi√®me long.
 	(void) theStream->GetLong();
 
-	// Création de l'objet. Je mets tout plein de NIL.
+	// Cr√©ation de l'objet. Je mets tout plein de NIL.
 	TDCLNSFrame* theResult = new TDCLNSFrame( nbPairs );
 	
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ), theObjectOffset );
 
-	// Récupération de la carte.
+	// R√©cup√©ration de la carte.
 	TDCLNSRef theMap = inDecoder->GetNextObject();
 	
 	TDCLNSArray& theMapAsArray = theMap.ToArray();
@@ -680,7 +680,7 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 	
 	theResult->mKeysAreSorted = (theMapFlags & TDCLPkgDecoder::kMapSorted) != 0;
 	
-	// Remplissage des clés à partir de la fin.
+	// Remplissage des cl√©s √† partir de la fin.
 	KUInt32 indexPairs = nbPairs - 1;
 	try {
 		do {
@@ -729,11 +729,11 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 		throw;	// rethrow
 	}
 	
-	// Mise à jour de la taille.
+	// Mise √† jour de la taille.
 	theResult->mLength = nbPairs;
 	
 	// Est-ce une fonction?
-	// (même test que sur le Newton)
+	// (m√™me test que sur le Newton)
 	if ((nbPairs >= 1) && (!theResult->mKeysAreSorted))
 	{
 		if ((theResult->mKeys[0] == KDCLSYM::kSYMclass)
@@ -755,31 +755,31 @@ TDCLNSFrame::ToXML(
 				TDCLXMLEncoder*		inEncoder,
 				KUInt32				inObjectID ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
-	// Balise de début avec l'ID.
+	// Balise de d√©but avec l'ID.
 	char theOutputStr[32]; 	// Suffisant.
 	(void) ::sprintf( theOutputStr, "<frame id=\"n%lu\">", inObjectID );
 	theOutputStream->PutString( theOutputStr );
 
 	inEncoder->IncrementLevel();
 	
-	// Ensuite, chacun des éléments.
+	// Ensuite, chacun des √©l√©ments.
 	KUInt32 nbPairs = mLength;
 	KUInt32 indexPairs;
 	for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 	{
 		inEncoder->PutTabulations();
 		
-		// Balise de début, première partie.
+		// Balise de d√©but, premi√®re partie.
 		theOutputStream->PutString( "<slot symbol=\"" );
 		
 		// Ajout du symbole.
 		const char* theSymbol = ((TDCLNSSymbol&) mKeys[indexPairs]).GetString();
 		inEncoder->Print8BitsWithEntities( (KUInt8*) theSymbol );
 
-		// Balise de début, fin.
+		// Balise de d√©but, fin.
 		theOutputStream->PutString( "\">" );
 
 		inEncoder->IncrementLevel();
@@ -809,10 +809,10 @@ void
 TDCLNSFrame::ToNSOF(
 				TDCLNSOFEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
-	// C'est peut-être un rectangle.
+	// C'est peut-√™tre un rectangle.
 	KUInt32 nbPairs = mLength;
 	Boolean isRect = false;
 	KUInt8 rectVals[4];
@@ -889,18 +889,18 @@ TDCLNSFrame::ToNSOF(
 		// Ecriture de la taille.
 		theOutputStream->PutXLong( nbPairs );
 	
-		// Ecriture des clés.
+		// Ecriture des cl√©s.
 		KUInt32 indexPairs;
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
-			// Ajout de la clé.
+			// Ajout de la cl√©.
 			inEncoder->AddObject( mKeys[indexPairs] );
 		}
 
 		// Ecriture des valeurs
 		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
-			// Ajout des références.
+			// Ajout des r√©f√©rences.
 			inEncoder->AddObject( mValues[indexPairs] );
 		}
 	}
@@ -923,11 +923,11 @@ TDCLNSFrame::ToPkg(
 				TDCLPkgEncoder* inEncoder,
 				KUInt32* ioOffset ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Les valeurs d'abord.
-	// Ecriture du nombre d'éléments.
+	// Ecriture du nombre d'√©l√©ments.
 	KUInt32 nbItems = mLength;
 	KUInt32 theSize = (nbItems * 4) + 12;
 
@@ -940,7 +940,7 @@ TDCLNSFrame::ToPkg(
 		throw DCLLimitReachedError;
 	}
 	
-	// Écriture de l'entête.
+	// √âcriture de l'ent√™te.
 	theOutputStream->PutLong(
 		(theSize << TDCLPkgEncoder::kSizeShift)
 		| TDCLPkgEncoder::kObjFlagHeader
@@ -952,7 +952,7 @@ TDCLNSFrame::ToPkg(
 	// Pointeur sur la carte.
 	theOutputStream->PutLong( mapOffset + 1 );
 	
-	// Mise à jour du décalage.
+	// Mise √† jour du d√©calage.
 	*ioOffset += 12;
 
 	// Ajout des valeurs.
@@ -967,7 +967,7 @@ TDCLNSFrame::ToPkg(
 	
 	KASSERT( *ioOffset == mapOffset );
 	
-	// Ensuite, les clés.
+	// Ensuite, les cl√©s.
 	KSInt32 theMapClass = 0;
 	if (mKeysAreSorted)
 	{
@@ -987,7 +987,7 @@ TDCLNSFrame::ToPkg(
 	
 	theOutputStream->PutLong( 0 );
 
-	// Mise à jour du décalage.
+	// Mise √† jour du d√©calage.
 	*ioOffset += 8;
 
 	// Classe.

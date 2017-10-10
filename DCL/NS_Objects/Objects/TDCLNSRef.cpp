@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSRef.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/06/2002
+// Cr√©√© le:			30/06/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSRef.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -67,7 +67,7 @@ const TDCLNSRef TDCLNSRef::kTRUEREF = TDCLNSRef( TDCLNSRef::kTRUERefValue );
 const TDCLNSRef TDCLNSRef::kNewFuncClass = TDCLNSRef( 50 );
 
 // ------------------------------------------------------------------------- //
-// 	* TDCLNSRef( void )
+// 	*¬†TDCLNSRef( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::TDCLNSRef( void )
 	:
@@ -77,7 +77,7 @@ TDCLNSRef::TDCLNSRef( void )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* TDCLNSRef( KUIntPtr )
+// 	*¬†TDCLNSRef( KUIntPtr )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::TDCLNSRef( KUIntPtr inRef )
 	:
@@ -91,7 +91,7 @@ TDCLNSRef::TDCLNSRef( KUIntPtr inRef )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* TDCLNSRef( const TDCLNSRef& )
+// 	*¬†TDCLNSRef( const TDCLNSRef& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::TDCLNSRef( const TDCLNSRef& inCopy )
 	:
@@ -105,7 +105,7 @@ TDCLNSRef::TDCLNSRef( const TDCLNSRef& inCopy )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* TDCLNSRef( TDCLNSObject* )
+// 	*¬†TDCLNSRef( TDCLNSObject* )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::TDCLNSRef( TDCLNSObject* inObject )
 	:
@@ -116,7 +116,7 @@ TDCLNSRef::TDCLNSRef( TDCLNSObject* inObject )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* TDCLNSRef( TDCLNSObject& )
+// 	*¬†TDCLNSRef( TDCLNSObject& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::TDCLNSRef( TDCLNSObject& inObject )
 	:
@@ -128,7 +128,7 @@ TDCLNSRef::TDCLNSRef( TDCLNSObject& inObject )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ~TDCLNSRef( void )
+// 	*¬†~TDCLNSRef( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef::~TDCLNSRef( void )
 {
@@ -143,7 +143,7 @@ TDCLNSRef::~TDCLNSRef( void )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator = ( const TDCLNSRef& )
+// 	*¬†operator = ( const TDCLNSRef& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef&
 TDCLNSRef::operator = ( const TDCLNSRef& inCopy )
@@ -171,7 +171,7 @@ TDCLNSRef::operator = ( const TDCLNSRef& inCopy )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator = ( TDCLNSObject& )
+// 	*¬†operator = ( TDCLNSObject& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef&
 TDCLNSRef::operator = ( TDCLNSObject& inObject )
@@ -196,7 +196,7 @@ TDCLNSRef::operator = ( TDCLNSObject& inObject )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator == ( const TDCLNSObject& ) const
+// 	*¬†operator == ( const TDCLNSObject& ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLNSRef::operator == ( const TDCLNSRef& inAlter ) const
@@ -224,7 +224,7 @@ TDCLNSRef::operator == ( const TDCLNSRef& inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* Ref( KUIntPtr )
+// 	*¬†Ref( KUIntPtr )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::Ref( KUIntPtr inRef )
@@ -233,7 +233,7 @@ TDCLNSRef::Ref( KUIntPtr inRef )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeInt( KSInt32 )
+// 	*¬†MakeInt( KSInt32 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeInt( KSInt32 inInt )
@@ -248,7 +248,7 @@ TDCLNSRef::MakeInt( KSInt32 inInt )
 		inInt = 0 - inInt;
 	}
 	
-	// Vérification que l'entier est dans les bonnes bornes.
+	// V√©rification que l'entier est dans les bonnes bornes.
 	if (inInt & 0x60000000)
 	{
 		throw DCLNS( kNSErrOutOfRange );
@@ -261,7 +261,7 @@ TDCLNSRef::MakeInt( KSInt32 inInt )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeChar( KUInt16 )
+// 	*¬†MakeChar( KUInt16 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeChar( KUInt16 inChar )
@@ -271,7 +271,7 @@ TDCLNSRef::MakeChar( KUInt16 inChar )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeBoolean( Boolean )
+// 	*¬†MakeBoolean( Boolean )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeBoolean( Boolean inBoolean )
@@ -285,12 +285,12 @@ TDCLNSRef::MakeBoolean( Boolean inBoolean )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeMagicPtr( KUInt32 )
+// 	*¬†MakeMagicPtr( KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeMagicPtr( KUInt32 inValue )
 {
-	// Vérification que la valeur est dans les bonnes bornes.
+	// V√©rification que la valeur est dans les bonnes bornes.
 	if (inValue & 0xC0000000)
 	{
 		throw DCLNS( kNSErrOutOfRange );
@@ -300,12 +300,12 @@ TDCLNSRef::MakeMagicPtr( KUInt32 inValue )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeMagicPtr( KUInt32, KUInt32 )
+// 	*¬†MakeMagicPtr( KUInt32, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeMagicPtr( KUInt32 inTable, KUInt32 inIndex )
 {
-	// Vérification que les valeurs sont dans les bonnes bornes.
+	// V√©rification que les valeurs sont dans les bonnes bornes.
 	
 	// 12 bits pour l'index.
 	if (inIndex & 0xFFFFF000)
@@ -324,7 +324,7 @@ TDCLNSRef::MakeMagicPtr( KUInt32 inTable, KUInt32 inIndex )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeFrame( void )
+// 	*¬†MakeFrame( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeFrame( void )
@@ -333,7 +333,7 @@ TDCLNSRef::MakeFrame( void )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeFunction( void )
+// 	*¬†MakeFunction( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeFunction( void )
@@ -342,7 +342,7 @@ TDCLNSRef::MakeFunction( void )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeArray( KUInt32, const TDCLNSRef& )
+// 	*¬†MakeArray( KUInt32, const TDCLNSRef& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeArray(
@@ -353,7 +353,7 @@ TDCLNSRef::MakeArray(
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeSymbol( const char* )
+// 	*¬†MakeSymbol( const char* )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeSymbol( const char* inString )
@@ -362,7 +362,7 @@ TDCLNSRef::MakeSymbol( const char* inString )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeSymbol( const KUInt16* )
+// 	*¬†MakeSymbol( const KUInt16* )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeSymbol( const KUInt16* inString )
@@ -371,7 +371,7 @@ TDCLNSRef::MakeSymbol( const KUInt16* inString )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeString( const char* )
+// 	*¬†MakeString( const char* )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeString( const char* inString )
@@ -380,7 +380,7 @@ TDCLNSRef::MakeString( const char* inString )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeString( const KUInt16* )
+// 	*¬†MakeString( const KUInt16* )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeString( const KUInt16* inString )
@@ -389,7 +389,7 @@ TDCLNSRef::MakeString( const KUInt16* inString )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeString( const KUInt16*, KUInt32 )
+// 	*¬†MakeString( const KUInt16*, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeString( const KUInt16* inString, KUInt32 inSize )
@@ -398,7 +398,7 @@ TDCLNSRef::MakeString( const KUInt16* inString, KUInt32 inSize )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeBinary( const void*, KUInt32 )
+// 	*¬†MakeBinary( const void*, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeBinary(
@@ -409,7 +409,7 @@ TDCLNSRef::MakeBinary(
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeBinary( const void*, KUInt32, const TDCLNSRef& )
+// 	*¬†MakeBinary( const void*, KUInt32, const TDCLNSRef& )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::MakeBinary(
@@ -472,7 +472,7 @@ TDCLNSRef::SetClass( const TDCLNSRef& inClass )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToInt( void )
+// 	*¬†ToInt( void )
 // ------------------------------------------------------------------------- //
 KSInt32
 TDCLNSRef::ToInt( void ) const
@@ -485,7 +485,7 @@ TDCLNSRef::ToInt( void ) const
 	// Valeur absolue
 	KSInt32 theResult = (KSInt32) ((mRef >> kTagShift) & 0x1FFFFFFF);
 
-	// Récupération du signe
+	// R√©cup√©ration du signe
 	if (mRef & 0x80000000)
 	{
 		theResult = 0 - theResult;
@@ -495,7 +495,7 @@ TDCLNSRef::ToInt( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToChar( void )
+// 	*¬†ToChar( void )
 // ------------------------------------------------------------------------- //
 KUInt16
 TDCLNSRef::ToChar( void ) const
@@ -510,7 +510,7 @@ TDCLNSRef::ToChar( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToMagicPtr( void )
+// 	*¬†ToMagicPtr( void )
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLNSRef::ToMagicPtr( void ) const
@@ -527,7 +527,7 @@ TDCLNSRef::ToMagicPtr( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* GetMagicPtrIndex( void )
+// 	*¬†GetMagicPtrIndex( void )
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLNSRef::GetMagicPtrIndex( void ) const
@@ -544,7 +544,7 @@ TDCLNSRef::GetMagicPtrIndex( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* GetMagicPtrTable( void )
+// 	*¬†GetMagicPtrTable( void )
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLNSRef::GetMagicPtrTable( void ) const
@@ -561,7 +561,7 @@ TDCLNSRef::GetMagicPtrTable( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* Clone( void )
+// 	*¬†Clone( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::Clone( void ) const
@@ -575,7 +575,7 @@ TDCLNSRef::Clone( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToSymbol( void )
+// 	*¬†ToSymbol( void )
 // ------------------------------------------------------------------------- //
 TDCLNSSymbol&
 TDCLNSRef::ToSymbol( void ) const
@@ -589,7 +589,7 @@ TDCLNSRef::ToSymbol( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToFrame( void )
+// 	*¬†ToFrame( void )
 // ------------------------------------------------------------------------- //
 TDCLNSFrame&
 TDCLNSRef::ToFrame( void ) const
@@ -603,7 +603,7 @@ TDCLNSRef::ToFrame( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToArray( void )
+// 	*¬†ToArray( void )
 // ------------------------------------------------------------------------- //
 TDCLNSArray&
 TDCLNSRef::ToArray( void ) const
@@ -617,7 +617,7 @@ TDCLNSRef::ToArray( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToString( void )
+// 	*¬†ToString( void )
 // ------------------------------------------------------------------------- //
 TDCLNSString&
 TDCLNSRef::ToString( void ) const
@@ -631,7 +631,7 @@ TDCLNSRef::ToString( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* ToBinary( void )
+// 	*¬†ToBinary( void )
 // ------------------------------------------------------------------------- //
 TDCLNSBinary&
 TDCLNSRef::ToBinary( void ) const
@@ -645,7 +645,7 @@ TDCLNSRef::ToBinary( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator & ( const TDCLNSRef& ) const
+// 	*¬†operator & ( const TDCLNSRef& ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator & ( const TDCLNSRef& inAlter ) const
@@ -654,7 +654,7 @@ TDCLNSRef::operator & ( const TDCLNSRef& inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator & ( const char* ) const
+// 	*¬†operator & ( const char* ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator & ( const char* inAlter ) const
@@ -663,7 +663,7 @@ TDCLNSRef::operator & ( const char* inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator & ( const KUInt16* ) const
+// 	*¬†operator & ( const KUInt16* ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator & ( const KUInt16* inAlter ) const
@@ -672,7 +672,7 @@ TDCLNSRef::operator & ( const KUInt16* inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator && ( const TDCLNSRef& ) const
+// 	*¬†operator && ( const TDCLNSRef& ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator && ( const TDCLNSRef& inAlter ) const
@@ -681,7 +681,7 @@ TDCLNSRef::operator && ( const TDCLNSRef& inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator && ( const char* ) const
+// 	*¬†operator && ( const char* ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator && ( const char* inAlter ) const
@@ -690,7 +690,7 @@ TDCLNSRef::operator && ( const char* inAlter ) const
 }
 
 // ------------------------------------------------------------------------- //
-// 	* operator && ( const KUInt16* ) const
+// 	*¬†operator && ( const KUInt16* ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLNSRef::operator && ( const KUInt16* inAlter ) const
@@ -704,14 +704,14 @@ TDCLNSRef::operator && ( const KUInt16* inAlter ) const
 void
 TDCLNSRef::ToXML( TDCLXMLEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Si on n'est pas un pointeur, mettre la valeur directement.
 	if (!IsRealPtr())
 	{
-		// On gère les cas spéciaux.
-		// 1 - caractère
+		// On g√®re les cas sp√©ciaux.
+		// 1 - caract√®re
 		if (IsChar())
 		{
 			theOutputStream->PutString( "<char>" );
@@ -763,23 +763,23 @@ TDCLNSRef::ToNSOF( TDCLNSOFEncoder* inEncoder ) const
 {
 	// Newton Formats, page 59 sqq
 	
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
-	// On ne doit pas être un pointeur ici.
+	// On ne doit pas √™tre un pointeur ici.
 	if (!IsRealPtr())
 	{
 		do {
-			// On gère les cas spéciaux qui diminuent la taille des données
+			// On g√®re les cas sp√©ciaux qui diminuent la taille des donn√©es
 			// NSOF.
 				
-			// 1 - caractère
+			// 1 - caract√®re
 			if (IsChar())
 			{
-				// Extraction du caractère
+				// Extraction du caract√®re
 				KUInt16 theChar = (KUInt16) (mRef >> kImmedBitsShift);
 				
-				// Est-ce un caractère unicode?
+				// Est-ce un caract√®re unicode?
 				if (theChar & 0xFF00)
 				{
 					theOutputStream->PutByte( KDCLNSOF::kUnicodeCharacter );
@@ -798,7 +798,7 @@ TDCLNSRef::ToNSOF( TDCLNSOFEncoder* inEncoder ) const
 				break;
 			}
 
-			// Sinon, on met la référence directement.
+			// Sinon, on met la r√©f√©rence directement.
 			theOutputStream->PutByte( KDCLNSOF::kImmediate );
 			theOutputStream->PutXLong( mRef );
 		} while (0);
@@ -813,14 +813,14 @@ TDCLNSRef::ToNSOF( TDCLNSOFEncoder* inEncoder ) const
 void
 TDCLNSRef::ToText( TDCLTextEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 //	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Si on n'est pas un pointeur, mettre la valeur directement.
 	if (!IsRealPtr())
 	{
 	} else {
-		// Récupérer l'objet associé.
+		// R√©cup√©rer l'objet associ√©.
 		TDCLNSObject* theObject = GetPointer();
 
 		// Ajout via l'encodeur.
@@ -834,7 +834,7 @@ TDCLNSRef::ToText( TDCLTextEncoder* inEncoder ) const
 void
 TDCLNSRef::ToPkg( TDCLPkgEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Si on n'est pas un pointeur, mettre la valeur directement.
@@ -842,7 +842,7 @@ TDCLNSRef::ToPkg( TDCLPkgEncoder* inEncoder ) const
 	{
 		theOutputStream->PutLong( mRef );
 	} else {
-		// Récupérer l'objet associé.
+		// R√©cup√©rer l'objet associ√©.
 		TDCLNSObject* theObject = GetPointer();
 
 		// Ajout via l'encodeur.

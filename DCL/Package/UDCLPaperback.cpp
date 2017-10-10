@@ -2,7 +2,7 @@
 // Fichier:			UDCLPaperback.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			9/5/2004
+// Cr√©√© le:			9/5/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLPaperback.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -83,7 +83,7 @@ UDCLPaperback::BuildBook(
 	KUInt32 theTOCSize = 0;
 	
 	try {
-		// Extraction de la chaîne.
+		// Extraction de la cha√Æne.
 		KUInt32 theTextSize;
 		ExtractString( inTextStream, inEncoding, &theText, &theTextSize );
 		
@@ -247,7 +247,7 @@ UDCLPaperback::ExtractString(
 			break;
 		}
 	} catch (...) {
-		// Ménage
+		// M√©nage
 		if (theUTF16Text)
 		{
 			::free( theUTF16Text );
@@ -260,7 +260,7 @@ UDCLPaperback::ExtractString(
 		throw;
 	}
 
-	// Ménage
+	// M√©nage
 	if (theBuffer)
 	{
 		::free( theBuffer );
@@ -278,7 +278,7 @@ UDCLPaperback::ConvertEndLines(
 		KUInt16* inUTF16Text,
 		KUInt32* ioSize )
 {
-	// Conversion des fins de ligne au format Macintosh (si nécessaire).
+	// Conversion des fins de ligne au format Macintosh (si n√©cessaire).
 	KUInt32 theBufferSize = *ioSize;
 	KUInt32 indexString;
 	for (indexString = 0; indexString < theBufferSize; indexString++)
@@ -290,7 +290,7 @@ UDCLPaperback::ConvertEndLines(
 		} else if ((inUTF16Text[indexString] == UByteSex_ToBigEndian( (KUInt16) 13 ))
 				&& (inUTF16Text[indexString+1] == UByteSex_ToBigEndian( (KUInt16) 10 ))) {
 			// DOS.
-			// Suppression du caractère suivant.
+			// Suppression du caract√®re suivant.
 			(void) ::memmove(
 				&inUTF16Text[indexString+1],
 				(const void*) &inUTF16Text[indexString+2],
@@ -331,7 +331,7 @@ UDCLPaperback::BuildTOC(
 		// Une nouvelle ligne.
 		KUInt32 lineStart = indexString;
 		
-		// Commence-t-elle par notre préfixe?
+		// Commence-t-elle par notre pr√©fixe?
 		Boolean matches = true;
 		KUInt32 indexPrefix;
 		for (
@@ -356,7 +356,7 @@ UDCLPaperback::BuildTOC(
 			tocEntryStart = indexString;
 		}
 		
-		// On court jusqu'à la fin de la ligne.
+		// On court jusqu'√† la fin de la ligne.
 		for ( ; indexString < theTextSize; indexString++)
 		{
 			if (inText[indexString]
@@ -375,15 +375,15 @@ UDCLPaperback::BuildTOC(
 		}
 
 		// Ici:
-		// matches -> si on a un préfixe.
-		// lineStart -> indice du premier caractère de la ligne.
-		// lineEnd -> indice juste après le dernier caractère
+		// matches -> si on a un pr√©fixe.
+		// lineStart -> indice du premier caract√®re de la ligne.
+		// lineEnd -> indice juste apr√®s le dernier caract√®re
 		//				(saut de ligne ou fin du texte)
-		// tocEntryStart -> indice du caractère juste après le préfixe.
+		// tocEntryStart -> indice du caract√®re juste apr√®s le pr√©fixe.
 
 		if ((matches) && (lineEnd != tocEntryStart))
 		{
-			// Ajout de l'entrée. On évite d'ajouter une entrée vide.
+			// Ajout de l'entr√©e. On √©vite d'ajouter une entr√©e vide.
 			nbTOCEntries++;
 
 			*outTOCEntries =
@@ -471,7 +471,7 @@ UDCLPaperback::BuildBook(
 	TDCLNSRef theCSArrayRef = TDCLNSRef::MakeArray();
 	TDCLNSArray& theCSArray = theCSArrayRef.ToArray();
 	theCSArray.Add( TDCLNSRef::MakeInt( -536870911 ) );
-	// On découpe par tranche de 2K.
+	// On d√©coupe par tranche de 2K.
 #warning we should fix that once David Fedor remembers about this chunkify magic
 	KSInt32 chunkOffset = 2000;
 	while (chunkOffset < theLength)
@@ -515,7 +515,7 @@ UDCLPaperback::BuildBook(
 		theTOCStringBuffer =
 			(KUInt16*) ::realloc( theTOCStringBuffer, theNewBufferSize );
 		
-		// Copie des caractères.
+		// Copie des caract√®res.
 		(void) ::memcpy(
 			&theTOCStringBuffer[theTOCBufferSize],
 			(const void*) theTOCEntry,
