@@ -281,7 +281,7 @@
 			}
 	#else
 		#if KDebugOn
-			#warning KDEBUGSTR n«est pas dŽfini
+			#warning KDEBUGSTR is not defined
 		#endif
 	#endif
 #endif
@@ -413,9 +413,9 @@
 	#ifndef KERROR
 		#define KERROR( func, err )										\
 			if (KERROR_ENABLED && (err)) {								\
-				KDEBUGSTR( "Erreur!" );									\
+				KDEBUGSTR( "Error!" );									\
 				KDPRINTF_SETUP;											\
-				KDPRINTF4( "E]%s:%i> %s a retournŽ une erreur: %i\n",	\
+				KDPRINTF4( "E]%s:%i> %s returned an error: %i\n",	\
 						__FILE__, __LINE__, func, err );				\
 				KPRINT_STACK;											\
 			}
@@ -423,8 +423,8 @@
 	#ifndef KERRORC
 		#define KERRORC( func, err, cond )								\
 			if (KERROR_ENABLED && (err) && (cond)) {					\
-				KDEBUGSTR( "Erreur!" );									\
-				KDPRINTF4( "E]%s:%i> %s a retournŽ une erreur: %i\n",	\
+				KDEBUGSTR( "Error!" );									\
+				KDPRINTF4( "E]%s:%i> %s returned an error: %i\n",	\
 					__FILE__, __LINE__, func, err );					\
 				KPRINT_STACK;											\
 			}
@@ -433,7 +433,7 @@
 		#define KASSERT( cond )											\
 			if (KERROR_ENABLED && !(cond)) {							\
 				KDEBUGSTR( "Assertion!" );								\
-				KDPRINTF2( "A]%s:%i> l'assertion ("#cond") a ŽchouŽ\n",	\
+				KDPRINTF2( "A]%s:%i> assertion ("#cond") failed\n",	\
 					__FILE__, __LINE__ );								\
 				KPRINT_STACK;											\
 			}
@@ -441,8 +441,8 @@
 	#ifndef KFAIL
 		#define KFAIL( str )											\
 			if (KERROR_ENABLED) {										\
-				KDEBUGSTR( "Echec!" );									\
-				KDPRINTF3( "A]%s:%i> Žchec inconditionnel (%s)\n",		\
+				KDEBUGSTR( "Failure!" );									\
+				KDPRINTF3( "A]%s:%i> unconditional failure (%s)\n",		\
 					__FILE__, __LINE__, (str) );						\
 				KPRINT_STACK;											\
 			}

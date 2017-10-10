@@ -1439,7 +1439,7 @@ TDCLSyncEngine::GetEmailSystemName( const TDCLNSRef& inEmailAddress )
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.bigfoot.com")) {
 			theResult = TDCLNSRef::MakeString("BigFoot");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.cybercable.fr")) {
-			theResult = TDCLNSRef::MakeString("Cyberc‰ble");
+			theResult = TDCLNSRef::MakeString("Cybercable");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.dotcom.fr")) {
 			theResult = TDCLNSRef::MakeString("DotCom");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.freesbee.fr")) {

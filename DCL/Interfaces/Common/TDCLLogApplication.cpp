@@ -62,7 +62,7 @@ TDCLLogApplication::WaitConnection(
 							TDCLServer* inServer,
 							TDCLCommLayer* inLayer )
 {
-	(void) ::fprintf( mLogFile, "Attente d'une connexion (%p-%p).\n",
+	(void) ::fprintf( mLogFile, "Waiting for connection (%p-%p).\n",
 			inServer, inLayer );
 }
 
@@ -72,7 +72,7 @@ TDCLLogApplication::WaitConnection(
 void
 TDCLLogApplication::Connected( TDCLLink* inLink, TDCLCommLayer* inLayer )
 {
-	(void) ::fprintf( mLogFile, "[%p] Connexion Žtablie (%p)\n",
+	(void) ::fprintf( mLogFile, "[%p] Connection established (%p)\n",
 			inLink, inLayer );
 }
 
@@ -87,7 +87,7 @@ TDCLLogApplication::ConnectedToNewtonDevice(
 	char* theNameStr = new char [510];	// Le nom en MacRoman
 	UUTF16CStr::ToISO88591( inName, (KUInt8*) theNameStr, 510 );
 
-	(void) ::fprintf( mLogFile, "[%p] ConnectŽ sur le Newton de %s\n",
+	(void) ::fprintf( mLogFile, "[%p] Connected to %s's Newton\n",
 				inLink, theNameStr );
 }
 
@@ -97,7 +97,7 @@ TDCLLogApplication::ConnectedToNewtonDevice(
 void
 TDCLLogApplication::Disconnecting( TDCLLink* inLink )
 {
-	(void) ::fprintf( mLogFile, "[%p] DŽconnexion\n",
+	(void) ::fprintf( mLogFile, "[%p] Disconnecting\n",
 				inLink );
 }
 
@@ -107,7 +107,7 @@ TDCLLogApplication::Disconnecting( TDCLLink* inLink )
 void
 TDCLLogApplication::Disconnected( TDCLLink* inLink )
 {
-	(void) ::fprintf( mLogFile, "[%p] DŽconnectŽ\n", inLink );
+	(void) ::fprintf( mLogFile, "[%p] Disconnected\n", inLink );
 }
 
 // ------------------------------------------------------------------------- //
@@ -117,7 +117,7 @@ void
 TDCLLogApplication::ServerIsDown( TDCLServer* inServer )
 {
 	(void) ::fprintf(
-			mLogFile, "Fin du serveur (%p)\n", inServer );
+			mLogFile, "End of server (%p)\n", inServer );
 }
 
 // ------------------------------------------------------------------------- //
@@ -126,7 +126,7 @@ TDCLLogApplication::ServerIsDown( TDCLServer* inServer )
 void
 TDCLLogApplication::Cancel( TDCLLink* inLink )
 {
-	(void) ::fprintf( mLogFile, "[%p] Annulation\n", inLink );
+	(void) ::fprintf( mLogFile, "[%p] Canceled\n", inLink );
 }
 
 // ------------------------------------------------------------------------- //
@@ -135,8 +135,7 @@ TDCLLogApplication::Cancel( TDCLLink* inLink )
 void
 TDCLLogApplication::Timeout( TDCLLink* inLink )
 {
-	(void) ::fprintf( mLogFile, "[%p] DŽpassement de temporisation\n",
-				inLink );
+	(void) ::fprintf( mLogFile, "[%p] Timeout\n", inLink );
 }
 
 // ------------------------------------------------------------------------- //
@@ -149,7 +148,7 @@ TDCLLogApplication::AppCommandBeingProcessed(
 {
 	(void) ::fprintf(
 			mLogFile,
-			"[%p] Commande Application [%p] en cours d'exŽcution\n",
+			"[%p] Application command [%p] is being processed\n",
 			inLink,
 			inCommand );
 }
@@ -167,13 +166,13 @@ TDCLLogApplication::AppCommandProcessed(
 	{
 		(void) ::fprintf(
 			mLogFile,
-			"[%p] Problme avec la commande [%p]\n",
+			"[%p] Exception with command [%p]\n",
 			inLink,
 			inCommand );
 	} else {
 		(void) ::fprintf(
 			mLogFile,
-			"[%p] Commande [%p] exŽcutŽe avec succs\n",
+			"[%p] Command [%p] succeeded\n",
 			inLink,
 			inCommand );
 	}
@@ -190,7 +189,7 @@ TDCLLogApplication::DockCommandBeingProcessed(
 {
 	(void) ::fprintf(
 		mLogFile,
-		"[%p] Commande Dock [%p] (moteur: [%p]) en cours d'exŽcution\n",
+		"[%p] Dock command [%p] (engine: [%p]) is being processed\n",
 		inLink,
 		inCommand,
 		inEngine );
@@ -209,13 +208,13 @@ TDCLLogApplication::DockCommandProcessed(
 	{
 		(void) ::fprintf(
 			mLogFile,
-			"[%p] Problme avec une commande dock (moteur [%p])\n",
+			"[%p] Exception with dock command (engine [%p])\n",
 			inLink,
 			inEngine );
 	} else {
 		(void) ::fprintf(
 			mLogFile,
-			"[%p] Commande dock (moteur [%p]) exŽcutŽe avec succs\n",
+			"[%p] Dock command (engine [%p]) succeeded\n",
 			inLink,
 			inEngine );
 	}
@@ -230,7 +229,7 @@ TDCLLogApplication::HandleServerException(
 							TDCLException* inException )
 {
 	(void) ::fprintf( mLogFile,
-				"Exception au niveau du serveur [%p]!\n",
+				"Exception at server level [%p]!\n",
 				inServer );
 
 	LogException( inException );
@@ -245,7 +244,7 @@ TDCLLogApplication::HandleCommLayerException(
 							TDCLException* inException )
 {
 	(void) ::fprintf( mLogFile,
-				"Exception au niveau de la couche de communication [%p]!\n",
+				"Exception at communication layer level [%p]!\n",
 				inCommLayer );
 
 	LogException( inException );
@@ -260,7 +259,7 @@ TDCLLogApplication::HandleLinkException(
 							TDCLException* inException )
 {
 	(void) ::fprintf( mLogFile,
-				"Exception au niveau du lien [%p]!\n",
+				"Exception at link level [%p]!\n",
 				inLink );
 
 	LogException( inException );
@@ -272,7 +271,7 @@ TDCLLogApplication::HandleLinkException(
 void
 TDCLLogApplication::HandleException( TDCLException* inException )
 {
-	(void) ::fprintf( mLogFile, "Exception non interceptŽe!\n" );
+	(void) ::fprintf( mLogFile, "Unhandled exception!\n" );
 
 	LogException( inException );
 }
@@ -286,20 +285,20 @@ TDCLLogApplication::LogException( TDCLException* inException )
 	if (inException)
 	{
 #if kDCLDebugFILEandLINE
-		(void) ::fprintf( mLogFile, ">> %s (code: %i, erreur: %i) [%s:%u]\n",
+		(void) ::fprintf( mLogFile, ">> %s (code: %i, error: %i) [%s:%u]\n",
 						inException->GetExceptionName(),
 						(int) inException->GetExCode(),
 						(int) inException->GetError(),
 						inException->GetFileName(),
 						(unsigned int) inException->GetLine() );
 #else
-		(void) ::fprintf( mLogFile, ">> %s (code: %i, erreur: %i)\n",
+		(void) ::fprintf( mLogFile, ">> %s (code: %i, error: %i)\n",
 						inException->GetExceptionName(),
 						(int) inException->GetExCode(),
 						(int) inException->GetError() );
 #endif
 	} else {
-		(void) ::fprintf( mLogFile, ">> Exception inconnue\n" );
+		(void) ::fprintf( mLogFile, ">> Unknown exception\n" );
 	}
 }
 
