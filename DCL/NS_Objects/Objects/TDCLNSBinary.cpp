@@ -331,10 +331,10 @@ TDCLNSBinary::ToXML(
 	
 	if (isString)
 	{
-		(void) ::sprintf( theOutputStr, "<string id=\"n%lu\">", inObjectID );
+		(void) ::sprintf( theOutputStr, "<string id=\"n%lu\">", (unsigned long) inObjectID );
 		theOutputStream->PutString( theOutputStr );
 	} else {
-		(void) ::sprintf( theOutputStr, "<binary id=\"n%lu\">", inObjectID );
+		(void) ::sprintf( theOutputStr, "<binary id=\"n%lu\">", (unsigned long) inObjectID );
 		theOutputStream->PutString( theOutputStr );
 	}
 

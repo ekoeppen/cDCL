@@ -443,7 +443,7 @@ TDCLNSArray::ToXML(
 	
 	// Balise de début avec l'ID.
 	char theOutputStr[32]; 	// Suffisant.
-	(void) ::sprintf( theOutputStr, "<array id=\"n%lu\">", inObjectID );
+	(void) ::sprintf( theOutputStr, "<array id=\"n%lu\">", (unsigned long) inObjectID );
 	theOutputStream->PutString( theOutputStr );
 
 	inEncoder->IncrementLevel();

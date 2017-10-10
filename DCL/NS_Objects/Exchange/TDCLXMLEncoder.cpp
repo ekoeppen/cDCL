@@ -93,7 +93,7 @@ TDCLXMLEncoder::PutPrecedent( KUInt32 inRefID, KUIntPtr /* inCookie */ )
 {
 	// <precedent id="7"/>
 	char theString[32];	// Largement suffisant.
-	(void) ::sprintf( theString, "<precedent idref=\"n%lu\"/>", inRefID );
+	(void) ::sprintf( theString, "<precedent idref=\"n%lu\"/>", (unsigned long) inRefID );
 	GetOutputStream()->PutString( theString );
 }
 

@@ -82,7 +82,7 @@ TDCLTextEncoder::PutPrecedent( KUInt32 inRefID, KUIntPtr /* inCookie */ )
 	// Le format est <<ID>>.
 	// La taille maximale est 14 octets.
 	char precedentStr[15];
-	(void) ::sprintf( precedentStr, "<<%lu>>", inRefID );
+	(void) ::sprintf( precedentStr, "<<%lu>>", (unsigned long) inRefID );
 
 	GetOutputStream()->PutString( precedentStr );
 }

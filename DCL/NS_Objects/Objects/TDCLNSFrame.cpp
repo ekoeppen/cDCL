@@ -760,7 +760,7 @@ TDCLNSFrame::ToXML(
 	
 	// Balise de début avec l'ID.
 	char theOutputStr[32]; 	// Suffisant.
-	(void) ::sprintf( theOutputStr, "<frame id=\"n%lu\">", inObjectID );
+	(void) ::sprintf( theOutputStr, "<frame id=\"n%lu\">", (unsigned long) inObjectID );
 	theOutputStream->PutString( theOutputStr );
 
 	inEncoder->IncrementLevel();

@@ -736,18 +736,18 @@ TDCLNSRef::ToXML( TDCLXMLEncoder* inEncoder ) const
 			theOutputStream->PutString( "<true/>" );
 		} else if (IsInt()) {
 			char theOutputStr[32]; 	// Suffisant.
-			(void) ::sprintf( theOutputStr, "<int>%li</int>", ToInt() );
+			(void) ::sprintf( theOutputStr, "<int>%li</int>", (long) ToInt() );
 			theOutputStream->PutString( theOutputStr );
 		} else if (IsMagicPtr()) {
 			char theOutputStr[32]; 	// Suffisant.
 			(void) ::sprintf(
-				theOutputStr, "<magic_ptr>%lu</magic_ptr>", ToMagicPtr() );
+				theOutputStr, "<magic_ptr>%lu</magic_ptr>", (unsigned long) ToMagicPtr() );
 			theOutputStream->PutString( theOutputStr );
 		} else {
 			// weird_immediate
 			char theOutputStr[64]; 	// Suffisant.
 			(void) ::sprintf(
-				theOutputStr, "<weird_immediate>%lu</weird_immediate>", mRef );
+				theOutputStr, "<weird_immediate>%lu</weird_immediate>", (unsigned long) mRef );
 			theOutputStream->PutString( theOutputStr );
 		}
 	} else {
