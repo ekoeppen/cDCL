@@ -1,7 +1,25 @@
 cmake_minimum_required (VERSION 2.6)
 project (dcl)
-add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -DNDEBUG -Wno-multichar)
+
+# build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
+set(default_build_type "Release")
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  set(default_build_type "Debug")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+endif()
+
+add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
+
 include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR})
+include(CTest)
 
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -383,6 +401,7 @@ K/XML/UExpatUtils.h
 
 add_subdirectory (Sample_Code/NSOFtoXML)
 add_subdirectory (Sample_Code/PackageUtils)
+add_subdirectory (Tests)
 
 foreach(HEADER ${HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})

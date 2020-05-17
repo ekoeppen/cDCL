@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame PUBLIC "-//DCL Group//Canonical DTD 1.0//EN" "http://www.kallisys.com/DTDs/newtonscript.dtd">
+<frame id="n0">
+	<slot symbol="nameAgain">
+		<string id="n1">
+			<value>Walter Smith</value>
+		</string>
+	</slot>
+	<slot symbol="uchar">
+		<char>•</char>
+	</slot>
+	<slot symbol="name">
+		<precedent idref="n1"/>
+	</slot>
+	<slot symbol="bounds">
+		<frame id="n2">
+			<slot symbol="right">
+				<int>40</int>
+			</slot>
+			<slot symbol="top">
+				<int>14</int>
+			</slot>
+			<slot symbol="left">
+				<int>10</int>
+			</slot>
+			<slot symbol="bottom">
+				<int>100</int>
+			</slot>
+		</frame>
+	</slot>
+	<slot symbol="cats">
+		<int>2</int>
+	</slot>
+	<slot symbol="phones">
+		<array id="n3">
+			<string id="n4">
+				<value>408-996-1010</value>
+			</string>
+			<binary id="n5">
+				<class><symbol>faxPhone</symbol></class>
+				<value>
+					ADQAMAA4AC0AOQA3ADQALQA5ADAAOQA0
+					AAA=
+				</value>
+			</binary>
+		</array>
+	</slot>
+</frame>

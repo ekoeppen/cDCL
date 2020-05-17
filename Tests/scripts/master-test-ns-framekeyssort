@@ -1,0 +1,49 @@
+1- Test du tri au vol
+21 paires
+00FB92C2 - quatre - 4
+100B4CEA - huit - 8
+2F2653FC - quinze - 15
+30ED6EAE - vingt-et-un - 21
+44F26348 - vingt - 20
+4C7A405C - onze - 11
+4C7A405C - sept - 7
+53369580 - seize - 16
+676B94EC - dix-huit - 18
+739AEDE3 - quatorze - 14
+879FE27D - dix - 10
+972D6606 - deux - 2
+9F330C7B - treize - 13
+A3DA885E - dix-sept - 17
+A571983E - neuf - 9
+A6BAE98F - douze - 12
+BD5280CB - un - 1
+CACB2B13 - cinq - 5
+CCE00454 - six - 6
+D4E5AAC9 - trois - 3
+FCD1E040 - dix-neuf - 19
+
+2- Ajout de deux paires et tri par insertion
+23 paires
+00FB92C2 - quatre - 4
+100B4CEA - huit - 8
+2F2653FC - quinze - 15
+30ED6EAE - vingt-et-un - 21
+44F26348 - vingt - 20
+4C7A405C - onze - 11
+4C7A405C - sept - 7
+53369580 - seize - 16
+676B94EC - dix-huit - 18
+739AEDE3 - quatorze - 14
+879FE27D - dix - 10
+972D6606 - deux - 2
+9F330C7B - treize - 13
+A3DA885E - dix-sept - 17
+A571983E - neuf - 9
+A6BAE98F - douze - 12
+ABE02ED3 - vingt-deux - 22
+B31A4D58 - quartante-deux - 42
+BD5280CB - un - 1
+CACB2B13 - cinq - 5
+CCE00454 - six - 6
+D4E5AAC9 - trois - 3
+FCD1E040 - dix-neuf - 19

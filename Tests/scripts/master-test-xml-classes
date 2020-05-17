@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame PUBLIC "-//DCL Group//Canonical DTD 1.0//EN" "http://www.kallisys.com/DTDs/newtonscript.dtd">
+<frame id="n0">
+	<slot symbol="foo">
+		<string id="n1">
+			<class><symbol>string.bar</symbol></class>
+			<value>bar</value>
+		</string>
+	</slot>
+</frame>

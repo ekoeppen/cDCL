@@ -1,0 +1,9 @@
+TTestServer::DoStartListening
+Waiting for connection \((?:0x)?[A-Fa-f0-9]{8,}-(?:0x)?[A-Fa-f0-9]{8,}\)\.
+TTestServer::DoStop
+End of server \((?:0x)?[A-Fa-f0-9]{8,}\)
+Deuxième test
+TTestServer::DoStartListening
+Waiting for connection \((?:0x)?[A-Fa-f0-9]{8,}-(?:0x)?[A-Fa-f0-9]{8,}\)\.
+TTestServer::DoStop
+End of server \((?:0x)?[A-Fa-f0-9]{8,}\)

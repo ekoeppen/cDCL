@@ -1,0 +1,9 @@
+TTestServer::DoStartListening
+Attente d'une connexion \([A-F0-9]{8}-[A-F0-9]{8}\)\.
+TTestServer::DoStop
+Fin du serveur \([A-F0-9]{8}\)
+Deuxième test
+TTestServer::DoStartListening
+Attente d'une connexion \([A-F0-9]{8}-[A-F0-9]{8}\)\.
+TTestServer::DoStop
+Fin du serveur \([A-F0-9]{8}\)
