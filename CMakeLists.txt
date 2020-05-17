@@ -381,6 +381,7 @@ K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
 
+add_subdirectory (Sample_Code/NSOFtoXML)
 add_subdirectory (Sample_Code/PackageUtils)
 
 foreach(HEADER ${HEADERS})
