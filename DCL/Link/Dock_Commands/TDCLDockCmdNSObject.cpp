@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNSObject.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			17/01/2002
+// Cr√©√© le:			17/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNSObject.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -70,7 +70,7 @@ TDCLDockCmdNSObject::TDCLDockCmdNSObject(
 		mBuffer( nil ),
 		mBufferSize( 0 )
 {
-	// Conversion de la référence en données NSOF.
+	// Conversion de la r√©f√©rence en donn√©es NSOF.
 	TDCLMemStream theMemStream;
 	TDCLNSOFEncoder theEncoder( &theMemStream );
 	theEncoder.AddObject( inObject );
@@ -99,11 +99,11 @@ TDCLDockCmdNSObject::TDCLDockCmdNSObject(
 	{
 		if (mBuffer == nil)
 		{
-			// Pas assez de mémoire.
+			// Pas assez de m√©moire.
 			throw DCLMemError;
 		}
 	
-		// Copie des données.
+		// Copie des donn√©es.
 		(void) ::memcpy( mBuffer, inData, inLength );
 	}
 }
@@ -143,7 +143,7 @@ TDCLDockCmdNSObject::GetObject( void ) const
 void
 TDCLDockCmdNSObject::SetObject( const TDCLNSRef& inObject )
 {
-	// Libération de la mémoire tampon si elle n'est pas déjà libre.
+	// Lib√©ration de la m√©moire tampon si elle n'est pas d√©j√† libre.
 	if (mBuffer)
 	{
 		::free( mBuffer );
@@ -151,7 +151,7 @@ TDCLDockCmdNSObject::SetObject( const TDCLNSRef& inObject )
 		mBufferSize = 0;
 	}
 
-	// Conversion de la référence en données NSOF.
+	// Conversion de la r√©f√©rence en donn√©es NSOF.
 	TDCLMemStream theMemStream;
 	TDCLNSOFEncoder theEncoder( &theMemStream );
 	theEncoder.AddObject( inObject );

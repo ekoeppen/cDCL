@@ -2,7 +2,7 @@
 // Fichier:			TDCLOTSerial.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/01/2002
+// Cr√©√© le:			27/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOTSerial.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -66,12 +66,12 @@ TDCLOTSerial::TDCLOTSerial(
 		:
 			TDCLOpenTransport(
 				inThreadsIntf,
-				1,				// 1 seule connexion à la fois.
+				1,				// 1 seule connexion √† la fois.
 				inTimeout ),
 			mBaud( inBaud )
 {
-	// Création de la configuration.
-	// Récupération de la chaîne.
+	// Cr√©ation de la configuration.
+	// R√©cup√©ration de la cha√Æne.
 	char theConfigStr[37];
 	theConfigStr[36] = 0;
 	if (!GetSerialPortInfos( inPort, theConfigStr, nil ))
@@ -95,13 +95,13 @@ TDCLOTSerial::TDCLOTSerial(
 		// Appelons Init
 		Init( theConfiguration, &theLocalAddressInfo );
 	} catch (...) {
-		// Libération de la configuration.
+		// Lib√©ration de la configuration.
 		::OTDestroyConfiguration( theConfiguration );
 		
 		throw;	// Rethrow.
 	}
 
-	// Libération de la configuration.
+	// Lib√©ration de la configuration.
 	::OTDestroyConfiguration( theConfiguration );
 }
 
@@ -138,7 +138,7 @@ char*
 TDCLOTSerial::GetSerialPortName( unsigned long inIndex )
 {
 	char* theResult = nil;
-	// theResult n'est pas modifié si le port n'existe pas.
+	// theResult n'est pas modifi√© si le port n'existe pas.
 	(void) GetSerialPortInfos( inIndex, nil, &theResult );
 	
 	return theResult;
@@ -160,7 +160,7 @@ TDCLOTSerial::GetSerialPortInfos(
 	
 	OTPortRecord theRecord;	// Enregistrement.
 
-	unsigned long indexRealPorts = 0;	// Index sur les ports réels.
+	unsigned long indexRealPorts = 0;	// Index sur les ports r√©els.
 	unsigned long indexPorts;
 	for (indexPorts = 0; indexPorts <= inIndex; indexPorts++)
 	{
@@ -171,7 +171,7 @@ TDCLOTSerial::GetSerialPortInfos(
 			// Est-ce un alias?
 			if (!(theRecord.fInfoFlags & kOTPortIsAlias))
 			{
-				// Est-ce bien un port série?
+				// Est-ce bien un port s√©rie?
 				OTPortRef thePortRef = theRecord.fRef;
 				KUInt16 theDeviceType = ::OTGetDeviceTypeFromPortRef( thePortRef );
 						
@@ -180,7 +180,7 @@ TDCLOTSerial::GetSerialPortInfos(
 					// L'index correspond-il?
 					if (indexRealPorts == inIndex)
 					{
-						// Copie de la chaîne de configuration.
+						// Copie de la cha√Æne de configuration.
 						if (outConfigStr)
 						{
 							(void) ::memcpy(
@@ -194,7 +194,7 @@ TDCLOTSerial::GetSerialPortInfos(
 							Str255 theName;
 							::OTGetUserPortNameFromPortRef( thePortRef, theName );
 
-							// Taille de la chaîne avec le terminateur.
+							// Taille de la cha√Æne avec le terminateur.
 							long theLen = theName[0] + 1;
 							char* theResult = (char*) ::malloc( (unsigned long) theLen );
 							if (theResult == nil)
@@ -219,8 +219,8 @@ TDCLOTSerial::GetSerialPortInfos(
 				}
 			} // if (!(theRecord.fInfoFlags & kOTPortIsAlias))
 		} else {
-			// Plus de port série.
-			// theResult vaut déjà false
+			// Plus de port s√©rie.
+			// theResult vaut d√©j√† false
 			break;
 		}
 	}
@@ -252,7 +252,7 @@ TDCLOTSerial::CountSerialPorts( void )
 			// Est-ce un alias?
 			if (!(theRecord.fInfoFlags & kOTPortIsAlias))
 			{
-				// Est-ce bien un port série?
+				// Est-ce bien un port s√©rie?
 				OTPortRef thePortRef = theRecord.fRef;
 				KUInt16 theDeviceType = ::OTGetDeviceTypeFromPortRef( thePortRef );
 						
@@ -278,7 +278,7 @@ TDCLOTSerial::CountSerialPorts( void )
 TDCLPipe*
 TDCLOTSerial::Accept( void )
 {
-	// Récupération de l'interface de communication OpenTransport.
+	// R√©cup√©ration de l'interface de communication OpenTransport.
 	TDCLPipe* theResult = TDCLOpenTransport::Accept();
 	
 	// Ajout de la compression MNP.

@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacFolder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/1/2003
+// Cr√©√© le:			10/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacFolder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -57,7 +57,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacFolder
 	:
@@ -65,16 +65,16 @@ class TDCLMacFolder
 {
 public:
 	///
-	/// Crée un fichier d'un nom, d'un code créateur et d'un type donnés dans
+	/// Cr√©e un fichier d'un nom, d'un code cr√©ateur et d'un type donn√©s dans
 	/// ce dossier.
 	///
-	/// \param inName		nom du fichier à créer.
-	/// \param inCreator	code créateur du fichier à créer.
-	/// \param inFileType	type du fichier à créer.
-	/// \return un objet TDCLFile représentant ce nouveau fichier. Ce fichier
-	///			est la propriété de l'appelant qui doit le supprimer.
-	/// \throw TDCLException si un problème est survenu, y compris si le fichier
-	///			existe déjà.
+	/// \param inName		nom du fichier √† cr√©er.
+	/// \param inCreator	code cr√©ateur du fichier √† cr√©er.
+	/// \param inFileType	type du fichier √† cr√©er.
+	/// \return un objet TDCLFile repr√©sentant ce nouveau fichier. Ce fichier
+	///			est la propri√©t√© de l'appelant qui doit le supprimer.
+	/// \throw TDCLException si un probl√®me est survenu, y compris si le fichier
+	///			existe d√©j√†.
 	///
 	virtual	TDCLFSItemRef	CreateFile(
 								const KUInt16* inName,
@@ -82,14 +82,14 @@ public:
 								OSType inFileType ) = 0;
 
 	///
-	/// Crée un fichier d'un nom donné dans ce dossier. Appelle la méthode
-	/// CreateFile avec le type et le code créateur par défaut.
+	/// Cr√©e un fichier d'un nom donn√© dans ce dossier. Appelle la m√©thode
+	/// CreateFile avec le type et le code cr√©ateur par d√©faut.
 	///
-	/// \param inName		nom du fichier à créer.
-	/// \return un objet TDCLFile représentant ce nouveau fichier. Ce fichier
-	///			est la propriété de l'appelant qui doit le supprimer.
-	/// \throw TDCLException si un problème est survenu, y compris si le fichier
-	///			existe déjà.
+	/// \param inName		nom du fichier √† cr√©er.
+	/// \return un objet TDCLFile repr√©sentant ce nouveau fichier. Ce fichier
+	///			est la propri√©t√© de l'appelant qui doit le supprimer.
+	/// \throw TDCLException si un probl√®me est survenu, y compris si le fichier
+	///			existe d√©j√†.
 	///
 	inline virtual	TDCLFSItemRef	CreateFile( const KUInt16* inName )
 		{
@@ -99,10 +99,10 @@ public:
 
 protected:
 	///
-	/// Constructeur à partir d'un dossier parent (optionnel).
+	/// Constructeur √† partir d'un dossier parent (optionnel).
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
-	/// \param inParentFolder	dossier parent (ou \c nil si celui-ci sera créé
+	/// \param inParentFolder	dossier parent (ou \c nil si celui-ci sera cr√©√©
 	///							plus tard).
 	///
 	TDCLMacFolder(
@@ -110,7 +110,7 @@ protected:
 				TDCLFSItemRef inParentFolder = TDCLFSItemRef() );
 
 	///
-	/// Récupère la description de l'élément sous forme de structure.
+	/// R√©cup√®re la description de l'√©l√©ment sous forme de structure.
 	/// Ajoute les informations sur le volume si on est sur le bureau.
 	///
 	/// \return la description de l'objet pour le butinage.
@@ -119,23 +119,23 @@ protected:
 
 private:
 	///
-	/// Détermine si le dossier est un disque.
+	/// D√©termine si le dossier est un disque.
 	///
 	/// \return \c true si le dossier est le dossier racine d'un disque.
 	///
 	virtual Boolean		IsVolume( void ) const = 0;
 
 	///
-	/// Détermine si le dossier est sur le bureau.
+	/// D√©termine si le dossier est sur le bureau.
 	///
 	/// \return \c true si le dossier est sur le bureau, \c false sinon.
 	///
 	virtual Boolean		IsOnDesktop( void ) const = 0;
 
 	///
-	/// Récupère la référence sur le volume où se trouve le dossier.
+	/// R√©cup√®re la r√©f√©rence sur le volume o√π se trouve le dossier.
 	///
-	/// \return le volume où se trouve le dossier.
+	/// \return le volume o√π se trouve le dossier.
 	///
 	virtual short		GetVRefNum( void ) const = 0;
 };

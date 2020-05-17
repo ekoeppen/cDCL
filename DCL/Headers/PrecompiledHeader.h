@@ -2,7 +2,7 @@
 // Fichier:			PrecompiledHeader.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			31/3/2003
+// Cr√©√© le:			31/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is PrecompiledHeader.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -37,7 +37,7 @@
 #ifndef _PRECOMPILEDHEADER_H
 #define _PRECOMPILEDHEADER_H
 
-// Entêtes DCL & Co les plus utilisés/les plus stables.
+// Ent√™tes DCL & Co les plus utilis√©s/les plus stables.
 
 // K
 	// K Crypto
@@ -52,7 +52,7 @@
 	#include <K/Math/UTInt64.h>
 	// K Misc
 	#include <K/Misc/TRefCounter.h>
-//	#include <K/Misc/TSmartPtr.h>	//<-- doit être chargé après les entêtes
+//	#include <K/Misc/TSmartPtr.h>	//<-- doit √™tre charg√© apr√®s les ent√™tes
 									// Apple
 	#include <K/Misc/UBase64.h>
 	#include <K/Misc/UPStrings.h>

@@ -2,7 +2,7 @@
 // Fichier:			TDCLMNPPipe.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/01/2002
+// Cr√©√© le:			27/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,14 +20,14 @@
 //
 // The Original Code is TDCLMNPPipe.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
-// Filip Zawadiak and Nicolas Zinovieff. Portions created by the Initial 
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k,
+// Filip Zawadiak and Nicolas Zinovieff. Portions created by the Initial
 // Developers are Copyright (C) 1998-2004 the Initial Developers. All Rights
 // Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Filip Zawadiak <philz@vyx.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
@@ -72,7 +72,7 @@
 // DCL
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 
-// Commentaire intéressant de Philz:
+// Commentaire int√©ressant de Philz:
 // Just keep in mind that MNP implementation in lpkg is very primitive.
 // I just wanted to have minimal functioning MNP support. It has one
 // frame window size, which could harm download performance, especially
@@ -117,7 +117,7 @@ const KUInt16 TDCLMNPPipe::kCRC16Table[256] =
     0x8201, 0x42c0, 0x4380, 0x8341, 0x4100, 0x81c1, 0x8081, 0x4040
 };
 
-// Caractères pour la transmission MNP.
+// Caract√®res pour la transmission MNP.
 const KUInt8 TDCLMNPPipe::SYN = 0x16;
 const KUInt8 TDCLMNPPipe::DLE = 0x10;
 const KUInt8 TDCLMNPPipe::STX = 0x02;
@@ -144,7 +144,7 @@ const KUInt8 TDCLMNPPipe::kMNPFooter[8] =
 
 
 // ------------------------------------------------------------------------- //
-//  * TDCLMNPPipe( TDCLPipe* )
+//  *¬†TDCLMNPPipe( TDCLPipe* )
 // ------------------------------------------------------------------------- //
 TDCLMNPPipe::TDCLMNPPipe(
 			TDCLPipe* inSubPipe,
@@ -162,22 +162,22 @@ TDCLMNPPipe::TDCLMNPPipe(
 		mOutputPacketIndex( 0 ),
 		mSendKeepAlive( false )
 {
-	// Création des mémoires tampon.
+	// Cr√©ation des m√©moires tampon.
 	mInputBuffer = (KUInt8*) ::malloc( mInputBufferCapacity );
 	mOutputBuffer = (KUInt8*) ::malloc( inOutputMaxBufferSize );
 }
 
 // ------------------------------------------------------------------------- //
-//  * ~TDCLMNPPipe( void )
+//  *¬†~TDCLMNPPipe( void )
 // ------------------------------------------------------------------------- //
 TDCLMNPPipe::~TDCLMNPPipe( void )
 {
-	// Nettoyage des mémoires tampon.
+	// Nettoyage des m√©moires tampon.
 	if (mInputBuffer)
 	{
 		::free( mInputBuffer );
 	}
-	
+
 	if (mOutputBuffer)
 	{
 		::free( mOutputBuffer );
@@ -185,7 +185,7 @@ TDCLMNPPipe::~TDCLMNPPipe( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Read( void* outBuffer, KUInt32* ioCount )
+//  *¬†Read( void* outBuffer, KUInt32* ioCount )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
@@ -194,29 +194,29 @@ TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
 	KUInt32 bytesCopied = 0;
 	while ( bytesLeft > 0 )
 	{
-		// Faut-il lire une nouvelle structure?		
+		// Faut-il lire une nouvelle structure?
 		if (mInputBufferCrsr == mInputBufferSize)
 		{
-			// On vide la mémoire tampon.
+			// On vide la m√©moire tampon.
 			mInputBufferCrsr = 0;
 			mInputBufferSize = 0;
-			
+
 			// Et on la re-remplit.
 			ReceiveData();
 		}
-		
-		// Copie des données.
+
+		// Copie des donn√©es.
 		KUInt32 copyCount = bytesLeft;
 		if (copyCount + mInputBufferCrsr > mInputBufferSize)
 		{
 			copyCount = mInputBufferSize - mInputBufferCrsr;
 		}
-		
+
 		(void) ::memcpy( (void*) &((KUInt8*) outBuffer)[bytesCopied],
 				(const void*) &mInputBuffer[mInputBufferCrsr],
 				copyCount );
-		
-		// Mise à jour des curseurs.
+
+		// Mise √† jour des curseurs.
 		mInputBufferCrsr += copyCount;
 		bytesLeft -= copyCount;
 		bytesCopied += copyCount;
@@ -225,7 +225,7 @@ TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
 }
 
 // ------------------------------------------------------------------------- //
-//	* Write( const void*, KUInt32* )
+//	*¬†Write( const void*, KUInt32* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::Write( const void* inBuffer, KUInt32* ioCount )
@@ -234,33 +234,33 @@ TDCLMNPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 	KUInt32 bytesCopied = 0;
 	while ( bytesLeft > 0 )
 	{
-		// Copie des données.
+		// Copie des donn√©es.
 		KUInt32 copyCount = bytesLeft;
 		if (copyCount + mOutputBufferCrsr > mOutputBufferCapacity)
 		{
 			copyCount = mOutputBufferCapacity - mOutputBufferCrsr;
 		}
-		
+
 		(void) ::memcpy( (void*) &mOutputBuffer[mOutputBufferCrsr],
 				(const void*) &((const KUInt8*) inBuffer)[bytesCopied],
 				copyCount );
-		
-		// Mise à jour des curseurs.
+
+		// Mise √† jour des curseurs.
 		mOutputBufferCrsr += copyCount;
 		bytesLeft -= copyCount;
 		bytesCopied += copyCount;
 		*ioCount = bytesCopied;
 
-		// Faut-il écrire la structure?		
+		// Faut-il √©crire la structure?
 		if (mOutputBufferCrsr == mOutputBufferCapacity)
 		{
 			SendData();
-		}		
+		}
 	}
 }
 
 // ------------------------------------------------------------------------- //
-//	* ReceiveData( void )
+//	*¬†ReceiveData( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::ReceiveData( void )
@@ -282,7 +282,7 @@ TDCLMNPPipe::ReceiveData( void )
 		mInputPacketIndex = theInputFrame[2];
 		SendACK();
 
-		// Copie des donnÈes.
+		// Copie des donn√àes.
 		KUInt32 toCopy = theInputFrameSize - 3;
 		if ((mInputBufferSize + toCopy) > mInputBufferCapacity)
 		{
@@ -292,34 +292,34 @@ TDCLMNPPipe::ReceiveData( void )
 							mInputBuffer,
 							mInputBufferCapacity );
 		}
-		
+
 		(void) ::memcpy(
 					&mInputBuffer[mInputBufferSize],
 					(const void*) &theInputFrame[3],
 					toCopy );
 		mInputBufferSize += toCopy;
 	}
-	
-	// LibÈration.
+
+	// Lib√àration.
 	::free( theInputFrame );
 }
 
 // ------------------------------------------------------------------------- //
-//	* SendData( void )
+//	*¬†SendData( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::SendData( void )
 {
-	// La structure de sortie comprend les données précédées de 3 octets.
+	// La structure de sortie comprend les donn√©es pr√©c√©d√©es de 3 octets.
 	KUInt32 theOutputFrameSize = mOutputBufferCrsr + 3;
 	KUInt8* theOutputFrame = (KUInt8*) ::malloc( theOutputFrameSize );
-	
-	// Les 3 octets du début.
-	theOutputFrame[0] = 2;	// Taille de l'entête.
+
+	// Les 3 octets du d√©but.
+	theOutputFrame[0] = 2;	// Taille de l'ent√™te.
 	theOutputFrame[1] = LT;
 	theOutputFrame[2] = mOutputPacketIndex;
 
-	// Copie des données.
+	// Copie des donn√©es.
 	(void) ::memcpy(
 			&theOutputFrame[3],
 			(const void*) mOutputBuffer,
@@ -327,16 +327,16 @@ TDCLMNPPipe::SendData( void )
 
 	WriteFrame( theOutputFrame, theOutputFrameSize );
 	mOutputPacketIndex++;
-	
-	// On vide la mémoire tampon de sortie.
+
+	// On vide la m√©moire tampon de sortie.
 	mOutputBufferCrsr = 0;
-	
-	// Libération de la structure.
+
+	// Lib√©ration de la structure.
 	::free( theOutputFrame );
 }
 
 // ------------------------------------------------------------------------- //
-//	* FlushOutput( void )
+//	*¬†FlushOutput( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::FlushOutput( void )
@@ -346,13 +346,13 @@ TDCLMNPPipe::FlushOutput( void )
 }
 
 // ------------------------------------------------------------------------- //
-//	* SendACK( void )
+//	*¬†SendACK( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::SendACK( void )
 {
     KUInt8 frame[4];
-    
+
     frame[0] = sizeof( frame ) - 1;
     frame[1] = LA;
     frame[2] = mInputPacketIndex;
@@ -362,45 +362,45 @@ TDCLMNPPipe::SendACK( void )
 }
 
 // ------------------------------------------------------------------------- //
-//	* BytesAvailable( void )
+//	*¬†BytesAvailable( void )
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMNPPipe::BytesAvailable( void )
 {
 	Boolean theResult;
-	
+
 	if (mInputBufferCrsr < mInputBufferSize)
 	{
 		theResult = true;
 	} else {
 		theResult = GetSubPipe()->BytesAvailable();
 	}
-	
+
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//	* ReadFrame( KUInt8**, KUInt32* )
+//	*¬†ReadFrame( KUInt8**, KUInt32* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 {
-	// Récupération de la connexion dont on est le mandataire.
+	// R√©cup√©ration de la connexion dont on est le mandataire.
 	TDCLPipe* theSubPipe = GetSubPipe();
-	
+
 	KUInt8* theFrame = (KUInt8*) ::malloc( kInputFrameIncrement );
 	KUInt32 theFrameCapacity = kInputFrameIncrement;
 	KUInt32 theFrameSize = 0;
-	
+
 	KUInt8 theCurrentByte;
 	KUInt32 theCount = sizeof( theCurrentByte );
 	KUInt16 theCRC = 0;
 
-	// Passage des caractères SYN au début.
+	// Passage des caract√®res SYN au d√©but.
 	do {
 		theSubPipe->Read( &theCurrentByte, &theCount );
 	} while ( theCurrentByte == SYN );
-	
+
 	if (theCurrentByte != DLE)
 	{
 		throw DCLUnknownError;
@@ -411,7 +411,7 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 	{
 		throw DCLUnknownError;
 	}
-	
+
 	do {
 		if (theFrameSize == theFrameCapacity)
 		{
@@ -453,52 +453,52 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 			theCRC = UpdateCRC16( theCRC, theCurrentByte );
 		}
 	} while ( true );
-	
-	// Retour du résultat.
+
+	// Retour du r√©sultat.
 	*outFrame = theFrame;
 	*outSize = theFrameSize;
 }
 
 // ------------------------------------------------------------------------- //
-//	* WriteFrame( const KUInt8*, KUInt32 )
+//	*¬†WriteFrame( const KUInt8*, KUInt32 )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
 {
-	// Récupération de la connexion dont on est le mandataire.
+	// R√©cup√©ration de la connexion dont on est le mandataire.
 	TDCLPipe* theSubPipe = GetSubPipe();
-	
-	// Entête (SYN, DLE, STX)
+
+	// Ent√™te (SYN, DLE, STX)
 	KUInt8 theHeader[3] = { SYN, DLE, STX };
 	KUInt32 theCount = sizeof( theHeader );
 	theSubPipe->Write( theHeader, &theCount );
-	
-	// Écriture des données, en remplaçant les DLE par DLE, DLE.
+
+	// √âcriture des donn√©es, en rempla√ßant les DLE par DLE, DLE.
 	KUInt32 indexFrame;
 	KUInt8 theCurrentByte;
 	theCount = sizeof( theCurrentByte );
 	KUInt16 theCRC = 0;
-	
+
 	for (indexFrame = 0; indexFrame < inSize; indexFrame++)
 	{
 		theCurrentByte = inFrame[indexFrame];
-		
+
 		if (theCurrentByte == DLE)
 		{
-			// On écrit deux fois DLE.
+			// On √©crit deux fois DLE.
 			theSubPipe->Write( &theCurrentByte, &theCount );
 		}
 		theSubPipe->Write( &theCurrentByte, &theCount );
 		theCRC = UpdateCRC16( theCRC, theCurrentByte );
 	}
-	
+
 	// DLE, ETX puis CRC
 	theCurrentByte = DLE;
 	theSubPipe->Write( &theCurrentByte, &theCount );
 	theCurrentByte = ETX;
 	theSubPipe->Write( &theCurrentByte, &theCount );
 	theCRC = UpdateCRC16( theCRC, theCurrentByte );
-	
+
 	// CRC
 	theCurrentByte = (KUInt8) (theCRC & 0x00FF);
 	theSubPipe->Write( &theCurrentByte, &theCount );
@@ -507,19 +507,19 @@ TDCLMNPPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Connected( TDCLLink* inLink )
+//  *¬†Connected( TDCLLink* inLink )
 // ------------------------------------------------------------------------- //
 TDCLCommLayer*
 TDCLMNPPipe::Connected( TDCLLink* inLink )
 {
 	TDCLCommLayer* theResult = TDCLPipeProxy::Connected( inLink );
-	
-	// Echange de l'entête MNP (?)
+
+	// Echange de l'ent√™te MNP (?)
 	KUInt8* theInputFrame;
 	KUInt32 theInputFrameSize;
 	ReadFrame( &theInputFrame, &theInputFrameSize );
 	::free( theInputFrame );
-	
+
 	WriteFrame( kMNPHeader, sizeof( kMNPHeader ) );
 	mInputPacketIndex = 1;
 	ReadFrame( &theInputFrame, &theInputFrameSize );
@@ -527,24 +527,24 @@ TDCLMNPPipe::Connected( TDCLLink* inLink )
 
 	// Nettoyage
 	::free( theInputFrame );
-	
+
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//  * Disconnect( void )
+//  *¬†Disconnect( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::Disconnect( void )
 {
-	// Envoi de la séquence MNP de fin.
+	// Envoi de la s√©quence MNP de fin.
 	WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
 
 	TDCLPipeProxy::Disconnect();
 }
 
 // ------------------------------------------------------------------------- //
-//	* UpdateCRC16( KUInt16, KUInt8 )
+//	*¬†UpdateCRC16( KUInt16, KUInt8 )
 // ------------------------------------------------------------------------- //
 KUInt16
 TDCLMNPPipe::UpdateCRC16( KUInt16 inCRC, KUInt8 inByte )

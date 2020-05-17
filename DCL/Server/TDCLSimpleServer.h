@@ -2,7 +2,7 @@
 // Fichier:			TDCLSimpleServer.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/1/2002
+// Cr√©√© le:			15/1/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSimpleServer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,18 +46,18 @@
 class TDCLLink;
 
 ///
-/// Classe pour un serveur simple qui n'écoute que sur une seule
+/// Classe pour un serveur simple qui n'√©coute que sur une seule
 /// interface de communication et qui ne sert qu'une seule connexion
-/// à la fois.
+/// √† la fois.
 /// C'est un serveur de type NPI/NTK.
 ///
-/// Il faut d'abord créer le lien (parce que le lien suppose que le
-/// serveur pré-existe).
+/// Il faut d'abord cr√©er le lien (parce que le lien suppose que le
+/// serveur pr√©-existe).
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLSimpleServer
 	:
@@ -65,10 +65,10 @@ class TDCLSimpleServer
 {
 public:
 	///
-	/// Créateur à partir d'une application et d'une couche de communication.
+	/// Cr√©ateur √† partir d'une application et d'une couche de communication.
 	///
-	/// \param inApplication	application prévenue de l'activité du serveur.
-	/// \param inCommLayer		couche de communication utilisée pour le
+	/// \param inApplication	application pr√©venue de l'activit√© du serveur.
+	/// \param inCommLayer		couche de communication utilis√©e pour le
 	///							serveur.
 	///
 	TDCLSimpleServer(
@@ -79,7 +79,7 @@ public:
 	///
 	/// Fixe le lien.
 	///
-	/// \param inLink		lien à utiliser lorsqu'une connexion est établie.
+	/// \param inLink		lien √† utiliser lorsqu'une connexion est √©tablie.
 	///
 	inline void			SetLink( TDCLLink* inLink )
 		{
@@ -94,14 +94,14 @@ public:
 protected:
 
 	///
-	/// Commence à écouter.
-	/// Cette méthode est appelée lorsque le serveur est démarré (depuis
-	/// le processus léger du serveur).
+	/// Commence √† √©couter.
+	/// Cette m√©thode est appel√©e lorsque le serveur est d√©marr√© (depuis
+	/// le processus l√©ger du serveur).
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête le serveur.
+	/// Arr√™te le serveur.
 	///
 	virtual	void		DoStop( void );
 	
@@ -111,28 +111,28 @@ protected:
 	virtual	void		DoKill( void );
 
 	///
-	/// Gère l'arrivée d'une nouvelle connexion.
+	/// G√®re l'arriv√©e d'une nouvelle connexion.
 	///
-	/// \param inCommLayer	interface de communication qui a reçu la requête.
-	///						(ignoré)
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inCommLayer	interface de communication qui a re√ßu la requ√™te.
+	///						(ignor√©)
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual EState		HandleIncomingConnection(
 								TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée dans le processus léger du serveur pour indiquer
-	/// qu'un lien a été déconnecté et qu'il faut fermer l'interface de
+	/// M√©thode appel√©e dans le processus l√©ger du serveur pour indiquer
+	/// qu'un lien a √©t√© d√©connect√© et qu'il faut fermer l'interface de
 	/// communication.
 	///
-	/// \param inLink	le lien qui a été déconnecté.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inLink	le lien qui a √©t√© d√©connect√©.
+	/// \return le nouvel √©tat du serveur.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée par le serveur lorsque rien ne se passe.
+	/// M√©thode appel√©e par le serveur lorsque rien ne se passe.
 	/// Elle permet d'appeler Idle sur les interfaces de communication qui en
 	/// ont besoin.
 	///
@@ -141,7 +141,7 @@ protected:
 	///
 	/// Accesseur sur le lien.
 	///
-	/// \return le lien à utiliser lorsqu'une connexion est établie.
+	/// \return le lien √† utiliser lorsqu'une connexion est √©tablie.
 	///
 	inline TDCLLink*		GetLink( void )
 		{
@@ -151,24 +151,24 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLSimpleServer( const TDCLSimpleServer& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLSimpleServer& operator = ( const TDCLSimpleServer& inCopy );
 
 	/// \name Variables
 
-	TDCLLink*			mLink;			///< Référence sur l'unique lien.
-	TDCLCommLayer*		mCommLayer;		///< Référence sur l'interface de
+	TDCLLink*			mLink;			///< R√©f√©rence sur l'unique lien.
+	TDCLCommLayer*		mCommLayer;		///< R√©f√©rence sur l'interface de
 										///< communication.
-	TDCLPipe*			mPipe;			///< Référence sur la connexion, \c nil
-										///< si on n'est pas connecté.
+	TDCLPipe*			mPipe;			///< R√©f√©rence sur la connexion, \c nil
+										///< si on n'est pas connect√©.
 };
 
 #endif

@@ -2,7 +2,7 @@
 // Fichier:			TDCLOneLinkServer.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			3/4/2003
+// Cr√©√© le:			3/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOneLinkServer.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -77,14 +77,14 @@ TDCLOneLinkServer::~TDCLOneLinkServer( void )
 		delete mPipe;
 	}
 	
-	// Suppression du sémaphore.
+	// Suppression du s√©maphore.
 	if (mListMutex)
 	{
 		delete mListMutex;
 	}
 
 	// Suppression de la liste des interfaces de communication.
-	// Ces interfaces devront être supprimées par l'application.
+	// Ces interfaces devront √™tre supprim√©es par l'application.
 	if (mCommLayers)
 	{
 		::free( mCommLayers );
@@ -105,12 +105,12 @@ TDCLOneLinkServer::AddCommLayer( TDCLCommLayer* inLayer )
 	mCommLayers = (TDCLCommLayer**) ::realloc(
 					mCommLayers, mNbCommLayers * sizeof( TDCLCommLayer* ) );
 
-	// Ajout du nouvel élément.
+	// Ajout du nouvel √©l√©ment.
 	mCommLayers[indexNewCL] = inLayer;
 
 	inLayer->StartListening(this);
 	
-	// Libération
+	// Lib√©ration
 	mListMutex->Release();
 }
 
@@ -123,17 +123,17 @@ TDCLOneLinkServer::RemoveCommLayer( TDCLCommLayer* inLayer )
 	// Acquisition
 	mListMutex->Acquire();
 
-	// Déterminons où se trouve l'élément dans la liste.
+	// D√©terminons o√π se trouve l'√©l√©ment dans la liste.
 	KUInt32 nbCL = mNbCommLayers;
 	KUInt32 indexCL;
 	for (indexCL = 0; indexCL < nbCL; indexCL++)
 	{
 		if (mCommLayers[indexCL] == inLayer)
 		{
-			// Trouvé.
+			// Trouv√©.
 			inLayer->StopListening();
 			
-			// Copie des éléments qui suivent.
+			// Copie des √©l√©ments qui suivent.
 			(void) ::memmove(
 						(void*) &mCommLayers[indexCL],
 						(const void*) &mCommLayers[indexCL+1],
@@ -148,7 +148,7 @@ TDCLOneLinkServer::RemoveCommLayer( TDCLCommLayer* inLayer )
 		}
 	}
 	
-	// Libération
+	// Lib√©ration
 	mListMutex->Release();
 }
 
@@ -169,7 +169,7 @@ TDCLOneLinkServer::DoStartListening( void )
 		mCommLayers[indexCL]->StartListening(this);
 	}
 
-	// Libération
+	// Lib√©ration
 	mListMutex->Release();
 }
 
@@ -183,8 +183,8 @@ TDCLOneLinkServer::DoStop( void )
 	if ((mLink) && mLink->IsConnected())
 	{
 		try {
-			(void) mLink->Disconnect();	// On se fiche de savoir s'il était
-										// vraiment connecté.
+			(void) mLink->Disconnect();	// On se fiche de savoir s'il √©tait
+										// vraiment connect√©.
 		} catch (...) {
 			// Silently catch exceptions
 		}
@@ -212,7 +212,7 @@ TDCLOneLinkServer::DoKill( void )
 			// On fait le silence sur les exceptions.
 		}
 
-		// On dit au lien qu'il a été déconnecté.
+		// On dit au lien qu'il a √©t√© d√©connect√©.
 		if (mLink)
 		{
 			(void) mLink->Close();
@@ -237,14 +237,14 @@ TDCLOneLinkServer::DoKill( void )
 TDCLServer::EState
 TDCLOneLinkServer::HandleIncomingConnection( TDCLCommLayer* inCommLayer )
 {
-	// Si le lien est connecté, on refuse la connexion.
+	// Si le lien est connect√©, on refuse la connexion.
 	if ((mLink) && (mLink->IsConnected()))
 	{
 		inCommLayer->Refuse();
 	} else {
 		// Sinon, on l'accepte.
 
-		// Si un objet TDCLPipe était présent (d'un état inconnu), on le
+		// Si un objet TDCLPipe √©tait pr√©sent (d'un √©tat inconnu), on le
 		// supprime ici.
 		if (mPipe)
 		{
@@ -302,7 +302,7 @@ TDCLOneLinkServer::DoIdle( void )
 		mCommLayers[indexCL]->Idle();
 	}
 
-	// Libération
+	// Lib√©ration
 	mListMutex->Release();
 }
 

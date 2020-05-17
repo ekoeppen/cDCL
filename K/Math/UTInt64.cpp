@@ -2,7 +2,7 @@
 // Fichier:			UTInt64.cp
 // Projet:			K
 // 
-// Créé le:			10/9/2003
+// Cr√©√© le:			10/9/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -259,7 +259,7 @@ UTInt64::MultModulo(
 	const KUInt64& inArgTwo,
 	const KUInt64& inModule )
 {
-	// Russian Peasant modifié avec modulo.
+	// Russian Peasant modifi√© avec modulo.
 	KUInt64 theLeftInt = inArgOne % inModule;
 	KUInt64 theRightInt = inArgTwo % inModule;
 	KUInt64 theResult = 0;
@@ -324,10 +324,10 @@ UTInt64::ExpModulo(
 	const KUInt64& inExponent,
 	const KUInt64& inModule )
 {
-	// Itération sur les bits de E.
-	// le résultat est produit(base^(2^ki) modulo module) modulo module.
-	// Donc, on calcule base^2ki à chaque itération, on multiplie
-	// avec le résultat si le bit correspondant de E est à 1.
+	// It√©ration sur les bits de E.
+	// le r√©sultat est produit(base^(2^ki) modulo module) modulo module.
+	// Donc, on calcule base^2ki √† chaque it√©ration, on multiplie
+	// avec le r√©sultat si le bit correspondant de E est √† 1.
 	
 	KUInt64 basePuissance2KiReduite = inBase % inModule; // i = 0
 	KUInt64 theResult = 1;

@@ -2,7 +2,7 @@
 // Fichier:			TDCLPkgEncoder.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			21/2/2004
+// Cr√©√© le:			21/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgEncoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -111,15 +111,15 @@ TDCLPkgEncoder::~TDCLPkgEncoder( void )
 void
 TDCLPkgEncoder::AddObject( const TDCLNSRef& inObject )
 {
-	// Est-ce une référence?
+	// Est-ce une r√©f√©rence?
 	if (inObject.IsRealPtr())
 	{
 		if (mInSlottedObject)
 		{
 			// Si on est dans un objet, on ajoute un pointeur et l'objet
-			// dans la pile s'il n'a pas encore été encodé.
+			// dans la pile s'il n'a pas encore √©t√© encod√©.
 
-			// L'objet a-t-il déjà été encodé?
+			// L'objet a-t-il d√©j√† √©t√© encod√©?
 			KUIntPtr theOffset;
 			if (WasObjectEncoded(
 						inObject.GetPointer(),
@@ -133,7 +133,7 @@ TDCLPkgEncoder::AddObject( const TDCLNSRef& inObject )
 				// Non. On pousse dans la pile et on l'encodera plus tard.
 				PushToStack( inObject );
 		
-				GetOutputStream()->PutLong( 0 ); // Pointeur à écrire plus tard.
+				GetOutputStream()->PutLong( 0 ); // Pointeur √† √©crire plus tard.
 			}
 			
 			mOffset += 4;
@@ -142,7 +142,7 @@ TDCLPkgEncoder::AddObject( const TDCLNSRef& inObject )
 			TDCLNSEncoder::AddObject( inObject );
 		}
 	} else {
-		// C'est une référence.
+		// C'est une r√©f√©rence.
 		PutRef( inObject );
 	}
 }
@@ -159,7 +159,7 @@ TDCLPkgEncoder::PutObject(
 	// On est dans un objet.
 	mInSlottedObject = true;
 
-	// On stocke le décalage pour les futurs pointeurs vers cet objet.
+	// On stocke le d√©calage pour les futurs pointeurs vers cet objet.
 	*outCookie = mOffset;
 	
 	// Flux.
@@ -168,8 +168,8 @@ TDCLPkgEncoder::PutObject(
 	// Position actuelle.
 	KSInt64 theCurrentOffset = theStream->GetCursor();
 
-	// Écriture des pointeurs (on vide la pile).
-	// en commençant par le début de la pile.
+	// √âcriture des pointeurs (on vide la pile).
+	// en commen√ßant par le d√©but de la pile.
 	KUInt32 newStackSize = mStackSize;
 	KUInt32 stackIndexPlusOne;
 	for (stackIndexPlusOne = mStackSize; stackIndexPlusOne > 0; stackIndexPlusOne--)
@@ -177,16 +177,16 @@ TDCLPkgEncoder::PutObject(
 		SStackItem* theItem = &mStack[stackIndexPlusOne - 1];
 		if (theItem->fObjectPtr == inObject)
 		{
-			// Trouvé.
-			// On écrit le pointeur.
+			// Trouv√©.
+			// On √©crit le pointeur.
 			theStream->SetCursor(
 						mOriginOffset + theItem->fPtrOffset,
 						TDCLRandomAccessStream::kFromStart );
 			
-			// Écriture du pointeur.
+			// √âcriture du pointeur.
 			GetOutputStream()->PutLong( mOffset + 1 );
 			
-			// Suppression de cet élément de la pile.
+			// Suppression de cet √©l√©ment de la pile.
 			if (stackIndexPlusOne < newStackSize)
 			{
 				(void) ::memmove(
@@ -211,13 +211,13 @@ TDCLPkgEncoder::PutObject(
 				::realloc( mStack, sizeof(SStackItem) * mStackAllocatedSize );
 		}
 			
-		// Ça veut aussi dire qu'on a déplacé le curseur.
+		// √áa veut aussi dire qu'on a d√©plac√© le curseur.
 		theStream->SetCursor(
 					theCurrentOffset,
 					TDCLRandomAccessStream::kFromStart );
 	}
 	
-	// Écriture de l'objet.
+	// √âcriture de l'objet.
 	inObject->ToPkg( this, &mOffset );
 	
 	AlignStream( &mOffset );
@@ -225,8 +225,8 @@ TDCLPkgEncoder::PutObject(
 	// On n'est plus dans un objet.
 	mInSlottedObject = false;
 	
-	// Ajout des éléments de la pile (par AddObject), tant qu'il y en a,
-	// en commençant par la fin.
+	// Ajout des √©l√©ments de la pile (par AddObject), tant qu'il y en a,
+	// en commen√ßant par la fin.
 	while (mStackSize > 0)
 	{
 		TDCLNSRef theRef( mStack[mStackSize - 1].fObjectPtr );
@@ -240,7 +240,7 @@ TDCLPkgEncoder::PutObject(
 void
 TDCLPkgEncoder::PutPrecedent( KUInt32 /* inRefID */, KUIntPtr inCookie )
 {
-	// inCookie est le décalage vers l'objet.
+	// inCookie est le d√©calage vers l'objet.
 	// (qui est multiple de 4).
 	// On rajoute 1 pour avoir un pointeur.
 	GetOutputStream()->PutLong( inCookie + 1 );
@@ -263,11 +263,11 @@ TDCLPkgEncoder::PutRef( const TDCLNSRef& inRef )
 void
 TDCLPkgEncoder::Init( void )
 {
-	// Création de la pile.
+	// Cr√©ation de la pile.
 	mStack = (SStackItem*) ::malloc( kStackChunkSize * sizeof( SStackItem ) );
 	mStackAllocatedSize = kStackChunkSize;
 
-	// Écriture des 12 premiers octets (il nous reste alors une référence
+	// √âcriture des 12 premiers octets (il nous reste alors une r√©f√©rence
 	// vers le premier objet).
 	TDCLRandomAccessStream* theStream = GetOutputStream();
 	
@@ -282,7 +282,7 @@ TDCLPkgEncoder::Init( void )
 
 	mOffset += 16;
 	
-	// L'objet est juste après.
+	// L'objet est juste apr√®s.
 	theStream->PutLong( mOffset + 1 );	// pointeur sur l'objet (+1).
 	
 	mInSlottedObject = false;

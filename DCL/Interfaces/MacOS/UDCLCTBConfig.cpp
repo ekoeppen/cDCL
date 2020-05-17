@@ -2,7 +2,7 @@
 // Fichier:			UDCLCTBConfig.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLCTBConfig.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -63,9 +63,9 @@
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 
 // ------------------------------------------------------------------------- //
-//  * GetCommToolConfig( char*, char* )
+//  *¬†GetCommToolConfig( char*, char* )
 // ------------------------------------------------------------------------- //
-// Dérivé de l'exemple GetToolConfig (et bien sûr modifié)
+// D√©riv√© de l'exemple GetToolConfig (et bien s√ªr modifi√©)
 /*
 	File:			GetToolConfig.c
 	
@@ -74,7 +74,7 @@
 
 	Author:		GDG
 
-	Copyright: 	Copyright: © 1999 by Apple Computer, Inc.
+	Copyright: 	Copyright: ¬© 1999 by Apple Computer, Inc.
 				all rights reserved.
 	
 	Disclaimer:	You may incorporate this sample code into your applications without

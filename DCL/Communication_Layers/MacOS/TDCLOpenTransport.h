@@ -2,7 +2,7 @@
 // Fichier:			TDCLOpenTransport.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			23/01/2002
+// Cr√©√© le:			23/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOpenTransport.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -70,7 +70,7 @@
 #include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class IDCLThreads;
 
 ///
@@ -80,7 +80,7 @@ class IDCLThreads;
 /// \version $Revision: 1.5 $
 ///
 /// \todo	revoir les temporisations.
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLOpenTransport
 	:
@@ -89,15 +89,15 @@ class TDCLOpenTransport
 public:
 	///
 	/// Constructeur publique pour cette classe.
-	/// Le nombre de connexion et la temporisation par défaut sont définies
-	/// comme des constantes. Les sous-classes utiliseront probablement plutôt
+	/// Le nombre de connexion et la temporisation par d√©faut sont d√©finies
+	/// comme des constantes. Les sous-classes utiliseront probablement plut√¥t
 	/// l'autre constructeur.
 	///
 	/// \param inConfiguration	configuration pour cette couche de
-	///							communication. Cette configuration est clonée.
-	/// \param inLocalBindInfo	adresse du serveur. Copiée.
-	/// \param inThreadsIntf	interface sur les processus légers
-	/// \param inMaxPipeCount	nombre maximum de connexion ouvertes en même
+	///							communication. Cette configuration est clon√©e.
+	/// \param inLocalBindInfo	adresse du serveur. Copi√©e.
+	/// \param inThreadsIntf	interface sur les processus l√©gers
+	/// \param inMaxPipeCount	nombre maximum de connexion ouvertes en m√™me
 	///							temps.
 	/// \param inTimeout		temporisation.
 	///
@@ -111,88 +111,88 @@ public:
 
 	///
 	/// Destructeur.
-	/// Arrête le serveur (i.e. d'écouter). Décrémente aussi le nombre de
+	/// Arr√™te le serveur (i.e. d'√©couter). D√©cr√©mente aussi le nombre de
 	/// clients OpenTransport.
-	/// 
+	///
 	virtual				~TDCLOpenTransport( void );
 	
 	/// \name interface serveur
 
 	///
-	/// Retourne un objet connexion représentant le canal de communication
-	/// avec le client ou \c nil s'il n'y a pas de requête de connexion
-	/// présente.
-	/// Ce doit être un objet créé avec new. L'appelant devra le supprimer.
+	/// Retourne un objet connexion repr√©sentant le canal de communication
+	/// avec le client ou \c nil s'il n'y a pas de requ√™te de connexion
+	/// pr√©sente.
+	/// Ce doit √™tre un objet cr√©√© avec new. L'appelant devra le supprimer.
 	///
-	/// \return	un nouvel objet TDCLPipe créé avec new représentant la connexion
+	/// \return	un nouvel objet TDCLPipe cr√©√© avec new repr√©sentant la connexion
 	///			ou \c nil.
 	///
 	virtual	TDCLPipe*	Accept( void );
 
 	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
+	/// Refuse la premi√®re requ√™te de connexion.
+	/// Ne fait rien si aucune connexion n'est pr√©sente.
 	///
 	virtual	void		Refuse( void );
 
 	///
-	/// Cette méthode est appelée par TDCLPipe::Idle.
+	/// Cette m√©thode est appel√©e par TDCLPipe::Idle.
 	/// Appelle OTIdle et mInterface->Yield.
 	///
 	virtual	void		Idle( void );
 
 	///
 	/// Change la temporisation pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
+	/// La temporisation est exprim√©e au format TDCLCommLayer.
 	///
 	/// \param inTimeout	nouvelle temporisation au format \c TDCLCommLayer
 	///
 	virtual	void		SetTimeout( long inTimeout );
 
 	///
-	/// Récupère la temporisation utilisée pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
+	/// R√©cup√®re la temporisation utilis√©e pour les nouvelles connexions.
+	/// La temporisation est exprim√©e au format TDCLCommLayer.
 	///
 	/// \return la temporisation au format \c TDCLCommLayer
 	///
 	virtual	long		GetTimeout( void );
 
 	///
-	/// Méthode appelée par TDCLPipe::Disconnect() pour indiquer qu'une
-	/// connexion a été fermée. Décrémente le compteur des connexions ouvertes.
+	/// M√©thode appel√©e par TDCLPipe::Disconnect() pour indiquer qu'une
+	/// connexion a √©t√© ferm√©e. D√©cr√©mente le compteur des connexions ouvertes.
 	///
-	/// \param inPipe	connexion qui a été fermée
+	/// \param inPipe	connexion qui a √©t√© ferm√©e
 	///
 	virtual	void		Disconnected( TDCLPipe* inPipe );
 
 	/// \name utilitaires
 
 	///
-	/// Détermine si OpenTransport est disponible.
+	/// D√©termine si OpenTransport est disponible.
 	///
 	/// \return	\c true si OpenTransport est disponible, \c false sinon.
 	///
 	static	Boolean		IsAvailable( void );
 	
 	///
-	/// Ferme OpenTransport s'il n'est plus utilisé, i.e. s'il n'y a plus
+	/// Ferme OpenTransport s'il n'est plus utilis√©, i.e. s'il n'y a plus
 	/// d'instance de cette classe.
-	/// Cette méthode est appelée par le destructeur. Cependant, si vous avez
-	/// appelé \c IsAvailable pour une sous-classe qui peut avoir besoin de OT
-	/// et que finalement, vous décidez de ne pas utiliser OT, c'est une bonne
-	/// idée d'appeler cette méthode pour fermer OT. Ça ne peut pas faire de
+	/// Cette m√©thode est appel√©e par le destructeur. Cependant, si vous avez
+	/// appel√© \c IsAvailable pour une sous-classe qui peut avoir besoin de OT
+	/// et que finalement, vous d√©cidez de ne pas utiliser OT, c'est une bonne
+	/// id√©e d'appeler cette m√©thode pour fermer OT. √áa ne peut pas faire de
 	/// mal.
 	///
 	static	void		CloseOT( void );
 
 protected:
 	///
-	/// Commence à écouter.
+	/// Commence √† √©couter.
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
+	/// Arr√™te d'√©couter, i.e. arr√™te d'accepter les requ√™tes de connexions.
 	///
 	virtual	void		DoStopListening( void );
 
@@ -206,11 +206,11 @@ protected:
 	///
 	/// Constructeur pour les sous-classes.
 	/// Ce constructeur n'appelle pas Init. C'est pour les classes qui veulent
-	/// gérer leur configuration OT d'abord et appeler Init ensuite.
+	/// g√©rer leur configuration OT d'abord et appeler Init ensuite.
 	///
-	/// \param inThreadsIntf	interface sur les processus légers.
-	/// \param inMaxPipeCount	nombre maximal de connexion simultanées.
-	/// \param inTimeout		délai de temporisation
+	/// \param inThreadsIntf	interface sur les processus l√©gers.
+	/// \param inMaxPipeCount	nombre maximal de connexion simultan√©es.
+	/// \param inTimeout		d√©lai de temporisation
 	///
 	TDCLOpenTransport(
 					IDCLThreads* inThreadsIntf,
@@ -219,7 +219,7 @@ protected:
 				);
 
 	///
-	/// Initialise la couche et incrémente le compteur de couches OT ouvertes.
+	/// Initialise la couche et incr√©mente le compteur de couches OT ouvertes.
 	///
 	/// \param inConfiguration	configuration pour OT
 	/// \param inLocalBindInfo	adresse locale du serveur.
@@ -240,64 +240,64 @@ private:
 	{
 	public:
 		///
-		/// La classe principale peut accéder aux méthodes protégées et privées.
+		/// La classe principale peut acc√©der aux m√©thodes prot√©g√©es et priv√©es.
 		///
 		friend class TDCLOpenTransport;
 		
 		///
-		/// Destructeur. Ferme la connexion si elle n'était pas déjà fermée.
+		/// Destructeur. Ferme la connexion si elle n'√©tait pas d√©j√† ferm√©e.
 		///
 		virtual				~TOTPipe( void );
 
 		///
 		/// Lit des octets.
 		///
-		/// \param outBuffer	mémoire tampon pour les octets lus.
-		/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-		///						Cette valeur est mise à jour avant que 
-		///						l'exception ne soit lancée si un problème est
+		/// \param outBuffer	m√©moire tampon pour les octets lus.
+		/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+		///						Cette valeur est mise √† jour avant que
+		///						l'exception ne soit lanc√©e si un probl√®me est
 		///						survenu.
-		/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+		/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 		///
 		virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 
 		///
 		/// Ecrit des octets.
 		///
-		/// \param inBuffer		mémoire tampon pour les octets à écrire.
-		/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-		///						sortie. Cette valeur est mise à jour avant que
-		///						l'exception ne soit lancée si un problème est
+		/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+		/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+		///						sortie. Cette valeur est mise √† jour avant que
+		///						l'exception ne soit lanc√©e si un probl√®me est
 		///						survenu.
-		/// \throws TDCLIOException	si un problème est survenu.
+		/// \throws TDCLIOException	si un probl√®me est survenu.
 		///
 		virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 		
 		///
-		/// Détermine quel est le nombre d'octets disponibles dans la mémoire
-		/// tampon d'entrée.
+		/// D√©termine quel est le nombre d'octets disponibles dans la m√©moire
+		/// tampon d'entr√©e.
 		///
 		/// \return le nombre d'octets disponibles.
 		///
 		virtual	Boolean		BytesAvailable( void );
 
 		///
-		/// Vide la mémoire tampon de sortie. Tout simplement.
+		/// Vide la m√©moire tampon de sortie. Tout simplement.
 		///
 		virtual void		FlushOutput( void );
 		
 		///
-		/// Déconnecte le canal de communication avec le client.
+		/// D√©connecte le canal de communication avec le client.
 		///
-		/// \remark	une fois que cette méthode est appelée, l'objet connexion
-		///			est inutilisable. Il peut être supprimé par l'appelant à
+		/// \remark	une fois que cette m√©thode est appel√©e, l'objet connexion
+		///			est inutilisable. Il peut √™tre supprim√© par l'appelant √†
 		///			tout instant.
 		///
 		virtual	void		Disconnect( void );
 		
 		///
-		/// Récupère la temporisation pour cette connexion.
-		/// La temporisation est exprimée en secondes ou c'est une des
+		/// R√©cup√®re la temporisation pour cette connexion.
+		/// La temporisation est exprim√©e en secondes ou c'est une des
 		/// constantes de TDCLCommLayer (dit "format TDCLCommLayer").
 		///
 		/// \return la temporisation au format TDCLCommLayer.
@@ -306,7 +306,7 @@ private:
 
 		///
 		/// Change la temporisation pour cette connexion.
-		/// La temporisation est exprimée en secondes ou c'est une des
+		/// La temporisation est exprim√©e en secondes ou c'est une des
 		/// constantes de TDCLCommLayer.
 		///
 		/// \param inTimeout	temporisation au format TDCLCommLayer.
@@ -314,24 +314,24 @@ private:
 		virtual	void		SetTimeout( long inTimeout );
 
 		///
-		/// Méthode appelée par le lien pour dire qu'il souhaite
-		/// être prévenu dès que des données sont présentes.
-		/// Au départ, l'interface de communication ne prévient
-		/// pas le lien de la présence de données.
+		/// M√©thode appel√©e par le lien pour dire qu'il souhaite
+		/// √™tre pr√©venu d√®s que des donn√©es sont pr√©sentes.
+		/// Au d√©part, l'interface de communication ne pr√©vient
+		/// pas le lien de la pr√©sence de donn√©es.
 		///
 		virtual	void		ClearDataPresent( void );
 
 	protected:
 		///
 		/// Constructeur unique.
-		/// Il est protégé parce que seule les couches de communication doivent
-		/// créer des connexions.
+		/// Il est prot√©g√© parce que seule les couches de communication doivent
+		/// cr√©er des connexions.
 		///
-		/// \param inCommLayer	couche de communication à laquelle est
-		///						rattachée la connexion.
+		/// \param inCommLayer	couche de communication √† laquelle est
+		///						rattach√©e la connexion.
 		/// \param inEndpoint	interface de communication OpenTransport
-		///						associée à la connexion.
-		/// \param inTimeout	délai de temporisation au format TDCLCommLayer.
+		///						associ√©e √† la connexion.
+		/// \param inTimeout	d√©lai de temporisation au format TDCLCommLayer.
 		///
 		TOTPipe(
 				TDCLOpenTransport*	inCommLayer,
@@ -340,7 +340,7 @@ private:
 				);
 
 		///
-		/// Récupère l'interface de communication OpenTransport associée à
+		/// R√©cup√®re l'interface de communication OpenTransport associ√©e √†
 		/// cette connexion.
 		///
 		/// \return l'interface de communication OpenTransport.
@@ -354,24 +354,24 @@ private:
 		///
 		/// Constructeur par copie volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		TOTPipe( const TOTPipe& inCopy );
 
 		///
-		/// Opérateur d'assignation volontairement indisponible.
+		/// Op√©rateur d'assignation volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		TOTPipe& operator = ( const TOTPipe& inCopy );
 
 		///
-		/// Fonction de notification OpenTransport pour gérer la déconnexion.
+		/// Fonction de notification OpenTransport pour g√©rer la d√©connexion.
 		///
 		/// \param inContext	contexte, ici objet connexion.
-		/// \param inEvent		événement qui est l'objet de la notification.
-		/// \param inResult		résultat de cet événement.
-		/// \param inCookie		biscuit (inutilisé).
+		/// \param inEvent		√©v√©nement qui est l'objet de la notification.
+		/// \param inResult		r√©sultat de cet √©v√©nement.
+		/// \param inCookie		biscuit (inutilis√©).
 		static pascal void	Notify(
 									void* inContext,
 									OTEventCode inEvent,
@@ -387,46 +387,46 @@ private:
 										///< OpenTransport pour cette
 										///< connexion.
 		Boolean			mDisconnected;	///< drapeau qui vaut true si la
-										///< connexion a été fermée (par le
+										///< connexion a √©t√© ferm√©e (par le
 										///< client)
 		OTNotifyUPP		mNotifierUPP;	///< UPP pour la fonction de
 										///< notification.
-		Boolean			mDataPresent;	///< Si on sait que des données sont
-										///< présentes.
+		Boolean			mDataPresent;	///< Si on sait que des donn√©es sont
+										///< pr√©sentes.
 		
 	};
 
 	///
-	/// La classe TOTPipe doit pouvoir accéder aux méthodes de cette classe.
+	/// La classe TOTPipe doit pouvoir acc√©der aux m√©thodes de cette classe.
 	///
 	friend class TOTPipe;
 
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLOpenTransport( const TDCLOpenTransport& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLOpenTransport& operator = ( const TDCLOpenTransport& inCopy );
 
 	///
-	/// Crée un nouveau bout de connexion à partir de la configuration et
+	/// Cr√©e un nouveau bout de connexion √† partir de la configuration et
 	/// de l'addresse locale.
 	///
-	/// \param forListening	si le nouveau bout de connexion doit être pour
-	///						écouter
+	/// \param forListening	si le nouveau bout de connexion doit √™tre pour
+	///						√©couter
 	/// \return un nouveau bout de connexion OT
 	///
 	TEndpoint*			GetNewEndpoint( Boolean forListening );
 
 	///
-	/// Gestionnaire d'événements appelé par OT lors d'interruptions.
+	/// Gestionnaire d'√©v√©nements appel√© par OT lors d'interruptions.
 	///
 	static pascal void	Notify(
 								void* inContext,
@@ -438,10 +438,10 @@ private:
 	/// Constantes pour cette classe.
 	///
 	enum {
-		kOTMaxBackLogSize	=	128,	///< Nombre de requêtes simultanées
-										///< gérées par Listen.
-		kOTDefaultTimeout	=	30		///< Délai de temporisation par
-										///< défaut (en secondes)
+		kOTMaxBackLogSize	=	128,	///< Nombre de requ√™tes simultan√©es
+										///< g√©r√©es par Listen.
+		kOTDefaultTimeout	=	30		///< D√©lai de temporisation par
+										///< d√©faut (en secondes)
 	};
 
 	///
@@ -450,9 +450,9 @@ private:
 	enum EOTState {
 		kUninitialized,		///< Etat initial
 		kNotAvailable,		///< OT n'est pas disponible
-		kInitialized,		///< OT est disponible et a été initialisé
-		kAvailable			///< OT est disponiblel mais a été fermé (ou n'a
-							///< pas été initialisé)
+		kInitialized,		///< OT est disponible et a √©t√© initialis√©
+		kAvailable			///< OT est disponiblel mais a √©t√© ferm√© (ou n'a
+							///< pas √©t√© initialis√©)
 	};
 
 	/// \name Variables
@@ -467,11 +467,11 @@ private:
 											///< TDCLCommLayer (nombre de
 											///< secondes + constantes)
 	IDCLThreads*		mThreadsIntf;		///< Interface pour les processus
-											///< légers (pour Yield)
+											///< l√©gers (pour Yield)
 	static KUInt32		gInstanceCount;		///< Compteur sur lesinstances de
 											///< TDCLOpenTransport pour fermer
 											///< OpenTransport lorsqu'il n'est
-											///< plus utilisié.
+											///< plus utilisi√©.
 											///< Note: some sub-classes might
 											///< need to open OT to know if
 											///< their service is available
@@ -483,8 +483,8 @@ private:
 	static EOTState		gOTState;			///< Whether OpenTransport is
 											///< available/initialized/closed.
 	Boolean				mListening;			///< Whether we are listening or not
-	OTNotifyUPP			mNotifierUPP;		///< Référence sur le gestionnaire
-											///< d'événements.
+	OTNotifyUPP			mNotifierUPP;		///< R√©f√©rence sur le gestionnaire
+											///< d'√©v√©nements.
 };
 
 #endif

@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdPackageList.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/5/2003
+// Cr√©√© le:			10/5/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdPackageList.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -55,7 +55,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 		mPackageCount( 0 ),
 		mInfos( nil )
 {
-	// Récupération du nombre de paquets.
+	// R√©cup√©ration du nombre de paquets.
 	if (inLength < sizeof(KUInt32))
 	{
 		throw DCLUnknownError;
@@ -67,7 +67,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 	mInfos =
 		(SPackageInfo**) ::malloc( sizeof(SPackageInfo*) * mPackageCount );
 	
-	// On met tout à nil au cas où on sortirait avec une exception.
+	// On met tout √† nil au cas o√π on sortirait avec une exception.
 	KUInt32 indexInfo;
 	for (indexInfo = 0; indexInfo < mPackageCount; indexInfo++)
 	{
@@ -96,7 +96,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 			throw DCLUnknownError;
 		}
 		
-		// Copie des données (avec traduction de l'indien).
+		// Copie des donn√©es (avec traduction de l'indien).
 		theInfo->fPackageSize =
 			UByteSex_FromBigEndian( thisPackageInfo->fPackageSize );
 		theInfo->fPackageID =
@@ -135,7 +135,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 // -------------------------------------------------------------------------- //
 TDCLDockCmdPackageList::~TDCLDockCmdPackageList( void )
 {
-	// Itération sur les structures.
+	// It√©ration sur les structures.
 	if (mInfos)
 	{
 		KUInt32 indexInfo;

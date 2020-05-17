@@ -2,7 +2,7 @@
 // Fichier:			UBase64.h
 // Projet:			K
 //
-// Créé le:			28/01/2003
+// Cr√©√© le:			28/01/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -36,7 +36,7 @@
 #include <K/Defines/KDefinitions.h>
 
 ///
-/// Classe pour l'encodage et le décodage en Base64.
+/// Classe pour l'encodage et le d√©codage en Base64.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
@@ -52,9 +52,9 @@ public:
 	/// La taille du flux Base64 est toujours
 	/// ((taille + 2) / 3) * 4 (en calcul entier)
 	///
-	/// \param inBinary			binaire à encoder
-	/// \param outBase64Data	en sortie, représentation du binaire en Base64
-	/// \param inDataSize		taille du binaire à encoder
+	/// \param inBinary			binaire √† encoder
+	/// \param outBase64Data	en sortie, repr√©sentation du binaire en Base64
+	/// \param inDataSize		taille du binaire √† encoder
 	///
 	static void Encode(
 					const void* inBinary,
@@ -62,20 +62,20 @@ public:
 					KUInt32 inDataSize );
 
 	///
-	/// Décode un binaire en Base64.
+	/// D√©code un binaire en Base64.
 	///
-	/// La taille du flux binaire est variable (dépend
-	/// des = à la fin du texte et des espaces, tabulations
-	/// et fins de lignes qui sont ignorées ici).
+	/// La taille du flux binaire est variable (d√©pend
+	/// des = √† la fin du texte et des espaces, tabulations
+	/// et fins de lignes qui sont ignor√©es ici).
 	/// Mais c'est au plus:
 	/// ((tailleB64 + 3) / 4) * 3 (en calcul entier).
-	/// La mémoire tampon de sortie doit donc avoir
+	/// La m√©moire tampon de sortie doit donc avoir
 	/// au moins cette taille (sinon, gare aux plantages).
 	///
-	/// \param inBase64Data		données Base64 à décoder
-	/// \param outBinary		mémoire tampon pour le binaire décodé
-	/// \param inBase64Size		taille des données Base64 à décoder
-	/// \param outBinarySize	en sortie, taille du binaire décodé
+	/// \param inBase64Data		donn√©es Base64 √† d√©coder
+	/// \param outBinary		m√©moire tampon pour le binaire d√©cod√©
+	/// \param inBase64Size		taille des donn√©es Base64 √† d√©coder
+	/// \param outBinarySize	en sortie, taille du binaire d√©cod√©
 	///
 	static void Decode(
 					const KUInt8* inBase64Data,

@@ -2,7 +2,7 @@
 // Fichier:			DCLDefinitions.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			29/06/2000
+// Cr√©√© le:			29/06/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is DCLDefinitions.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -37,13 +37,13 @@
 #ifndef __DCLDEFINITIONS__
 #define __DCLDEFINITIONS__
 
-// Inclusion des K Définitions:
+// Inclusion des K D√©finitions:
 #include <K/Defines/KDefinitions.h>
 
-// K (définition de KDebugOn)
+// K (d√©finition de KDebugOn)
 #include <K/Tests/KDebug.h>
 
-/// Si cette constante est à 1, les exceptions comprennent le nom du fichier
+/// Si cette constante est √† 1, les exceptions comprennent le nom du fichier
 /// et la ligne. Requiert les macros __FILE__ et __LINE__
 #ifndef kDCLDebugFILEandLINE
 	#define kDCLDebugFILEandLINE KDebugOn

@@ -2,7 +2,7 @@
 // Fichier:			TDCLLoadPackageLink.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/08/2001
+// Cr√©√© le:			13/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLLoadPackageLink.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -57,18 +57,18 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 // ------------------------------------------------------------------------- //
-//  * TDCLLoadPackageLink( TDCLApplication* )
+//  *¬†TDCLLoadPackageLink( TDCLApplication* )
 // ------------------------------------------------------------------------- //
 TDCLLoadPackageLink::TDCLLoadPackageLink(
 		TDCLApplication* inApplication )
 	:
 		TDCLLink( inApplication, TDCLDockCommand::kLoadPackage_SType )
 {
-	// Gaz à tous les étages.
+	// Gaz √† tous les √©tages.
 }
 
 // ------------------------------------------------------------------------- //
-//  * DoConnect( void )
+//  *¬†DoConnect( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLLoadPackageLink::DoConnect( void )
@@ -82,11 +82,11 @@ TDCLLoadPackageLink::DoConnect( void )
 		long theTimeout = GetPipe()->GetTimeout();
 		if (theTimeout < 0)
 		{
-			// Valeur par défaut.
+			// Valeur par d√©faut.
 			theTimeout = kDefaultTimeout;
 		}
 		
-		// Création.
+		// Cr√©ation.
 		TDCLDockCmdSingleLong theSetTimeoutMessage(
 			TDCLDockCommand::kDSetTimeout, (KUInt32) theTimeout );
 
@@ -94,13 +94,13 @@ TDCLLoadPackageLink::DoConnect( void )
 		theSetTimeoutMessage.SendCommand( GetPipe() );
 	}
 	
-	// Réception de kDResult.
+	// R√©ception de kDResult.
 	{
 		TSmartPtr<TDCLDockCommand> theNewtMessage;
 		
 		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
 
-		// Vérification que c'est bien une commande kDResult.
+		// V√©rification que c'est bien une commande kDResult.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDResult)
 		{
 			// Duh!
@@ -111,14 +111,14 @@ TDCLLoadPackageLink::DoConnect( void )
 		TDCLDockCmdSingleLong* theResult =
 			(TDCLDockCmdSingleLong*) theNewtMessage.Get();
 		
-		// On lève une exception si le code n'est pas 0.
+		// On l√®ve une exception si le code n'est pas 0.
 		KSInt32 theResultInt = (KSInt32) theResult->GetLong();
 		if (theResultInt)
 		{
 			throw DCLNewton( theResultInt );
 		}
 		
-		// Libération.
+		// Lib√©ration.
 		theNewtMessage.Delete();
 	}
 }
@@ -131,7 +131,7 @@ TDCLLoadPackageLink::ProcessAppCommand(
 				TDCLAppCommand* inCommand,
 				Boolean* outProcessed )
 {
-	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
+	TDCLLink::EState theResult = kRunning;	// Par d√©faut, on reste connect√©.
 
 	if ( inCommand->GetCommandID() == TDCLAppCommand::kInstallPackage)
 	{
@@ -150,7 +150,7 @@ TDCLLoadPackageLink::ProcessAppCommand(
 Boolean
 TDCLLoadPackageLink::InstallPackage( TDCLFSItemRef inPackage )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCmdFile(
 				TDCLAppCommand::kIdleAppCommand,
@@ -162,7 +162,7 @@ TDCLLoadPackageLink::InstallPackage( TDCLFSItemRef inPackage )
 	
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
 	
@@ -182,7 +182,7 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 		theLoadPackageMessage.SendCommand( GetPipe(), ProgressFunc, this );
 	}
 
-	// Je récupère le résultat.
+	// Je r√©cup√®re le r√©sultat.
 	{
 		TDCLDockCommand* theNewtMessage =
 				TDCLDockCommand::ReceiveCommand( GetPipe() );

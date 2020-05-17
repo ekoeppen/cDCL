@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacThreads.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacThreads.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -55,7 +55,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.7 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacThreads
 	:
@@ -63,7 +63,7 @@ class TDCLMacThreads
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLMacThreads( void );	
 
@@ -78,24 +78,24 @@ public:
 	virtual	void	Yield( void );	
 
 	///
-	/// Crée un objet IThread. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet IThread. √Ä surcharger pour chaque plateforme.
 	///
-	/// \param inThreadedObject		objet associé à passer comme paramètre
+	/// \param inThreadedObject		objet associ√© √† passer comme param√®tre
 	///								pour IThread
 	/// \return un nouvel objet IThread
 	///
 	virtual IThread*	CreateThread( TDCLThread* inThreadedObject );
 
 	///
-	/// Crée un objet sémaphore. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet s√©maphore. √Ä surcharger pour chaque plateforme.
 	///
-	/// \return un nouvel objet sémaphore
+	/// \return un nouvel objet s√©maphore
 	///
 	virtual ISemaphore*	CreateSemaphore( void );
 
 private:
 	///
-	/// Sémaphore pour MacOS.
+	/// S√©maphore pour MacOS.
 	///
 	class TSemaphore
 		:
@@ -104,36 +104,36 @@ private:
 	public:
 		///
 		/// Constructeur unique.
-		/// À partir de inThreads pour pouvoir faire des Yield.
+		/// √Ä partir de inThreads pour pouvoir faire des Yield.
 		///
 		TSemaphore( TDCLMacThreads* inThreadsIntf );
 		
 		///
 		/// Destructeur.
-		/// Le sémaphore ne doit pas être utilisé.
+		/// Le s√©maphore ne doit pas √™tre utilis√©.
 		///
 		virtual				~TSemaphore( void );
 
 		///
-		/// Attend jusqu'à ce que le sémaphore soit libéré si nécessaire
-		/// puis acquiert le sémaphore.
+		/// Attend jusqu'√† ce que le s√©maphore soit lib√©r√© si n√©cessaire
+		/// puis acquiert le s√©maphore.
 		///
 		virtual	void		Acquire ( void );
 		
 		///
-		/// Libère le sémaphore.
+		/// Lib√®re le s√©maphore.
 		///
 		virtual	void		Release ( void );
 	
 	private:
-		/// \name variables privées.
-		QHdr				mQueue;			///< Queue pour le sémaphore.
+		/// \name variables priv√©es.
+		QHdr				mQueue;			///< Queue pour le s√©maphore.
 		TDCLMacThreads*		mThreads;		///< Objet IDCLThreads pour faire Yield.
-		Boolean				mSemaphore;		///< Valeur du sémaphore.
+		Boolean				mSemaphore;		///< Valeur du s√©maphore.
 	};
 
 	///
-	/// Processus léger pour MacOS (coopératif)
+	/// Processus l√©ger pour MacOS (coop√©ratif)
 	///
 	class TThread
 		:
@@ -141,142 +141,142 @@ private:
 	{
 	public:
 		///
-		/// Constructeur à partir d'un client.
+		/// Constructeur √† partir d'un client.
 		///
-		/// \param inThreadsIntf	interface des processus légers.
-		/// \param inThreadedObject	objet associé au processus léger.
+		/// \param inThreadsIntf	interface des processus l√©gers.
+		/// \param inThreadedObject	objet associ√© au processus l√©ger.
 		///
 		TThread( TDCLMacThreads* inThreadsIntf, TDCLThread* inThreadedObject );
 
 		///
 		/// Destructeur.
 		///
-		/// \throws TDCLException si le processus léger n'est pas arrêté.
+		/// \throws TDCLException si le processus l√©ger n'est pas arr√™t√©.
 		///
 		virtual ~TThread( void );
 
 		///
-		/// Démarre le processus.
+		/// D√©marre le processus.
 		///
-		/// Appelle la méthode Run de TDCLThread dans le nouveau
-		/// processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté.
+		/// Appelle la m√©thode Run de TDCLThread dans le nouveau
+		/// processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger n'est pas arrêté.
+		/// \throws TDCLException si le processus l√©ger n'est pas arr√™t√©.
 		///
 		virtual void	Start( void );
 		
 		///
-		/// Arrête le processus (de manière violente).
+		/// Arr√™te le processus (de mani√®re violente).
 		///
-		/// Lance une exception si le processus léger est arrêté.
+		/// Lance une exception si le processus l√©ger est arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual void	Stop( void );
 
 		///
-		/// Suspend le processus léger.
-		/// Cette méthode peut être appelée à partir d'un autre processus
-		/// léger.
-		/// Lance une exception si le processus léger est arrêté, mais
+		/// Suspend le processus l√©ger.
+		/// Cette m√©thode peut √™tre appel√©e √† partir d'un autre processus
+		/// l√©ger.
+		/// Lance une exception si le processus l√©ger est arr√™t√©, mais
 		/// est silencieux si le processus est suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Suspend( void );
 
 		///
-		/// Reprend le processus léger.
-		/// Cette méthode est appelée à partir d'un autre processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté,
+		/// Reprend le processus l√©ger.
+		/// Cette m√©thode est appel√©e √† partir d'un autre processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©,
 		/// mais est silencieux si le processus n'est pas suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Resume( void );
 	
 		///
-		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
-		/// WakeUp soit appelée.
+		/// Dort pendant n millisecondes ou jusqu'√† ce que la m√©thode
+		/// WakeUp soit appel√©e.
 		/// Note: le processus peut aussi dormir plus longtemps.
-		/// Cette méthode doit être appelée par le processus courant.
-		/// Décrémente le compteur des réveils ou dort s'il est à zéro.
-		/// Suivant les classes concrètes, désactive les interruptions
+		/// Cette m√©thode doit √™tre appel√©e par le processus courant.
+		/// D√©cr√©mente le compteur des r√©veils ou dort s'il est √† z√©ro.
+		/// Suivant les classes concr√®tes, d√©sactive les interruptions
 		/// ou utilise les variables de condition.
 		///
-		/// \param inMillisecs		nombre de millisecondes à dormir
-		/// \return	\c true si l'on a dormi tout le temps demandé, \c false si on a été
+		/// \param inMillisecs		nombre de millisecondes √† dormir
+		/// \return	\c true si l'on a dormi tout le temps demand√©, \c false si on a √©t√©
 		///			interrompu.
 		///
 		virtual	Boolean	Sleep( KUInt32 inMillisecs = kForever );
 
 		///
-		/// Réveille un processus qui dort.
-		/// Incrémente le compteur des réveils.
-		/// Suivant les classes concrètes, désactive les interruptions
+		/// R√©veille un processus qui dort.
+		/// Incr√©mente le compteur des r√©veils.
+		/// Suivant les classes concr√®tes, d√©sactive les interruptions
 		/// ou utilise les variables de condition.
 		///
 		virtual	void	WakeUp( void );
 
 		///
-		/// Détermine l'état du processus.
+		/// D√©termine l'√©tat du processus.
 		///
-		/// \return l'état du processus (arrêté, actif, suspendu)
+		/// \return l'√©tat du processus (arr√™t√©, actif, suspendu)
 		///
 		virtual	EState	GetState( void );
 
 	private:
 		///
-		/// Constructeur par défaut volontairement indisponible.
+		/// Constructeur par d√©faut volontairement indisponible.
 		///
 		TThread( void );
 		
 		///
-		/// La fonction vraiment appelée par le système.
-		/// Elle appelle la méthode Run du client.
+		/// La fonction vraiment appel√©e par le syst√®me.
+		/// Elle appelle la m√©thode Run du client.
 		///
 		/// \param inThis	pointeur sur l'objet TThread.
 		/// \return \c nil
 		///
 		static pascal void* Run( TThread* inThis );
 
-		/// \name variables privées.
-		ThreadID		mThreadID;		///< L'ID du processus léger
-		EState			mState;			///< L'état du processus.
-		TSemaphore		mMutex;			///< Sémaphore utilisé pour synchroniser
-										///< l'état.
+		/// \name variables priv√©es.
+		ThreadID		mThreadID;		///< L'ID du processus l√©ger
+		EState			mState;			///< L'√©tat du processus.
+		TSemaphore		mMutex;			///< S√©maphore utilis√© pour synchroniser
+										///< l'√©tat.
 		ThreadEntryTPP	mRunTPP;		///< TPP pour Run.
-		TDCLMacThreads*	mThreads;		///< Objet IDCLThreads pour la UPP qui nous réveille.
-		KUInt32			mWakeCount;		///< Compteur de réveils.
+		TDCLMacThreads*	mThreads;		///< Objet IDCLThreads pour la UPP qui nous r√©veille.
+		KUInt32			mWakeCount;		///< Compteur de r√©veils.
 	};
 
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacThreads( const TDCLMacThreads& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacThreads& operator = ( const TDCLMacThreads& inCopy );
 
 	///
-	/// Fonction appelée par la tâche du TimeManager qui va réveiller
-	/// le processus léger.
+	/// Fonction appel√©e par la t√¢che du TimeManager qui va r√©veiller
+	/// le processus l√©ger.
 	///
 	/// \param inTMTaskPtr	pointeur sur la structure TMTask.
 	///
 	static void TimerProc( TMTaskPtr inTMTaskPtr );
 	
-	/// \name variables privées.
-	TimerUPP	mTimerProcUPP;	///< ProcPtr sur la fonction précédente.
+	/// \name variables priv√©es.
+	TimerUPP	mTimerProcUPP;	///< ProcPtr sur la fonction pr√©c√©dente.
 	
-	/// TThread a besoin d'accéder la variable précédente.
+	/// TThread a besoin d'acc√©der la variable pr√©c√©dente.
 	friend class TThread;
 };
 

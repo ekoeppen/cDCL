@@ -2,7 +2,7 @@
 // Fichier:			TDCLAppCmdKbdChar.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/4/2003
+// Cr√©√© le:			11/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLAppCmdKbdChar.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,14 +41,14 @@
 #include <DCL/Link/App_Commands/TDCLAppCommand.h>
 
 ///
-/// Classe pour une commande pour envoyer un seul caractère au Newton.
-/// Ce caractère peut comprendre une touche et un code pour savoir si la
-/// touche pomme était enfoncée (en théorie).
+/// Classe pour une commande pour envoyer un seul caract√®re au Newton.
+/// Ce caract√®re peut comprendre une touche et un code pour savoir si la
+/// touche pomme √©tait enfonc√©e (en th√©orie).
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLAppCmdKbdChar
 	:
@@ -56,19 +56,19 @@ class TDCLAppCmdKbdChar
 {
 public:
 	///
-	/// Constructeur à partir de la touche et de drapeaux pour indiquer
+	/// Constructeur √† partir de la touche et de drapeaux pour indiquer
 	/// les touches modificatrices.
 	///
-	/// \param inChar		caractère
-	/// \param inFlags		état de la touche. Permet en théorie de dire que
-	///						la touche commande est enfoncée, mais le Newton
-	///						ne semble pas le gérer.
+	/// \param inChar		caract√®re
+	/// \param inFlags		√©tat de la touche. Permet en th√©orie de dire que
+	///						la touche commande est enfonc√©e, mais le Newton
+	///						ne semble pas le g√©rer.
 	///
 	TDCLAppCmdKbdChar( KUInt16 inChar, KUInt16 inFlags );
 
 private:
 	/// \name Variables
-	KUInt16			mData[2];	///< Données pour cette commande.
+	KUInt16			mData[2];	///< Donn√©es pour cette commande.
 };
 
 #endif

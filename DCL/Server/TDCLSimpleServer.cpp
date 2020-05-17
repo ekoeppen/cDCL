@@ -2,7 +2,7 @@
 // Fichier:			TDCLSimpleServer.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/1/2002
+// Cr√©√© le:			15/1/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSimpleServer.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -76,7 +76,7 @@ TDCLSimpleServer::~TDCLSimpleServer( void )
 void
 TDCLSimpleServer::DoStartListening( void )
 {
-	// On commence à écouter
+	// On commence √† √©couter
 	mCommLayer->StartListening(this);
 }
 
@@ -91,7 +91,7 @@ TDCLSimpleServer::DoStop( void )
 	{
 		try {
 			(void) mLink->Disconnect();	// On n'a pas besoin de savoir s'il
-										// était vraiment connecté.
+										// √©tait vraiment connect√©.
 		} catch (...) {
 			// Silently catch exceptions
 		}
@@ -115,7 +115,7 @@ TDCLSimpleServer::DoKill( void )
 			// On fait le silence sur les exceptions.
 		}
 
-		// On dit au lien qu'il a été déconnecté.
+		// On dit au lien qu'il a √©t√© d√©connect√©.
 		if (mLink)
 		{
 			(void) mLink->Close();
@@ -136,14 +136,14 @@ TDCLSimpleServer::DoKill( void )
 TDCLServer::EState
 TDCLSimpleServer::HandleIncomingConnection( TDCLCommLayer* /* inCommLayer */ )
 {
-	// Si le lien est connecté, on refuse la connexion.
+	// Si le lien est connect√©, on refuse la connexion.
 	if ((mLink) && (mLink->IsConnected()))
 	{
 		mCommLayer->Refuse();
 	} else {
 		// Sinon, on l'accepte.
 
-		// Si un objet TDCLPipe était présent (d'un état inconnu), on le
+		// Si un objet TDCLPipe √©tait pr√©sent (d'un √©tat inconnu), on le
 		// supprime ici.
 		if (mPipe)
 		{

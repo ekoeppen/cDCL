@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdPackageList.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/5/2003
+// Cr√©√© le:			10/5/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdPackageList.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,13 +41,13 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 ///
-/// Classe pour la commande Newton comprenant la liste des paquets 1.x à
+/// Classe pour la commande Newton comprenant la liste des paquets 1.x √†
 /// sauvegarder.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdPackageList
 	:
@@ -67,22 +67,22 @@ public:
 		KUInt32	fDeviceNumber;		///< (?)
 		KUInt32	fDeviceID;			///< (?)
 		KUInt32	fModificationDate;	///< Date de modification du paquet
-		KUInt32	fIsCopyProtected;	///< Si le bit copy protected est à un
-		KUInt32	fNameLength;		///< Longueur (en octets) de la chaîne.
+		KUInt32	fIsCopyProtected;	///< Si le bit copy protected est √† un
+		KUInt32	fNameLength;		///< Longueur (en octets) de la cha√Æne.
 		KUInt16	fName[0];			///< Nom du paquet (en unicode)
 	};
 	
 	///
-	/// Constructeur unique à partir de données.
+	/// Constructeur unique √† partir de donn√©es.
 	///
-	/// \param inLength	taille des données
-	/// \param inData	données (copiées)
+	/// \param inLength	taille des donn√©es
+	/// \param inData	donn√©es (copi√©es)
 	///
 	TDCLDockCmdPackageList( KUInt32 inLength, const void* inData );
 
 	///
 	/// Destructeur
-	/// (libère la mémoire utilisée)
+	/// (lib√®re la m√©moire utilis√©e)
 	///
 	virtual ~TDCLDockCmdPackageList( void );
 
@@ -100,7 +100,7 @@ public:
 	/// Accesseur sur les informations sur un paquet.
 	///
 	/// \param inIndex	indice du paquet dont on veut les informations.
-	/// \return les informations sur un paquet.
+	///¬†\return les informations sur un paquet.
 	///
 	inline const SPackageInfo*	GetPackageInfo( KUInt32 inIndex )
 		{
@@ -111,14 +111,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdPackageList( const TDCLDockCmdPackageList& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdPackageList& operator = ( const TDCLDockCmdPackageList& inCopy );
 

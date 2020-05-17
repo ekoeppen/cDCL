@@ -2,7 +2,7 @@
 // Fichier:			TDCLBrowseEngine.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			8/4/2003
+// Cr√©√© le:			8/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLBrowseEngine.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -128,7 +128,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 
 		case TDCLDockCommand::kDGetFilesAndFolders:
 			{
-				// Envoi des éléments dans le dossier.
+				// Envoi des √©l√©ments dans le dossier.
 				TDCLDockCmdNSObject theContentCmd(
 								TDCLDockCommand::kDFilesAndFolders,
 								GetFilesAndFolders() );
@@ -155,7 +155,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 
 		case TDCLDockCommand::kDGetFileInfo:
 			{
-				// Récupération de l'élément.
+				// R√©cup√©ration de l'√©l√©ment.
 				TDCLNSRef theFileName =
 					((TDCLDockCmdNSObject*) inCommand)->GetObject();
 				
@@ -192,10 +192,10 @@ TDCLBrowseEngine::ProcessDockCommand(
 			{
 				TDCLNSArray theArray;
 
-				// On compte les éléments.
+				// On compte les √©l√©ments.
 				KUInt32 nbRoots = mFilesIntf->CountRootFolders();
 				
-				// Itération
+				// It√©ration
 				KUInt32 indexRoots;
 				for (indexRoots = 0; indexRoots < nbRoots; indexRoots++)
 				{
@@ -218,7 +218,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 
 		case TDCLDockCommand::kDSetDrive:
 			{
-				// Récupération du nom & on change de racine.
+				// R√©cup√©ration du nom & on change de racine.
 				TDCLNSRef theDriveName =
 					((TDCLDockCmdNSObject*) inCommand)->GetObject();
 				if (!theDriveName.IsString())
@@ -250,7 +250,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 			}
 		break;
 
-		// Pas encore gérées.
+		// Pas encore g√©r√©es.
 		case TDCLDockCommand::kDSetFilter:
 		case TDCLDockCommand::kDResolveAlias:
 		case TDCLDockCommand::kDImportFile:
@@ -284,17 +284,17 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 	TDCLNSRef theResult = TDCLNSRef::MakeArray();
 	TDCLNSArray& theResultAsArray = theResult.ToArray();
 	
-	// Récupération des éléments.
+	// R√©cup√©ration des √©l√©ments.
 	TDCLFSItemRef* theItems = nil;
 	try {
 		theItems = mCurrentFolder->GetItems();
 	} catch ( TDCLException& inException ) {
-		// En cas d'exception, on considère qu'il n'y a pas d'élément.
+		// En cas d'exception, on consid√®re qu'il n'y a pas d'√©l√©ment.
 	}
 
 	if (theItems)
 	{
-		// Itération sur les éléments: on les ajoute et on libère la mémoire.
+		// It√©ration sur les √©l√©ments: on les ajoute et on lib√®re la m√©moire.
 		TDCLFSItemRef* theCursor = theItems;
 		while ( theCursor->GetFSItem() != nil )
 		{
@@ -310,7 +310,7 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 						theResultAsArray.Add( theElement->ToFrame() );
 					}
 				} else {
-					// Par défaut, j'ajoute le fichier.
+					// Par d√©faut, j'ajoute le fichier.
 					theResultAsArray.Add( theElement->ToFrame() );
 				}
 			} else {
@@ -318,11 +318,11 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 				theResultAsArray.Add( theElement->ToFrame() );
 			}
 		
-			// Libération.
+			// Lib√©ration.
 			theElement.~TDCLFSItemRef();
 		}
 	
-		// Libération du tableau.
+		// Lib√©ration du tableau.
 		::free( theItems );
 	}
 	
@@ -335,19 +335,19 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 TDCLNSRef
 TDCLBrowseEngine::GetFileInfo( const TDCLNSRef& inFileName )
 {
-	// Récupération du fichier.
+	// R√©cup√©ration du fichier.
 	TDCLFSItemRef theElement = GetFile( inFileName );
 	
 	TDCLFSItem* theItem = theElement.GetFSItem();
 	if ((theItem == nil) || (theItem->GetClass() != TDCLFSItem::kFile))
 	{
-		// On ne s'attend pas à ça. On dégage.
+		// On ne s'attend pas √† √ßa. On d√©gage.
 		throw DCLBadDockCmd;
 	}
 	
 	TDCLFile* theItemAsFile = (TDCLFile*) theItem;
 	
-	// Création de la structure pour les informations sur le fichier.
+	// Cr√©ation de la structure pour les informations sur le fichier.
 	TDCLNSRef theInfo = TDCLNSRef::MakeFrame();
 	TDCLNSFrame& theInfoFrame = theInfo.ToFrame();
 	theInfoFrame.Set( "kind", theItemAsFile->GetKind() );
@@ -381,14 +381,14 @@ TDCLBrowseEngine::SetPath( const TDCLNSRef& inPath )
 {
 	TDCLNSArray& thePath = inPath.ToArray();
 	
-	// Interprétation du chemin.
+	// Interpr√©tation du chemin.
 	const KUInt16* theRootName = nil;
 	TDCLNSRef theElement;
 	TDCLNSRef theElementName;
-	// Si on est sur Mac, le premier élément doit être Desktop
+	// Si on est sur Mac, le premier √©l√©ment doit √™tre Desktop
 	if (mIsMac)
 	{
-		// Vérifions qu'on a bien Desktop.
+		// V√©rifions qu'on a bien Desktop.
 		theElement = thePath.Get(0);
 		Boolean isDesktop = false;
 		if (theElement.IsString())
@@ -403,7 +403,7 @@ TDCLBrowseEngine::SetPath( const TDCLNSRef& inPath )
 		}
 	} else {
 		// On a normalement X:\ avec X un nom de disque.
-		// Vérifions.
+		// V√©rifions.
 		theElement = thePath.Get(0);
 		if (theElement.IsString())
 		{
@@ -425,7 +425,7 @@ TDCLBrowseEngine::SetPath( const TDCLNSRef& inPath )
 	{
 		theElement = thePath.Get(thePathIndex++);
 		
-		// Récupération de l'élément.
+		// R√©cup√©ration de l'√©l√©ment.
 		mCurrentFolderRef = GetFile( theElement );
 		mCurrentFolder = (TDCLFolder*) mCurrentFolderRef;
 	}

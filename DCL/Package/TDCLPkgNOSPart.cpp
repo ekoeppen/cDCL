@@ -1,8 +1,8 @@
 // ==============================
 // Fichier:			TDCLPkgNOSPart.cp
 // Projet:			Desktop Connection Library
-// 
-// Créé le:			6/4/2004
+//
+// Cr√©√© le:			6/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgNOSPart.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -98,18 +98,18 @@ TDCLPkgNOSPart::GetObject( void )
 {
 	if (mObject.IsNIL())
 	{
-		// On décode avec un flux mémoire.
+		// On d√©code avec un flux m√©moire.
 		TDCLMemStream theBufferStream( DoGetBuffer(), DoGetSize() );
 		TDCLPkgDecoder thePkgDecoder( &theBufferStream, GetOffset() );
 		mObject = thePkgDecoder.GetNextObject();
 
-		// L'objet est synchronisé avec les données.
+		// L'objet est synchronis√© avec les donn√©es.
 		mDirty = false;
-		
+
 		// On note l'alignement.
 		mFourBytesPadding = thePkgDecoder.GetFourBytesPadding();
 	}
-	
+
 	return mObject;
 }
 
@@ -149,7 +149,7 @@ TDCLPkgNOSPart::Encode(
 		void** ioBuffer,
 		KUInt32* ioSize ) const
 {
-	// On encode avec un flux mémoire.
+	// On encode avec un flux m√©moire.
 	TDCLMemStream theBufferStream;
 	TDCLPkgEncoder thePkgEncoder(
 			&theBufferStream,
@@ -158,7 +158,7 @@ TDCLPkgNOSPart::Encode(
 	thePkgEncoder.AddObject( mObject );
 	mDirty = false;
 
-	// Copie des données.	
+	// Copie des donn√©es.
 	KUInt32 theSize = theBufferStream.GetBufferSize();
 	*ioSize = theSize;
 	*ioBuffer = ::realloc( *ioBuffer, theSize );

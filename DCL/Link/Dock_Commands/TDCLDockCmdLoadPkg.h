@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdLoadPkg.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/08/2001
+// Cr√©√© le:			15/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdLoadPkg.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -43,7 +43,7 @@
 // DCL
 #include <DCL/Interfaces/TDCLFSItemRef.h>
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class TDCLStream;
 class TDCLFile;
 
@@ -53,7 +53,7 @@ class TDCLFile;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdLoadPkg
 	:
@@ -61,15 +61,15 @@ class TDCLDockCmdLoadPkg
 {
 public:
 	///
-	/// Constructeur à partir d'une référence sur un fichier.
+	/// Constructeur √† partir d'une r√©f√©rence sur un fichier.
 	///
-	/// \param inPackage	référence sur le paquet à installer.
+	/// \param inPackage	r√©f√©rence sur le paquet √† installer.
 	///
 	TDCLDockCmdLoadPkg( TDCLFSItemRef inPackage );
 	
 protected:
 	///
-	/// Méthode appelée pour récupèrer la taille de la commande avant de
+	/// M√©thode appel√©e pour r√©cup√®rer la taille de la commande avant de
 	/// l'envoyer.
 	///
 	/// \return la taille de la commande
@@ -79,12 +79,12 @@ protected:
 	///
 	/// Envoie le corps de la commande.
 	///
-	/// \param inPipe				connexion pour écrire la commande.
-	/// \param inLength				taille des données à envoyer
-	/// \param inProgressFuncPtr	fonction appelée pour la progression
-	///								(\c nil signifie qu'on ne prévient pas)
-	///								Cette méthode doit tenir compte du fait
-	///								que 16 octets ont déjà été envoyés.
+	/// \param inPipe				connexion pour √©crire la commande.
+	/// \param inLength				taille des donn√©es √† envoyer
+	/// \param inProgressFuncPtr	fonction appel√©e pour la progression
+	///								(\c nil signifie qu'on ne pr√©vient pas)
+	///								Cette m√©thode doit tenir compte du fait
+	///								que 16 octets ont d√©j√† √©t√© envoy√©s.
 	/// \param inRefCon				biscuit pour inProgressFuncPtr
 	///
 	virtual	void			SendBody(
@@ -97,14 +97,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdLoadPkg( const TDCLDockCmdLoadPkg& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdLoadPkg& operator = ( const TDCLDockCmdLoadPkg& inCopy );
 
@@ -112,12 +112,12 @@ private:
 	/// Constantes pour cette classe.
 	///
 	enum {
-		kChunkSize		=	8192	///< Taille des paquets envoyés au Newton.
+		kChunkSize		=	8192	///< Taille des paquets envoy√©s au Newton.
 	};
 
 	/// \name Variables
 
-	TDCLFSItemRef			mPackage;			///< Référence sur le fichier.
+	TDCLFSItemRef			mPackage;			///< R√©f√©rence sur le fichier.
 	TDCLFile*				mPackageFile;		///< Fichier.	
 };
 

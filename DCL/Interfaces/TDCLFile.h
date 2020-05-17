@@ -2,7 +2,7 @@
 // Fichier:			TDCLFile.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			04/02/2003
+// Cr√©√© le:			04/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFile.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -48,17 +48,17 @@
 ///
 /// Classe pour les fichiers.
 ///
-/// Cette classe est purement virtuelle. Elle doit être dérivée pour chaque
+/// Cette classe est purement virtuelle. Elle doit √™tre d√©riv√©e pour chaque
 /// plateforme afin de stocker les informations concernant les fichiers.
-/// C'est une bonne idée d'appeler la méthode \c Close dans le destructeur.
+/// C'est une bonne id√©e d'appeler la m√©thode \c Close dans le destructeur.
 ///
-/// Les fichiers peuvent être de vrais fichiers ou des ressources, en fait
-/// n'importe quoi qui ressemble un peu à un fichier.
+/// Les fichiers peuvent √™tre de vrais fichiers ou des ressources, en fait
+/// n'importe quoi qui ressemble un peu √† un fichier.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.9 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLFile
 	:
@@ -69,22 +69,22 @@ public:
 	///
 	/// Ouvre le fichier.
 	///
-	/// \param inReadOnly	si le fichier doit être ouvert en lecture seule
-	/// \throws TDCLIOException si l'ouverture a échoué.
+	/// \param inReadOnly	si le fichier doit √™tre ouvert en lecture seule
+	/// \throws TDCLIOException si l'ouverture a √©chou√©.
 	///
 	virtual void		Open( Boolean inReadOnly ) = 0;	
 
 	///
-	/// Crée le fichier.
+	/// Cr√©e le fichier.
 	///
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void		Create( void ) = 0;	
 
 	///
 	/// Supprime le fichier.
 	///
-	/// \throws TDCLIOException si la suppression a échoué.
+	/// \throws TDCLIOException si la suppression a √©chou√©.
 	///
 	virtual void		Delete( void ) = 0;	
 
@@ -99,7 +99,7 @@ public:
 	/// Determine si le fichier est ouvert en lecture seule.
 	///
 	/// \return \c true si le fichier est ouvert en lecture seule,
-	///			\c false sinon. Le résultat est indéterminé si le fichier
+	///			\c false sinon. Le r√©sultat est ind√©termin√© si le fichier
 	///			n'est pas ouvert.
 	///
 	virtual Boolean		IsReadOnly( void ) const = 0;
@@ -112,25 +112,25 @@ public:
 	virtual KUInt64		GetLength( void ) = 0;
 	
 	///
-	/// Récupère l'octet suivant sans avancer le curseur.
-	/// Par défaut, lit le fichier pour un octet et retourne en arrière.
+	/// R√©cup√®re l'octet suivant sans avancer le curseur.
+	/// Par d√©faut, lit le fichier pour un octet et retourne en arri√®re.
 	///
 	/// \return l'octet lu.
-	/// \throws TDCLIOException	si un problème est survenu (y compris si la
-	///							fin du fichier est rencontrée)
+	/// \throws TDCLIOException	si un probl√®me est survenu (y compris si la
+	///							fin du fichier est rencontr√©e)
 	///
 	virtual	KUInt8		PeekByte( void );
 
 	///
 	/// Ferme le fichier.
-	/// Vous souhaitez probablement appeler la méthode close dans votre
+	/// Vous souhaitez probablement appeler la m√©thode close dans votre
 	/// destructeur.
-	/// Ne fait rien si le fichier n'était pas ouvert.
+	/// Ne fait rien si le fichier n'√©tait pas ouvert.
 	///
 	virtual void		Close( void ) = 0;
 
 	///
-	/// Récupère la description de l'élément sous forme de structure.
+	/// R√©cup√®re la description de l'√©l√©ment sous forme de structure.
 	/// Retourne une structure avec type: 'file.
 	///
 	/// \return la description de l'objet pour le butinage.
@@ -138,24 +138,24 @@ public:
 	virtual TDCLNSRef	ToFrame( void );
 	
 	///
-	/// Récupère le type du fichier sous forme de chaîne NewtonScript.
-	/// C'est ce qui est retourné au Newton pour affichage dans
+	/// R√©cup√®re le type du fichier sous forme de cha√Æne NewtonScript.
+	/// C'est ce qui est retourn√© au Newton pour affichage dans
 	/// le butineur.
 	///
-	/// \return une chaîne NewtonScript avec le type du fichier.
+	/// \return une cha√Æne NewtonScript avec le type du fichier.
 	///
 	virtual TDCLNSRef	GetKind( void ) const = 0;
 	
 	///
-	/// Récupère la date de création au format des dates Newton
+	/// R√©cup√®re la date de cr√©ation au format des dates Newton
 	/// (minutes depuis 1904).
 	///
-	/// \return la date de création du fichier.
+	/// \return la date de cr√©ation du fichier.
 	///
 	virtual KUInt32		GetCreationDate( void ) const = 0;
 
 	///
-	/// Récupère la date de modification au format des dates Newton
+	/// R√©cup√®re la date de modification au format des dates Newton
 	/// (minutes depuis 1904).
 	///
 	/// \return la date de modification du fichier.
@@ -163,26 +163,26 @@ public:
 	virtual KUInt32		GetModificationDate( void ) const = 0;
 
 	///
-	/// Récupère le chemin du fichier dans une forme lisible par
+	/// R√©cup√®re le chemin du fichier dans une forme lisible par
 	/// l'utilisateur. Ce chemin n'a pas d'autre fonction que
-	/// d'être affiché sur le Newton.
+	/// d'√™tre affich√© sur le Newton.
 	///
-	/// \return le chemin du fichier dans une chaîne NewtonScript.
+	/// \return le chemin du fichier dans une cha√Æne NewtonScript.
 	///
 	virtual TDCLNSRef	GetStringPath( void ) const = 0;
 
 	///
-	/// Récupère l'icône du fichier sous forme de binaire noir et blanc
-	/// 32x32. Si le résultat est \c nil, l'icône n'est pas envoyée au
+	/// R√©cup√®re l'ic√¥ne du fichier sous forme de binaire noir et blanc
+	/// 32x32. Si le r√©sultat est \c nil, l'ic√¥ne n'est pas envoy√©e au
 	/// Newton.
-	/// Par défaut renvoie \c nil.
+	/// Par d√©faut renvoie \c nil.
 	///
-	/// \return l'icône du fichier ou \c nil.
+	/// \return l'ic√¥ne du fichier ou \c nil.
 	///
 	virtual TDCLNSRef	GetIcon( void ) const;
 
 	///
-	/// Détermine si le fichier est un paquet.
+	/// D√©termine si le fichier est un paquet.
 	/// Appelle TDCLPackage::IsPackage, mais retourne \c false en cas
 	/// d'exception.
 	///
@@ -192,23 +192,23 @@ public:
 
 protected:
 	///
-	/// Constructeur protégé à partir d'un dossier.
-	/// Ce constructeur doit (généralement?) être appelé par une
+	/// Constructeur prot√©g√© √† partir d'un dossier.
+	/// Ce constructeur doit (g√©n√©ralement?) √™tre appel√© par une
 	/// extension de la classe avec une extension de la classe
 	/// TDCLFolder compatible.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
-	/// \param inParentFolder	dossier où se trouve le fichier.
-	///					c'est aussi le dossier qui a créé l'objet.
+	/// \param inParentFolder	dossier o√π se trouve le fichier.
+	///					c'est aussi le dossier qui a cr√©√© l'objet.
 	///					(\c nil signifie que MakeParentFolder sera
-	///					appelé plus tard).
+	///					appel√© plus tard).
 	///
 	TDCLFile( IDCLFiles* inFilesIntf, TDCLFSItemRef inParentFolder );
 
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est
-	/// normalement jamais appelée puisque l'objet parent a été fourni
-	/// comme paramètre au constructeur ci-dessus.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est
+	/// normalement jamais appel√©e puisque l'objet parent a √©t√© fourni
+	/// comme param√®tre au constructeur ci-dessus.
 	///
 	/// \throws TDCLNotImplementedException
 	///

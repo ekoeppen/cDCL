@@ -2,7 +2,7 @@
 // Fichier:			TDCLPkgDecoder.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			21/2/2004
+// Cr√©√© le:			21/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgDecoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -43,7 +43,7 @@
 #include <DCL/Streams/TDCLRandomAccessStream.h>
 
 ///
-/// Classe pour le décodeur du format paquet.
+/// Classe pour le d√©codeur du format paquet.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.9 $
@@ -57,22 +57,22 @@ class TDCLPkgDecoder
 {
 public:
 	///
-	/// Constructeur à partir d'un flux et d'un décalage dans le flux.
-	/// C'est le décalage depuis le début du paquet. Le même décalage
-	/// a dû être utilisé lors de l'encodage.
+	/// Constructeur √† partir d'un flux et d'un d√©calage dans le flux.
+	/// C'est le d√©calage depuis le d√©but du paquet. Le m√™me d√©calage
+	/// a d√ª √™tre utilis√© lors de l'encodage.
 	///
-	/// \param inStream		flux où lire les données.
-	/// \param inOffset		décalage pour l'encodage des références.
+	/// \param inStream		flux o√π lire les donn√©es.
+	/// \param inOffset		d√©calage pour l'encodage des r√©f√©rences.
 	///
 	TDCLPkgDecoder(
 			TDCLRandomAccessStream* inStream,
 			KUInt32 inOffset );
 
 	///
-	/// Constructeur à partir d'un flux. Le décalage est la position
+	/// Constructeur √† partir d'un flux. Le d√©calage est la position
 	/// actuelle du flux.
 	///
-	/// \param inStream		flux utilisé par cet encodeur.
+	/// \param inStream		flux utilis√© par cet encodeur.
 	///
 	TDCLPkgDecoder( TDCLRandomAccessStream* inStream );
 
@@ -82,18 +82,18 @@ public:
 	virtual ~TDCLPkgDecoder( void );
 
 	///
-	/// Crée l'objet suivant. Lit le tableau initial.
-	/// Positionne ensuite le flux sur les octets après le dernier objet,
-	/// éventuellement après des octets d'alignement.
+	/// Cr√©e l'objet suivant. Lit le tableau initial.
+	/// Positionne ensuite le flux sur les octets apr√®s le dernier objet,
+	/// √©ventuellement apr√®s des octets d'alignement.
 	///
-	/// \return une référence vers l'objet suivant.
+	/// \return une r√©f√©rence vers l'objet suivant.
 	///
 	virtual TDCLNSRef	GetNextObject( void );
 
 	///
 	/// Accesseur sur le flux de lecture.
 	///
-	/// \return le flux où lire les données.
+	/// \return le flux o√π lire les donn√©es.
 	///
 	inline TDCLRandomAccessStream* GetInputStream( void ) const
 		{
@@ -102,11 +102,11 @@ public:
 		}
 
 	///
-	/// Accesseur sur le décalage dans le flux de lecture.
-	/// Cette méthode est utilisée pour déterminer le décalage d'un objet lorsqu'il
-	/// est décodé.
+	/// Accesseur sur le d√©calage dans le flux de lecture.
+	/// Cette m√©thode est utilis√©e pour d√©terminer le d√©calage d'un objet lorsqu'il
+	/// est d√©cod√©.
 	///
-	/// \return le décalage du flux par rapport au début du paquet.
+	/// \return le d√©calage du flux par rapport au d√©but du paquet.
 	///
 	inline KUInt32 GetCurrentStreamOffset( void ) const
 		{
@@ -116,9 +116,9 @@ public:
 	///
 	/// Ajoute un objet dans la liste des objets.
 	///
-	/// \param inObject		objet à ajouter
-	/// \param inOffset		décalage de l'objet dans le flux par rapport au
-	///						début du paquet.
+	/// \param inObject		objet √† ajouter
+	/// \param inOffset		d√©calage de l'objet dans le flux par rapport au
+	///						d√©but du paquet.
 	///
 	inline void	AddObjectToList(
 					const TDCLNSRef& inObject,
@@ -142,13 +142,13 @@ private:
 	/// Lecture du premier tableau.
 	/// Positionne le flux sur le pointeur vers le premier objet.
 	///
-	/// \param inStream		flux à lire.
+	/// \param inStream		flux √† lire.
 	///
 	void		ReadFirstArray( TDCLRandomAccessStream* inStream );
 	
-	KSInt64		mOriginOffset;		///< Décalage dans le flux du début du paquet.
-	KSInt64		mMaxOffset;			///< Décalage maximal.
-	Boolean		mTopLevel;			///< Si on est à la racine de l'arbre de récursion.
+	KSInt64		mOriginOffset;		///< D√©calage dans le flux du d√©but du paquet.
+	KSInt64		mMaxOffset;			///< D√©calage maximal.
+	Boolean		mTopLevel;			///< Si on est √† la racine de l'arbre de r√©cursion.
 	Boolean		mFourBytesPadding;	///< Si l'alignement se fait sur 8 octets.
 };
 

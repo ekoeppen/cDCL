@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCommand.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			31/01/2001
+// Cr√©√© le:			31/01/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCommand.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,13 +42,13 @@
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class TDCLStream;
 class TDCLPipe;
 
 ///
-/// Type d'une fonction pour savoir l'évolution de l'envoi ou de la réception
-/// d'une commande. Cette fonction est appelée à intervalles réguliers (et
+/// Type d'une fonction pour savoir l'√©volution de l'envoi ou de la r√©ception
+/// d'une commande. Cette fonction est appel√©e √† intervalles r√©guliers (et
 /// raisonnables).
 ///
 /// \param inProgress	progression (entre 0 et 1)
@@ -56,34 +56,34 @@ class TDCLPipe;
 typedef void (*ProgressFuncPtr)(void* inRefCon, double inProgress);
 
 ///
-/// Classe de base pour les commandes reçues et envoyées au Newton.
-/// La classe TDCLPipe envoie et reçoit les commandes.
+/// Classe de base pour les commandes re√ßues et envoy√©es au Newton.
+/// La classe TDCLPipe envoie et re√ßoit les commandes.
 ///
 /// - Envoi d'une commande:
-///   N'utilisez pas cette classe mais une classe dérivée. Vous pouvez dériver
-///   cette classe si vous avez besoin d'envoyer une commande non définie dans
-///   la DCL, vous pouvez aussi utiliser la classe \c TDCLDockCmdGeneric à cet
+///   N'utilisez pas cette classe mais une classe d√©riv√©e. Vous pouvez d√©river
+///   cette classe si vous avez besoin d'envoyer une commande non d√©finie dans
+///   la DCL, vous pouvez aussi utiliser la classe \c TDCLDockCmdGeneric √† cet
 ///   effet.
-///   Une fois que la commande est prête, envoyez-là avec la méthode
+///   Une fois que la commande est pr√™te, envoyez-l√† avec la m√©thode
 ///   \c SendCommand.
 ///
-/// - Réception d'une commande:
-///   Vous obtenez normalement une objet dérivé de \c TDCLDockCommand en
-///   appelant la méthode ReceiveCommand. La méthode \c GetCommand
+/// - R√©ception d'une commande:
+///   Vous obtenez normalement une objet d√©riv√© de \c TDCLDockCommand en
+///   appelant la m√©thode ReceiveCommand. La m√©thode \c GetCommand
 ///   devrait vous renseigner sur le type de commande, vous pouvez ensuite
 ///   prendre un pointeur sur la sous-classe de \c TDCLDockCommand qui
 ///   correspond.
 ///
-/// L'envoi des données se fait par la méthode \c SendCommand. Les
-/// sous-classes ont trois stratégies possibles pour envoyer les données,
-/// suivant la façon dont les données sont organisées:
-/// 
-/// - dériver les méthodes GetLength et GetData
-/// - dériver les méthodes SendHeader et SendBody
-/// - dériver la méthode SendCommand
+/// L'envoi des donn√©es se fait par la m√©thode \c SendCommand. Les
+/// sous-classes ont trois strat√©gies possibles pour envoyer les donn√©es,
+/// suivant la fa√ßon dont les donn√©es sont organis√©es:
 ///
-/// Si une sous-classe ne suit pas au moins une de ces stratégies, une
-/// exception sera lancée.
+/// - d√©river les m√©thodes GetLength et GetData
+/// - d√©river les m√©thodes SendHeader et SendBody
+/// - d√©river la m√©thode SendCommand
+///
+/// Si une sous-classe ne suit pas au moins une de ces strat√©gies, une
+/// exception sera lanc√©e.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.7 $
@@ -96,12 +96,12 @@ public:
 	virtual	~TDCLDockCommand( void );
 
 	///
-	/// Reçoit une commande.
-	/// Cette méthode est bloquante tant que la commande n'a pas été lue.
+	/// Re√ßoit une commande.
+	/// Cette m√©thode est bloquante tant que la commande n'a pas √©t√© lue.
 	///
 	/// \param inPipe				connexion pour lire la commande.
-	/// \param inProgressFuncPtr	fonction appelée pour la progression
-	///								(\c nil signifie qu'on ne prévient pas)
+	/// \param inProgressFuncPtr	fonction appel√©e pour la progression
+	///								(\c nil signifie qu'on ne pr√©vient pas)
 	/// \param inRefCon				biscuit pour inProgressFuncPtr
 	///
 	///
@@ -111,23 +111,23 @@ public:
 									void* inRefCon = nil );
 
 	///
-	/// Reçoit une commande kDResult et retourne le code d'erreur.
+	/// Re√ßoit une commande kDResult et retourne le code d'erreur.
 	/// Lance une exception si la commande lue n'est pas une commande kDResult.
-	/// Cette méthode est bloquante tant que la commande n'a pas été lue.
+	/// Cette m√©thode est bloquante tant que la commande n'a pas √©t√© lue.
 	///
 	/// \param inPipe				connexion pour lire la commande.
-	/// \return le code d'erreur de la commande kDResult qui a été lue
+	/// \return le code d'erreur de la commande kDResult qui a √©t√© lue
 	///
 	static	KSInt32				GetResultCmd( TDCLPipe* inPipe );
 
 	///
 	/// Envoie la commande.
-	/// Par défaut, appelle SendHeader, SendBody et complète pour obtenir un
+	/// Par d√©faut, appelle SendHeader, SendBody et compl√®te pour obtenir un
 	/// multiple de 4 octets.
 	///
 	/// \param inPipe				connexion pour envoyer la commande
-	/// \param inProgressFuncPtr	fonction appelée pour la progression
-	///								(\c nil signifie qu'on ne prévient pas)
+	/// \param inProgressFuncPtr	fonction appel√©e pour la progression
+	///								(\c nil signifie qu'on ne pr√©vient pas)
 	/// \param inRefCon				biscuit pour inProgressFuncPtr
 	///
 	virtual	void				SendCommand(
@@ -142,7 +142,7 @@ public:
 
 	// Command types (I have a couple of them)
 	// (special thanks to Sascha Bendinger)
-	
+
 	// Remote query
 	//	All of the commands in this section are based on the NewtonScript query
 	//  functions.
@@ -170,7 +170,7 @@ public:
 		kDCursorCountEntries		= FOUR_CHAR_CODE('cnt '),
 		kDCursorWhichEnd			= FOUR_CHAR_CODE('whch'),
 		kDCursorFree				= FOUR_CHAR_CODE('cfre'),
-	
+
 	// Keyboard Passthrough
 
 		// Desktop -> Newton
@@ -312,7 +312,7 @@ public:
 
 		/// No data (?) undocumented.
 		/// Newton -> Dock
-		/// Réponse: ocaa
+		/// R√©ponse: ocaa
 		kDOperationCanceled2		= FOUR_CHAR_CODE('opca'),
 	// File importing
 	//	File importing uses the file browsing interface described above. After
@@ -366,7 +366,7 @@ public:
 //		kDRequestToSync				= FOUR_CHAR_CODE('ssyn'),
 		kDRequestToRestore			= FOUR_CHAR_CODE('rrst'),
 		kDRequestToInstall			= FOUR_CHAR_CODE('rins'),
-		
+
 	// 1.0 Newton ROM Support
 
 		// Newton -> Desktop Commands
@@ -397,7 +397,7 @@ public:
 		kDPackage					= FOUR_CHAR_CODE('apkg'),
 		/// data = index description array
 		kDIndexDescription			= FOUR_CHAR_CODE('indx'),
-		/// data = array of class, supperclass pairs 
+		/// data = array of class, supperclass pairs
 		kDInheritance				= FOUR_CHAR_CODE('dinh'),
 		/// no data
 		kDPatches					= FOUR_CHAR_CODE('patc'),
@@ -467,13 +467,13 @@ public:
 		kDHello						= FOUR_CHAR_CODE('helo'),
 		/// data = soup info frame
 		kDSoupInfo					= FOUR_CHAR_CODE('sinf'),
-	
+
 		// Unknown commands.
 		// Desktop -> Newton
-		/// Ouvre la fenêtre de progression.
-		/// Pas de données.
+		/// Ouvre la fen√™tre de progression.
+		/// Pas de donn√©es.
 		kDUnknown_dsnc				= FOUR_CHAR_CODE('dsnc'),
-	
+
 	// Session types
 		kNone_SType					= 0,
 		kSettingUp_SType			= 1,
@@ -483,14 +483,14 @@ public:
 		kTestComm_SType				= 5,
 		kLoadPatch_SType			= 6,
 		kUpdatingStores_SType		= 7,
-	
+
 	// GetAppNames options
-	
+
 		kNamesAndSoupsAllStores		= 0,
 		kNamesAndSoupsCurrentStore	= 1,
 		kJustNamesAllStores			= 2,
 		kJustNamesCurrentStore		= 3,
-	
+
 	// Protocol version: for Dante Dock application
 		kProtocolVersion			= 10,
 	// Note: there is a bug in the Dante documentation. If you say 9, the
@@ -499,10 +499,10 @@ public:
 	// Desktop Types
 		kMac_DType					= 0,
 		kWin_DType					= 1,
-	
+
 	// This is used for file browsing, so you'd better say Win on non MacOS
 	// machines.
-	
+
 #if TARGET_OS_MAC
 		kThis_DType					= kMac_DType,
 #else
@@ -514,15 +514,15 @@ public:
 		kFile_FSType				= 1,	// Mac & Windoze
 		kFolder_FSType				= 2,	// Mac & Windoze
 		kDisk_FSType				= 3,	// MacOS only
-	
+
 	// Dock Protocol Errors
 		kBadPassword_Err			= -28022,
 		kRetryPassword_Err			= -28023
-		
+
 	};
-	
+
 	///
-	/// Récupère le code de cette commande.
+	/// R√©cup√®re le code de cette commande.
 	///
 	/// \return l'identifiant de cette commande.
 	///
@@ -533,18 +533,18 @@ public:
 
 protected:
 	///
-	/// Constructeur par défaut.
-	/// Ne règle pas l'identifiant de la commande.
+	/// Constructeur par d√©faut.
+	/// Ne r√®gle pas l'identifiant de la commande.
 	///
 	TDCLDockCommand( void );
-	
+
 	///
-	/// Constructeur à partir de l'identifiant de la commande.
+	/// Constructeur √† partir de l'identifiant de la commande.
 	///
 	/// \param inCommand identifiant de la commande
 	///
 	TDCLDockCommand( KUInt32 inCommand );
-	
+
 	///
 	/// Change l'identifiant de la commande.
 	///
@@ -554,9 +554,9 @@ protected:
 		{
 			mCommand = inCommand;
 		};
-	
+
 	///
-	/// Méthode appelée pour récupèrer la taille de la commande avant de
+	/// M√©thode appel√©e pour r√©cup√®rer la taille de la commande avant de
 	/// l'envoyer.
 	///
 	/// \return la taille de la commande
@@ -564,36 +564,36 @@ protected:
 	virtual	KUInt32			GetLength( void ) const;
 
 	///
-	/// Méthode appelée pour récupèrer les données à envoyer.
-	/// Cette méthode n'est pas const parce que la sous-classe pour changer
-	/// l'objet pour préparer les données à envoyer.
-	/// Le pointeur appartient à la sous-classe qui doit le libérer s'il a été
-	/// alloué.
+	/// M√©thode appel√©e pour r√©cup√®rer les donn√©es √† envoyer.
+	/// Cette m√©thode n'est pas const parce que la sous-classe pour changer
+	/// l'objet pour pr√©parer les donn√©es √† envoyer.
+	/// Le pointeur appartient √† la sous-classe qui doit le lib√©rer s'il a √©t√©
+	/// allou√©.
 	///
-	/// \return un pointeur sur les données à envoyer.
+	/// \return un pointeur sur les donn√©es √† envoyer.
 	///
 	virtual const void*		GetData( void );
 
 	///
-	/// Envoie l'entête de la commande,
+	/// Envoie l'ent√™te de la commande,
 	/// i.e. 'newt', 'dock', identifiant et longueur.
-	/// Par défaut, récupère la taille avec \c GetLength et envoie les 4 longs.
+	/// Par d√©faut, r√©cup√®re la taille avec \c GetLength et envoie les 4 longs.
 	///
-	/// \param inPipe				connexion pour écrire la commande.
+	/// \param inPipe				connexion pour √©crire la commande.
 	/// \return la taille de la commande.
 	///
 	virtual	KUInt32			SendHeader( TDCLStream* inPipe );
 
 	///
 	/// Envoie le corps de la commande.
-	/// Par défaut, envoie les données obtenues par GetData.
+	/// Par d√©faut, envoie les donn√©es obtenues par GetData.
 	///
-	/// \param inPipe				connexion pour écrire la commande.
-	/// \param inLength				taille des données à envoyer
-	/// \param inProgressFuncPtr	fonction appelée pour la progression
-	///								(\c nil signifie qu'on ne prévient pas)
-	///								Cette méthode doit tenir compte du fait
-	///								que 16 octets ont déjà été envoyés.
+	/// \param inPipe				connexion pour √©crire la commande.
+	/// \param inLength				taille des donn√©es √† envoyer
+	/// \param inProgressFuncPtr	fonction appel√©e pour la progression
+	///								(\c nil signifie qu'on ne pr√©vient pas)
+	///								Cette m√©thode doit tenir compte du fait
+	///								que 16 octets ont d√©j√† √©t√© envoy√©s.
 	/// \param inRefCon				biscuit pour inProgressFuncPtr
 	///
 	virtual	void			SendBody(

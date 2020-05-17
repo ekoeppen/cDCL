@@ -2,7 +2,7 @@
 // Fichier:			TDCLObjCApplication.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/3/2003
+// Cr√©√© le:			30/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLObjCApplication.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 #include <objc/objc.h>
 #include <CoreFoundation/CFString.h>
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class TDCLLink;
 class TDCLAppCommand;
 class TDCLException;
@@ -54,9 +54,9 @@ class TDCLDockCommand;
 class TDCLLinkEngine;
 
 //
-// L'objet Cocoa gérant les messages doit suivre le protocole IDCLObjCApplication
+// L'objet Cocoa g√©rant les messages doit suivre le protocole IDCLObjCApplication
 //
-// Prototypes des eveloppes. Ces enveloppes sont définies dans
+// Prototypes des eveloppes. Ces enveloppes sont d√©finies dans
 // TDCLObjCApplication.mm
 //
 void TDCLObjCAppl_WaitConnection( id inCocoaObject, TDCLServer* inServer, TDCLCommLayer* inLayer );
@@ -79,14 +79,14 @@ IDCLFiles* TDCLObjCAppl_CreateFilesIntf( id inCocoaObject );
 IDCLThreads* TDCLObjCAppl_CreateThreadsIntf( id inCocoaObject );
 
 ///
-/// Classe pour une enveloppe autour d'un objet ObjC gérant l'interface TDCLApplication.
-/// Cette classe appelle les méthodes de l'objet Cocoa passé en paramètre du
+/// Classe pour une enveloppe autour d'un objet ObjC g√©rant l'interface TDCLApplication.
+/// Cette classe appelle les m√©thodes de l'objet Cocoa pass√© en param√®tre du
 /// constructeur (comme id).
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLObjCApplication
 	:
@@ -94,15 +94,15 @@ class TDCLObjCApplication
 {
 public:
 	///
-	/// Constructeur à partir d'un id d'objet Cocoa.
+	/// Constructeur √† partir d'un id d'objet Cocoa.
 	///
-	/// \param inCocoaObject	object cocoa appelé
+	/// \param inCocoaObject	object cocoa appel√©
 	///
 	TDCLObjCApplication( id inCocoaObject );
 
 	///
-	/// Méthode appelée lorsque le serveur commence à écouter sur une interface donnée.
-	/// Cette méthode est appelé par le serveur.
+	/// M√©thode appel√©e lorsque le serveur commence √† √©couter sur une interface donn√©e.
+	/// Cette m√©thode est appel√© par le serveur.
 	/// Elle permet d'afficher un dialogue.
 	///
 	/// \param inServer	serveur qui attend la connexion.
@@ -111,27 +111,27 @@ public:
 	virtual	void	WaitConnection( TDCLServer* inServer, TDCLCommLayer* inLayer );
 
 	///
-	/// Méthode appelée par le serveur pour indiquer que la connexion a été établie.
-	/// Le paramètre est l'interface de communication avec le Newton.
+	/// M√©thode appel√©e par le serveur pour indiquer que la connexion a √©t√© √©tablie.
+	/// Le param√®tre est l'interface de communication avec le Newton.
 	///
 	/// \param inLink	le lien courant
-	/// \param inLayer	couche de communication connectée.
+	/// \param inLayer	couche de communication connect√©e.
 	///
 	virtual	void	Connected( TDCLLink* inLink, TDCLCommLayer* inLayer );
 
 	///
-	/// Méthode appelée par le serveur une fois que le nom est connu.
-	/// Cette méthode permet de copier le nom et d'afficher le nom pour l'utilisateur
+	/// M√©thode appel√©e par le serveur une fois que le nom est connu.
+	/// Cette m√©thode permet de copier le nom et d'afficher le nom pour l'utilisateur
 	/// afin de confirmer la bonne connexion avec le Newton.
 	///
 	/// \param inLink	le lien courant
 	/// \param inName	nom de l'utilisateur (officiellement, nom du Newton). Ce pointeur
-	///					est la propriété du lien.
+	///					est la propri√©t√© du lien.
 	///	
 	virtual	void	ConnectedToNewtonDevice( TDCLLink* inLink, const KUInt16* inName );
 
 	///
-	/// Méthode appelée lorsque le lien est déconnecté
+	/// M√©thode appel√©e lorsque le lien est d√©connect√©
 	/// (ceci peut prendre du temps).
 	///
 	/// \param inLink	le lien courant
@@ -139,54 +139,54 @@ public:
 	virtual void	Disconnecting( TDCLLink* inLink );
 	
 	///
-	/// Méthode appelée lorsque le lien a été déconnecté (juste avant
-	/// que le nom ne soit libéré).
+	/// M√©thode appel√©e lorsque le lien a √©t√© d√©connect√© (juste avant
+	/// que le nom ne soit lib√©r√©).
 	///
 	/// \param inLink	le lien courant
 	///
 	virtual void	Disconnected( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée lorsque le serveur quitte.
-	/// Cette méthode est appelée par le processus léger du serveur juste avant
-	/// qu'il ne se termine (remarque: si une exception est arrivée, cette
-	/// méthode ne sera pas appelée).
+	/// M√©thode appel√©e lorsque le serveur quitte.
+	/// Cette m√©thode est appel√©e par le processus l√©ger du serveur juste avant
+	/// qu'il ne se termine (remarque: si une exception est arriv√©e, cette
+	/// m√©thode ne sera pas appel√©e).
 	///
 	/// \param inServer	serveur qui quitte
 	///
 	virtual	void	ServerIsDown( TDCLServer* inServer );
 
 	///
-	/// Méthode appelée lorsque l'utilisateur a annulé.
+	/// M√©thode appel√©e lorsque l'utilisateur a annul√©.
 	///
 	/// \param inLink	le lien courant
 	///
 	virtual void	Cancel( TDCLLink* inLink );
 	
 	///
-	/// Méthode appelée lorsqu'un délai de temporisation
-	/// est dépassé.
+	/// M√©thode appel√©e lorsqu'un d√©lai de temporisation
+	/// est d√©pass√©.
 	///
 	/// \param inLink	le lien courant
 	///
 	virtual	void	Timeout( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée lorsqu'une commande commence à être exécutée.
+	/// M√©thode appel√©e lorsqu'une commande commence √† √™tre ex√©cut√©e.
 	///
-	/// \param inLink		le lien qui a exécute la commande.
-	/// \param inCommand	la commande qui est en train d'être exécutée
+	/// \param inLink		le lien qui a ex√©cute la commande.
+	/// \param inCommand	la commande qui est en train d'√™tre ex√©cut√©e
 	///
 	virtual void 	AppCommandBeingProcessed(
 							TDCLLink* inLink,
 							TDCLAppCommand* inCommand );
 
 	///
-	/// Méthode appelée lorsqu'une commande exécutée par l'application est terminée.
+	/// M√©thode appel√©e lorsqu'une commande ex√©cut√©e par l'application est termin√©e.
 	///
-	/// \param inLink		le lien qui a exécuté la commande.
-	/// \param inCommand	la commande qui a été exécutée
-	/// \param inException	l'exception si la commande a échoué (nil si elle a réussi).
+	/// \param inLink		le lien qui a ex√©cut√© la commande.
+	/// \param inCommand	la commande qui a √©t√© ex√©cut√©e
+	/// \param inException	l'exception si la commande a √©chou√© (nil si elle a r√©ussi).
 	///
 	virtual void 	AppCommandProcessed(
 							TDCLLink* inLink,
@@ -194,11 +194,11 @@ public:
 							TDCLException* inException );
 
 	///
-	/// Méthode appelée lorsqu'une commande du Newton commence à être exécutée.
+	/// M√©thode appel√©e lorsqu'une commande du Newton commence √† √™tre ex√©cut√©e.
 	///
-	/// \param inLink		le lien qui a exécute la commande.
-	/// \param inCommand	la commande qui est en train d'être exécutée
-	/// \param inEngine		le moteur qui exécute la commande.
+	/// \param inLink		le lien qui a ex√©cute la commande.
+	/// \param inCommand	la commande qui est en train d'√™tre ex√©cut√©e
+	/// \param inEngine		le moteur qui ex√©cute la commande.
 	///
 	virtual void 	DockCommandBeingProcessed(
 							TDCLLink* inLink,
@@ -206,12 +206,12 @@ public:
 							TDCLLinkEngine* inEngine );
 
 	///
-	/// Méthode appelée lorsqu'une commande du Newton exécutée par le lien
-	/// est terminée.
+	/// M√©thode appel√©e lorsqu'une commande du Newton ex√©cut√©e par le lien
+	/// est termin√©e.
 	///
-	/// \param inLink		le lien qui a exécuté la commande.
-	/// \param inEngine		le moteur qui a exécuté la commande.
-	/// \param inException	l'exception si la commande a échoué (nil si elle a réussi).
+	/// \param inLink		le lien qui a ex√©cut√© la commande.
+	/// \param inEngine		le moteur qui a ex√©cut√© la commande.
+	/// \param inException	l'exception si la commande a √©chou√© (nil si elle a r√©ussi).
 	///
 	virtual void 	DockCommandProcessed(
 							TDCLLink* inLink,
@@ -219,10 +219,10 @@ public:
 							TDCLException* inException );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée dans
-	/// le processus léger d'un/du serveur.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e dans
+	/// le processus l√©ger d'un/du serveur.
 	///
-	/// \param inServer		serveur qui s'est vautré.
+	/// \param inServer		serveur qui s'est vautr√©.
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
 	///
@@ -231,10 +231,10 @@ public:
 							TDCLException* inException );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée dans
-	/// le processus léger d'une/de la couche de communication.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e dans
+	/// le processus l√©ger d'une/de la couche de communication.
 	///
-	/// \param inCommLayer	couche qui s'est vautrée.
+	/// \param inCommLayer	couche qui s'est vautr√©e.
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
 	///
@@ -243,10 +243,10 @@ public:
 							TDCLException* inException );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée dans
-	/// le processus léger d'un/du lien.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e dans
+	/// le processus l√©ger d'un/du lien.
 	///
-	/// \param inLink		lien qui s'est vautré.
+	/// \param inLink		lien qui s'est vautr√©.
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
 	///
@@ -256,9 +256,9 @@ public:
 
 protected:
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée dans
-	/// le processus léger. Cette méthode est appelée dans ce processus léger
-	/// qui se termine lorsque la méthode retourne.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e dans
+	/// le processus l√©ger. Cette m√©thode est appel√©e dans ce processus l√©ger
+	/// qui se termine lorsque la m√©thode retourne.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -269,36 +269,36 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLObjCApplication( const TDCLObjCApplication& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLObjCApplication& operator = ( const TDCLObjCApplication& inCopy );
 
 	///
 	/// Retourne l'abstraction pour les fichiers.
-	/// Cette méthode est appelée la première fois que
-	/// GetFilesIntf est appelée.
+	/// Cette m√©thode est appel√©e la premi√®re fois que
+	/// GetFilesIntf est appel√©e.
 	///
 	/// \return une abstraction pour utiliser les fichiers.
 	///
 	virtual IDCLFiles*		CreateFilesIntf( void );
 	
 	///
-	/// Retourne l'abstraction pour les processus légers.
-	/// Cette méthode est appelée la première fois que
-	/// GetThreadsIntf est appelée.
+	/// Retourne l'abstraction pour les processus l√©gers.
+	/// Cette m√©thode est appel√©e la premi√®re fois que
+	/// GetThreadsIntf est appel√©e.
 	///
-	/// \return une abstraction pour les processus légers.
+	/// \return une abstraction pour les processus l√©gers.
 	///
 	virtual IDCLThreads*	CreateThreadsIntf( void );
 
-	/// \name Variables privées
+	/// \name Variables priv√©es
 	id								mCocoaObject;
 };
 

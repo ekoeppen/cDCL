@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXFiles.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXFiles.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,19 +42,19 @@
 #include <DCL/Interfaces/TDCLFile.h>
 
 #if !TARGET_OS_COMPAT_POSIX
-	#error TDCLPOSIXFiles requiert la compatibilité POSIX
+	#error TDCLPOSIXFiles requiert la compatibilit√© POSIX
 #endif
 
 ///
 /// Mise en place de l'interface IDCLFiles pour POSIX.
-/// Pour avoir plusieurs racines, il faut dériver cette classe
-/// et mettre en place les méthodes GetRootFolder, CountRootFolders et
+/// Pour avoir plusieurs racines, il faut d√©river cette classe
+/// et mettre en place les m√©thodes GetRootFolder, CountRootFolders et
 /// GetRootFolderName.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.10 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPOSIXFiles
 	:
@@ -81,23 +81,23 @@ public:
 	virtual KUInt32	GetKind( void );
 
 	///
-	/// Détermine le dossier racine.
+	/// D√©termine le dossier racine.
 	///
-	/// Cette méthode retourne le dossier racine. Ce dossier appartient à l'objet
+	/// Cette m√©thode retourne le dossier racine. Ce dossier appartient √† l'objet
 	/// TDCLPOSIXFiles.
 	///
 	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
 
 	///
-	/// Détermine le nombre de dossiers racine.
+	/// D√©termine le nombre de dossiers racine.
 	///
 	/// \return 1
 	///
 	virtual KUInt32			CountRootFolders( void ) const;
 
 	///
-	/// Récupère le nom du n-ième dossier racine.
-	/// Le nom appartient à l'objet IDCLFiles.
+	/// R√©cup√®re le nom du n-i√®me dossier racine.
+	/// Le nom appartient √† l'objet IDCLFiles.
 	/// Ce nom doit obligatoirement se terminer par :
 	///
 	/// \param inFolderIndex	un indice de dossier racine, entre 0 et
@@ -122,7 +122,7 @@ public:
 	static const KUInt32 kMinutesBetween1904and1970;
 
 private:
-	/// \name variables privées
+	/// \name variables priv√©es
 	
 	TDCLFSItemRef			mRootFolder;		///< Dossier racine
 	Boolean					mFollowSymLinks;	///< Si on suit les liens symboliques.

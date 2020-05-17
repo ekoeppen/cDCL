@@ -2,7 +2,7 @@
 // Fichier:			UDCLMacCarbonUtils.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			9/4/2003
+// Cr√©√© le:			9/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLMacCarbonUtils.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -62,7 +62,7 @@
 KUInt16*
 UDCLMacCarbonUtils::HFSPlusToNewtonUnicode( const HFSUniStr255* inHFSPlusName )
 {
-	// Création du convertisseur
+	// Cr√©ation du convertisseur
 	TextEncoding HFSPlusUnicode =
 			::CreateTextEncoding(
 				kTextEncodingUnicodeV3_2,
@@ -90,7 +90,7 @@ UDCLMacCarbonUtils::HFSPlusToNewtonUnicode( const HFSUniStr255* inHFSPlusName )
 
 	// Allocation.
 	ByteCount theLength = ((ByteCount) inHFSPlusName->length) * 2;
-		// Majorant de la taille en UTF-16 composé
+		// Majorant de la taille en UTF-16 compos√©
 	KUInt16* theResult = (KUInt16*) ::malloc( theLength + 2 );
 	if (theResult == nil)
 	{
@@ -107,7 +107,7 @@ UDCLMacCarbonUtils::HFSPlusToNewtonUnicode( const HFSUniStr255* inHFSPlusName )
 					kUnicodeUseFallbacksMask | kUnicodeLooseMappingsMask,
 					0,
 					NULL,
-					NULL, //  oOffsetCount	(les entêtes disent can be NULL,
+					NULL, //  oOffsetCount	(les ent√™tes disent can be NULL,
 						  //                 mais pas la doc)
 					NULL, //  oOffsetArray	(idem)
 					theLength,
@@ -124,7 +124,7 @@ UDCLMacCarbonUtils::HFSPlusToNewtonUnicode( const HFSUniStr255* inHFSPlusName )
 	// Ajout du terminateur.
 	theResult[actualOutputLength / 2] = 0;
 	
-	// Libération du convertisseur.
+	// Lib√©ration du convertisseur.
 	theErr = ::DisposeUnicodeToTextInfo( &theConverter );
 	if (theErr != noErr)
 	{
@@ -141,10 +141,10 @@ TDCLNSRef
 UDCLMacCarbonUtils::CFToNSString(
 							CFStringRef inCFStringRef )
 {
-	// Détermination de la taille.
+	// D√©termination de la taille.
 	CFIndex theLength = ::CFStringGetLength( inCFStringRef );
 	
-	// Allocation de la chaîne avec malloc.
+	// Allocation de la cha√Æne avec malloc.
 	KUInt16* theBuffer = (KUInt16*)
 					::malloc( (size_t) (theLength + 1) * sizeof( KUInt16 ));
 	if (theBuffer == nil)
@@ -152,7 +152,7 @@ UDCLMacCarbonUtils::CFToNSString(
 		throw DCLMemError;
 	}
 	
-	// Copie des données
+	// Copie des donn√©es
 	(void) ::CFStringGetCharacters(
 					inCFStringRef,
 					CFRangeMake( 0, theLength ),
@@ -163,7 +163,7 @@ UDCLMacCarbonUtils::CFToNSString(
 	
 	TDCLNSRef theResult = TDCLNSRef::MakeString( theBuffer );
 	
-	// Libération de la mémoire tampon.
+	// Lib√©ration de la m√©moire tampon.
 	::free( theBuffer );
 
 	return theResult;
@@ -187,17 +187,17 @@ UDCLMacCarbonUtils::NSToCFString( const TDCLNSString& inNSString )
 const char*
 UDCLMacCarbonUtils::CFToCString( CFStringRef inCFStringRef )
 {
-	// Détermination de la taille.
+	// D√©termination de la taille.
 	CFIndex theLength = ::CFStringGetLength( inCFStringRef );
                             
-	// Allocation de la chaîne avec malloc.
+	// Allocation de la cha√Æne avec malloc.
 	char* theResult = (char*) ::malloc( (size_t) theLength + 1 );
 	if (theResult == nil)
 	{
 		throw DCLMemError;
 	}
                             
-	// Copie des données avec le terminateur.
+	// Copie des donn√©es avec le terminateur.
 	(void) ::CFStringGetCString(
 			inCFStringRef,
 			theResult,

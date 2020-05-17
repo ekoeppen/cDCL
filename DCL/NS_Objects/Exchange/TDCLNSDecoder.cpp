@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSDecoder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			07/08/2002
+// Cr√©√© le:			07/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSDecoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,7 +44,7 @@ TDCLNSDecoder::TDCLNSDecoder( TDCLStream* inStream )
 	:
 		TDCLNSCodec( inStream )
 {
-	// Défense d'afficher.
+	// D√©fense d'afficher.
 }
 
 // ------------------------------------------------------------------------- //
@@ -95,7 +95,7 @@ TDCLNSDecoder::GetNextObjectWithCookie(
 	{
 		if (*GetListItemCookie( theID ) == inCookie)
 		{
-			// Trouvé.
+			// Trouv√©.
 			if (ioID)
 			{
 				*ioID = theID;

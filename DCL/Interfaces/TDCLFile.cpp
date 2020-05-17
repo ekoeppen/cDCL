@@ -2,7 +2,7 @@
 // Fichier:			TDCLFile.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			04/02/2003
+// Cr√©√© le:			04/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFile.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,7 +51,7 @@ TDCLFile::TDCLFile( IDCLFiles* inFilesIntf, TDCLFSItemRef inParentFolder )
 	:
 		TDCLFSItem( inFilesIntf, kFile, inParentFolder )
 {
-	// Défense d'afficher.
+	// D√©fense d'afficher.
 }
 
 // ------------------------------------------------------------------------- //
@@ -63,7 +63,7 @@ TDCLFile::PeekByte( void )
 	// Lecture de l'octet.
 	KUInt8 theResult = GetByte();
 	
-	// Retour en arrière.
+	// Retour en arri√®re.
 	SetCursor( -1, kFromCursor );
 	
 	return theResult;
@@ -75,7 +75,7 @@ TDCLFile::PeekByte( void )
 TDCLFSItemRef
 TDCLFile::MakeParentFolder( void ) const
 {
-	// Cette méthode ne doit jamais être appelée.
+	// Cette m√©thode ne doit jamais √™tre appel√©e.
 	throw DCLNotImplementedError;
 }
 
@@ -117,7 +117,7 @@ TDCLFile::IsPackage( void )
 {
 	Boolean theResult = false;
 	
-	// On protège l'appel à TDCLPackage::IsPackage.
+	// On prot√®ge l'appel √† TDCLPackage::IsPackage.
 	try {
 		theResult = TDCLPackage::IsPackage( this );
 	} catch ( ... ) {

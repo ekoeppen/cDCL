@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSEncoder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSEncoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -47,8 +47,8 @@ class TDCLNSObject;
 class TDCLStream;
 
 ///
-/// Classe pour l'encodage d'objets NS. Elle gère la liste des objets avec les IDs.
-/// Un objet peut demander l'ID courant ou chercher si un objet est déjà dans la liste.
+/// Classe pour l'encodage d'objets NS. Elle g√®re la liste des objets avec les IDs.
+/// Un objet peut demander l'ID courant ou chercher si un objet est d√©j√† dans la liste.
 /// (les structures NewtonScript ne sont pas des arbres mais des DAG).
 /// Cette classe est abstraite.
 ///
@@ -68,22 +68,22 @@ public:
 	virtual ~TDCLNSEncoder( void );
 
 	///
-	/// Ajoute un objet dans un flux donné.
-	/// Cette méthode commence par regarder si l'objet est un immédiat
-	/// ou pas. Si c'est un immédiat, elle appelle PutRef, sinon elle
+	/// Ajoute un objet dans un flux donn√©.
+	/// Cette m√©thode commence par regarder si l'objet est un imm√©diat
+	/// ou pas. Si c'est un imm√©diat, elle appelle PutRef, sinon elle
 	/// appelle PutObject.
-	/// Cette méthode ajoute l'objet ou une référence si l'objet est
-	/// déjà dans la liste.
+	/// Cette m√©thode ajoute l'objet ou une r√©f√©rence si l'objet est
+	/// d√©j√† dans la liste.
 	/// Remarque: la comparaison n'est faite que sur les pointeurs.
 	///
-	/// \param inObject		référence de l'objet à ajouter
+	/// \param inObject		r√©f√©rence de l'objet √† ajouter
 	///
 	virtual void	AddObject( const TDCLNSRef& inObject );
 
 	///
 	/// Accesseur sur le flux de sortie.
 	///
-	/// \return le flux de sortie sur lequel écrire les données.
+	/// \return le flux de sortie sur lequel √©crire les donn√©es.
 	///
 	inline TDCLStream* GetOutputStream( void ) const
 		{
@@ -91,13 +91,13 @@ public:
 		}
 
 	///
-	/// Détermine si un objet est déjà dans la liste.
+	/// D√©termine si un objet est d√©j√† dans la liste.
 	///
-	/// \param inObject			objet à chercher dans la liste.
+	/// \param inObject			objet √† chercher dans la liste.
 	/// \param outObjectID		en sortie, identifiant de l'objet, non
-	///							renseigné si \c nil.
-	/// \param outObjectCookie	en sortie, biscuit associé à l'objet (idem).
-	/// \return \c true si l'objet a déjà été encodé.
+	///							renseign√© si \c nil.
+	/// \param outObjectCookie	en sortie, biscuit associ√© √† l'objet (idem).
+	/// \return \c true si l'objet a d√©j√† √©t√© encod√©.
 	///
 	Boolean WasObjectEncoded(
 				TDCLNSObject* inObject,
@@ -106,30 +106,30 @@ public:
 
 protected:
 	///
-	/// Constructeur à partir d'un flux.
+	/// Constructeur √† partir d'un flux.
 	///
-	/// \param inStream		flux où écrire les données encodées.
+	/// \param inStream		flux o√π √©crire les donn√©es encod√©es.
 	///
 	TDCLNSEncoder( TDCLStream* inStream );
 
 	///
-	/// Met dans le flux la référence d'un objet déjà encodé.
+	/// Met dans le flux la r√©f√©rence d'un objet d√©j√† encod√©.
 	///
-	/// \param inRefID		référence de l'objet ajouté.
-	/// \param inCookie		en entrée, biscuit laissé par PutObject
-	///						lorsque l'objet a été ajouté la première fois.
+	/// \param inRefID		r√©f√©rence de l'objet ajout√©.
+	/// \param inCookie		en entr√©e, biscuit laiss√© par PutObject
+	///						lorsque l'objet a √©t√© ajout√© la premi√®re fois.
 	///
 	virtual void	PutPrecedent( KUInt32 inRefID, KUIntPtr inCookie ) = 0;
 
 	///
-	/// Met dans le flux un objet donné.
+	/// Met dans le flux un objet donn√©.
 	///
-	/// \param inObject		objet à ajouter.
-	/// \param inObjectID	ID de l'objet à ajouter, -1 si CanHavePrecedentID
-	///						a retourné \c false.
-	/// \param outCookie	en sortie, biscuit passé par la suite à
+	/// \param inObject		objet √† ajouter.
+	/// \param inObjectID	ID de l'objet √† ajouter, -1 si CanHavePrecedentID
+	///						a retourn√© \c false.
+	/// \param outCookie	en sortie, biscuit pass√© par la suite √†
 	///						PutPrecedent, \c nil si CanHavePrecedentID a
-	///						retourné \c false.
+	///						retourn√© \c false.
 	///
 	virtual void	PutObject(
 						const TDCLNSObject* inObject,
@@ -137,26 +137,26 @@ protected:
 						KUIntPtr* outCookie ) = 0;
 
 	///
-	/// Met dans le flux un immédiat donné.
+	/// Met dans le flux un imm√©diat donn√©.
 	///
-	/// \param inRef		référence à ajouter.
+	/// \param inRef		r√©f√©rence √† ajouter.
 	///
 	virtual void	PutRef( const TDCLNSRef& inRef ) = 0;
 
 	///
-	/// Détermine si l'objet donné peut être référencé par un "precedent".
+	/// D√©termine si l'objet donn√© peut √™tre r√©f√©renc√© par un "precedent".
 	///
 	/// Sert pour les symboles. NSOF dit oui, Text et XML disent non.
-	/// Par défaut, retourne \c true.
+	/// Par d√©faut, retourne \c true.
 	///
-	/// \param inObject		objet considéré.
-	/// \return \c true si l'objet peut être référencé, \c false sinon.
+	/// \param inObject		objet consid√©r√©.
+	/// \return \c true si l'objet peut √™tre r√©f√©renc√©, \c false sinon.
 	///
 	virtual Boolean	CanHavePrecedentID( TDCLNSObject* inObject );
 	
 private:
 	///
-	/// Constructeur par défaut non disponible.
+	/// Constructeur par d√©faut non disponible.
 	///
 	TDCLNSEncoder( void );
 };

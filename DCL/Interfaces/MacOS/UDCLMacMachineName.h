@@ -2,7 +2,7 @@
 // Fichier:			UDCLMacMachineName.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			26/01/2002
+// Cr√©√© le:			26/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLMacMachineName.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,29 +51,29 @@
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
 
 ///
-/// Classe pour récupérer le nom de la machine sur Mac.
+/// Classe pour r√©cup√©rer le nom de la machine sur Mac.
 ///
-/// Code provenant de la Q&A 11078 (ici modifié)
+/// Code provenant de la Q&A 11078 (ici modifi√©)
 /// http://developer.apple.com/qa/qa2001/qa1078.html
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class UDCLMacMachineName
 {
 public:
 	///
-	/// Récupère le nom de cette machine.
-	/// Suivant la version du système, on utilise une des trois méthodes
+	/// R√©cup√®re le nom de cette machine.
+	/// Suivant la version du syst√®me, on utilise une des trois m√©thodes
 	/// suivantes:
 	/// - Ressource (< X)
 	/// - Fichier (10.0.x)
 	/// - CSCopyMachineName (>= 10.1)
 	///
-	/// \return le nom de cette machine alloué avec \c malloc.
-	/// \throws TDCLNotAvailableException si le nom n'a pu être récupéré.
+	/// \return le nom de cette machine allou√© avec \c malloc.
+	/// \throws TDCLNotAvailableException si le nom n'a pu √™tre r√©cup√©r√©.
 	///
 	static const char*	GetMachineName( void );
 
@@ -88,11 +88,11 @@ private:
 	};
 
 	///
-	/// Récupère le nom de la machine avec la méthode du fichier.
+	/// R√©cup√®re le nom de la machine avec la m√©thode du fichier.
 	///
-	/// \return le nom de cette machine alloué avec \c malloc.
-	/// \throws TDCLNotAvailableException si le fichier n'est pas présent ou ne
-	///			peut être lu
+	/// \return le nom de cette machine allou√© avec \c malloc.
+	/// \throws TDCLNotAvailableException si le fichier n'est pas pr√©sent ou ne
+	///			peut √™tre lu
 	///
 	static const char*	ReadMachineNameFromFile( void );
 
@@ -105,10 +105,10 @@ private:
 	};
 
 	///
-	/// Récupère le nom de la machine avec la méthode de la ressource.
+	/// R√©cup√®re le nom de la machine avec la m√©thode de la ressource.
 	///
-	/// \return le nom de cette machine alloué avec \c malloc.
-	/// \throws TDCLNotAvailableException si le nom n'a pu être récupéré.
+	/// \return le nom de cette machine allou√© avec \c malloc.
+	/// \throws TDCLNotAvailableException si le nom n'a pu √™tre r√©cup√©r√©.
 	///
 	static const char*	ReadMachineNameFromResource( void );
 #endif

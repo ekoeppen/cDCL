@@ -2,7 +2,7 @@
 // Fichier:			UDCLPaperback.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			9/5/2004
+// Cr√©√© le:			9/5/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLPaperback.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -48,13 +48,13 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class UDCLPaperback
 {
 public:
 	///
-	/// Encodages pour des chaînes.
+	/// Encodages pour des cha√Ænes.
 	///
 	enum EEncoding {
 		kUTF8,						///< UTF-8
@@ -65,15 +65,15 @@ public:
 	};
 	
 	///
-	/// Construit le livre à partir d'un flux.
+	/// Construit le livre √† partir d'un flux.
 	///
-	/// \param inTextStream		flux avec le texte (lu jusqu'à la fin)
-	/// \param inEncoding		encodage des données.
+	/// \param inTextStream		flux avec le texte (lu jusqu'√† la fin)
+	/// \param inEncoding		encodage des donn√©es.
 	/// \param inBookTitle		titre du livre (en ISO-8869-1)
-	/// \param inTOCPrefix		préfixe des ligne de la TOC (pas de TOC si \c nil)
-	/// \param inDeleteTOCLines	si les lignes de la TOC doivent être supprimées
-	/// \param inFontName		nom de la police par défaut (Geneva si \c nil)
-	/// \param inFontSize		taille de la police par défaut
+	/// \param inTOCPrefix		pr√©fixe des ligne de la TOC (pas de TOC si \c nil)
+	/// \param inDeleteTOCLines	si les lignes de la TOC doivent √™tre supprim√©es
+	/// \param inFontName		nom de la police par d√©faut (Geneva si \c nil)
+	/// \param inFontSize		taille de la police par d√©faut
 	///
 	static TDCLNSRef BuildBook(
 			TDCLStream* inTextStream,
@@ -86,13 +86,13 @@ public:
 
 private:
 	///
-	/// Extrait la chaîne.
+	/// Extrait la cha√Æne.
 	///
 	/// \param inTextStream		flux du texte.
 	/// \param inEncoding		encodage
-	/// \param outUTF16Text		en sortie, texte alloué avec malloc.
-	/// \param outSize			en sortie, nombre de caractères.
-	/// \return une chaîne UTF-16 avec un saut de ligne à la fin.
+	/// \param outUTF16Text		en sortie, texte allou√© avec malloc.
+	/// \param outSize			en sortie, nombre de caract√®res.
+	/// \return une cha√Æne UTF-16 avec un saut de ligne √† la fin.
 	///
 	static void ExtractString(
 				TDCLStream* inTextStream,
@@ -103,24 +103,24 @@ private:
 	///
 	/// Conversion des fins de ligne vers les lignes Mac.
 	///
-	/// \param inUTF16Text	chaîne UTF-16 allouée avec malloc.
-	/// \param ioSize		nombre de caractères (en entrée et en sortie)
+	/// \param inUTF16Text	cha√Æne UTF-16 allou√©e avec malloc.
+	/// \param ioSize		nombre de caract√®res (en entr√©e et en sortie)
 	///
 	static void ConvertEndLines( KUInt16* inUTF16Text, KUInt32* ioSize );
 
 	///
-	/// Construit la table des matières.
+	/// Construit la table des mati√®res.
 	///
 	/// \param inText			le texte
-	/// \param ioTextSize		nombre de caractères (en entrée et en sortie)
-	/// \param inTOCLinePrefix	préfixe ou \c nil pour pas de TOC.
-	/// \param inDeleteTOCLines si les lignes de la TOC doivent être supprimées.
-	/// \param outTOCEntries	en sortie, pointeur sur les entrées alloué avec
-	///							malloc. Les éléments sont aussi alloués avec
+	/// \param ioTextSize		nombre de caract√®res (en entr√©e et en sortie)
+	/// \param inTOCLinePrefix	pr√©fixe ou \c nil pour pas de TOC.
+	/// \param inDeleteTOCLines si les lignes de la TOC doivent √™tre supprim√©es.
+	/// \param outTOCEntries	en sortie, pointeur sur les entr√©es allou√© avec
+	///							malloc. Les √©l√©ments sont aussi allou√©s avec
 	///							malloc.
-	/// \param outTOCIndexes	en sortie, pointeur sur les indices alloué avec
+	/// \param outTOCIndexes	en sortie, pointeur sur les indices allou√© avec
 	///							malloc.
-	/// \param outTOCSize		en sortie, taille de la table des matières.
+	/// \param outTOCSize		en sortie, taille de la table des mati√®res.
 	///
 	static void BuildTOC(
 				KUInt16* inText,
@@ -132,11 +132,11 @@ private:
 				KUInt32* outTOCSize );
 
 	///
-	/// Construit la police par défaut.
+	/// Construit la police par d√©faut.
 	///
 	/// \param inFontName		nom de la police (ou \c nil pour Geneva)
 	/// \param inFontSize		taille de la police.
-	/// \return une spécification de police correspondant.
+	/// \return une sp√©cification de police correspondant.
 	///
 	static TDCLNSRef BuildFont(
 				const char* inFontName,
@@ -146,14 +146,14 @@ private:
 	/// Construit le livre.
 	///
 	/// \param inText			texte du livre
-	/// \param inDefaultFont	police par défaut (de BuildFont)
-	/// \param inBookTitle		titre du livre.
-	/// \param inTOCEntries		pointeur sur les entrées (de BuildTOC)
+	/// \param inDefaultFont	police par d√©faut (de BuildFont)
+	///¬†\param inBookTitle		titre du livre.
+	/// \param inTOCEntries		pointeur sur les entr√©es (de BuildTOC)
 	///							ou \c nil.
 	/// \param inTOCIndexes		pointeur sur les indices (de BuildTOC)
 	///							ou \c nil.
-	/// \param inTOCSize		taille de la table des matières (en nombre
-	///							d'entrées) (de BuildTOC).
+	/// \param inTOCSize		taille de la table des mati√®res (en nombre
+	///							d'entr√©es) (de BuildTOC).
 	/// \return la structure du paquet.
 	///
 	static TDCLNSRef BuildBook(

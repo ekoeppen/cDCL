@@ -2,7 +2,7 @@
 // Fichier:			TDCLLink.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			28/06/2000
+// CrÃ©Ã© le:			28/06/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLLink.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -65,7 +65,7 @@
 #include <DCL/Server/TDCLServer.h>
 
 // ------------------------------------------------------------------------- //
-//  * DŽverminage
+//  * DÃ©verminage
 // ------------------------------------------------------------------------- //
 
 #undef KERROR_ENABLED
@@ -90,7 +90,7 @@
 #endif
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLLink( TDCLApplication*, TDCLPipe*, KUInt32 )
+//  *Â TDCLLink( TDCLApplication*, TDCLPipe*, KUInt32 )
 // --------------------------------------------------------------------------------	//
 TDCLLink::TDCLLink(
 					TDCLApplication* inApplication,
@@ -125,7 +125,7 @@ TDCLLink::TDCLLink(
 }
 
 // --------------------------------------------------------------------------------	//
-//  *Ê~TDCLLink( void )
+//  *Â ~TDCLLink( void )
 // --------------------------------------------------------------------------------	//
 TDCLLink::~TDCLLink( void )
 {
@@ -141,19 +141,19 @@ TDCLLink::~TDCLLink( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊConnect( TDCLPipe*, TDCLServer* )
+//  *Â Connect( TDCLPipe*, TDCLServer* )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::Connect( TDCLPipe* inPipe, TDCLServer* inServer )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sŽmaphore sur l'Žtat.
+	// Acquisition du sÃ©maphore sur l'Ã©tat.
 	mStateMutex->Acquire();
 	
 	if (mState == kDisconnected)
 	{
-		// VŽrification que le processus lŽger ne tourne pas.
+		// VÃ©rification que le processus lÃ©ger ne tourne pas.
 		IDCLThreads::EState theState = GetThreadState();
 		if( theState != IDCLThreads::kStopped )
 		{
@@ -165,25 +165,25 @@ TDCLLink::Connect( TDCLPipe* inPipe, TDCLServer* inServer )
 		mPipe = inPipe;
 		mServer = inServer;
 		
-		// Lancement du processus lŽger.
+		// Lancement du processus lÃ©ger.
 		Start();
 	}
 	
-	// LibŽration du sŽmaphore
+	// LibÃ©ration du sÃ©maphore
 	mStateMutex->Release();
 	
 	return theResult;
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊDisconnect( void )
+//  *Â Disconnect( void )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::Disconnect( void )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sŽmaphore sur l'Žtat.
+	// Acquisition du sÃ©maphore sur l'Ã©tat.
 	mStateMutex->Acquire();
 	
 	if ((mState != kDisconnected) && (mState != kDisconnecting))
@@ -191,10 +191,10 @@ TDCLLink::Disconnect( void )
 		theResult = true;
 	}
 	
-	// LibŽration du sŽmaphore
+	// LibÃ©ration du sÃ©maphore
 	mStateMutex->Release();
 	
-	// On envoie un ŽvŽnement si le processus tourne toujours.
+	// On envoie un Ã©vÃ©nement si le processus tourne toujours.
 	if (theResult)
 	{
 		PostEvent( new TDCLEvent(
@@ -206,14 +206,14 @@ TDCLLink::Disconnect( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊPostAppCommand( TDCLAppCommand* )
+//  *Â PostAppCommand( TDCLAppCommand* )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sŽmaphore sur l'Žtat.
+	// Acquisition du sÃ©maphore sur l'Ã©tat.
 	mStateMutex->Acquire();
 	
 	if ((mState != kDisconnected) && (mState != kDisconnecting))
@@ -221,10 +221,10 @@ TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 		theResult = true;
 	}
 	
-	// LibŽration du sŽmaphore
+	// LibÃ©ration du sÃ©maphore
 	mStateMutex->Release();
 	
-	// On envoie un ŽvŽnement si le processus tourne toujours.
+	// On envoie un Ã©vÃ©nement si le processus tourne toujours.
 	if (theResult)
 	{
 		PostEvent( inCommand );
@@ -234,14 +234,14 @@ TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊClose( void )
+//  *Â Close( void )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::Close( void )
 {
 	Boolean theResult = IsConnected();
 	
-	// On envoie un ŽvŽnement si on est connectŽ.
+	// On envoie un Ã©vÃ©nement si on est connectÃ©.
 	if (theResult)
 	{
 		PostEvent( new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kCloseLink ) );
@@ -251,14 +251,14 @@ TDCLLink::Close( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊIsConnected( void )
+//  *Â IsConnected( void )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::IsConnected( void )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sŽmaphore sur l'Žtat.
+	// Acquisition du sÃ©maphore sur l'Ã©tat.
 	mStateMutex->Acquire();
 	
 	if (mState != kDisconnected)
@@ -266,21 +266,21 @@ TDCLLink::IsConnected( void )
 		theResult = true;
 	}
 	
-	// LibŽration du sŽmaphore
+	// LibÃ©ration du sÃ©maphore
 	mStateMutex->Release();
 	
 	return theResult;
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊDisconnected( void )
+//  *Â Disconnected( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::Disconnected( void )
 {
-	mPipe = nil;	// Je ne suis plus connectŽ.
+	mPipe = nil;	// Je ne suis plus connectÃ©.
 
-	// On indique au serveur qu'on n'est dŽconnectŽ.
+	// On indique au serveur qu'on n'est dÃ©connectÃ©.
 	mServer->Disconnected( this );
 		
 	if (mNewtonName)
@@ -291,24 +291,24 @@ TDCLLink::Disconnected( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊConnected( void )
+//  *Â Connected( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::Connected( void )
 {
-	// Je transmets le nom ˆ l'application.
+	// Je transmets le nom Ã  l'application.
 	mApplication->ConnectedToNewtonDevice( this, mNewtonName );
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊDoConnect( void )
+//  *Â DoConnect( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::DoConnect( void )
 {
-	// On dit ˆ l'application que le lien est connectŽ. Ainsi elle pourra lui envoyer
+	// On dit Ã  l'application que le lien est connectÃ©. Ainsi elle pourra lui envoyer
 	// des messages.
-	// On dit aussi ˆ la connexion que le lien va l'utiliser. (idem)
+	// On dit aussi Ã  la connexion que le lien va l'utiliser. (idem)
 	mApplication->Connected( this, mPipe->Connected( this ) );	
 	
 	// Discussion avec le Newton.
@@ -393,14 +393,14 @@ TDCLLink::DoConnect( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊDoDisconnect( void )
+//  *Â DoDisconnect( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::DoDisconnect( void )
 {
 	if (mPipe)
 	{
-		// Je dis ˆ l'application que je dŽconnecte.
+		// Je dis Ã  l'application que je dÃ©connecte.
 		mApplication->Disconnecting( this );
 
 		// Then, I send the disconnect command.
@@ -410,7 +410,7 @@ TDCLLink::DoDisconnect( void )
 			theDisconnectMessage.SendCommand( mPipe );
 		}
 
-		// RŽcupŽration du rŽsultat.
+		// RÃ©cupÃ©ration du rÃ©sultat.
 		Boolean gotResult = false;
 		
 		try {
@@ -444,12 +444,12 @@ TDCLLink::DoDisconnect( void )
 						break;
 
 					default:
-						// Commande non prŽvue.
+						// Commande non prÃ©vue.
 						throw DCLUnexpDockCmd;
 				}
 			} while ((gotResult == false) && mPipe->BytesAvailable());
 			
-			// Si la connexion ne gre pas flush, on attend 5 secondes.
+			// Si la connexion ne gÃ¨re pas flush, on attend 5 secondes.
 
 			if (!mPipe->FlushAvailable())
 			{
@@ -464,18 +464,18 @@ TDCLLink::DoDisconnect( void )
 				}
 			}
 		} catch (TDCLEOFException& anException) {
-			// On ignore une exception EOF (dŽconnexion de l'autre c™tŽ).
+			// On ignore une exception EOF (dÃ©connexion de l'autre cÃ´tÃ©).
 		}
 		
-		// Le serveur va gŽrer la dŽconnexion dans HandleLinkDisconnection
-		// mPipe sera mis ˆ nil au prochain passage dans la boucle.
+		// Le serveur va gÃ©rer la dÃ©connexion dans HandleLinkDisconnection
+		// mPipe sera mis Ã  nil au prochain passage dans la boucle.
 	} else {
 		throw DCLBadStateError;
 	}
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊRun( void )
+//  *Â Run( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::Run( void )
@@ -493,11 +493,11 @@ TDCLLink::Run( void )
 		// Acquisition
 		mStateMutex->Acquire();
 
-		// RŽcupŽration.
+		// RÃ©cupÃ©ration.
 		theState = mState;
 		theNextState = theState;
 	
-		// LibŽration
+		// LibÃ©ration
 		mStateMutex->Release();
 
 		try {
@@ -511,7 +511,7 @@ TDCLLink::Run( void )
 				case kConnected:
 					Connected();
 					theNextState = kRunning;
-					// On attend des donnŽes (ou un ŽvŽnement de l'application).
+					// On attend des donnÃ©es (ou un Ã©vÃ©nement de l'application).
 					mPipe->ClearDataPresent();
 					break;
 				
@@ -531,7 +531,7 @@ TDCLLink::Run( void )
 					break;
 			}
 		} catch (TDCLEOFException& inException) {
-			// On a ŽtŽ dŽconnectŽ (le Newton a probablement coupŽ).
+			// On a Ã©tÃ© dÃ©connectÃ© (le Newton a probablement coupÃ©).
 			Disconnected();
 			keepLooping = false;
 			theNextState = kDisconnected;
@@ -542,29 +542,29 @@ TDCLLink::Run( void )
 			// Acquisition
 			mStateMutex->Acquire();
 
-			// VŽrification que l'Žtat n'a pas ŽtŽ changŽ pendant qu'on avait le
-			// dos tournŽ.
+			// VÃ©rification que l'Ã©tat n'a pas Ã©tÃ© changÃ© pendant qu'on avait le
+			// dos tournÃ©.
 			if (mState == theState)
 			{
 				// Changement
 				mState = theNextState;
 			}
 	
-			// LibŽration
+			// LibÃ©ration
 			mStateMutex->Release();
 		}
 	}
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTransitionFromRunning( void )
+//  *Â TransitionFromRunning( void )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::TransitionFromRunning( void )
 {
 	EState theNextState = kRunning;
 	
-	// On attend le prochain ŽvŽnement.
+	// On attend le prochain Ã©vÃ©nement.
 	TDCLEvent* theNextEvent;
 	KUInt32 theEventMask =
 			TDCLEvent::kLinkEvent
@@ -576,11 +576,11 @@ TDCLLink::TransitionFromRunning( void )
 		// On a dormi tout le temps.
 		theNextState = Idle();
 	} else {
-		// On est occupŽ.
+		// On est occupÃ©.
 		mIsBusy = true;
 		try {
-			// L'ŽvŽnement est-il une commande de l'application?
-			// Si on a un ŽvŽnement de l'application, on le gre.
+			// L'Ã©vÃ©nement est-il une commande de l'application?
+			// Si on a un Ã©vÃ©nement de l'application, on le gÃ¨re.
 			Boolean outProcessed = false;
 			if (theNextEvent->GetEventKind() & TDCLEvent::kAnyAppCommandMask)
 			{
@@ -613,12 +613,12 @@ TDCLLink::TransitionFromRunning( void )
 			} else {
 				TDCLEvent::EEventID theEventID = theNextEvent->GetEventID();
 
-				// Sinon, on regarde si le Newton a envoyŽ des donnŽes.
+				// Sinon, on regarde si le Newton a envoyÃ© des donnÃ©es.
 				if (theEventID == TDCLEvent::kBytesAvailable)
 				{
-					// Nous avons ŽtŽ rŽveillŽs par des donnŽes. Cependant,
-					// il est possible que nous ayions dŽjˆ lu ces donnŽes.
-					// On vŽrifie s'il en reste.
+					// Nous avons Ã©tÃ© rÃ©veillÃ©s par des donnÃ©es. Cependant,
+					// il est possible que nous ayions dÃ©jÃ  lu ces donnÃ©es.
+					// On vÃ©rifie s'il en reste.
 					if (mPipe->BytesAvailable())
 					{
 						TSmartPtr< TDCLDockCommand > theNewtMessage;
@@ -643,13 +643,13 @@ TDCLLink::TransitionFromRunning( void )
 						}
 					}
 					
-					// On attend ˆ nouveau des donnŽes.
+					// On attend Ã  nouveau des donnÃ©es.
 					mPipe->ClearDataPresent();
 				} else if (theEventID == TDCLEvent::kDisconnectLink) {
-					// Il faut se dŽconnecter.
+					// Il faut se dÃ©connecter.
 					theNextState = kDisconnecting;
 				} else if (theEventID == TDCLEvent::kCloseLink) {
-					// On est dŽconnectŽ.
+					// On est dÃ©connectÃ©.
 					theNextState = kDisconnected;
 				} // if (theEventID == kBytesAvailable) ... else if ...
 			}
@@ -661,11 +661,11 @@ TDCLLink::TransitionFromRunning( void )
 				theNextEvent = nil;
 			}
 			
-			// On n'est plus occupŽ.
+			// On n'est plus occupÃ©.
 			mIsBusy = false;
 			throw;	// On relance.
 		}
-		// On n'est plus occupŽ.
+		// On n'est plus occupÃ©.
 		mIsBusy = false;
 		
 		if (theNextEvent)
@@ -678,7 +678,7 @@ TDCLLink::TransitionFromRunning( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊHandleException( TDCLException* )
+//  *Â HandleException( TDCLException* )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::HandleException( TDCLException* inException )
@@ -701,14 +701,14 @@ TDCLLink::HandleException( TDCLException* inException )
 			break;
 	}
 	
-	// LibŽration
+	// LibÃ©ration
 	mStateMutex->Release();
 
 	mApplication->HandleLinkException( this, inException );
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊIdle( void )
+//  *Â Idle( void )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::Idle( void )
@@ -719,20 +719,20 @@ TDCLLink::Idle( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  *Â ProcessAppCommand( TDCLAppCommand*, Boolean* )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::ProcessAppCommand(
 					TDCLAppCommand* /* inCommand */,
 					Boolean* outProcessed )
 {
-	// On ne fait rien par dŽfaut.
+	// On ne fait rien par dÃ©faut.
 	*outProcessed = false;
 	return kRunning;
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊDataPresent( void )
+//  *Â DataPresent( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLLink::DataPresent( void )
@@ -741,7 +741,7 @@ TDCLLink::DataPresent( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetAppCommandMask( void )
+//  *Â GetAppCommandMask( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLLink::GetAppCommandMask( void )
@@ -750,7 +750,7 @@ TDCLLink::GetAppCommandMask( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊReceiveCommand( void )
+//  *Â ReceiveCommand( void )
 // --------------------------------------------------------------------------------	//
 TDCLDockCommand*
 TDCLLink::ReceiveCommand( void )

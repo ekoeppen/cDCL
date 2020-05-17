@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSOFDecoder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/10/2002
+// Cr√©√© le:			22/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSOFDecoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -54,7 +54,7 @@ TDCLNSOFDecoder::TDCLNSOFDecoder( TDCLStream* inStream )
 	:
 		TDCLNSDecoder( inStream )
 {
-	// Lecture & vérification de la version.
+	// Lecture & v√©rification de la version.
 	KUInt8 theVersion = inStream->GetByte();
 	if (theVersion != kNSOFVersion)
 	{
@@ -79,8 +79,8 @@ TDCLNSOFDecoder::GetNextObject( void )
 	TDCLStream* theStream = GetInputStream();
 	KUInt8 theType = theStream->GetByte();
 	
-	// Suivant le type, lecture de l'objet (ou récupération de l'objet dans
-	// la liste de ceux déjà lus).
+	// Suivant le type, lecture de l'objet (ou r√©cup√©ration de l'objet dans
+	// la liste de ceux d√©j√† lus).
 	TDCLNSRef theResult;
 	
 	switch (theType)
@@ -122,7 +122,7 @@ TDCLNSOFDecoder::GetNextObject( void )
 			break;
 
 		case kNIL:
-			// theResult vaut déjà NIL.
+			// theResult vaut d√©j√† NIL.
 			break;
 
 		case kSmallRect:
@@ -134,7 +134,7 @@ TDCLNSOFDecoder::GetNextObject( void )
 			break;
 
 		case kPrecedent:
-			// L'objet a déjà été lu.
+			// L'objet a d√©j√† √©t√© lu.
 		    {
 				KUInt32 theID = theStream->GetXLong();
 				theResult = GetObject( theID );

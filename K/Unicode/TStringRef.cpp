@@ -2,7 +2,7 @@
 // Fichier:			TStringRef.cp
 // Projet:			K
 // 
-// Créé le:			3/8/2003
+// Cr√©√© le:			3/8/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****

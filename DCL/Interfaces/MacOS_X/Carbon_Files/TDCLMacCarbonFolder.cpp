@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacCarbonFolder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/1/2003
+// Cr√©√© le:			13/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacCarbonFolder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -93,7 +93,7 @@ TDCLMacCarbonFolder::TDCLMacCarbonFolder(
 void
 TDCLMacCarbonFolder::Init( void )
 {
-	// Récupération de la référence sur le volume.
+	// R√©cup√©ration de la r√©f√©rence sur le volume.
 	FSCatalogInfo theCatalogInfo;
 	OSErr theErr = ::FSGetCatalogInfo(
 						&mRef,
@@ -128,7 +128,7 @@ TDCLMacCarbonFolder::Init( void )
 	} else {
 		mIsVolume = false;
 
-		// Récupération de la référence sur le parent.
+		// R√©cup√©ration de la r√©f√©rence sur le parent.
 		theErr = ::FSGetCatalogInfo(
 					&mRef,
 					kFSCatInfoNone,
@@ -172,7 +172,7 @@ TDCLMacCarbonFolder::GetItemByName(
 {
 	TDCLFSItem* theItem = nil;
 	FSRef theItemRef;
-	 
+
 	OSErr theErr = ::FSMakeFSRefUnicode(
 								&mRef,
 								UUTF16CStr::StrLen(inName),
@@ -210,7 +210,7 @@ TDCLMacCarbonFolder::GetItemByName(
 							&theItemRef );
 		}
 	}
-		
+
 	return TDCLFSItemRef( theItem );
 }
 
@@ -229,10 +229,10 @@ TDCLMacCarbonFolder::CreateFile(
 							this,
 							nil,
 							inName ));
-	
+
 	((TDCLMacCarbonFile*) ((TDCLFile*) theResult))
 											->Create( inCreator, inFileType );
-	
+
 	return theResult;
 }
 
@@ -251,13 +251,13 @@ TDCLMacCarbonFolder::CreateFolder( const KUInt16 *inName )
 							NULL,
 							&newRef,
 							NULL,
-							NULL); 
+							NULL);
 
 	if (theErr)
 	{
 		throw DCLPlatformUnknownError( theErr );
 	}
-	
+
 	return TDCLFSItemRef(
 				new TDCLMacCarbonFolder(
 					(TDCLMacFiles*) GetFilesIntf(), &newRef ) );
@@ -270,27 +270,27 @@ KUInt32
 TDCLMacCarbonFolder::CountElements( void )
 {
 	FSCatalogInfo catalogInfo;
-	 
+
 	OSErr theErr = ::FSGetCatalogInfo(
 						&mRef,
 						kFSCatInfoValence ,
 						&catalogInfo,
 						NULL,
 						NULL,
-						NULL); 
+						NULL);
 	if (theErr)
 	{
 		throw DCLPlatformUnknownError( theErr );
 	}
 
 	return catalogInfo.valence;
-} 
+}
 
 // -------------------------------------------------------------------------- //
 //  * GetItems( void )
 // -------------------------------------------------------------------------- //
 TDCLFSItemRef*
-TDCLMacCarbonFolder::GetItems( void ) 
+TDCLMacCarbonFolder::GetItems( void )
 {
 	return GetFolderItems( (TDCLMacFiles*) GetFilesIntf(), &mRef );
 }
@@ -302,15 +302,15 @@ TDCLFSItemRef*
 TDCLMacCarbonFolder::GetFolderItems(
 				TDCLMacFiles* inFilesIntf,
 				const FSRef* inRef,
-				KUInt32* outCount ) 
+				KUInt32* outCount )
 {
-	const ItemCount	kRequestCount = 4096; 
+	const ItemCount	kRequestCount = 4096;
 	TDCLFSItemRef* theResult =
 						(TDCLFSItemRef*) ::malloc( sizeof( TDCLFSItemRef ) );
 		// Terminateur
 	KUInt32 theResultIndex = 0;
 
-	// Création d'un itérateur.
+	// Cr√©ation d'un it√©rateur.
 	FSIterator theIterator;
 	OSStatus myStatus =
 			::FSOpenIterator( inRef, kFSIterateFlat, &theIterator );
@@ -361,14 +361,14 @@ TDCLMacCarbonFolder::GetFolderItems(
 			::free( theResult );
 			throw DCLPlatformUnknownError( myStatus );
 		}
-		
-		// On redimensionne le résultat.
+
+		// On redimensionne le r√©sultat.
 		theResult = (TDCLFSItemRef*) ::realloc(
-							theResult, 
+							theResult,
 							sizeof( TDCLFSItemRef )
 								* (theResultIndex + 1 + actualCount) );
 
-		// Ajout des éléments.		
+		// Ajout des √©l√©ments.
 		KUInt32 indexElements;
 		for( indexElements = 0; indexElements < actualCount; indexElements++ )
 		{
@@ -389,14 +389,14 @@ TDCLMacCarbonFolder::GetFolderItems(
 			}
 		}
 	}
-	
-	// Libération des tableaux.
+
+	// Lib√©ration des tableaux.
 	::free( (void *) catalogInfoArray );
 	::free( (void *) fsRefArray );
 
 	// Ajout du terminateur.
 	new (&theResult[theResultIndex]) TDCLFSItemRef();
-	
+
 	// On retourne le nombre.
 	if (outCount)
 	{
@@ -413,25 +413,25 @@ KUInt16*
 TDCLMacCarbonFolder::MakeName( void ) const
 {
 	HFSUniStr255 nameStructure;
-	 
+
 	OSErr theErr = ::FSGetCatalogInfo(
 							&mRef, 0L, NULL, &nameStructure, NULL, NULL );
 	if (theErr)
 	{
 		throw DCLPlatformUnknownError( theErr );
 	}
-	 
+
 	return UDCLMacCarbonUtils::HFSPlusToNewtonUnicode( &nameStructure );
-} 
+}
 
 // -------------------------------------------------------------------------- //
 //  * MakeParentFolder( void ) const
 // -------------------------------------------------------------------------- //
 TDCLFSItemRef
-TDCLMacCarbonFolder::MakeParentFolder( void ) const 
+TDCLMacCarbonFolder::MakeParentFolder( void ) const
 {
 	TDCLFSItemRef theResult;
-	
+
 	if ((mIsVolume) || (mIsOnDesktop))
 	{
 		theResult = GetFilesIntf()->GetRootFolder();
@@ -439,12 +439,12 @@ TDCLMacCarbonFolder::MakeParentFolder( void ) const
 		theResult = TDCLFSItemRef(new TDCLMacCarbonFolder(
 								(TDCLMacFiles*) GetFilesIntf(), &mParentRef ));
 	}
-	
+
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//  * IsVolume( void ) const
+//  *¬†IsVolume( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacCarbonFolder::IsVolume( void ) const
@@ -453,7 +453,7 @@ TDCLMacCarbonFolder::IsVolume( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * IsOnDesktop( void ) const
+//  *¬†IsOnDesktop( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacCarbonFolder::IsOnDesktop( void ) const
@@ -462,7 +462,7 @@ TDCLMacCarbonFolder::IsOnDesktop( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetVRefNum( void ) const
+//  *¬†GetVRefNum( void ) const
 // ------------------------------------------------------------------------- //
 short
 TDCLMacCarbonFolder::GetVRefNum( void ) const

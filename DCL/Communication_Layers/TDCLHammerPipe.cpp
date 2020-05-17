@@ -2,7 +2,7 @@
 // Fichier:			TDCLHammerPipe.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/01/2002
+// Cr√©√© le:			27/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,14 +20,14 @@
 //
 // The Original Code is TDCLHammerPipe.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k,
 // Filip Zawadiak and Nicolas Zinovieff. Portions created by the Initial 
 // Developers are Copyright (C) 1998-2004 the Initial Developers. All Rights
 // Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Filip Zawadiak <philz@vyx.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
@@ -72,7 +72,7 @@
 // DCL
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 
-// Commentaire intéressant de Philz:
+// Commentaire int√©ressant de Philz:
 // Just keep in mind that MNP implementation in lpkg is very primitive.
 // I just wanted to have minimal functioning MNP support. It has one
 // frame window size, which could harm download performance, especially
@@ -117,7 +117,7 @@ const KUInt16 TDCLHammerPipe::kCRC16Table[256] =
     0x8201, 0x42c0, 0x4380, 0x8341, 0x4100, 0x81c1, 0x8081, 0x4040
 };
 
-// Caractères pour la transmission MNP.
+// Caract√®res pour la transmission MNP.
 const KUInt8 TDCLHammerPipe::SYN = 0x16;
 const KUInt8 TDCLHammerPipe::DLE = 0x10;
 const KUInt8 TDCLHammerPipe::STX = 0x02;
@@ -143,7 +143,7 @@ TDCLHammerPipe::TDCLHammerPipe(
 		mInputPacketIndex( 0 ),
 		mOutputPacketIndex( 0 )
 {
-	// Création des mémoires tampon.
+	// Cr√©ation des m√©moires tampon.
 	mInputBuffer = (KUInt8*) ::malloc( mInputBufferCapacity );
 	mOutputBuffer = (KUInt8*) ::malloc( inOutputMaxBufferSize );
 }
@@ -153,7 +153,7 @@ TDCLHammerPipe::TDCLHammerPipe(
 // ------------------------------------------------------------------------- //
 TDCLHammerPipe::~TDCLHammerPipe( void )
 {
-	// Nettoyage des mémoires tampon.
+	// Nettoyage des m√©moires tampon.
 	if (mInputBuffer)
 	{
 		::free( mInputBuffer );
@@ -178,7 +178,7 @@ TDCLHammerPipe::ReadFrames( void* outBuffer, KUInt32* ioCount, bool inStopAfterO
 		// Faut-il lire une nouvelle structure?		
 		if (mInputBufferCrsr == mInputBufferSize)
 		{
-			// On vide la mémoire tampon.
+			// On vide la m√©moire tampon.
 			mInputBufferCrsr = 0;
 			mInputBufferSize = 0;
 			
@@ -186,7 +186,7 @@ TDCLHammerPipe::ReadFrames( void* outBuffer, KUInt32* ioCount, bool inStopAfterO
 			ReceiveData();
 		}
 		
-		// Copie des données.
+		// Copie des donn√©es.
 		KUInt32 copyCount = bytesLeft;
 		if (copyCount + mInputBufferCrsr > mInputBufferSize)
 		{
@@ -197,7 +197,7 @@ TDCLHammerPipe::ReadFrames( void* outBuffer, KUInt32* ioCount, bool inStopAfterO
 				(const void*) &mInputBuffer[mInputBufferCrsr],
 				copyCount );
 		
-		// Mise à jour des curseurs.
+		// Mise √† jour des curseurs.
 		mInputBufferCrsr += copyCount;
 		bytesLeft -= copyCount;
 		bytesCopied += copyCount;
@@ -229,7 +229,7 @@ TDCLHammerPipe::Write( const void* inBuffer, KUInt32* ioCount )
 	KUInt32 bytesCopied = 0;
 	while ( bytesLeft > 0 )
 	{
-		// Copie des données.
+		// Copie des donn√©es.
 		KUInt32 copyCount = bytesLeft;
 		if (copyCount + mOutputBufferCrsr > mOutputBufferCapacity)
 		{
@@ -240,13 +240,13 @@ TDCLHammerPipe::Write( const void* inBuffer, KUInt32* ioCount )
 				(const void*) &((const KUInt8*) inBuffer)[bytesCopied],
 				copyCount );
 		
-		// Mise à jour des curseurs.
+		// Mise √† jour des curseurs.
 		mOutputBufferCrsr += copyCount;
 		bytesLeft -= copyCount;
 		bytesCopied += copyCount;
 		*ioCount = bytesCopied;
 
-		// Faut-il écrire la structure?		
+		// Faut-il √©crire la structure?		
 		if (mOutputBufferCrsr == mOutputBufferCapacity)
 		{
 			SendData();
@@ -280,7 +280,7 @@ TDCLHammerPipe::ReceiveData( void )
                 toCopy );
     mInputBufferSize += toCopy;
 	
-	// LibÈration.
+	// Lib√àration.
 	::free( theInputFrame );
 }
 
@@ -328,7 +328,7 @@ TDCLHammerPipe::BytesAvailable( void )
 void
 TDCLHammerPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 {
-	// Récupération de la connexion dont on est le mandataire.
+	// R√©cup√©ration de la connexion dont on est le mandataire.
 	TDCLPipe* theSubPipe = GetSubPipe();
 	
 	KUInt8* theFrame = (KUInt8*) ::malloc( kInputFrameIncrement );
@@ -339,7 +339,7 @@ TDCLHammerPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 	KUInt32 theCount = sizeof( theCurrentByte );
 	KUInt16 theCRC = 0;
 
-	// Passage des caractères SYN au début.
+	// Passage des caract√®res SYN au d√©but.
 	do {
 		theSubPipe->Read( &theCurrentByte, &theCount );
 	} while ( theCurrentByte == SYN );
@@ -397,7 +397,7 @@ TDCLHammerPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 		}
 	} while ( true );
 	
-	// Retour du résultat.
+	// Retour du r√©sultat.
 	*outFrame = theFrame;
 	*outSize = theFrameSize;
 }
@@ -408,15 +408,15 @@ TDCLHammerPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 void
 TDCLHammerPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
 {
-	// Récupération de la connexion dont on est le mandataire.
+	// R√©cup√©ration de la connexion dont on est le mandataire.
 	TDCLPipe* theSubPipe = GetSubPipe();
 	
-	// Entête (SYN, DLE, STX)
+	// Ent√™te (SYN, DLE, STX)
 	KUInt8 theHeader[3] = { SYN, DLE, STX };
 	KUInt32 theCount = sizeof( theHeader );
 	theSubPipe->Write( theHeader, &theCount );
 	
-	// Écriture des données, en remplaçant les DLE par DLE, DLE.
+	// √âcriture des donn√©es, en rempla√ßant les DLE par DLE, DLE.
 	KUInt32 indexFrame;
 	KUInt8 theCurrentByte;
 	theCount = sizeof( theCurrentByte );
@@ -428,7 +428,7 @@ TDCLHammerPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
 		
 		if (theCurrentByte == DLE)
 		{
-			// On écrit deux fois DLE.
+			// On √©crit deux fois DLE.
 			theSubPipe->Write( &theCurrentByte, &theCount );
 		}
 		theSubPipe->Write( &theCurrentByte, &theCount );
@@ -457,7 +457,7 @@ TDCLHammerPipe::Connected( TDCLLink* inLink )
 {
 	TDCLCommLayer* theResult = TDCLPipeProxy::Connected( inLink );
 /*	
-	// Echange de l'entête MNP (?)
+	// Echange de l'ent√™te MNP (?)
 	KUInt8* theInputFrame;
 	KUInt32 theInputFrameSize;
 	ReadFrame( &theInputFrame, &theInputFrameSize );
@@ -481,7 +481,7 @@ void
 TDCLHammerPipe::Disconnect( void )
 {
 /*
-	// Envoi de la séquence MNP de fin.
+	// Envoi de la s√©quence MNP de fin.
 	WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
 */
 

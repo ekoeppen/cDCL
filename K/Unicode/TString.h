@@ -2,7 +2,7 @@
 // Fichier:			TString.h
 // Projet:			K
 // 
-// Créé le:			3/8/2003
+// Cr√©√© le:			3/8/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -45,27 +45,27 @@
 #include <K/Unicode/UUTF16Conv.h>
 
 ///
-/// Classe pour une chaîne dans un encodage quelconque.
-/// Cette classe gère l'égalité avec une valeur de hachage. En cas d'inégalité
-/// de ces valeurs, elle procède à la comparaison.
-/// À utiliser avec TStringRef.
+/// Classe pour une cha√Æne dans un encodage quelconque.
+/// Cette classe g√®re l'√©galit√© avec une valeur de hachage. En cas d'in√©galit√©
+/// de ces valeurs, elle proc√®de √† la comparaison.
+/// √Ä utiliser avec TStringRef.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.8 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TString
 	:
 		private TRefCounter
 {
-	/// Les classes qui s'occupent des références sont des amies.
+	/// Les classes qui s'occupent des r√©f√©rences sont des amies.
 	friend class TStringRef;
 	friend class TMutableStringRef;
 
 public:
 	///
-	/// Encodages pour des chaînes.
+	/// Encodages pour des cha√Ænes.
 	///
 	enum EEncoding {
 		kUTF8,						///< UTF-8
@@ -77,48 +77,48 @@ public:
 	};
 
 	///
-	/// Constructeur à partir d'une chaîne C (copiée) en ISO-8859-1.
+	/// Constructeur √† partir d'une cha√Æne C (copi√©e) en ISO-8859-1.
 	///
-	/// \param inCString 	chaîne de caractères C.
+	/// \param inCString 	cha√Æne de caract√®res C.
 	///
 	TString( const char* inCString );
 
 	///
-	/// Constructeur à partir d'une chaîne C (copiée) sur 8 bits.
+	/// Constructeur √† partir d'une cha√Æne C (copi√©e) sur 8 bits.
 	///
-	/// \param inCString 	chaîne de caractères C.
-	/// \param inEncoding	encodage de la chaîne.
+	/// \param inCString 	cha√Æne de caract√®res C.
+	/// \param inEncoding	encodage de la cha√Æne.
 	///
 	TString( const char* inCString, EEncoding inEncoding );
 
 	///
-	/// Constructeur à partir d'une chaîne C (copiée) en UTF-16.
+	/// Constructeur √† partir d'une cha√Æne C (copi√©e) en UTF-16.
 	///
-	/// \param inCString 	chaîne de caractères C.
+	/// \param inCString 	cha√Æne de caract√®res C.
 	///
 	TString( const KUInt16* inCString );
 
 	///
-	/// Constructeur à partir de caractères ISO 8859-1 et d'une taille.
+	/// Constructeur √† partir de caract√®res ISO 8859-1 et d'une taille.
 	///
-	/// \param inChars		caractères
+	/// \param inChars		caract√®res
 	/// \param inSize		taille
 	///
 	TString( const char* inChars, KUInt32 inSize );
 
 	///
-	/// Constructeur à partir de caractères 8 bits et d'une taille.
+	/// Constructeur √† partir de caract√®res 8 bits et d'une taille.
 	///
-	/// \param inChars		caractères
+	/// \param inChars		caract√®res
 	/// \param inSize		taille
-	/// \param inEncoding	encodage de la chaîne.
+	/// \param inEncoding	encodage de la cha√Æne.
 	///
 	TString( const char* inChars, KUInt32 inSize, EEncoding inEncoding );
 
 	///
-	/// Constructeur à partir de caractères UTF-16 et d'une taille.
+	/// Constructeur √† partir de caract√®res UTF-16 et d'une taille.
 	///
-	/// \param inChars		caractères
+	/// \param inChars		caract√®res
 	/// \param inSize		taille
 	///
 	TString( const KUInt16* inChars, KUInt32 inSize );
@@ -126,70 +126,70 @@ public:
 	///
 	/// Constructeur par copie.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TString( const TString& inCopy );
 
 	///
-	/// Opérateur d'assignation.
+	/// Op√©rateur d'assignation.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TString& operator = ( const TString& inCopy );
 
 	///
 	/// Destructeur.
-	/// Libère la mémoire tampon.
+	/// Lib√®re la m√©moire tampon.
 	///
 	virtual ~TString( void );
 
 	///
-	/// Égalité.
+	/// √âgalit√©.
 	/// Compare la valeur de hachage et la taille s'ils sont valides.
-	/// Sinon, les calcule. C'est pour ceci que l'autre chaîne n'est pas \c const.
+	/// Sinon, les calcule. C'est pour ceci que l'autre cha√Æne n'est pas \c const.
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est √©gal √† \c inAlter, \c false sinon.
 	///
 	Boolean operator == ( TString& inAlter ) const;
 
 	///
-	/// Égalité.
+	/// √âgalit√©.
 	/// Compare la valeur de hachage et la taille s'ils sont valides.
 	/// Sinon, fait sans. Cette fonction ne modifie pas inAlter.
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est √©gal √† \c inAlter, \c false sinon.
 	///
 	Boolean operator == ( const TString& inAlter ) const;
 
 	///
-	/// Comparaison (ordre quelconque compatible avec l'égalité).
+	/// Comparaison (ordre quelconque compatible avec l'√©galit√©).
 	/// L'ordre est le suivant: d'abord la valeur de hachage, ensuite
 	/// la taille et enfin l'ordre lexicographique.
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est √©gal √† \c inAlter, \c false sinon.
 	///
 	Boolean operator < ( TString& inAlter ) const;
 
 	///
-	/// Écrit la chaîne sur un flux (8 bits).
-	/// En POSIX, détermine l'encodage par les variables globales.
+	/// √âcrit la cha√Æne sur un flux (8 bits).
+	/// En POSIX, d√©termine l'encodage par les variables globales.
 	///
-	/// \param inStream	flux considéré.
+	/// \param inStream	flux consid√©r√©.
 	///
 	void		PrintToStream( std::ostream& inStream ) const;
 
 	///
-	/// Convertit la chaîne et la copie dans une mémoire tampon.
-	/// Cette méthode peut convertir \c this en UTF-16.
+	/// Convertit la cha√Æne et la copie dans une m√©moire tampon.
+	/// Cette m√©thode peut convertir \c this en UTF-16.
 	///
-	/// \param outBuffer 	mémoire tampon
-	/// \param ioLength		en entrée, nombre d'octets disponibles,
-	///						en sortie, nombre d'octets écrits.
+	/// \param outBuffer 	m√©moire tampon
+	/// \param ioLength		en entr√©e, nombre d'octets disponibles,
+	///						en sortie, nombre d'octets √©crits.
 	/// \param inEncoding	encodage cible.
-	/// \return le résultat de la conversion.
+	/// \return le r√©sultat de la conversion.
 	///
 	UUTF16Conv::EResult	Convert(
 							void* outBuffer,
@@ -198,36 +198,36 @@ public:
 
 protected:
 	///
-	/// Constructeur par défaut. La chaîne est en UTF-16.
+	/// Constructeur par d√©faut. La cha√Æne est en UTF-16.
 	///
 	TString( void );
 
 private:
 	///
-	/// Comparaison. \c this et \c inAlter doivent être en ISO-8859-1 ou en US ASCII
+	/// Comparaison. \c this et \c inAlter doivent √™tre en ISO-8859-1 ou en US ASCII
 	///
-	/// \param inAlter		chaîne (encodée en ISO-8859-1 ou US ASCII) à
+	/// \param inAlter		cha√Æne (encod√©e en ISO-8859-1 ou US ASCII) √†
 	///						comparer avec \c this.
-	/// \return \c 0 si les deux chaînes sont égales, \c -1 si *this < inAlter,
+	/// \return \c 0 si les deux cha√Ænes sont √©gales, \c -1 si *this < inAlter,
 	///			\c 1 si *this > inAlter sinon.
 	///
 	int			CompareLatin1Strings( const TString& inAlter ) const;
 
 	///
-	/// Comparaison. \c this et \c inAlter doivent être en UTF-16.
+	/// Comparaison. \c this et \c inAlter doivent √™tre en UTF-16.
 	///
-	/// \param inAlter		chaîne (encodée en UTF-16) à comparer avec \c this.
-	/// \return \c true si les deux chaînes sont égales, \c false sinon.
+	/// \param inAlter		cha√Æne (encod√©e en UTF-16) √† comparer avec \c this.
+	/// \return \c true si les deux cha√Ænes sont √©gales, \c false sinon.
 	///
 	int			CompareUTF16Strings( const TString& inAlter ) const;
 	
 	///
-	/// Comparaison des caractères octet par octet. \c this et \c inAlter doivent
-	/// être dans le même encodage. La valeur de hachage n'est pas mise à jour.
+	/// Comparaison des caract√®res octet par octet. \c this et \c inAlter doivent
+	/// √™tre dans le m√™me encodage. La valeur de hachage n'est pas mise √† jour.
 	///
-	/// \param inAlter		chaîne (encodée comme \c this) à
+	/// \param inAlter		cha√Æne (encod√©e comme \c this) √†
 	///						comparer avec \c this.
-	/// \return \c true si les deux chaînes sont égales, \c false sinon.
+	/// \return \c true si les deux cha√Ænes sont √©gales, \c false sinon.
 	///
 	int			Compare8BitsStrings( const TString& inAlter ) const;
 
@@ -235,26 +235,26 @@ private:
 	/// Calcule la taille et la valeur de hachage.
 	///
 
-	/// \name Constantes privées
+	/// \name Constantes priv√©es
 	enum {
 		kHashMagic = 0x9E3779B9	///< Et oui, le hash, c'est magique.
 	};
 
 	/// \name Variables
-	EEncoding			mEncoding;			///< Encodage de la chaîne.
-	void*				mString;			///< Mémoire tampon.
+	EEncoding			mEncoding;			///< Encodage de la cha√Æne.
+	void*				mString;			///< M√©moire tampon.
 	mutable KUInt32		mHashCode;			///< Valeur de hachage.
-	mutable size_t		mStringSize;		///< Taille de la chaîne (en cache, en caractères).
-	size_t				mBufferSize;		///< Taille de la mémoire tampon (en octets).
-	mutable Boolean		mHashCodeIsValid;	///< Si la valeur de hachage a été calculée.
-	mutable Boolean		mStringSizeIsValid;	///< Si la taille de la chaîne a été calculée.
+	mutable size_t		mStringSize;		///< Taille de la cha√Æne (en cache, en caract√®res).
+	size_t				mBufferSize;		///< Taille de la m√©moire tampon (en octets).
+	mutable Boolean		mHashCodeIsValid;	///< Si la valeur de hachage a √©t√© calcul√©e.
+	mutable Boolean		mStringSizeIsValid;	///< Si la taille de la cha√Æne a √©t√© calcul√©e.
 };
 
 // -------------------------------------------------------------------------- //
 //  * operator << ( std::ostream&, const TString& )
 // -------------------------------------------------------------------------- //
 ///
-/// Opérateur pour écrire sur un flux.
+/// Op√©rateur pour √©crire sur un flux.
 ///
 inline std::ostream&
 operator << ( std::ostream& inStream, const TString& inString )

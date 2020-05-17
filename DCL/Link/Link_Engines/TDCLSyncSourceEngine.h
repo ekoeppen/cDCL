@@ -2,7 +2,7 @@
 // Fichier:			TDCLSyncSourceEngine.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			28/12/2003
+// Cr√©√© le:			28/12/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSyncSourceEngine.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,13 +46,13 @@
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
 ///
-/// Interface pour gérer la synchronisation entre une source et une ou plusieurs
+/// Interface pour g√©rer la synchronisation entre une source et une ou plusieurs
 /// soupes.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLSyncSourceEngine
 {
@@ -63,12 +63,12 @@ public:
 	enum
 	{
 		kSameKey_ConsiderFirstOnly	= 0,	///< En cas d'enregistrements multiples
-											///< avec une clé donnée, considère uniquement
+											///< avec une cl√© donn√©e, consid√®re uniquement
 											///< le premier
-		kSameKey_ConsiderNewestOnly	= 1,	///< Idem, mais avec le plus récent
-		kSameKey_DeleteOthers		= 2,	///< Supprime les autre clés
-		kSameKey_AskUser			= 4,	///< Demande à l'utilisateur en cas
-											///< d'enregistrements avec la même clé.
+		kSameKey_ConsiderNewestOnly	= 1,	///< Idem, mais avec le plus r√©cent
+		kSameKey_DeleteOthers		= 2,	///< Supprime les autre cl√©s
+		kSameKey_AskUser			= 4,	///< Demande √† l'utilisateur en cas
+											///< d'enregistrements avec la m√™me cl√©.
 		kOnlyOnNewtonCopyToMac		= 0,	///< Copie les enregistrements seulement sur
 											///< le Newton
 		kOnlyOnNewtonSkip			= 8,	///< Ignore les enregistrements seulement sur
@@ -84,59 +84,59 @@ public:
 	};
 
 	///
-	/// État d'un enregistrement provenant du Newton
+	/// √âtat d'un enregistrement provenant du Newton
 	///
 	enum ESyncModification
 	{
-		kCompleteSync		= 0,	///< La synchronisation est complète
-		kNewEntry			= 1,	///< Nouvel enregistrement depuis la dernière
+		kCompleteSync		= 0,	///< La synchronisation est compl√®te
+		kNewEntry			= 1,	///< Nouvel enregistrement depuis la derni√®re
 									///< synchronisation
-		kModifiedEntry		= 2,	///< Enregistrement modifié depuis la dernière
+		kModifiedEntry		= 2,	///< Enregistrement modifi√© depuis la derni√®re
 									///< synchronisation
-		kDeletedEntry		= 3		///< Enregistrement supprimé depuis la dernière
+		kDeletedEntry		= 3		///< Enregistrement supprim√© depuis la derni√®re
 									///< synchronisation
 	};
 
 	///
-	/// Résultat d'une synchronisation avec un élément.
+	/// R√©sultat d'une synchronisation avec un √©l√©ment.
 	///
 	enum ESyncResult
 	{
-		kUnchanged		= 0,	// L'entrée n'a pas été modifiée.
-		kModified		= 1,	// L'entrée a été modifiée.
-		kDeleted		= 2		// L'entrée doit être supprimée.
+		kUnchanged		= 0,	// L'entr√©e n'a pas √©t√© modifi√©e.
+		kModified		= 1,	// L'entr√©e a √©t√© modifi√©e.
+		kDeleted		= 2		// L'entr√©e doit √™tre supprim√©e.
 	};
 	
 	///
 	/// Initialisation du moteur avant de commencer la synchronisation.
-	/// Retourne le numéro de la version. Si la version ne correspond pas
-	/// aux données enregistrées, on procèdera à une synchronisation complète.
+	/// Retourne le num√©ro de la version. Si la version ne correspond pas
+	/// aux donn√©es enregistr√©es, on proc√®dera √† une synchronisation compl√®te.
 	///
 	/// \param inNewtonTime	heure courante sur le Newton.
-	/// \return le numéro de la version.
+	/// \return le num√©ro de la version.
 	///
 	virtual KUInt16		Init( KSInt32 inNewtonTime ) = 0;
 	
 	///
-	/// Vérifie que deux enregistrements n'ont pas la même clé.
-	/// Cette méthode est appelée tant qu'elle retourne vrai.
+	/// V√©rifie que deux enregistrements n'ont pas la m√™me cl√©.
+	/// Cette m√©thode est appel√©e tant qu'elle retourne vrai.
 	///
-	/// \param outSummaries		tableau des résumés des enregistrements, par ordre
+	/// \param outSummaries		tableau des r√©sum√©s des enregistrements, par ordre
 	///							de date de modification (TDCLNSArray de TDCLNSString)
-	/// \param outKey			clé partagée par ces deux enregistrements
-	/// \return \c true si deux enregistrements ont la même clé, \c false sinon.
+	/// \param outKey			cl√© partag√©e par ces deux enregistrements
+	/// \return \c true si deux enregistrements ont la m√™me cl√©, \c false sinon.
 	///
 	virtual bool		NextCommonKey(
 								TDCLNSRef* outSummaries,
 								TDCLNSRef* outKey ) = 0;
 	
 	///
-	/// Méthode appelée pour régler un conflit avec les clés détecté avec la précédente
-	/// méthode.
+	/// M√©thode appel√©e pour r√©gler un conflit avec les cl√©s d√©tect√© avec la pr√©c√©dente
+	/// m√©thode.
 	///
-	/// \param inKey			clé concernée.
-	/// \param inRecordIndex	indice de l'enregistrement conservé.
-	/// \param inDeleteOthers	si les autres enregistrements doivent être supprimés.
+	/// \param inKey			cl√© concern√©e.
+	/// \param inRecordIndex	indice de l'enregistrement conserv√©.
+	/// \param inDeleteOthers	si les autres enregistrements doivent √™tre supprim√©s.
 	///
 	virtual void		HandleCommonKey(
 								const TDCLNSRef& inKey,
@@ -144,12 +144,12 @@ public:
 								bool inDeleteOthers ) = 0;
 
 	///
-	/// Compare deux clés.
+	/// Compare deux cl√©s.
 	///
-	/// \param inFirstKey	première clé à comparer
-	/// \param inSecondKey	deuxième clé à comparer
-	/// \return \c 0 si les deux clés sont identiques, un entier négatif
-	///			si \c inFirstKey est inférieure à \c inSecondKey,
+	/// \param inFirstKey	premi√®re cl√© √† comparer
+	/// \param inSecondKey	deuxi√®me cl√© √† comparer
+	/// \return \c 0 si les deux cl√©s sont identiques, un entier n√©gatif
+	///			si \c inFirstKey est inf√©rieure √† \c inSecondKey,
 	///			un entier positif dans le cas contraire.
 	///
 	virtual int			CompareKeys(
@@ -157,94 +157,94 @@ public:
 								const TDCLNSRef& inSecondKey ) = 0;
 
 	///
-	/// Détermine la liste des soupes à synchroniser.
+	/// D√©termine la liste des soupes √† synchroniser.
 	///
-	/// \return une liste de soupes à synchroniser (dans un tableau TDCLNSArray,
-	///			chaque élément est un TDCLNSString).
+	/// \return une liste de soupes √† synchroniser (dans un tableau TDCLNSArray,
+	///			chaque √©l√©ment est un TDCLNSString).
 	///
 	virtual TDCLNSRef	GetSoupNames( void ) = 0;
 
 	///
-	/// Détermine si les données de la source ont une date de modification, auquel
+	/// D√©termine si les donn√©es de la source ont une date de modification, auquel
 	/// cas on peut optimiser la synchronisation.
 	///
 	/// \return \c true si on peut optimiser la synchronisation en utilisant la date
-	///			de la dernière synchronisation.
+	///			de la derni√®re synchronisation.
 	///
 	virtual Boolean		HasModificationDate( void ) = 0;
 
 	///
-	/// Retourne les données de synchronisation telles que sauvegardées par
-	/// SetSyncEngineData. Ces données permettent de savoir quel est l'état
-	/// de la synchronisation la dernière fois qu'elle a eu lieu. Ces données sont
-	/// gérées par TDCLSyncEngine et peuvent être sérialisées avec les encodeurs/
-	/// décodeurs dérivés de TDCLNSCodec.
-	/// Si aucune donnée n'a encore été enregistrée, il faut retourner
+	/// Retourne les donn√©es de synchronisation telles que sauvegard√©es par
+	/// SetSyncEngineData. Ces donn√©es permettent de savoir quel est l'√©tat
+	/// de la synchronisation la derni√®re fois qu'elle a eu lieu. Ces donn√©es sont
+	/// g√©r√©es par TDCLSyncEngine et peuvent √™tre s√©rialis√©es avec les encodeurs/
+	/// d√©codeurs d√©riv√©s de TDCLNSCodec.
+	/// Si aucune donn√©e n'a encore √©t√© enregistr√©e, il faut retourner
 	/// \c NILREF.
 	///
-	/// \return les données de synchronisation telles que sauvegardées par
+	/// \return les donn√©es de synchronisation telles que sauvegard√©es par
 	/// la source.
 	///
 	virtual TDCLNSRef	GetSyncEngineData( void ) = 0;
 
 	///
-	/// Enregistre les données de synchronisation pour la prochaine
+	/// Enregistre les donn√©es de synchronisation pour la prochaine
 	/// synchronisation.
 	///
-	/// \param inSyncData	données de synchronisation à enregistrer.
+	/// \param inSyncData	donn√©es de synchronisation √† enregistrer.
 	///
 	virtual void		SetSyncEngineData( const TDCLNSRef& inSyncData ) = 0;
 
 	///
-	/// Détermine si un enregistrement sur le Newton doit être synchronisé.
+	/// D√©termine si un enregistrement sur le Newton doit √™tre synchronis√©.
 	///
-	/// \param inSoupName		nom de la soupe à laquelle appartient l'enregistrement.
+	/// \param inSoupName		nom de la soupe √† laquelle appartient l'enregistrement.
 	/// \param inNewtonEntry	enregistrement de la soupe.
-	/// \return \c true si l'enregistrement doit être synchronisé.
+	/// \return \c true si l'enregistrement doit √™tre synchronis√©.
 	///
 	virtual Boolean		FilterEntry(
 								const TDCLNSString& inSoupName,
 								const TDCLNSFrame& inNewtonEntry ) = 0;
 
 	///
-	/// Récupère une clé pour un enregistrement sur le Newton donné.
+	/// R√©cup√®re une cl√© pour un enregistrement sur le Newton donn√©.
 	///
-	/// \param inSoupName		nom de la soupe à laquelle appartient l'enregistrement.
-	/// \param inNewtonEntry	enregistrement de la soupe dont on veut une clé.
+	/// \param inSoupName		nom de la soupe √† laquelle appartient l'enregistrement.
+	/// \param inNewtonEntry	enregistrement de la soupe dont on veut une cl√©.
 	///
 	virtual TDCLNSRef	GetEntryKey(
 								const TDCLNSString& inSoupName,
 								const TDCLNSFrame& inNewtonEntry ) = 0;
 
 	///
-	/// Extraction d'un résumé de l'entrée dans une chaîne NS.
+	/// Extraction d'un r√©sum√© de l'entr√©e dans une cha√Æne NS.
 	///
-	/// \param inSoupName		nom de la soupe à laquelle appartient l'enregistrement.
-	/// \param inNewtonEntry	enregistrement de la soupe dont on veut un résumé.
-	/// \return le résumé de l'entrée (chaîne NS)
+	/// \param inSoupName		nom de la soupe √† laquelle appartient l'enregistrement.
+	/// \param inNewtonEntry	enregistrement de la soupe dont on veut un r√©sum√©.
+	/// \return le r√©sum√© de l'entr√©e (cha√Æne NS)
 	///
 	virtual TDCLNSRef	GetEntrySummary(
 								const TDCLNSString& inSoupName,
 								const TDCLNSFrame& inNewtonEntry ) = 0;
 
 	///
-	/// Synchronise un enregistrement ajouté au Newton depuis la dernière synchronisation.
-	/// Cette méthode a comme paramètre la clé donnée par \c GetEntryKey.
+	/// Synchronise un enregistrement ajout√© au Newton depuis la derni√®re synchronisation.
+	/// Cette m√©thode a comme param√®tre la cl√© donn√©e par \c GetEntryKey.
 	///
-	/// \param inModification		type de modification depuis la dernière
+	/// \param inModification		type de modification depuis la derni√®re
 	///								synchronisation.
-	/// \param inNewtonLastSyncTime	date de la dernière synchronisation sur le
+	/// \param inNewtonLastSyncTime	date de la derni√®re synchronisation sur le
 	///								Newton.
 	/// \param inSoupName			nom de la soupe.
-	/// \param inEntryKey			clé pour l'enregistrement fournie par
+	/// \param inEntryKey			cl√© pour l'enregistrement fournie par
 	///								GetEntryKey.
-	/// \param inNewtonEntry		enregistrement de la soupe à synchroniser,
-	///								ou \c nil si l'entrée a été supprimée ou
-	///								n'a pas été modifiée.
-	/// \return un code qui détermine ce que le moteur doit faire avec cette
-	///			entrée. Si inNewtonEntry était \c nil et que cette méthode
-	///			retourne kModified, l'entrée sera téléchargée du Newton pour
-	///			être modifiée.
+	/// \param inNewtonEntry		enregistrement de la soupe √† synchroniser,
+	///								ou \c nil si l'entr√©e a √©t√© supprim√©e ou
+	///								n'a pas √©t√© modifi√©e.
+	/// \return un code qui d√©termine ce que le moteur doit faire avec cette
+	///			entr√©e. Si inNewtonEntry √©tait \c nil et que cette m√©thode
+	///			retourne kModified, l'entr√©e sera t√©l√©charg√©e du Newton pour
+	///			√™tre modifi√©e.
 	///
 	virtual ESyncResult	SyncNewtonEntry(
 								ESyncModification inModification,
@@ -254,11 +254,11 @@ public:
 								const TDCLNSRef& inNewtonEntry ) = 0;
 
 	///
-	/// Récupère une nouvelle entrée à ajouter ou \c NILREF.
-	/// Cette méthode n'est appelée que pour le magasin par défaut.
-	/// Elle est appelée tant que le résultat n'est pas \c NILREF.
+	/// R√©cup√®re une nouvelle entr√©e √† ajouter ou \c NILREF.
+	/// Cette m√©thode n'est appel√©e que pour le magasin par d√©faut.
+	/// Elle est appel√©e tant que le r√©sultat n'est pas \c NILREF.
 	///
-	/// \return une nouvelle entrée à ajouter à cette soupe ou \c NILREF.
+	/// \return une nouvelle entr√©e √† ajouter √† cette soupe ou \c NILREF.
 	///
 	virtual TDCLNSRef	GetNextNewEntry( void ) = 0;
 };

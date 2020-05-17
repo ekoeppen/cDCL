@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdDesktopInfo.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdDesktopInfo.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -47,12 +47,12 @@ class TDCLStream;
 class TDCLNSArray;
 
 ///
-/// Classe pour la commande du Dock qui décrit les informations sur le serveur.
+/// Classe pour la commande du Dock qui d√©crit les informations sur le serveur.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdDesktopInfo
 	:
@@ -60,15 +60,15 @@ class TDCLDockCmdDesktopInfo
 {
 public:
 		///
-		/// Constructeur à partir des informations sur le serveur.
+		/// Constructeur √† partir des informations sur le serveur.
 		///
 		/// \param inDesktopAppArray	Information sur le logiciel serveur
 		///								sous forme de tableau NewtonScript.
-		/// \param inEncKey1			Première partie de la clé pour se
-		///								connecter. Dépend du défi DES.
-		///	\param inEncKey2			Deuxième partie.
-		/// \param inSelectiveBackup	Si on permet une sauvegarde sélective.
-		///								Ceci ne vaut que si on a déjà une sauvegarde.
+		/// \param inEncKey1			Premi√®re partie de la cl√© pour se
+		///								connecter. D√©pend du d√©fi DES.
+		///	\param inEncKey2			Deuxi√®me partie.
+		/// \param inSelectiveBackup	Si on permet une sauvegarde s√©lective.
+		///								Ceci ne vaut que si on a d√©j√† une sauvegarde.
 		/// \param inSessionType		Type de session.
 		/// \param inPlatformKind		Type de plateforme (Win ou Mac).
 		///
@@ -87,7 +87,7 @@ public:
 
 protected:
 	///
-	/// Méthode appelée pour récupèrer la taille de la commande avant de
+	/// M√©thode appel√©e pour r√©cup√®rer la taille de la commande avant de
 	/// l'envoyer.
 	///
 	/// \return la taille de la commande
@@ -97,12 +97,12 @@ protected:
 	///
 	/// Envoie le corps de la commande.
 	///
-	/// \param inPipe				connexion pour écrire la commande.
-	/// \param inLength				taille des données à envoyer
-	/// \param inProgressFuncPtr	fonction appelée pour la progression
-	///								(\c nil signifie qu'on ne prévient pas)
-	///								Cette méthode doit tenir compte du fait
-	///								que 16 octets ont déjà été envoyés.
+	/// \param inPipe				connexion pour √©crire la commande.
+	/// \param inLength				taille des donn√©es √† envoyer
+	/// \param inProgressFuncPtr	fonction appel√©e pour la progression
+	///								(\c nil signifie qu'on ne pr√©vient pas)
+	///								Cette m√©thode doit tenir compte du fait
+	///								que 16 octets ont d√©j√† √©t√© envoy√©s.
 	/// \param inRefCon				biscuit pour inProgressFuncPtr
 	///
 	virtual	void			SendBody(
@@ -115,14 +115,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdDesktopInfo( const TDCLDockCmdDesktopInfo& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdDesktopInfo& operator = ( const TDCLDockCmdDesktopInfo& inCopy );
 
@@ -133,10 +133,10 @@ private:
 	{
 		KUInt32		fProtocolVersion;		///< Version du protocole (kProtocolVersion)
 		KUInt32		fDesktopType;			///< Type de l'OS (kMac_DType ou kWin_DType)
-		KUInt32		fEncryptedKey[2];		///< Clef pour le défi DES
+		KUInt32		fEncryptedKey[2];		///< Clef pour le d√©fi DES
 		KUInt32		fSessionType;			///< Type de session
 		KUInt32		fAllowSelectiveSync;	///< Si on permet les sauvegardes/synchronisations
-											///< partielle (uniquement si on déjà une sauvegarde)
+											///< partielle (uniquement si on d√©j√† une sauvegarde)
 	};
 
 	/// \name Variables

@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSOFEncoder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/10/2002
+// Cr√©√© le:			15/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSOFEncoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,9 +56,9 @@ class TDCLNSOFEncoder
 {
 public:
 	///
-	/// Constructeur à partir d'un flux.
+	/// Constructeur √† partir d'un flux.
 	///
-	/// \param inStream		flux utilisé par cet encodeur.
+	/// \param inStream		flux utilis√© par cet encodeur.
 	///
 	TDCLNSOFEncoder( TDCLStream* inStream );
 
@@ -69,32 +69,32 @@ public:
 
 protected:
 	///
-	/// Met dans le flux la référence d'un objet déjà encodé.
+	/// Met dans le flux la r√©f√©rence d'un objet d√©j√† encod√©.
 	///
-	/// \param inRefID		référence de l'objet ajouté.
-	/// \param inCookie		en entrée, biscuit laissé par PutObject
-	///						lorsque l'objet a été ajouté la première fois.
+	/// \param inRefID		r√©f√©rence de l'objet ajout√©.
+	/// \param inCookie		en entr√©e, biscuit laiss√© par PutObject
+	///						lorsque l'objet a √©t√© ajout√© la premi√®re fois.
 	///
 	virtual void	PutPrecedent( KUInt32 inRefID, KUIntPtr inCookie );
 
 	///
-	/// Met dans le flux un objet donné.
+	/// Met dans le flux un objet donn√©.
 	///
-	/// \param inObject		objet à ajouter.
-	/// \param inObjectID	ID de l'objet à ajouter, -1 si CanHavePrecedentID
-	///						a retourné \c false.
-	/// \param outCookie	en sortie, biscuit passé par la suite à
+	/// \param inObject		objet √† ajouter.
+	/// \param inObjectID	ID de l'objet √† ajouter, -1 si CanHavePrecedentID
+	///						a retourn√© \c false.
+	/// \param outCookie	en sortie, biscuit pass√© par la suite √†
 	///						PutPrecedent, \c nil si CanHavePrecedentID a
-	///						retourné \c false.
+	///						retourn√© \c false.
 	///
 	virtual void	PutObject(
 						const TDCLNSObject* inObject,
 						KUInt32 inObjectID,
 						KUIntPtr* outCookie );
 	///
-	/// Met dans le flux une référence ou un immédiat donnés.
+	/// Met dans le flux une r√©f√©rence ou un imm√©diat donn√©s.
 	///
-	/// \param inRef		référence à ajouter.
+	/// \param inRef		r√©f√©rence √† ajouter.
 	///
 	virtual void	PutRef( const TDCLNSRef& inRef );
 };

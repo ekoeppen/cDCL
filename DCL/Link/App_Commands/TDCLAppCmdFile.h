@@ -2,7 +2,7 @@
 // Fichier:			TDCLAppCmdFile.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/4/2003
+// Cr√©√© le:			10/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLAppCmdFile.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,17 +44,17 @@
 #include <DCL/Interfaces/TDCLFSItemRef.h>
 
 ///
-/// Classe pour une commande contenant une référence sur un fichier.
-/// Elle permet d'éviter les fuites de mémoire, la référence sur le fichier
-/// sera décrémentée.
-/// L'accès au fichier peut se faire de deux manières:
+/// Classe pour une commande contenant une r√©f√©rence sur un fichier.
+/// Elle permet d'√©viter les fuites de m√©moire, la r√©f√©rence sur le fichier
+/// sera d√©cr√©ment√©e.
+/// L'acc√®s au fichier peut se faire de deux mani√®res:
 /// - GetEventData (en transformant le pointeur en TDCLFSItem*)
-/// - GetFileRef (le résultat est une référence)
+/// - GetFileRef (le r√©sultat est une r√©f√©rence)
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLAppCmdFile
 	:
@@ -62,11 +62,11 @@ class TDCLAppCmdFile
 {
 public:
 	///
-	/// Constructeur à partir d'un fichier.
+	/// Constructeur √† partir d'un fichier.
 	///
 	/// \param inCommandKind	type de la commande.
 	/// \param inCommandID		identifiant de la commande.
-	/// \param inFileRef		référence sur le fichier.
+	/// \param inFileRef		r√©f√©rence sur le fichier.
 	///
 	TDCLAppCmdFile(
 				EEventKind inCommandKind,
@@ -76,7 +76,7 @@ public:
 	///
 	/// Accesseur sur le fichier.
 	///
-	/// \return une référence sur le fichier
+	/// \return une r√©f√©rence sur le fichier
 	///
 	inline TDCLFSItemRef	GetFileRef( void )
 		{
@@ -85,7 +85,7 @@ public:
 
 private:
 	/// \name Variables
-	TDCLFSItemRef		mFileRef;	/// Référence sur le fichier.
+	TDCLFSItemRef		mFileRef;	/// R√©f√©rence sur le fichier.
 };
 
 #endif

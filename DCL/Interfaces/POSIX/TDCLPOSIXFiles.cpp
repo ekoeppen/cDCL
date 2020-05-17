@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXFiles.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXFiles.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -67,7 +67,7 @@ TDCLPOSIXFiles::~TDCLPOSIXFiles( void )
 }
 
 // ------------------------------------------------------------------------- //
-//	* GetKind( void )
+//	*¬†GetKind( void )
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLPOSIXFiles::GetKind( void )
@@ -76,7 +76,7 @@ TDCLPOSIXFiles::GetKind( void )
 }
 
 // ------------------------------------------------------------------------- //
-//	* GetRootFolder( const KUInt16* )
+//	*¬†GetRootFolder( const KUInt16* )
 // ------------------------------------------------------------------------- //
 TDCLFSItemRef
 TDCLPOSIXFiles::GetRootFolder( const KUInt16* /* inRootName = nil */ )
@@ -85,18 +85,18 @@ TDCLPOSIXFiles::GetRootFolder( const KUInt16* /* inRootName = nil */ )
 }
 
 // ------------------------------------------------------------------------- //
-//	* CountRootFolders( void ) const
+//	*¬†CountRootFolders( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLPOSIXFiles::CountRootFolders( void ) const
 {
-	// On n'a qu'une seule racine. Cette classe doit être dérivée pour
+	// On n'a qu'une seule racine. Cette classe doit √™tre d√©riv√©e pour
 	// en avoir plus d'une.
 	return 1;
 }
 
 // ------------------------------------------------------------------------- //
-//	* GetRootFolderName( KUInt32 ) const
+//	*¬†GetRootFolderName( KUInt32 ) const
 // ------------------------------------------------------------------------- //
 const KUInt16*
 TDCLPOSIXFiles::GetRootFolderName( KUInt32 inFolderIndex ) const
@@ -105,7 +105,7 @@ TDCLPOSIXFiles::GetRootFolderName( KUInt32 inFolderIndex ) const
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	return kRootFolderName;
 }
 

@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSBinary.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			07/08/2002
+// Cr√©√© le:			07/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSBinary.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,7 +56,7 @@ class TDCLPkgDecoder;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLNSBinary
 	:
@@ -64,7 +64,7 @@ class TDCLNSBinary
 {
 public:
 	///
-	/// Constructeur à partir d'une classe et d'une taille.
+	/// Constructeur √† partir d'une classe et d'une taille.
 	/// Remarque: inClass est normalement un symbole. Mais comme sur le
 	/// Newton, on peut prendre n'importe quel objet.
 	///
@@ -74,16 +74,16 @@ public:
 
 	///
 	/// Constructeur par copie.
-	/// Les données sont dupliquées.
+	/// Les donn√©es sont dupliqu√©es.
 	///
-	/// \param inCopy	objet à copier.
+	/// \param inCopy	objet √† copier.
 	///
 	explicit TDCLNSBinary( const TDCLNSBinary& inCopy );
 
 	///
-	/// Constructeur à partir d'un pointeur et d'une taille.
+	/// Constructeur √† partir d'un pointeur et d'une taille.
 	///
-	/// \param inData		données pour le binaire (copiées).
+	/// \param inData		donn√©es pour le binaire (copi√©es).
 	/// \param inLength		taille, en octets, du binaire.
 	/// \param inClass		classe du binaire.
 	///
@@ -93,10 +93,10 @@ public:
 			const TDCLNSRef& inClass = KDCLSYM::kSYMbinary );
 
 	///
-	/// Constructeur à partir d'un flux et d'une taille.
+	/// Constructeur √† partir d'un flux et d'une taille.
 	///
-	/// \param inStream		flux où lire les données.
-	/// \param inLength		nombre d'octets à lire
+	/// \param inStream		flux o√π lire les donn√©es.
+	/// \param inLength		nombre d'octets √† lire
 	/// \param inClass		classe du binaire.
 	///
 	TDCLNSBinary(
@@ -106,26 +106,26 @@ public:
 
 	///
 	/// Destructeur.
-	/// Libère la mémoire tampon.
+	/// Lib√®re la m√©moire tampon.
 	///
 	virtual ~TDCLNSBinary( void );
 
 	///
-	/// Opérateur d'assignation.
+	/// Op√©rateur d'assignation.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLNSBinary& operator = ( const TDCLNSBinary& inCopy );
 
 	///
-	/// Détermine si cet objet est un binaire.
+	/// D√©termine si cet objet est un binaire.
 	///
 	/// \return \c true
 	///
 	virtual Boolean IsBinary( void ) const;
 
 	///
-	/// Détermine si cet objet est une chaîne.
+	/// D√©termine si cet objet est une cha√Æne.
 	///
 	/// \return \c true si la classe correspond.
 	///
@@ -149,10 +149,10 @@ public:
 	void	SetLength( KUInt32 inLength );
 	
 	///
-	/// Accesseur sur les données du binaire.
+	/// Accesseur sur les donn√©es du binaire.
 	///
 	/// \return le pointeur sur le binaire (valide tant que le binaire
-	///		n'est pas redimensionné)
+	///		n'est pas redimensionn√©)
 	///
 	inline void*	GetPointer( void )
 		{
@@ -160,10 +160,10 @@ public:
 		}
 
 	///
-	/// Accesseur sur les données du binaire, en lecture seule.
+	/// Accesseur sur les donn√©es du binaire, en lecture seule.
 	///
 	/// \return le pointeur sur le binaire (valide tant que le binaire
-	///		n'est pas redimensionné)
+	///		n'est pas redimensionn√©)
 	///
 	inline const void*	GetPointer( void ) const
 		{
@@ -171,7 +171,7 @@ public:
 		}
 	
 	///
-	/// Crée une copie de surface de la chaîne.
+	/// Cr√©e une copie de surface de la cha√Æne.
 	/// Appelle le constructeur par copie.
 	///
 	/// \return une copie de surface de this.
@@ -179,69 +179,69 @@ public:
 	virtual TDCLNSObject*	Clone( void ) const;
 
 	///
-	/// Crée un objet à partir d'un flux NSOF
+	/// Cr√©e un objet √† partir d'un flux NSOF
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSBinary*	FromNSOF( TDCLNSOFDecoder* inDecoder );
 
 	///
-	/// Crée un objet à partir d'un flux NSOF (en tant que binaire large)
+	/// Cr√©e un objet √† partir d'un flux NSOF (en tant que binaire large)
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSBinary*	FromNSOFAsLargeBinary( TDCLNSOFDecoder* inDecoder );
 
 	///
-	/// Crée un objet à partir d'un paquet.
+	/// Cr√©e un objet √† partir d'un paquet.
 	///
-	/// \param inDecoder	décodeur Pkg associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur Pkg associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSBinary*	FromPkg( TDCLPkgDecoder* inDecoder );
 
 	///
-	/// Détermine la classe de ce binaire.
-	/// Ce n'est pas forcément un symbole.
+	/// D√©termine la classe de ce binaire.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \return une référence vers la classe de ce binaire.
+	/// \return une r√©f√©rence vers la classe de ce binaire.
 	///
 	virtual TDCLNSRef ClassOf( void ) const;
 
 	///
-	/// Détermine la classe primaire de ce binaire.
-	/// Il s'agit forcément d'un symbole.
+	/// D√©termine la classe primaire de ce binaire.
+	/// Il s'agit forc√©ment d'un symbole.
 	///
-	/// \return une référence vers la classe primaire de ce binaire.
+	/// \return une r√©f√©rence vers la classe primaire de ce binaire.
 	///
 	virtual TDCLNSRef PrimClassOf( void ) const;
 
 	///
 	/// Change la classe de ce binaire.
-	/// Ce n'est pas forcément un symbole.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \param	inClass un objet qui sert de nouvelle classe à ce binaire.
+	/// \param	inClass un objet qui sert de nouvelle classe √† ce binaire.
 	/// \throws TDCLNSException si une erreur est survenue.
 	///
 	virtual void SetClass( const TDCLNSRef& inClass );
 
 protected:
 	///
-	/// Crée une représentation NSOF du binaire.
-	/// Comprend le type et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation NSOF du binaire.
+	/// Comprend le type et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToNSOF( TDCLNSOFEncoder* inEncoder ) const;
 
 	///
-	/// Constructeur à partir d'une zone de mémoire déjà allouée.
+	/// Constructeur √† partir d'une zone de m√©moire d√©j√† allou√©e.
 	///
-	/// \param inData		données pour le binaire (non copiées).
+	/// \param inData		donn√©es pour le binaire (non copi√©es).
 	/// \param inLength		taille, en octets, du binaire.
 	/// \param inClass		classe du binaire.
 	///
@@ -252,19 +252,19 @@ protected:
 	
 private:
 	///
-	/// Constructeur par défaut volontairement indisponible.
+	/// Constructeur par d√©faut volontairement indisponible.
 	///
 	TDCLNSBinary( void );
 
 	/// \name Interface IStreamable
 	// @{
 	///
-	/// Crée une représentation XML du binaire.
-	/// Comprend la balise de début, les données et la balise de fin.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation XML du binaire.
+	/// Comprend la balise de d√©but, les donn√©es et la balise de fin.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	/// \param inObjectID		ID de l'objet dans ce flux.
 	///
 	virtual void ToXML(
@@ -272,31 +272,31 @@ private:
 				KUInt32			inObjectID ) const;
 
 	///
-	/// Crée une représentation sous forme de texte du binaire.
-	/// Comprend les chevrons et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation sous forme de texte du binaire.
+	/// Comprend les chevrons et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToText( TDCLTextEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation du binaire pour mettre dans un
+	/// Cr√©e une repr√©sentation du binaire pour mettre dans un
 	/// paquet.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
 	/// \param inEncoder	encodeur pour le paquet.
-	/// \param ioOffset		en entrée et en sortie, décalage par rapport
+	/// \param ioOffset		en entr√©e et en sortie, d√©calage par rapport
 	///						au paquet.
 	///
 	virtual void ToPkg( TDCLPkgEncoder* inEncoder, KUInt32* ioOffset ) const;
 	// @}
 	
-	/// \name Variables Privées
+	/// \name Variables Priv√©es
 	TDCLNSRef		mClass;			///< Classe du binaire
-	void*			mBuffer;		///< Mémoire tampon
-	KUInt32			mBufferSize;	///< Taille de la mémoire tampon
+	void*			mBuffer;		///< M√©moire tampon
+	KUInt32			mBufferSize;	///< Taille de la m√©moire tampon
 };
 
 #endif

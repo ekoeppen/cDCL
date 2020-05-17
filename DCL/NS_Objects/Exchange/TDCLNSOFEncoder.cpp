@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSOFEncoder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/10/2002
+// Cr√©√© le:			15/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSOFEncoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -58,7 +58,7 @@ TDCLNSOFEncoder::TDCLNSOFEncoder( TDCLStream* inStream )
 // ------------------------------------------------------------------------- //
 TDCLNSOFEncoder::~TDCLNSOFEncoder( void )
 {
-	// Défense d'afficher.
+	// D√©fense d'afficher.
 }
 
 // ------------------------------------------------------------------------- //
@@ -82,7 +82,7 @@ TDCLNSOFEncoder::PutPrecedent( KUInt32 inRefID, KUIntPtr /* inCookie */ )
 	// On met le type precedent.
 	GetOutputStream()->PutByte( KDCLNSOF::kPrecedent );
 	
-	// Ensuite, la référence.
+	// Ensuite, la r√©f√©rence.
 	GetOutputStream()->PutXLong( inRefID );
 }
 

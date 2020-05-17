@@ -2,7 +2,7 @@
 // Fichier:			TDCLKeyboardEngine.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/4/2003
+// Cr√©√© le:			10/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLKeyboardEngine.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLKeyboardEngine
 	:
@@ -54,17 +54,17 @@ class TDCLKeyboardEngine
 {
 public:
 	///
-	/// Constructeur à partir d'un lien.
+	/// Constructeur √† partir d'un lien.
 	///
-	/// \param inLink	référence sur le lien.
+	/// \param inLink	r√©f√©rence sur le lien.
 	///
 	TDCLKeyboardEngine( TDCLFullDockLink* inLink );
 	
 	///
-	/// Méthode appelée pour gérer des commandes venant de l'application.
+	/// M√©thode appel√©e pour g√©rer des commandes venant de l'application.
 	///
-	/// \param inCommand	commande à exécuter.
-	/// \param outProcessed	si la commande a été traitée.
+	/// \param inCommand	commande √† ex√©cuter.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -73,24 +73,24 @@ public:
 									Boolean* outProcessed );
 
 	///
-	/// Méthode appelée par le lien pour commencer à utiliser le clavier.
-	/// Cette méthode doit ouvrir la fenêtre qui demande de taper des touches
-	/// à l'utilisateur ou un truc dans ce genre.
+	/// M√©thode appel√©e par le lien pour commencer √† utiliser le clavier.
+	/// Cette m√©thode doit ouvrir la fen√™tre qui demande de taper des touches
+	/// √† l'utilisateur ou un truc dans ce genre.
 	///
 	virtual void				StartUsingKeyboard( void ) = 0;
 
 	///
-	/// Méthode appelée par le lien pour signifier que le travail du
-	/// moteur est terminé.
-	/// Cette méthode doit fermer la fenêtre qui demande de taper des touches
-	/// à l'utilisateur ou un truc dans ce genre.
+	/// M√©thode appel√©e par le lien pour signifier que le travail du
+	/// moteur est termin√©.
+	/// Cette m√©thode doit fermer la fen√™tre qui demande de taper des touches
+	/// √† l'utilisateur ou un truc dans ce genre.
 	///
 	virtual void				WorkIsOver( void ) = 0;
 
 	///
-	/// Détermine les commandes de l'application que le lien
-	/// peut traiter. Cette méthode est appelée à chaque fois que le
-	/// lien va attendre un événement.
+	/// D√©termine les commandes de l'application que le lien
+	/// peut traiter. Cette m√©thode est appel√©e √† chaque fois que le
+	/// lien va attendre un √©v√©nement.
 	/// On n'accepte que les commandes relatives au clavier.
 	///
 	/// \return le masque pour les commandes de l'application

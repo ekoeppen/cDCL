@@ -2,7 +2,7 @@
 // Fichier:			TDCLPackage.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			29/10/2003
+// Cr√©√© le:			29/10/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPackage.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 1999-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -86,7 +86,7 @@ TDCLPackage::TDCLPackage( void )
 	mNameStr = (KUInt16*) ::malloc( sizeof( KUInt16 ) );
 	*mNameStr = 0;
 
-	// Allocationd de la chaîne de copyright.
+	// Allocationd de la cha√Æne de copyright.
 	mCopyrightStr = (KUInt16*) ::malloc( sizeof( KUInt16 ) );
 	*mCopyrightStr = 0;
 }
@@ -200,12 +200,12 @@ TDCLPackage::~TDCLPackage( void )
 void
 TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 {
-	// On écrit les informations suivantes:
+	// On √©crit les informations suivantes:
 	// - le catalogue (partie fixe) (SPackageDirectory)
-	// - la chaîne Copyright.
-	// - la chaîne du nom.
-	// - les différentes parties.
-	// - les données pour le gestionnaire pour chaque partie.
+	// - la cha√Æne Copyright.
+	// - la cha√Æne du nom.
+	// - les diff√©rentes parties.
+	// - les donn√©es pour le gestionnaire pour chaque partie.
 	// - les parties.
 	
 	// Calcul de la taille.
@@ -238,7 +238,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 	
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
-		// Données.
+		// Donn√©es.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
 		KASSERT( thePart != nil );
 		theGlobalSize += thePart->GetSize( theGlobalSize );
@@ -249,7 +249,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 		}
 	}
 	
-	// On écrit désormais le paquet.
+	// On √©crit d√©sormais le paquet.
 	KUInt32 writeCount = 8;
 	if (mNOS1Compatible)
 	{
@@ -280,7 +280,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 	{
 		inOutStream->PutLong( theOffset );
 
-		// Données.
+		// Donn√©es.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
 		KUInt32 theSize = thePart->GetSize( theOffset + theDirectorySize );
 		theOffset += theSize;
@@ -302,7 +302,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 		inOutStream->PutLong( 0 );
 	}
 	
-	// Ensuite, les données du catalogue.
+	// Ensuite, les donn√©es du catalogue.
 	if (theCopyrightStrLen)
 	{
 		writeCount = theCopyrightStrLen;
@@ -311,7 +311,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 	writeCount = theNameStrLen;
 	inOutStream->Write( mNameStr, &writeCount );
 	
-	// Données des parties.
+	// Donn√©es des parties.
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		writeCount = mParts[indexParts].fInfoSize;
@@ -328,7 +328,7 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
 	theOffset = theDirectorySize;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
-		// Données.
+		// Donn√©es.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
 		writeCount = thePart->GetSize( theOffset );
 		const void* theData = thePart->GetBuffer( theOffset );
@@ -449,7 +449,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	KUInt16 nameOffset = inStream->GetShort();
 	KUInt16 nameLength = inStream->GetShort();
 	
-	// Les chaînes sont des chaînes de mots de 16 bits.
+	// Les cha√Ænes sont des cha√Ænes de mots de 16 bits.
 	if (copyrightLength & 0x1)
 	{
 		throw DCLPackage( kPkgStringsDontSeemUniCStr );
@@ -466,7 +466,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	KUInt32 theDirectorySize = inStream->GetLong();
 	mNumParts = inStream->GetLong();
 	
-	// Lecture des entrées sur les parties.
+	// Lecture des entr√©es sur les parties.
 	mParts = (SPartData*) ::malloc( mNumParts * sizeof( SPartData ) );
 	SPartLocation* thePartsLocations =
 		(SPartLocation*) ::malloc( mNumParts * sizeof( SPartLocation ) );
@@ -488,9 +488,9 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
-		// Ce que je veux garder dans fOffset, c'est le décalage
-		// par rapport au début du paquet (et non pas par rapport
-		// au début des données des parties).
+		// Ce que je veux garder dans fOffset, c'est le d√©calage
+		// par rapport au d√©but du paquet (et non pas par rapport
+		// au d√©but des donn√©es des parties).
 		thePartsLocations[indexParts].fDataOffset =
 				inStream->GetLong() + theDirectorySize;
 		thePartsLocations[indexParts].fDataSize = inStream->GetLong();
@@ -503,10 +503,10 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		(void) inStream->GetLong(); // fReserved2
 	}
 
-	// Ensuite, les données du catalogue.
+	// Ensuite, les donn√©es du catalogue.
 	KUInt32 theDirectoryDataSize = theDirectorySize - theDirectoryInfoSize;
 	
-	// Création d'une zone de mémoire.
+	// Cr√©ation d'une zone de m√©moire.
 	KUInt8* theDirectoryData =
 					(KUInt8*) ::malloc( (size_t) theDirectoryDataSize );
 	
@@ -520,7 +520,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			throw DCLEOF;
 		}
 		
-		// Copie des différentes données.
+		// Copie des diff√©rentes donn√©es.
 		if (copyrightLength > 0)
 		{
 			if (((KUInt32) (copyrightLength + copyrightOffset))
@@ -589,7 +589,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 					theSize );
 		}
 	} catch (...) {
-		// Ménage.
+		// M√©nage.
 		::free( thePartsLocations );
 		::free( theDirectoryData );
 		
@@ -638,7 +638,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 				throw DCLPackage( kPkgErrWeirdPartSize );
 			}
 			
-			// Création des données.
+			// Cr√©ation des donn√©es.
 			if ((mParts[indexParts].fFlags & kPartTypeMask)
 					== kPartNOSPart)
 			{
@@ -656,7 +656,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			}
 		}
 	} catch (...) {
-		// Ménage.
+		// M√©nage.
 		::free( thePartsLocations );
 		::free( thePartData );
 		
@@ -702,7 +702,7 @@ TDCLPackage::AddPart(
 	mNumParts++;
 	mParts = (SPartData*) ::realloc( mParts, sizeof(SPartData) * mNumParts );
 	
-	// Ajout des données.
+	// Ajout des donn√©es.
 	mParts[indexPart].fType = inType;
 	mParts[indexPart].fFlags = inFlags;
 	mParts[indexPart].fInfoSize = inInfoSize;
@@ -724,13 +724,13 @@ TDCLPackage::RemovePart( KUInt32 inPartIndex )
 {
 	KASSERT( inPartIndex < mNumParts );
 
-	// Suppression des données.
+	// Suppression des donn√©es.
 	
-	// Ajout des données.
+	// Ajout des donn√©es.
 	::free( mParts[inPartIndex].fInfoData );
 	delete mParts[inPartIndex].fPart;
 
-	// Rétrécissement du tableau.
+	// R√©tr√©cissement du tableau.
 	(void) ::memmove(
 				(void*) &mParts[inPartIndex],
 				(const void*) &mParts[inPartIndex + 1],

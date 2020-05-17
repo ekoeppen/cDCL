@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacGetPutFiles.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/01/2003
+// Cr√©√© le:			30/01/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacGetPutFiles.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -62,20 +62,20 @@
 #include <DCL/Interfaces/MacOS/TDCLMacFile.h>
 
 ///
-/// Classe pour récupérer une référence vers un fichier existant ou un fichier
-/// à créer. Utilise les NavServices ou StandardFile suivant ce qui est
+/// Classe pour r√©cup√©rer une r√©f√©rence vers un fichier existant ou un fichier
+/// √† cr√©er. Utilise les NavServices ou StandardFile suivant ce qui est
 /// disponible.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacGetPutFiles
 {
 public:
 	///
-	/// Constructeur à partir de l'interface pour les fichiers.
+	/// Constructeur √† partir de l'interface pour les fichiers.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
 	///
@@ -90,10 +90,10 @@ public:
 	/// Affiche un dialogue pour choisir un fichier (existant) sur le disque.
 	/// Le fichier n'est pas ouvert.
 	///
-	/// \param inPrompt		message affiché pour spécifier cette action
-	/// \return un objet TDCLMacFile représentant ce fichier
-	/// \throw TDCLException si un problème est survenu ou si l'utilisateur
-	///			a annulé l'opération.
+	/// \param inPrompt		message affich√© pour sp√©cifier cette action
+	/// \return un objet TDCLMacFile repr√©sentant ce fichier
+	/// \throw TDCLException si un probl√®me est survenu ou si l'utilisateur
+	///			a annul√© l'op√©ration.
 	///
 	inline TDCLFSItemRef	GetFile( const char* inPrompt )
 		{
@@ -104,10 +104,10 @@ public:
 	/// Affiche un dialogue pour choisir un paquet (existant) sur le disque.
 	/// Le fichier n'est pas ouvert.
 	///
-	/// \param inPrompt		message affiché pour spécifier cette action
-	/// \return un objet TDCLMacFile représentant ce fichier
-	/// \throw TDCLException si un problème est survenu ou si l'utilisateur
-	///			a annulé l'opération.
+	/// \param inPrompt		message affich√© pour sp√©cifier cette action
+	/// \return un objet TDCLMacFile repr√©sentant ce fichier
+	/// \throw TDCLException si un probl√®me est survenu ou si l'utilisateur
+	///			a annul√© l'op√©ration.
 	///
 	inline TDCLFSItemRef	GetPackage( const char* inPrompt )
 		{
@@ -115,15 +115,15 @@ public:
 		}
 
 	///
-	/// Affiche un dialogue pour définir un nouveau fichier sur le disque.
-	/// Le fichier n'est pas créé. En revanche, si le fichier existait déjà,
-	/// il est au préalable supprimé.
+	/// Affiche un dialogue pour d√©finir un nouveau fichier sur le disque.
+	/// Le fichier n'est pas cr√©√©. En revanche, si le fichier existait d√©j√†,
+	/// il est au pr√©alable supprim√©.
 	///
-	/// \param inPrompt			message affiché pour spécifier cette action
-	/// \param inDefaultName	nom par défaut pour le nouveau fichier
-	/// \return un objet TDCLMacFile représentant ce fichier
-	/// \throw TDCLException si un problème est survenu ou si l'utilisateur
-	///			a annulé l'opération.
+	/// \param inPrompt			message affich√© pour sp√©cifier cette action
+	/// \param inDefaultName	nom par d√©faut pour le nouveau fichier
+	/// \return un objet TDCLMacFile repr√©sentant ce fichier
+	/// \throw TDCLException si un probl√®me est survenu ou si l'utilisateur
+	///			a annul√© l'op√©ration.
 	///
 	TDCLFSItemRef		PutFile(
 								const char* inPrompt,
@@ -133,14 +133,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacGetPutFiles( const TDCLMacGetPutFiles& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacGetPutFiles& operator = ( const TDCLMacGetPutFiles& inCopy );
 
@@ -149,11 +149,11 @@ private:
 	/// le disque.
 	/// Le fichier n'est pas ouvert.
 	///
-	/// \param inPrompt		message affiché pour spécifier cette action
+	/// \param inPrompt		message affich√© pour sp√©cifier cette action
 	/// \param inOnlyPackages	si on ne veut que les paquets
-	/// \return un objet TDCLMacFile représentant ce fichier
-	/// \throw TDCLException si un problème est survenu ou si l'utilisateur
-	///			a annulé l'opération.
+	/// \return un objet TDCLMacFile repr√©sentant ce fichier
+	/// \throw TDCLException si un probl√®me est survenu ou si l'utilisateur
+	///			a annul√© l'op√©ration.
 	///
 	TDCLFSItemRef		DoGetFile(
 								const char* inPrompt,
@@ -162,10 +162,10 @@ private:
 	///
 	/// Filtre pour les paquets avec les NavigationServices.
 	///
-	/// \param inItem			élément à filtrer.
+	/// \param inItem			√©l√©ment √† filtrer.
 	/// \param inInfo			information des NavServices
-	/// \param inCallBackUD		cookie (ignoré)
-	/// \param inFilterMode		mode de filtrage (ignoré)
+	/// \param inCallBackUD		cookie (ignor√©)
+	/// \param inFilterMode		mode de filtrage (ignor√©)
 	/// \return \c true si le fichier est un paquet, \c false sinon.
 	///
 	static pascal Boolean	PackageNavServicesFilterProc(

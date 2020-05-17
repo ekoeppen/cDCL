@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSRichText.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			13/3/2004
+// Cr√©√© le:			13/3/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSRichText.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,21 +44,21 @@
 
 ///
 /// Interface pour un paragraphe avec styles et graphismes.
-/// Les graphismes sont représentés comme des styles sur un seul
-/// caractère. Le caractère de la chaîne qui correspond à un graphisme
-/// dépend des données. Par exemple, c'est 0xF701 pour l'encre dans
-/// les paragraphes clParagraph et 0x2601 pour les données NewtWorks.
+/// Les graphismes sont repr√©sent√©s comme des styles sur un seul
+/// caract√®re. Le caract√®re de la cha√Æne qui correspond √† un graphisme
+/// d√©pend des donn√©es. Par exemple, c'est 0xF701 pour l'encre dans
+/// les paragraphes clParagraph et 0x2601 pour les donn√©es NewtWorks.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLRichText
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLRichText( void ) {};
 
@@ -68,24 +68,24 @@ public:
 	virtual ~TDCLRichText( void ) {};
 
 	///
-	/// Concatène avec un autre texte riche.
+	/// Concat√®ne avec un autre texte riche.
 	///
 	virtual void Catenate( const TDCLRichText& inAlter ) = 0;
 
 	///
-	/// Récupère la taille du texte, i.e. le nombre de
-	/// caractères.
+	/// R√©cup√®re la taille du texte, i.e. le nombre de
+	/// caract√®res.
 	///
-	/// \return la taille du texte, en caractères.
+	/// \return la taille du texte, en caract√®res.
 	///
 	virtual KUInt32 GetSize( void ) const = 0;
 
 	///
-	/// Copie n caractères du texte.
+	/// Copie n caract√®res du texte.
 	///
-	/// \param inOffset		décalage à partir duquel copier les caractères.
-	/// \param inCount		nombre de caractères à copier.
-	/// \param outChars		mémoire tampon où stocker les caractères.
+	/// \param inOffset		d√©calage √† partir duquel copier les caract√®res.
+	/// \param inCount		nombre de caract√®res √† copier.
+	/// \param outChars		m√©moire tampon o√π stocker les caract√®res.
 	///
 	virtual void	GetText(
 						KUInt32 inOffset,
@@ -93,44 +93,44 @@ public:
 						KUInt16* outChars ) const = 0;
 
 	///
-	/// Détermine le nombre de styles.
+	/// D√©termine le nombre de styles.
 	///
 	/// \return le nombre de styles.
 	///
 	virtual KUInt32 CountStyleRuns( void ) const = 0;
 
 	///
-	/// Retourne l'indice du début du i-ème style.
+	/// Retourne l'indice du d√©but du i-√®me style.
 	///
-	/// \param inStyleRunIndex	indice du style dont on veut le début (base 0).
-	/// \return l'indice du caractère où commence le i-ème style.
+	/// \param inStyleRunIndex	indice du style dont on veut le d√©but (base 0).
+	/// \return l'indice du caract√®re o√π commence le i-√®me style.
 	///
 	virtual KUInt32	GetStyleRunStart( KUInt32 inStyleRunIndex ) const = 0;
 
 	///
-	/// Retourne la longueur du i-ème style.
+	/// Retourne la longueur du i-√®me style.
 	///
 	/// \param inStyleRunIndex	indice du style dont on veut la longueur.
-	/// \return le nombre de caractères du i-ème style.
+	/// \return le nombre de caract√®res du i-√®me style.
 	///
 	virtual KUInt32	GetStyleRunLength( KUInt32 inStyleRunIndex ) const = 0;
 
 	///
-	/// Retourne une référence sur le n-ième style du texte.
+	/// Retourne une r√©f√©rence sur le n-i√®me style du texte.
 	///
-	/// \param inStyleRunIndex	index du style à retourner (base 0).
-	/// \return le n-ième style du paragraphe.
+	/// \param inStyleRunIndex	index du style √† retourner (base 0).
+	/// \return le n-i√®me style du paragraphe.
 	///
 	virtual TDCLStyleRef	GetStyle( KUInt32 inStyleRunIndex ) const = 0;
 
 	///
-	/// Modifie le style du texte entre deux caractères.
-	/// Si le style ajouté est un graphique, le texte entre les
+	/// Modifie le style du texte entre deux caract√®res.
+	/// Si le style ajout√© est un graphique, le texte entre les
 	/// 
 	///
-	/// \param inTextIndex	début du bout du texte dont on veut changer le style
+	/// \param inTextIndex	d√©but du bout du texte dont on veut changer le style
 	/// \param inTextLength	longueur du texte dont on veut changer le style
-	/// \param inStyle		style à appliquer à ce texte.
+	/// \param inStyle		style √† appliquer √† ce texte.
 	///
 	virtual void			SetStyle(
 								KUInt32 inTextIndex,
@@ -141,14 +141,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLRichText( const TDCLRichText& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLRichText& operator = ( const TDCLRichText& inCopy );
 };

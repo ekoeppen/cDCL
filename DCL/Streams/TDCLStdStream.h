@@ -2,7 +2,7 @@
 // Fichier:			TDCLStdStream.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			16/10/2002
+// Cr√©√© le:			16/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLStdStream.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,12 +42,12 @@
 
 ///
 /// Classe pour un flux sur stdin/stdout.
-/// Utilisé en partie pour les tests.
+/// Utilis√© en partie pour les tests.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLStdStream
 	:
@@ -55,7 +55,7 @@ class TDCLStdStream
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLStdStream( void );
 
@@ -64,45 +64,45 @@ public:
 	///
 	virtual ~TDCLStdStream( void );
 
-	/// \name interface entrée/sortie
+	/// \name interface entr√©e/sortie
 
 	///
 	/// Lit des octets.
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que 
-	///						l'exception ne soit lancée si un problème est
+	/// \param outBuffer	m√©moire tampon pour les octets lus.
+	/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+	///						Cette valeur est mise √† jour avant que 
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 	///
 	virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 
 	///
 	/// Ecrit des octets.
 	///
-	/// \param inBuffer		mémoire tampon pour les octets à écrire.
-	/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-	///						sortie. Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
+	/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+	/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+	///						sortie. Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 
 	///
-	/// Vide la mémoire tampon de sortie.
+	/// Vide la m√©moire tampon de sortie.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		FlushOutput( void );
 
 	///
-	/// Récupère l'octet suivant sans avancer le curseur.
+	/// R√©cup√®re l'octet suivant sans avancer le curseur.
 	///
 	/// \return l'octet lu.
-	/// \throws TDCLIOException	si un problème est survenu (y compris si la
-	///							fin du fichier est rencontrée)
+	/// \throws TDCLIOException	si un probl√®me est survenu (y compris si la
+	///							fin du fichier est rencontr√©e)
 	///
 	virtual	KUInt8		PeekByte( void );
 };

@@ -2,7 +2,7 @@
 // Fichier:			U3DES.h
 // Projet:			K
 // 
-// Créé le:			6/9/2003
+// Cr√©√© le:			6/9/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -39,12 +39,12 @@
 #include <K/Crypto/UDES.h>
 
 ///
-/// Classe pour gérer le cryptage en triple DES.
+/// Classe pour g√©rer le cryptage en triple DES.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class U3DES
 	:
@@ -53,7 +53,7 @@ class U3DES
 public:
 private:
 	///
-	/// Constructeur par défaut volontairement privé.
+	/// Constructeur par d√©faut volontairement priv√©.
 	/// Cette classe est statique.
 	///
 	U3DES( void );

@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXDir.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			22/6/2003
+// Cr√©√© le:			22/6/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXDir.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -49,7 +49,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPOSIXDir
 	:
@@ -60,11 +60,11 @@ protected:
 	friend class TDCLPOSIXFile;
 
 	///
-	/// Constructeur à partir d'un dossier parent (facultatif) et d'un chemin.
-	/// Le dossier parent doit être compatible avec la classe du fichier.
+	/// Constructeur √† partir d'un dossier parent (facultatif) et d'un chemin.
+	/// Le dossier parent doit √™tre compatible avec la classe du fichier.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
-	/// \param inFolder		dossier parent (peut être \c nil)
+	/// \param inFolder		dossier parent (peut √™tre \c nil)
 	/// \param inPath		chemin complet vers le dossier.
 	///
 	TDCLPOSIXDir(
@@ -74,11 +74,11 @@ protected:
 
 private:
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est appelée
-	/// que si nécessaire.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est appel√©e
+	/// que si n√©cessaire.
 	///
-	/// \return une référence sur un objet représentant le dossier parent ou sur \c nil.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return une r√©f√©rence sur un objet repr√©sentant le dossier parent ou sur \c nil.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual TDCLFSItemRef	MakeParentFolder( void ) const;
 };

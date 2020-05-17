@@ -2,7 +2,7 @@
 // Fichier:			DCLCocoaApplication.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/3/2003
+// Cr√©√© le:			30/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is DCLCocoaApplication.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -52,7 +52,7 @@
 	#pragma	warn_extracomma		reset
 #endif
 
-// Pré-déclarations.
+// Pr√©-d√©clarations.
 class TDCLObjCApplication;
 class IDCLFiles;
 class IDCLThreads;
@@ -60,70 +60,70 @@ class IDCLThreads;
 ///
 /// Classe pour une application Cocoa utilisant la DCL.
 ///
-/// Cet objet gère les événements asynchrones (tout sauf les créateurs des
-/// interfaces) en utilisant des objets de la classe NSTimer envoyés sur
-/// la boucle de l'application (la boucle courante lorsque la méthode
-/// initWithController: est appelée).
+/// Cet objet g√®re les √©v√©nements asynchrones (tout sauf les cr√©ateurs des
+/// interfaces) en utilisant des objets de la classe NSTimer envoy√©s sur
+/// la boucle de l'application (la boucle courante lorsque la m√©thode
+/// initWithController: est appel√©e).
 ///
-/// Par ailleurs, en Cocoa, si on fait du multitâche préemptif avec mettons
-/// les pthreads, il faut créer au moins un objet de type NSTask pour que
-/// certains éléments de Cocoa soient initialisés. Cette classe crée un objet
+/// Par ailleurs, en Cocoa, si on fait du multit√¢che pr√©emptif avec mettons
+/// les pthreads, il faut cr√©er au moins un objet de type NSTask pour que
+/// certains √©l√©ments de Cocoa soient initialis√©s. Cette classe cr√©e un objet
 /// NSTask bidon.
 ///
-/// Pour utiliser cette classe, il faut créer un contrôleur qui adopte le
+/// Pour utiliser cette classe, il faut cr√©er un contr√¥leur qui adopte le
 /// protocole IDCLObjCApplication et initialiser cette classe avec ce
-/// contrôleur.
+/// contr√¥leur.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 @interface DCLCocoaApplication : NSObject < IDCLObjCApplication >
 {
-	NSRunLoop*					mRunLoop;		///< Boucle qui gère les événements.
-	id < IDCLObjCApplication >	mController;	///< Référence sur le contrôleur.
-	TDCLObjCApplication* 		mDCLAppl;		///< Référence sur l'application DCL.
+	NSRunLoop*					mRunLoop;		///< Boucle qui g√®re les √©v√©nements.
+	id < IDCLObjCApplication >	mController;	///< R√©f√©rence sur le contr√¥leur.
+	TDCLObjCApplication* 		mDCLAppl;		///< R√©f√©rence sur l'application DCL.
 	IDCLFiles*					mFilesIntf;		///< Interface pour les fichiers.
-	IDCLThreads*				mThreadsIntf;	///< Interface pour les processus légers.
+	IDCLThreads*				mThreadsIntf;	///< Interface pour les processus l√©gers.
 }
 
 ///
 /// Initialisation de l'objet.
 ///
-/// \param inContoller	contrôleur associé.
+/// \param inContoller	contr√¥leur associ√©.
 /// \return \c this
 ///
 - (id) initWithController: (id < IDCLObjCApplication >) inController;
 
 ///
-/// Crée une invocation pour le mandataire avec le sélecteur donné.
+/// Cr√©e une invocation pour le mandataire avec le s√©lecteur donn√©.
 ///
-/// \param inSelector	sélecteur considéré
-/// \return une invocation pour ce sélecteur
+/// \param inSelector	s√©lecteur consid√©r√©
+/// \return une invocation pour ce s√©lecteur
 ///
 - (NSInvocation*) CreateInvocationWithSelector: (SEL) inSelector;
 
 ///
 /// Envoie l'invocation sur la boucle.
 ///
-/// \param inInvocation	invocation considérée.
+/// \param inInvocation	invocation consid√©r√©e.
 ///
 - (void) SendInvocation: (NSInvocation*) inInvocation;
 
 ///
-/// Méthode du processus léger bidon.
-/// Ne sert à rien (enfin, sert uniquement à dire à Cocoa qu'on fait du
-/// multi-tâche préemptif)
+/// M√©thode du processus l√©ger bidon.
+/// Ne sert √† rien (enfin, sert uniquement √† dire √† Cocoa qu'on fait du
+/// multi-t√¢che pr√©emptif)
 ///
-/// \param ignoredArgs	arguments ignorés.
+/// \param ignoredArgs	arguments ignor√©s.
 ///
 - (void) DummyThreadEntryPoint: (id) ignoredArgs;
 
 ///
 /// Accesseur sur l'application DCL
 ///
-/// \return une référence sur l'application DCL.
+/// \return une r√©f√©rence sur l'application DCL.
 ///
 - (TDCLObjCApplication*) GetDCLAppl;
 

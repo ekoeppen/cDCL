@@ -2,7 +2,7 @@
 // Fichier:			KDCLPkg.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			25/2/2004
+// Cr√©√© le:			25/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is KDCLPkg.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -40,27 +40,27 @@
 #include <K/Defines/KDefinitions.h>
 
 ///
-/// Classe pour les constantes spécifiques à l'encodage/au décodage des paquets.
+/// Classe pour les constantes sp√©cifiques √† l'encodage/au d√©codage des paquets.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class KDCLPkg
 {
 public:
 	/// Constantes pour le format paquets
 	enum {
-		kObjFlagHeader	= 0x40,		///< Drapeau toujours à un dans l'entête.
+		kObjFlagHeader	= 0x40,		///< Drapeau toujours √† un dans l'ent√™te.
 		kObjSlotted		= 0x01,		///< L'objet est un tableau ou une structure (sinon, c'est un
 									///< binaire)
 		kObjFrame		= 0x02,		///< L'objet est une structure. Requiert kObjSlotted.
-		kSizeShift		= 8,		///< Nombre de décalage à gauche on doit faire sur la taille.
+		kSizeShift		= 8,		///< Nombre de d√©calage √† gauche on doit faire sur la taille.
 		kObjFlagsMask	= 0xFF,
-		kMaxSize		= 0xFFFFFF,	///< Taille maximale des objets (entête compris).
-		kSymbolClass	= 0x55552,	///< Classe spéciale des symboles.
-		kMapSorted		= 1,		///< Si les clés de la carte sont triées.
+		kMaxSize		= 0xFFFFFF,	///< Taille maximale des objets (ent√™te compris).
+		kSymbolClass	= 0x55552,	///< Classe sp√©ciale des symboles.
+		kMapSorted		= 1,		///< Si les cl√©s de la carte sont tri√©es.
 		kMapProto		= 4,		///< Si la carte ou une super carte comprend _proto
 		kTagMask		= 0x03,		///< 0b11
 		kPointerTag		= 0x01,		///< 0b01

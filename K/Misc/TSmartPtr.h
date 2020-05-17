@@ -2,7 +2,7 @@
 // Fichier:			TSmartPtr.h
 // Projet:			K
 //
-// Créé le:			4/2/2003
+// Cr√©√© le:			4/2/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -42,26 +42,26 @@
 #include <cctype>
 
 ///
-/// Patron pour libérer une zone de mémoire automatiquement.
-/// Permet d'éviter la duplication de code et les try/catch qui
-/// ne servent qu'à faire le ménage.
+/// Patron pour lib√©rer une zone de m√©moire automatiquement.
+/// Permet d'√©viter la duplication de code et les try/catch qui
+/// ne servent qu'√† faire le m√©nage.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 template< class TClass >
 class TSmartPtr
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TSmartPtr( void );
 
 	///
-	/// Constructeur à partir d'un pointeur.
+	/// Constructeur √† partir d'un pointeur.
 	///
 	TSmartPtr( TClass* inObject );
 
@@ -76,7 +76,7 @@ public:
 	void Delete( void );
 
 	///
-	/// Déréférencement.
+	/// D√©r√©f√©rencement.
 	///
 	/// \return l'objet.
 	///
@@ -100,7 +100,7 @@ public:
 	///
 	/// Accesseur.
 	///
-	/// \return la référence sur l'objet.
+	/// \return la r√©f√©rence sur l'objet.
 	///
 	inline const TClass* Get( void ) const
 		{
@@ -112,16 +112,16 @@ public:
 		}
 
 	///
-	/// Assignation à une variable.
-	/// Supprime l'élément s'il n'est pas nul.
+	/// Assignation √† une variable.
+	/// Supprime l'√©l√©ment s'il n'est pas nul.
 	///
-	/// \param inObject		objet à récupérer
+	/// \param inObject		objet √† r√©cup√©rer
 	///
 	TSmartPtr& operator = ( TClass* inObject );
 
 private:
 	///
-	/// Opérateurs new volontairement indisponibles.
+	/// Op√©rateurs new volontairement indisponibles.
 	///
 	void*	operator new ( size_t inSize );
 	void*	operator new[] ( size_t inSize );
@@ -129,14 +129,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TSmartPtr( const TSmartPtr& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TSmartPtr& operator = ( const TSmartPtr& inCopy );
 

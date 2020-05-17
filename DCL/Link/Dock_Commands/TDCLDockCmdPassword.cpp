@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdPassword.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/08/2001
+// Cr√©√© le:			27/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdPassword.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -75,13 +75,13 @@ TDCLDockCmdPassword::TDCLDockCmdPassword(
 	:
 		TDCLDockCommand( kDPassword )
 {
-	// On copie le défi (en traduisant l'indien)
+	// On copie le d√©fi (en traduisant l'indien)
 	KUInt64 theCipheredChallenge =
 		UTInt64::CreateKUInt64(
 			UByteSex_FromBigEndian( inChallenge[0] ),
 			UByteSex_FromBigEndian( inChallenge[1] ) );
 
-	// Détermination du pointeur sur le mot de passe.
+	// D√©termination du pointeur sur le mot de passe.
 	// Si inPassword vaut nil, on prend un pointeur sur 0.
 	const KUInt16 theEmptyStr = 0;
 	const KUInt16* thePasswordString;
@@ -92,14 +92,14 @@ TDCLDockCmdPassword::TDCLDockCmdPassword(
 		thePasswordString = &theEmptyStr;
 	}
 
-	// On crée la clé à partir du mot de passe.
+	// On cr√©e la cl√© √† partir du mot de passe.
 	KUInt64 theKey;
 	UDES::CreateNewtonKey( thePasswordString, &theKey );
 	
-	// On crypte le défi.
+	// On crypte le d√©fi.
 	UDES::NewtonEncodeBlock( theKey, &theCipheredChallenge );
 	
-	// Puis on recopie en faisant attention à l'indien.
+	// Puis on recopie en faisant attention √† l'indien.
 	mCipheredChallenge[0] = UByteSex_ToBigEndian(
 								UTInt64::GetHi( theCipheredChallenge ) );
 	mCipheredChallenge[1] = UByteSex_ToBigEndian(
@@ -132,13 +132,13 @@ Boolean
 TDCLDockCmdPassword::VerifyPassword( const KUInt32 inChallenge[2],
 									const KUInt16* inPassword /* = nil */ )
 {
-	// On copie le défi (en traduisant l'indien)
+	// On copie le d√©fi (en traduisant l'indien)
 	KUInt64 theCipheredChallenge =
 		UTInt64::CreateKUInt64(
 			UByteSex_FromBigEndian( inChallenge[0] ),
 			UByteSex_FromBigEndian( inChallenge[1] ) );
 
-	// Détermination du pointeur sur le mot de passe.
+	// D√©termination du pointeur sur le mot de passe.
 	// Si inPassword vaut nil, on prend un pointeur sur 0.
 	const KUInt16 theEmptyStr = 0;
 	const KUInt16* thePasswordString;
@@ -149,14 +149,14 @@ TDCLDockCmdPassword::VerifyPassword( const KUInt32 inChallenge[2],
 		thePasswordString = &theEmptyStr;
 	}
 
-	// Création de la clé à partir du mot de passe.
+	// Cr√©ation de la cl√© √† partir du mot de passe.
 	KUInt64 theKey;
 	UDES::CreateNewtonKey( thePasswordString, &theKey );
 
-	// On crypte le défi.
+	// On crypte le d√©fi.
 	UDES::NewtonEncodeBlock( theKey, &theCipheredChallenge );
 
-	// On teste en faisant attention à l'indien.
+	// On teste en faisant attention √† l'indien.
 	return (
 		(UByteSex_FromBigEndian( mCipheredChallenge[0] )
 				== UTInt64::GetHi( theCipheredChallenge ))

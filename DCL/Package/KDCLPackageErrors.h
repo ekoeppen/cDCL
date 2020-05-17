@@ -2,7 +2,7 @@
 // Fichier:			KDCLPackageErrors.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			4/1/2004
+// Cr√©√© le:			4/1/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is KDCLPackageErrors.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,26 +45,26 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class KDCLPackageErrors
 {
 public:
 	///
-	/// Enumération des codes d'erreurs utilisés dans la DCL pour les paquets.
+	/// Enum√©ration des codes d'erreurs utilis√©s dans la DCL pour les paquets.
 	///
 	enum {
 		noErr						= 0,
 		kPkgErrUnknownSignature		= -10450,	///< Signature qui n'est pas
 												///< package{0,1}
-		kPkgStringsDontSeemUniCStr	= -10451,	///< Les chaînes (copyright &
-												///< nom) ne semblent pas être
+		kPkgStringsDontSeemUniCStr	= -10451,	///< Les cha√Ænes (copyright &
+												///< nom) ne semblent pas √™tre
 												///< correctes.
 		kPkgErrWeirdDirectorySize	= -10452,	///< Taille du catalogue
 												///< incorrecte par rapport aux
-												///< données du catalogue.
+												///< donn√©es du catalogue.
 		kPkgErrWeirdPartSize		= -10453,	///< Taille d'une partie
-												///< incorrecte par rapport à
+												///< incorrecte par rapport √†
 												///< la taille du paquet.
 		kPkgErrNoName				= -10454	///< Taille du nom nulle.
 	};

@@ -2,7 +2,7 @@
 // Fichier:			TDCLFontSpecification.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			17/3/2004
+// Cr√©√© le:			17/3/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFontSpecification.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,8 +44,8 @@
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
 ///
-/// Classe pour une spécification de police sur le Newton.
-/// Cette spécification peut-être en deux formats:
+/// Classe pour une sp√©cification de police sur le Newton.
+/// Cette sp√©cification peut-√™tre en deux formats:
 /// -> packed font integer specification (un entier)
 /// -> structure:
 ///		{
@@ -57,38 +57,38 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLFontSpecification
 	:
 		private TRefCounter
 {
-	/// La classe qui s'occupe des références est une amie.
+	/// La classe qui s'occupe des r√©f√©rences est une amie.
 	friend class TDCLStyleRef;
 
 public:
 	///
 	/// Constantes pour les styles.
-	/// Ce sont les constantes sur le Newton pour les styles gérés sur le
-	/// Newton. (en fait, les 5 premières sont dans MacTypes.h :)
+	/// Ce sont les constantes sur le Newton pour les styles g√©r√©s sur le
+	/// Newton. (en fait, les 5 premi√®res sont dans MacTypes.h :)
 	///
 	enum {
 		kFaceNormal			= 0x000,	///< Normal
 		kFaceBold			= 0x001,	///< Gras
 		kFaceItalic			= 0x002,	///< Italique
-		kFaceUnderline		= 0x004,	///< Souligné
-		kFaceOutline		= 0x008,	///< Entouré
+		kFaceUnderline		= 0x004,	///< Soulign√©
+		kFaceOutline		= 0x008,	///< Entour√©
 		kFaceSuperscript	= 0x080,	///< Exposant
 		kFaceSubscript		= 0x100		///< Indice
 	};
 
 	///
-	/// Constructeur à partir d'un objet Newton.
+	/// Constructeur √† partir d'un objet Newton.
 	///
 	TDCLFontSpecification( const TDCLNSRef& inFontSpec );
 
 	///
-	/// Constructeur à partir d'une police, d'une taille et d'un style.
+	/// Constructeur √† partir d'une police, d'une taille et d'un style.
 	///
 	/// \param inFontName	nom de la police (symbole)
 	/// \param inSize		taille de la police
@@ -102,7 +102,7 @@ public:
 	///
 	/// Constructeur par copie.
 	///
-	/// \param inCopy		autre spécification TDCLFontSpecification
+	/// \param inCopy		autre sp√©cification TDCLFontSpecification
 	///
 	TDCLFontSpecification( const TDCLFontSpecification& inCopy );
 
@@ -126,36 +126,36 @@ public:
 	///
 	/// Accesseur sur la taille de la police.
 	///
-	/// \return la taille de la police, à l'échelle du Newton.
+	/// \return la taille de la police, √† l'√©chelle du Newton.
 	///
 	KUInt32			GetSize( void ) const;
 
 	///
 	/// Accesseur sur le style de la police
 	///
-	/// \return le style de la police, combinaison des constantes définies plus
+	/// \return le style de la police, combinaison des constantes d√©finies plus
 	///			haut.
 	///
 	KUInt32			GetFace( void ) const;
 
 	///
-	/// Sélecteur sur le nom de la police.
+	/// S√©lecteur sur le nom de la police.
 	///
 	/// \param inFamilyName		nom de la police (symbole)
 	///
 	void			SetFamily( const TDCLNSRef& inFamilyName );
 
 	///
-	/// Sélecteur sur la taille de la police
+	/// S√©lecteur sur la taille de la police
 	///
 	/// \param inSize			taille de la police
 	///
 	void			SetSize( KUInt32 inSize );
 
 	///
-	/// Sélecteur sur le style de la police.
-	/// Cette méthode remplace tout style préalablement défini (i.e. on ne peut
-	/// pas ajouter du gras en appelant juste cette méthode, il faut appeler
+	/// S√©lecteur sur le style de la police.
+	/// Cette m√©thode remplace tout style pr√©alablement d√©fini (i.e. on ne peut
+	/// pas ajouter du gras en appelant juste cette m√©thode, il faut appeler
 	/// GetFace puis faire un ou logique).
 	///
 	/// \param inFace			style de police.
@@ -163,10 +163,10 @@ public:
 	void			SetFace( KUInt32 inFace );
 
 	///
-	/// Opérateur d'égalité.
+	/// Op√©rateur d'√©galit√©.
 	///
-	/// \param inAlter	spécification avec laquelle comparer \c this.
-	/// \return \c true si \c this et \c inAlter spécifient la même police.
+	/// \param inAlter	sp√©cification avec laquelle comparer \c this.
+	/// \return \c true si \c this et \c inAlter sp√©cifient la m√™me police.
 	///
 	inline bool operator == (const TDCLFontSpecification& inAlter) const
 		{
@@ -176,10 +176,10 @@ public:
 		}
 
 	///
-	/// Opérateur d'inégalité.
+	/// Op√©rateur d'in√©galit√©.
 	///
-	/// \param inAlter	spécification avec laquelle comparer \c this.
-	/// \return \c true si \c this et \c inAlter ne spécifient pas la même
+	/// \param inAlter	sp√©cification avec laquelle comparer \c this.
+	/// \return \c true si \c this et \c inAlter ne sp√©cifient pas la m√™me
 	///			police.
 	///
 	inline bool operator != (const TDCLFontSpecification& inAlter) const
@@ -189,15 +189,15 @@ public:
 
 private:
 	enum {
-		ktsSystem		= 0,			///< Police système (Espy)
+		ktsSystem		= 0,			///< Police syst√®me (Espy)
 		ktsFancy		= 1,			///< New York
 		ktsSimple		= 2,			///< Geneva
 		ktsHWFont		= 3,			///< Casual
 		kFamilyMask		= 0x000003FF,	///< Masque pour la police.
-		kSizeShift		= 10,			///< Nombre de décalages à gauche pour
+		kSizeShift		= 10,			///< Nombre de d√©calages √† gauche pour
 										///< la taille.
 		kSizeMask		= 0x000FFC00,		///< Masque pour la taille.
-		kFaceShift		= 20,			///< Nombre de décalages à gauche pour
+		kFaceShift		= 20,			///< Nombre de d√©calages √† gauche pour
 										///< le style.
 		kFaceMask		= 0x3FF00000,	///< Masque pour le style.
 		kSignBit		= 0x20000000,	///< Signe pour un entier sur 30 bit.
@@ -206,7 +206,7 @@ private:
 	};
 
 	///
-	/// Création d'une structure (ou d'un entier).
+	/// Cr√©ation d'une structure (ou d'un entier).
 	///
 	/// \param inFontName		nom de la police (symbole).
 	/// \param inSize			taille de la police.
@@ -218,7 +218,7 @@ private:
 								KUInt32 inFace );
 
 	/// \name Variables
-	TDCLNSRef			mFontSpec;	///< Spécification (entier ou structure)
+	TDCLNSRef			mFontSpec;	///< Sp√©cification (entier ou structure)
 };
 
 #endif

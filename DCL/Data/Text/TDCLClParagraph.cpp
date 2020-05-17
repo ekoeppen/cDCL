@@ -2,7 +2,7 @@
 // Fichier:			TDCLClParagraph.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			20/3/2004
+// Cr√©√© le:			20/3/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLClParagraph.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -75,7 +75,7 @@ TDCLClParagraph::TDCLClParagraph( const TDCLNSRef& inFrame )
 // -------------------------------------------------------------------------- //
 TDCLClParagraph::TDCLClParagraph( const TDCLRichText& inCopy )
 {
-	// Création de la structure.
+	// Cr√©ation de la structure.
 	mFrameRef = TDCLNSRef::MakeFrame();
 	mFrame = &mFrameRef.ToFrame();
 	
@@ -174,9 +174,9 @@ KUInt32
 TDCLClParagraph::CountStyleRuns( void ) const
 {
 	// Deux cas:
-	// On a un élément styles ou pas.
-	// Si on en a un, le nombre de style runs est égal au nombre d'éléments
-	// dans ce tableau divisé par deux.
+	// On a un √©l√©ment styles ou pas.
+	// Si on en a un, le nombre de style runs est √©gal au nombre d'√©l√©ments
+	// dans ce tableau divis√© par deux.
 	// Sinon, c'est un.
 	
 	KUInt32 theResult = 1;
@@ -196,7 +196,7 @@ KUInt32
 TDCLClParagraph::GetStyleRunStart( KUInt32 inStyleRunIndex ) const
 {
 	// Deux cas:
-	// On a un élément styles ou pas.
+	// On a un √©l√©ment styles ou pas.
 
 	KUInt32 theResult = 0;
 	if (mFrame->HasSlot( KDCLSYM::kSYMstyles ))
@@ -227,7 +227,7 @@ KUInt32
 TDCLClParagraph::GetStyleRunLength( KUInt32 inStyleRunIndex ) const
 {
 	// Deux cas:
-	// On a un élément styles ou pas.
+	// On a un √©l√©ment styles ou pas.
 
 	KUInt32 theResult = 0;
 	if (mFrame->HasSlot( KDCLSYM::kSYMstyles ))
@@ -253,7 +253,7 @@ TDCLStyleRef
 TDCLClParagraph::GetStyle( KUInt32 inStyleRunIndex ) const
 {
 	// Deux cas:
-	// On a un élément styles ou pas.
+	// On a un √©l√©ment styles ou pas.
 
 	TDCLStyleRef theResult;
 	if (mFrame->HasSlot( KDCLSYM::kSYMstyles ))
@@ -298,7 +298,7 @@ TDCLClParagraph::SetStyle(
 		throw DCLNS( kNSErrOutOfBounds );
 	}
 
-	// Une image ne peut s'appliquer qu'à un seul caractère.
+	// Une image ne peut s'appliquer qu'√† un seul caract√®re.
 	if (inStyle.IsPicture())
 	{
 		if (inTextLength != 1)
@@ -323,13 +323,13 @@ TDCLClParagraph::SetStyle(
 			// Sinon, on modifie le tableau styles.
 			if (mFrame->HasSlot( KDCLSYM::kSYMstyles ))
 			{
-				// Ici, on a déjà plusieurs styles.
-				// Déterminons où ce nouveau style va s'insérer.
+				// Ici, on a d√©j√† plusieurs styles.
+				// D√©terminons o√π ce nouveau style va s'ins√©rer.
 				TDCLNSArray& theStylesArray = mFrame->Get( KDCLSYM::kSYMstyles ).ToArray();
 				KUInt32 nbStyles = theStylesArray.GetLength() / 2;
 				KUInt32 textCursor = 0;
 
-				// Début.
+				// D√©but.
 				KUInt32 indexStyles;
 				KUInt32 styleLength;
 				for (indexStyles = 0; indexStyles < nbStyles; indexStyles++)
@@ -337,7 +337,7 @@ TDCLClParagraph::SetStyle(
 					styleLength = (KUInt32) theStylesArray.Get( indexStyles ).ToInt();
 					if (inTextIndex < textCursor + styleLength)
 					{
-						// On a trouvé le début.
+						// On a trouv√© le d√©but.
 						break;
 					}
 					
@@ -351,13 +351,13 @@ TDCLClParagraph::SetStyle(
 				
 				if (theOriginalStyle == (TDCLFontSpecification&) inStyle)
 				{
-					// Extension du style original au-delà de la taille.
+					// Extension du style original au-del√† de la taille.
 					if (textCursor + styleLength < inTextEnd)
 					{
 						
-					} // Sinon, rien à faire, le texte n'est pas modifié.
+					} // Sinon, rien √† faire, le texte n'est pas modifi√©.
 				} else {
-					// Deux cas: le style qu'on a trouvé commence là où on veut
+					// Deux cas: le style qu'on a trouv√© commence l√† o√π on veut
 					// changer le style ou pas.
 					if (inTextIndex > textCursor)
 					{
@@ -373,7 +373,7 @@ TDCLClParagraph::SetStyle(
 				{
 					if (inTextEnd < textCursor + styleLength)
 					{
-						// On a trouvé la fin.
+						// On a trouv√© la fin.
 						break;
 					}
 					textCursor += styleLength;
@@ -386,8 +386,8 @@ TDCLClParagraph::SetStyle(
 			} else {
 				TDCLFontSpecification& theFontSpec = inStyle;
 				TDCLNSRef theViewFont = mFrame->Get( KDCLSYM::kSYMviewFont );
-				// On ne modifie quelque chose que si le style fourni en paramètre
-				// n'est pas déjà celui de notre paragraphe.
+				// On ne modifie quelque chose que si le style fourni en param√®tre
+				// n'est pas d√©j√† celui de notre paragraphe.
 				if (theFontSpec != TDCLFontSpecification( theViewFont ))
 				{
 					TDCLNSRef theStyleRef =
@@ -404,12 +404,12 @@ TDCLClParagraph::SetStyle(
 						theStylesArray.Add( theViewFont );
 					}
 					
-					// Le style fourni en paramètre.
+					// Le style fourni en param√®tre.
 					theStylesArray.Add(
 								TDCLNSRef::MakeInt( (KSInt32) inTextLength ) );
 					theStylesArray.Add( theStyleRef );
 					
-					// Et à nouveau le style original.
+					// Et √† nouveau le style original.
 					KUInt32 theLastRunLength = theLength - inTextEnd;
 					if (theLastRunLength > 0)
 					{

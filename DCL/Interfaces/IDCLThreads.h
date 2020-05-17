@@ -2,7 +2,7 @@
 // Fichier:			IDCLThreads.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is IDCLThreads.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,8 +45,8 @@
 class TDCLThread;
 
 ///
-/// Interface pour gérer les processus légers.
-/// Cette classe doit être dérivée pour chaque plateforme ou
+/// Interface pour g√©rer les processus l√©gers.
+/// Cette classe doit √™tre d√©riv√©e pour chaque plateforme ou
 /// application.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
@@ -58,13 +58,13 @@ class IDCLThreads
 {
 public:
 	///
-	/// Etats possibles d'un processus léger.
+	/// Etats possibles d'un processus l√©ger.
 	///
 	enum EState {
-		kStopped,		///< Arrêté.
-		kRunning,		///< En train de tourner (n'a pas forcément le CPU)
-		kSuspended,		///< Suspendu (attend un appel à la méthode Resume)
-		kSleeping		///< Endormi (par la méthode Sleep) (attend WakeUp)
+		kStopped,		///< Arr√™t√©.
+		kRunning,		///< En train de tourner (n'a pas forc√©ment le CPU)
+		kSuspended,		///< Suspendu (attend un appel √† la m√©thode Resume)
+		kSleeping		///< Endormi (par la m√©thode Sleep) (attend WakeUp)
 	};
 	
 	///
@@ -74,33 +74,33 @@ public:
 
 	///
 	/// Donne du temps aux autres processus.
-	/// Cette méthode est appelée à partir de la méthode
-	/// Run de TDCLThread ou du processus léger principal.
+	/// Cette m√©thode est appel√©e √† partir de la m√©thode
+	/// Run de TDCLThread ou du processus l√©ger principal.
 	///
 	virtual	void	Yield( void ) = 0;	
 
 	///
-	/// Abstraction pour les processus légers.
+	/// Abstraction pour les processus l√©gers.
 	///
-	/// Cette interface est utilisée par TDCLThread (qui doit être dérivé pour
-	/// les objets qui doivent être dans des processus légers).
+	/// Cette interface est utilis√©e par TDCLThread (qui doit √™tre d√©riv√© pour
+	/// les objets qui doivent √™tre dans des processus l√©gers).
 	///
-	/// Ces objets peuvent être en train de tourner (Running) ou pas, et s'ils
-	/// sont en train de tourner, ils peuvent êtres suspendus ou pas.
+	/// Ces objets peuvent √™tre en train de tourner (Running) ou pas, et s'ils
+	/// sont en train de tourner, ils peuvent √™tres suspendus ou pas.
 	///
 	class IThread
 	{
 	public:
 		///
-		/// Constantes spécifiques à IThread.	
+		/// Constantes sp√©cifiques √† IThread.	
 		enum {
-			kForever = 0	///< Dort jusqu'à ce que WakeUp soit appelé
+			kForever = 0	///< Dort jusqu'√† ce que WakeUp soit appel√©
 		};
 
 		///
-		/// Constructeur à partir d'un objet TDCLThread.
+		/// Constructeur √† partir d'un objet TDCLThread.
 		///
-		/// \param inThreadedObject		objet à associé au processus léger.
+		/// \param inThreadedObject		objet √† associ√© au processus l√©ger.
 		///
 		inline IThread( TDCLThread* inThreadedObject )
 			:
@@ -116,7 +116,7 @@ public:
 		///
 		/// Accesseur sur l'objet TDCLThread.
 		///
-		/// \return l'objet TDCLThread associé.
+		/// \return l'objet TDCLThread associ√©.
 		///
 		inline TDCLThread* GetThreadedObject( void )
 			{
@@ -124,73 +124,73 @@ public:
 			}
 
 		///
-		/// Démarre le processus.
+		/// D√©marre le processus.
 		///
-		/// Appelle la méthode Run de TDCLThread dans le nouveau
-		/// processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté.
+		/// Appelle la m√©thode Run de TDCLThread dans le nouveau
+		/// processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger n'est pas arrêté.
+		/// \throws TDCLException si le processus l√©ger n'est pas arr√™t√©.
 		///
 		virtual void	Start( void ) = 0;
 
 		///
-		/// Arrête le processus (de manière violente).
+		/// Arr√™te le processus (de mani√®re violente).
 		///
-		/// Lance une exception si le processus léger est arrêté.
+		/// Lance une exception si le processus l√©ger est arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual void	Stop( void ) = 0;
 
 		///
-		/// Suspend le processus léger.
-		/// Cette méthode peut être appelée à partir d'un autre processus
-		/// léger.
-		/// Lance une exception si le processus léger est arrêté, mais
+		/// Suspend le processus l√©ger.
+		/// Cette m√©thode peut √™tre appel√©e √† partir d'un autre processus
+		/// l√©ger.
+		/// Lance une exception si le processus l√©ger est arr√™t√©, mais
 		/// est silencieux si le processus est suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Suspend( void ) = 0;
 
 		///
-		/// Reprend le processus léger.
-		/// Cette méthode est appelée à partir d'un autre processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté.
+		/// Reprend le processus l√©ger.
+		/// Cette m√©thode est appel√©e √† partir d'un autre processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©.
 		/// mais est silencieux si le processus n'est pas suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Resume( void ) = 0;
 	
 		///
-		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
-		/// WakeUp soit appelée.
+		/// Dort pendant n millisecondes ou jusqu'√† ce que la m√©thode
+		/// WakeUp soit appel√©e.
 		/// Note: le processus peut aussi dormir plus longtemps.
-		/// Cette méthode doit être appelée par le processus courant.
-		/// Décrémente le compteur des réveils ou dort s'il est à zéro.
-		/// Suivant les classes concrètes, désactive les interruptions
+		/// Cette m√©thode doit √™tre appel√©e par le processus courant.
+		/// D√©cr√©mente le compteur des r√©veils ou dort s'il est √† z√©ro.
+		/// Suivant les classes concr√®tes, d√©sactive les interruptions
 		/// ou utilise les variables de condition.
 		///
-		/// \param inMillisecs		nombre de millisecondes à dormir
-		/// \return	\c true si l'on a dormi tout le temps demandé, \c false si
-		///			on a été interrompu.
+		/// \param inMillisecs		nombre de millisecondes √† dormir
+		/// \return	\c true si l'on a dormi tout le temps demand√©, \c false si
+		///			on a √©t√© interrompu.
 		///
 		virtual	Boolean	Sleep( KUInt32 inMillisecs = kForever ) = 0;
 
 		///
-		/// Réveille un processus qui dort.
-		/// Incrémente le compteur des réveils.
-		/// Suivant les classes concrètes, désactive les interruptions
+		/// R√©veille un processus qui dort.
+		/// Incr√©mente le compteur des r√©veils.
+		/// Suivant les classes concr√®tes, d√©sactive les interruptions
 		/// ou utilise les variables de condition.
 		///
 		virtual	void	WakeUp( void ) = 0;
 
 		///
-		/// Détermine l'état du processus.
+		/// D√©termine l'√©tat du processus.
 		///
-		/// \return l'état du processus (arrêté, actif, suspendu)
+		/// \return l'√©tat du processus (arr√™t√©, actif, suspendu)
 		///
 		virtual	EState	GetState( void ) = 0;
 
@@ -198,37 +198,37 @@ public:
 		///
 		/// Constructeur par copie volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		IThread( const IThread& inCopy );
 
 		///
-		/// Opérateur d'assignation volontairement indisponible.
+		/// Op√©rateur d'assignation volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		IThread& operator = ( const IThread& inCopy );
 
-		/// \name Variables privées.
-		TDCLThread*		mThreadedObject;	///< Processus léger associé.
+		/// \name Variables priv√©es.
+		TDCLThread*		mThreadedObject;	///< Processus l√©ger associ√©.
 	};
 
 	///
-	/// Abstraction pour les sémaphores.
+	/// Abstraction pour les s√©maphores.
 	///
-	/// Ce sémaphore sert dans deux cas d'usage:
+	/// Ce s√©maphore sert dans deux cas d'usage:
 	///
 	/// 1/ protection d'une ressource.
 	/// Acquisition
 	/// 				Acquisition
-	/// Libération
-	///					Libération
+	/// Lib√©ration
+	///					Lib√©ration
 	///
 	/// 2/ synchronisation
 	/// Acquisition
 	///	Acquisition
-	///					Libération
-	///	Libération
+	///					Lib√©ration
+	///	Lib√©ration
 	/// 
 	///
 	class ISemaphore
@@ -240,20 +240,20 @@ public:
 		virtual	~ISemaphore( void ) {};
 
 		///
-		/// Verrouille le sémaphore.
+		/// Verrouille le s√©maphore.
 		///
 		virtual	void		Acquire( void ) = 0;
 		
 		///
-		/// Libère un processus léger (au hasard) du sémaphore.
+		/// Lib√®re un processus l√©ger (au hasard) du s√©maphore.
 		///
 		virtual	void		Release( void ) = 0;
 	};
 
 	///
-	/// Crée un objet sémaphore. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet s√©maphore. √Ä surcharger pour chaque plateforme.
 	///
-	/// \return un nouvel objet sémaphore
+	/// \return un nouvel objet s√©maphore
 	///
 	virtual ISemaphore*	CreateSemaphore( void ) = 0;
 
@@ -263,9 +263,9 @@ private:
 	friend class TDCLThread;
 
 	///
-	/// Crée un objet IThread. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet IThread. √Ä surcharger pour chaque plateforme.
 	///
-	/// \param inThreadedObject		objet associé à passer comme paramètre
+	/// \param inThreadedObject		objet associ√© √† passer comme param√®tre
 	///								pour IThread
 	/// \return un nouvel objet IThread
 	///

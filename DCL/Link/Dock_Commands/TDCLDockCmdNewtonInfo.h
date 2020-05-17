@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNewtonInfo.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/02/2001
+// Cr√©√© le:			06/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNewtonInfo.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdNewtonInfo
 	:
@@ -54,17 +54,17 @@ class TDCLDockCmdNewtonInfo
 {
 public:
 	///
-	/// Constructeur unique à partir de données.
+	/// Constructeur unique √† partir de donn√©es.
 	///
-	/// \param inLength	taille des données
-	/// \param inData	données (copiées)
+	/// \param inLength	taille des donn√©es
+	/// \param inData	donn√©es (copi√©es)
 	///
 	TDCLDockCmdNewtonInfo( KUInt32 inLength, const void* inData );
 	
 	///
-	/// Accesseur sur la version du protocol de Dock gérée par le Newton.
+	/// Accesseur sur la version du protocol de Dock g√©r√©e par le Newton.
 	///
-	/// \return la version du protocol géré par le Newton.
+	/// \return la version du protocol g√©r√© par le Newton.
 	///
 	inline	KUInt32			GetProtocolVersion( void )
 		{
@@ -72,9 +72,9 @@ public:
 		}
 		
 	///
-	/// Accesseur sur un mot de 64 bits aléatoire pour le défi DES.
+	/// Accesseur sur un mot de 64 bits al√©atoire pour le d√©fi DES.
 	///
-	/// \return un pointeur sur le défi DES.
+	/// \return un pointeur sur le d√©fi DES.
 	///
 	inline	KUInt32*			GetChallenge( void )
 		{
@@ -87,8 +87,8 @@ private:
 	///
 	struct SNewtonInfo
 	{
-		KUInt32		fProtocolVersion;	///< Version du protocol gérée.
-		KUInt32		fChallenge[2];		///< Deux nombres aléatoires pour le défi DES.
+		KUInt32		fProtocolVersion;	///< Version du protocol g√©r√©e.
+		KUInt32		fChallenge[2];		///< Deux nombres al√©atoires pour le d√©fi DES.
 	};
 	
 	/// \name Variables

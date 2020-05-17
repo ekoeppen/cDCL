@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSSymbol.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSSymbol.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -88,7 +88,7 @@ TDCLNSSymbol::TDCLNSSymbol( const char* inString, KUInt32 inHashCode )
 		mString( nil ),
 		mHashCode( inHashCode )
 {
-	// Copie de la chaîne
+	// Copie de la cha√Æne
 	size_t theStrLen = ::strlen( inString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
@@ -109,7 +109,7 @@ TDCLNSSymbol::TDCLNSSymbol( const TDCLNSSymbol& inCopy )
 		mString( nil ),
 		mHashCode( inCopy.mHashCode )
 {
-	// Copie de la chaîne
+	// Copie de la cha√Æne
 	size_t theStrLen = ::strlen( inCopy.mString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
@@ -161,13 +161,13 @@ TDCLNSSymbol::~TDCLNSSymbol( void )
 TDCLNSSymbol&
 TDCLNSSymbol::operator = ( const TDCLNSSymbol& inCopy )
 {
-	// Libération de la chaîne précédente.
+	// Lib√©ration de la cha√Æne pr√©c√©dente.
 	if (mString != nil)
 	{
 		::free( (void*) mString );
 	}
 
-	// Copie de la chaîne
+	// Copie de la cha√Æne
 	unsigned long theStrLen = ::strlen( inCopy.mString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
@@ -207,12 +207,12 @@ TDCLNSSymbol::Compare( const TDCLNSSymbol& inAlter ) const
 		theResult = 1;
 	} else {
 		// Comparaison lexicographique.
-		// Cette comparaison n'est pas sensible à la casse.
-		const char* alterString = inAlter.GetString();	// Chaîne de l'autre symbole.
-		const char* thisString = mString;				// Curseur sur notre chaîne.
+		// Cette comparaison n'est pas sensible √† la casse.
+		const char* alterString = inAlter.GetString();	// Cha√Æne de l'autre symbole.
+		const char* thisString = mString;				// Curseur sur notre cha√Æne.
 		do {
-			char thisChar = *thisString;		// caractère de cette chaîne.
-			char alterChar = *alterString;		// caractère de l'autre chaîne.
+			char thisChar = *thisString;		// caract√®re de cette cha√Æne.
+			char alterChar = *alterString;		// caract√®re de l'autre cha√Æne.
 			
 			if ((thisChar < alterChar)
 					&& ((thisChar < 'A')
@@ -230,7 +230,7 @@ TDCLNSSymbol::Compare( const TDCLNSSymbol& inAlter ) const
 				break;
 			} else {
 				if (thisChar == '\0') {
-					break;	// Comparaison terminée.
+					break;	// Comparaison termin√©e.
 				}
 			}
 			
@@ -269,22 +269,22 @@ TDCLNSSymbol::IsSubClass( const TDCLNSSymbol& inSuper ) const
 	Boolean theResult = false;
 
 	// Comparaison lexicographique.
-	// Cette comparaison n'est pas sensible à la casse.
-	const char* superString = inSuper.GetString();	// Chaîne de l'autre symbole.
-	const char* thisString = mString;				// Curseur sur notre chaîne.
+	// Cette comparaison n'est pas sensible √† la casse.
+	const char* superString = inSuper.GetString();	// Cha√Æne de l'autre symbole.
+	const char* thisString = mString;				// Curseur sur notre cha√Æne.
 	do {
-		char thisChar = *thisString;	// caractère de cette chaîne.
-		char superChar = *superString;	// caractère de l'autre chaîne.
+		char thisChar = *thisString;	// caract√®re de cette cha√Æne.
+		char superChar = *superString;	// caract√®re de l'autre cha√Æne.
 		
 		if (superChar == '\0')
 		{
 			if (thisChar == '\0')
 			{
-				// Egalité.
+				// Egalit√©.
 				theResult = true;
 				break;
 			} else {
-				// Vérifions que this a bien un point.
+				// V√©rifions que this a bien un point.
 				if (thisChar == '.')
 				{
 					theResult = true;
@@ -329,9 +329,9 @@ char*
 TDCLNSSymbol::ToASCII32_127( const char* inString )
 {
 	// Conversion en ASCII 32/127.
-	// On détermine la taille de la future chaîne.
-	int asciiStringLength = 0;	// Taille de la future chaîne
-	int isoStringLength = 0;	// Taille de la chaîne en entrée.
+	// On d√©termine la taille de la future cha√Æne.
+	int asciiStringLength = 0;	// Taille de la future cha√Æne
+	int isoStringLength = 0;	// Taille de la cha√Æne en entr√©e.
 	int indexISOString;
 	for (indexISOString = 0; ; indexISOString++)
 	{
@@ -397,9 +397,9 @@ char*
 TDCLNSSymbol::ToASCII32_127( const KUInt16* inString )
 {
 	// Conversion en ASCII 32/127.
-	// On détermine la taille de la future chaîne.
-	int asciiStringLength = 0;	// Taille de la future chaîne
-	int uniStringLength = 0;	// Taille de la chaîne en entrée.
+	// On d√©termine la taille de la future cha√Æne.
+	int asciiStringLength = 0;	// Taille de la future cha√Æne
+	int uniStringLength = 0;	// Taille de la cha√Æne en entr√©e.
 	int indexUniString;
 	for (indexUniString = 0; ; indexUniString++)
 	{
@@ -477,7 +477,7 @@ KUInt32
 TDCLNSSymbol::HashFunction( const char* inString ) {
 	KUInt32 theResult = 0;
 	while ( *inString ) {
-		char theCharacter = *inString++;	// Caractère courant.
+		char theCharacter = *inString++;	// Caract√®re courant.
 
 		if ((theCharacter >= 'a') && (theCharacter <= 'z'))
 		{
@@ -509,10 +509,10 @@ TDCLNSSymbol::FromNSOF( TDCLNSOFDecoder* inDecoder )
 	
 	KUInt32 nbChars = theStream->GetXLong();
 
-	// Création de l'objet.
+	// Cr√©ation de l'objet.
 	TDCLNSSymbol* theResult = new TDCLNSSymbol( theStream, nbChars );
 
-	// Ajout du symbole dans la liste des objets référencés.
+	// Ajout du symbole dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
 	return theResult;
@@ -526,14 +526,14 @@ TDCLNSSymbol::FromPkg( TDCLPkgDecoder* inDecoder )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 
-	// Décalage de l'objet.
+	// D√©calage de l'objet.
 	KUInt32 theObjectOffset = inDecoder->GetCurrentStreamOffset();
 	
 	// Taille
 	KUInt32 theFirstLong = theStream->GetLong();
 	KUInt32 nbChars = (theFirstLong >> TDCLPkgDecoder::kSizeShift) - 16;
 	
-	// On passe le deuxième long et le troisième long.
+	// On passe le deuxi√®me long et le troisi√®me long.
 	(void) theStream->GetLong();
 	(void) theStream->GetLong();
 	
@@ -541,11 +541,11 @@ TDCLNSSymbol::FromPkg( TDCLPkgDecoder* inDecoder )
 	// Cf le point sur les symboles 8 bits dans TDCLNSSymbol.h
 	KUInt32 theHashCode = theStream->GetLong();
 	
-	// Création de l'objet
+	// Cr√©ation de l'objet
 	TDCLNSSymbol* theResult =
 		new TDCLNSSymbol( theStream, nbChars, theHashCode );
 
-	// Ajout du symbole dans la liste des objets référencés.
+	// Ajout du symbole dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ), theObjectOffset );
 
 	return theResult;
@@ -559,20 +559,20 @@ TDCLNSSymbol::ToXML(
 				TDCLXMLEncoder*		inEncoder,
 				KUInt32				/* inObjectID */ ) const
 {
-	// Récupération du flux.
+	// R√©cup√©ration du flux.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Ajout de <symbol>
 	theOutputStream->PutString( "<symbol>" );
 	
-	// En théorie, la chaîne est en ASCII 7 bits.
+	// En th√©orie, la cha√Æne est en ASCII 7 bits.
 	// En pratique, on a pu nous fournir du Latin 1
-	// (en fait, c'est uniquement pour éviter d'avoir un XML incorrect,
-	// WinNTK met du Latin1 et NTK met du MacRoman, on interprête tout
+	// (en fait, c'est uniquement pour √©viter d'avoir un XML incorrect,
+	// WinNTK met du Latin1 et NTK met du MacRoman, on interpr√™te tout
 	// ceci joyeusement comme du Latin1).
 
-	// Ecriture avec remplacement des caractères spéciaux
-	// par des entités.
+	// Ecriture avec remplacement des caract√®res sp√©ciaux
+	// par des entit√©s.
 	inEncoder->Print8BitsWithEntities( (const KUInt8*) mString );
 
 	// Ajout de </symbol>
@@ -585,17 +585,17 @@ TDCLNSSymbol::ToXML(
 void
 TDCLNSSymbol::ToNSOF( TDCLNSOFEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Ecriture du type.
 	theOutputStream->PutByte( KDCLNSOF::kSymbol );
 
-	// Ecriture du nombre de caractères.
+	// Ecriture du nombre de caract√®res.
 	size_t nbChars = ::strlen( mString );
 	theOutputStream->PutXLong( nbChars );
 	
-	// Puis les caractères.
+	// Puis les caract√®res.
 	size_t indexChars;
 	for ( indexChars = 0; indexChars < nbChars; indexChars++ )
 	{
@@ -619,7 +619,7 @@ TDCLNSSymbol::ToPkg(
 				TDCLPkgEncoder* inEncoder,
 				KUInt32* ioOffset ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	KUInt32 nbBytes = ::strlen( mString ) + 1;
@@ -630,20 +630,20 @@ TDCLNSSymbol::ToPkg(
 		throw DCLLimitReachedError;
 	}
 	
-	// Écriture de l'entête.
+	// √âcriture de l'ent√™te.
 	theOutputStream->PutLong(
 		(theSize << TDCLPkgEncoder::kSizeShift)
 		| TDCLPkgEncoder::kObjFlagHeader );
 	
 	theOutputStream->PutLong( 0 );
 	
-	// Classe spéciale.
+	// Classe sp√©ciale.
 	theOutputStream->PutLong( TDCLPkgEncoder::kSymbolClass );
 	
 	// Hash.
 	theOutputStream->PutLong( mHashCode );
 	
-	// Chaîne de caractère.
+	// Cha√Æne de caract√®re.
 	KUInt32 indexBytes;
 	for ( indexBytes = 0; indexBytes < nbBytes; indexBytes++ )
 	{

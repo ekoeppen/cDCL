@@ -2,7 +2,7 @@
 // Fichier:			TDCLIOKitSerialPort.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			4/4/2003
+// Cr√©√© le:			4/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLIOKitSerialPort.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k,
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -59,10 +59,10 @@ TDCLIOKitSerialPort::TDCLIOKitSerialPort(
 				nil,
 				inBaud )
 {
-	// Récupération.
+	// R√©cup√©ration.
 	CFStringRef theBSDPathAsCFString = GetSerialPortPath( inIndex );
 
-	// Vérification que le port existe.
+	// V√©rification que le port existe.
 	if (theBSDPathAsCFString == nil)	
 	{
 		throw DCLNotAvailable;
@@ -71,13 +71,13 @@ TDCLIOKitSerialPort::TDCLIOKitSerialPort(
 	// Traduction.
 	char* theBSDPath = CFStringRefToCStr( theBSDPathAsCFString );
 
-	// Libération.
+	// Lib√©ration.
 	::CFRelease( theBSDPathAsCFString );
 
 	// Initialisation.
 	Init( theBSDPath );
 
-	// Libération.
+	// Lib√©ration.
 	::free( theBSDPath );
 }
 
@@ -100,7 +100,7 @@ TDCLIOKitSerialPort::TDCLIOKitSerialPort(
 	// Initialisation.
 	Init( theBSDPath );
 
-	// Libération.
+	// Lib√©ration.
 	::free( theBSDPath );
 }
 
@@ -120,11 +120,11 @@ TDCLIOKitSerialPort::CountSerialPorts( void )
 	KUInt32 theResult = 0;
 	
 	try {
-		// Création d'un itérateur sur les ports série.
+		// Cr√©ation d'un it√©rateur sur les ports s√©rie.
 		io_iterator_t theIterator;
 		GetSerialPortsIterator( &theIterator );
 		
-		// On itère pour compter.
+		// On it√®re pour compter.
 		io_object_t	theSerialService;
 		while ((theSerialService = IOIteratorNext(theIterator)) != 0)
 		{
@@ -136,18 +136,18 @@ TDCLIOKitSerialPort::CountSerialPorts( void )
 						0 /* options */ );
 			if (theBSDPathAsCFString)
 			{
-				// Libération.
+				// Lib√©ration.
 				CFRelease(theBSDPathAsCFString);
 				
 				// Un de plus.
 				theResult++;
 	        }
 
-			// Libération du service.
+			// Lib√©ration du service.
 			(void) IOObjectRelease(theSerialService);
 	    }
 	} catch ( TDCLNotAvailableException& inNotAvailableException ) {
-		// Ignorée.
+		// Ignor√©e.
 	}
 	
 	return theResult;
@@ -163,11 +163,11 @@ TDCLIOKitSerialPort::GetSerialPortName( KUInt32 inIndex )
 	CFStringRef theResult = nil;
 	
 	try {
-		// Création d'un itérateur sur les ports série.
+		// Cr√©ation d'un it√©rateur sur les ports s√©rie.
 		io_iterator_t theIterator;
 		GetSerialPortsIterator( &theIterator );
 		
-		// On itère pour compter.
+		// On it√®re pour compter.
 		io_object_t	theSerialService;
 		while ((theSerialService = IOIteratorNext(theIterator)) != 0)
 		{
@@ -179,12 +179,12 @@ TDCLIOKitSerialPort::GetSerialPortName( KUInt32 inIndex )
 						0 /* options */ );
 			if (theBSDPathAsCFString)
 			{
-				// Libération.
+				// Lib√©ration.
 				CFRelease(theBSDPathAsCFString);
 
 				if (theCount == inIndex)
 				{
-					// Récupération du nom.
+					// R√©cup√©ration du nom.
 					theResult = (CFStringRef)
 						::IORegistryEntryCreateCFProperty(
 							theSerialService,
@@ -197,17 +197,17 @@ TDCLIOKitSerialPort::GetSerialPortName( KUInt32 inIndex )
 				}
 	        }
 
-			// Libération du service.
+			// Lib√©ration du service.
 			(void) IOObjectRelease(theSerialService);
 
 			if (theResult)
 			{
-				// Trouvé.
+				// Trouv√©.
 				break;
 			}
 	    }
 	} catch ( TDCLNotAvailableException& inNotAvailableException ) {
-		// Ignorée.
+		// Ignor√©e.
 	}
 	
 	return theResult;
@@ -222,11 +222,11 @@ TDCLIOKitSerialPort::GetSerialPortName( CFStringRef inDevPath )
 	CFStringRef theResult = nil;
 	
 	try {
-		// Création d'un itérateur sur les ports série.
+		// Cr√©ation d'un it√©rateur sur les ports s√©rie.
 		io_iterator_t theIterator;
 		GetSerialPortsIterator( &theIterator );
 		
-		// On itère pour compter.
+		// On it√®re pour compter.
 		io_object_t	theSerialService;
 		while ((theSerialService = IOIteratorNext(theIterator)) != 0)
 		{
@@ -243,7 +243,7 @@ TDCLIOKitSerialPort::GetSerialPortName( CFStringRef inDevPath )
 							inDevPath,
 							0 /* options */) == kCFCompareEqualTo)
 				{
-					// Récupération du nom.
+					// R√©cup√©ration du nom.
 					theResult = (CFStringRef)
 						::IORegistryEntryCreateCFProperty(
 							theSerialService,
@@ -252,21 +252,21 @@ TDCLIOKitSerialPort::GetSerialPortName( CFStringRef inDevPath )
 							0 /* options */ );;
 				}
 
-				// Libération.
+				// Lib√©ration.
 				CFRelease(theBSDPathAsCFString);
 	        }
 
-			// Libération du service.
+			// Lib√©ration du service.
 			(void) IOObjectRelease(theSerialService);
 
 			if (theResult)
 			{
-				// Trouvé.
+				// Trouv√©.
 				break;
 			}
 	    }
 	} catch ( TDCLNotAvailableException& inNotAvailableException ) {
-		// Ignorée.
+		// Ignor√©e.
 	}
 	
 	return theResult;
@@ -281,11 +281,11 @@ TDCLIOKitSerialPort::IsAvailable( CFStringRef inDevPath )
 	Boolean theResult = false;
 	
 	try {
-		// Création d'un itérateur sur les ports série.
+		// Cr√©ation d'un it√©rateur sur les ports s√©rie.
 		io_iterator_t theIterator;
 		GetSerialPortsIterator( &theIterator );
 		
-		// On itère pour compter.
+		// On it√®re pour compter.
 		io_object_t	theSerialService;
 		while ((theSerialService = IOIteratorNext(theIterator)) != 0)
 		{
@@ -305,21 +305,21 @@ TDCLIOKitSerialPort::IsAvailable( CFStringRef inDevPath )
 					theResult = true;
 				}
 
-				// Libération.
+				// Lib√©ration.
 				CFRelease(theBSDPathAsCFString);
 	        }
 
-			// Libération du service.
+			// Lib√©ration du service.
 			(void) IOObjectRelease(theSerialService);
 	
 			if (theResult)
 			{
-				// Trouvé.
+				// Trouv√©.
 				break;
 			}
 	    }
 	} catch ( TDCLNotAvailableException& inNotAvailableException ) {
-		// Ignorée.
+		// Ignor√©e.
 	}
 	
 	return theResult;
@@ -335,11 +335,11 @@ TDCLIOKitSerialPort::GetSerialPortPath( KUInt32 inIndex )
 	CFStringRef theResult = nil;
 	
 	try {
-		// Création d'un itérateur sur les ports série.
+		// Cr√©ation d'un it√©rateur sur les ports s√©rie.
 		io_iterator_t theIterator;
 		GetSerialPortsIterator( &theIterator );
 		
-		// On itère pour compter.
+		// On it√®re pour compter.
 		io_object_t	theSerialService;
 		while ((theSerialService = IOIteratorNext(theIterator)) != 0)
 		{
@@ -355,7 +355,7 @@ TDCLIOKitSerialPort::GetSerialPortPath( KUInt32 inIndex )
 				{
 					theResult = (CFStringRef) theBSDPathAsCFString;
 				} else {
-					// Libération.
+					// Lib√©ration.
 					CFRelease(theBSDPathAsCFString);
 				
 					// Un de plus.
@@ -363,17 +363,17 @@ TDCLIOKitSerialPort::GetSerialPortPath( KUInt32 inIndex )
 				}
 	        }
 
-			// Libération du service.
+			// Lib√©ration du service.
 			(void) IOObjectRelease(theSerialService);
 
 			if (theResult)
 			{
-				// Trouvé.
+				// Trouv√©.
 				break;
 			}
 	    }
 	} catch ( TDCLNotAvailableException& inNotAvailableException ) {
-		// Ignorée.
+		// Ignor√©e.
 	}
 	
 	return theResult;
@@ -385,13 +385,13 @@ TDCLIOKitSerialPort::GetSerialPortPath( KUInt32 inIndex )
 char*
 TDCLIOKitSerialPort::CFStringRefToCStr( CFStringRef inStringRef )
 {	
-	// Détermination de la taille.
+	// D√©termination de la taille.
 	CFIndex theLength = ::CFStringGetLength( inStringRef );
 	
-	// Allocation de la chaîne avec malloc.
+	// Allocation de la cha√Æne avec malloc.
 	char* theResult = (char*) ::malloc( (size_t) (theLength + 1) );
 	
-	// Copie des données (transcription en US-ASCII)
+	// Copie des donn√©es (transcription en US-ASCII)
 	if (!::CFStringGetCString(
 						inStringRef, theResult, theLength + 1, kCFStringEncodingASCII ))
 	{
@@ -407,7 +407,7 @@ TDCLIOKitSerialPort::CFStringRefToCStr( CFStringRef inStringRef )
 void
 TDCLIOKitSerialPort::GetSerialPortsIterator( io_iterator_t* outIterator )
 {
-	// Récupération du port maître.
+	// R√©cup√©ration du port ma√Ætre.
 	mach_port_t	theMasterPort;
 	kern_return_t theErr = ::IOMasterPort(MACH_PORT_NULL, &theMasterPort);
 	if (theErr != KERN_SUCCESS)
@@ -415,7 +415,7 @@ TDCLIOKitSerialPort::GetSerialPortsIterator( io_iterator_t* outIterator )
 		throw DCLPlatformUnknownError( theErr );
 	}
 
-	// Récupération du dictionnaire sur les ports BSD.
+	// R√©cup√©ration du dictionnaire sur les ports BSD.
 	CFMutableDictionaryRef theSerialPortsDict =
 		::IOServiceMatching( kIOSerialBSDServiceValue );
 	if (theSerialPortsDict == NULL)
@@ -423,13 +423,13 @@ TDCLIOKitSerialPort::GetSerialPortsIterator( io_iterator_t* outIterator )
 		throw DCLNotAvailable;
 	}
 	
-	// Ensuite, on filtre pour n'avoir que les ports série.
+	// Ensuite, on filtre pour n'avoir que les ports s√©rie.
 	::CFDictionarySetValue(theSerialPortsDict,
 								CFSTR(kIOSerialBSDTypeKey),
 								CFSTR(kIOSerialBSDRS232Type));
 
 
-	// Création de l'itérateur.
+	// Cr√©ation de l'it√©rateur.
 	theErr = ::IOServiceGetMatchingServices(
 					theMasterPort, theSerialPortsDict, outIterator );    
 	if (theErr != KERN_SUCCESS)

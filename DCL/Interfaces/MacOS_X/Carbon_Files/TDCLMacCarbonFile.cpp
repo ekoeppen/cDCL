@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacCarbonFile.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			13/1/2003
+// CrÃ©Ã© le:			13/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacCarbonFile.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -73,7 +73,7 @@
 #warning improve error handling
 
 // ------------------------------------------------------------------------- //
-//  *ÊTDCLMacCarbonFile( TDCLMacFiles*, TDCLFSItemRef, const FSRef* )
+//  *Â TDCLMacCarbonFile( TDCLMacFiles*, TDCLFSItemRef, const FSRef* )
 // ------------------------------------------------------------------------- //
 TDCLMacCarbonFile::TDCLMacCarbonFile(
 				TDCLMacFiles* inFilesIntf,
@@ -87,11 +87,11 @@ TDCLMacCarbonFile::TDCLMacCarbonFile(
 		mVRefNum( 0 ),
 		mIsOnDesktop( false )
 {
-	// On rŽcupre le nom du fichier (utile si on se fait supprimer et qu'il
-	// faut nous recrŽer).
+	// On rÃ©cupÃ¨re le nom du fichier (utile si on se fait supprimer et qu'il
+	// faut nous recrÃ©er).
 	SetName( MakeName() );
 	
-	// RŽcupŽration de la rŽfŽrence sur le volume et du dossier parent.
+	// RÃ©cupÃ©ration de la rÃ©fÃ©rence sur le volume et du dossier parent.
 	FSCatalogInfo theCatalogInfo;
 	OSErr theErr = ::FSGetCatalogInfo(
 						&mRef,
@@ -110,7 +110,7 @@ TDCLMacCarbonFile::TDCLMacCarbonFile(
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊTDCLMacCarbonFile( TDCLMacFiles*, TDCLFSItemRef, const FSRef* ... )
+//  *Â TDCLMacCarbonFile( TDCLMacFiles*, TDCLFSItemRef, const FSRef* ... )
 // ------------------------------------------------------------------------- //
 TDCLMacCarbonFile::TDCLMacCarbonFile(
 				TDCLMacFiles* inFilesIntf,
@@ -162,10 +162,10 @@ TDCLMacCarbonFile::TDCLMacCarbonFile(
 		mOpenedFork( 0 ),
 		mVRefNum( 0 )
 {
-	// On rŽcupre le nom du fichier.
+	// On rÃ©cupÃ¨re le nom du fichier.
 	SetName( MakeName() );
 
-	// RŽcupŽration de la rŽfŽrence sur le volume et du dossier parent.
+	// RÃ©cupÃ©ration de la rÃ©fÃ©rence sur le volume et du dossier parent.
 	FSCatalogInfo theCatalogInfo;
 	OSErr theErr = ::FSGetCatalogInfo(
 						&mRef,
@@ -184,7 +184,7 @@ TDCLMacCarbonFile::TDCLMacCarbonFile(
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊTDCLMacCarbonFile( void )
+//  *Â TDCLMacCarbonFile( void )
 // ------------------------------------------------------------------------- //
 TDCLMacCarbonFile::~TDCLMacCarbonFile()
 {
@@ -197,13 +197,13 @@ TDCLMacCarbonFile::~TDCLMacCarbonFile()
 void 
 TDCLMacCarbonFile::Open( Boolean inReadOnly ) 
 {
-	// On s'arrte si le fichier est dŽjˆ ouvert.
+	// On s'arrÃªte si le fichier est dÃ©jÃ  ouvert.
 	if (IsOpen())
 	{
 		throw DCLBadStateError;
 	}
 
-	// CrŽation du FSRef si nŽcessaire.
+	// CrÃ©ation du FSRef si nÃ©cessaire.
 	if (!mRefIsValid)
 	{
 		CreateFSRef();
@@ -247,8 +247,8 @@ TDCLMacCarbonFile::Create(
 						OSType inCreator,
 						OSType inFileType )
 {
-	// CrŽation du fichier.
-	FSSpec theFSSpec;	// FSSpec pour changer le type/crŽateur.
+	// CrÃ©ation du fichier.
+	FSSpec theFSSpec;	// FSSpec pour changer le type/crÃ©ateur.
 	const KUInt16* theName = GetName();
 	OSErr theErr = ::FSCreateFileUnicode(
 						&mParentRef,
@@ -266,7 +266,7 @@ TDCLMacCarbonFile::Create(
 	
 	mRefIsValid = true;
 
-	// Changement du type/crŽateur.
+	// Changement du type/crÃ©ateur.
 	DoSetMetaData( &theFSSpec, inCreator, inFileType );
 }
 
@@ -278,13 +278,13 @@ TDCLMacCarbonFile::SetMetaData(
 						OSType inCreator,
 						OSType inFileType )
 {
-	// CrŽation du FSRef si nŽcessaire.
+	// CrÃ©ation du FSRef si nÃ©cessaire.
 	if (!mRefIsValid)
 	{
 		CreateFSRef();
 	}
 
-	// RŽcupŽration du FSSpec sur le fichier.
+	// RÃ©cupÃ©ration du FSSpec sur le fichier.
 	FSSpec theFSSpec;
 	OSErr theErr = ::FSGetCatalogInfo(
 						&mRef,
@@ -299,7 +299,7 @@ TDCLMacCarbonFile::SetMetaData(
 		throw DCLPlatformUnknownError( theErr );
 	}
 
-	// Changement du type/crŽateur.
+	// Changement du type/crÃ©ateur.
 	DoSetMetaData( &theFSSpec, inCreator, inFileType );
 }
 
@@ -309,13 +309,13 @@ TDCLMacCarbonFile::SetMetaData(
 void
 TDCLMacCarbonFile::Delete( void ) 
 {
-	// VŽrifions que le fichier n'est pas ouvert.
+	// VÃ©rifions que le fichier n'est pas ouvert.
 	if (IsOpen())
 	{
 		throw DCLBadStateError;
 	}
 
-	// CrŽation du FSRef si nŽcessaire.
+	// CrÃ©ation du FSRef si nÃ©cessaire.
 	if (!mRefIsValid)
 	{
 		CreateFSRef();
@@ -333,7 +333,7 @@ TDCLMacCarbonFile::Delete( void )
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊSetCursor( KSInt64, ECursorMode )
+//  *Â SetCursor( KSInt64, ECursorMode )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacCarbonFile::SetCursor( KSInt64 inPos, ECursorMode inMode )
@@ -364,7 +364,7 @@ TDCLMacCarbonFile::SetCursor( KSInt64 inPos, ECursorMode inMode )
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetCursor( void )
+//  *Â GetCursor( void )
 // ------------------------------------------------------------------------- //
 KSInt64
 TDCLMacCarbonFile::GetCursor( void )
@@ -385,7 +385,7 @@ TDCLMacCarbonFile::GetCursor( void )
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetLength( void )
+//  *Â GetLength( void )
 // ------------------------------------------------------------------------- //
 KUInt64
 TDCLMacCarbonFile::GetLength( void )
@@ -407,12 +407,12 @@ TDCLMacCarbonFile::GetLength( void )
 
 #if TYPE_LONGLONG
 	return catalogInfo.dataLogicalSize;
-	// Remarque: a risque de merder ici si:
+	// Remarque: Ã§a risque de merder ici si:
 	//	defined(_MSC_VER) && !defined(__MWERKS__) && defined(_M_IX86)
 	// Mais normalement, on n'est pas dans ce cas.
-	// Et si a l'est, il suffit d'utiliser
-	// leur super macro dans Math64.h qui risque d'tre foireuse
-	// comme x86 n'a pas le mme indien.
+	// Et si Ã§a l'est, il suffit d'utiliser
+	// leur super macro dans Math64.h qui risque d'Ãªtre foireuse
+	// comme x86 n'a pas le mÃªme indien.
 #else
 	return UTInt64::CreateKUInt64(
 						catalogInfo.dataLogicalSize.hi,
@@ -421,12 +421,12 @@ TDCLMacCarbonFile::GetLength( void )
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊRead( void*, long* )
+//  *Â Read( void*, long* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacCarbonFile::Read (void *outBuffer, KUInt32 *ioCount)
 {
-	// VŽrifions que le fichier est ouvert.
+	// VÃ©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
@@ -437,7 +437,7 @@ TDCLMacCarbonFile::Read (void *outBuffer, KUInt32 *ioCount)
 							mOpenedFork, 
 							fsAtMark, 
 							0,	// right here, right now
-								// (euh, il n'est pas ignorŽ ce paramtre?)
+								// (euh, il n'est pas ignorÃ© ce paramÃ¨tre?)
 							*ioCount, 
 							outBuffer, 
 							&count ); 
@@ -451,18 +451,18 @@ TDCLMacCarbonFile::Read (void *outBuffer, KUInt32 *ioCount)
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊWrite( const void*, long* )
+//  *Â Write( const void*, long* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacCarbonFile::Write (const void *inBuffer, KUInt32 *ioCount)
 {
-	// VŽrifions que le fichier est ouvert.
+	// VÃ©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
 	}
 	
-	// VŽrifions que le fichier est ouvert en lecture/Žcriture.
+	// VÃ©rifions que le fichier est ouvert en lecture/Ã©criture.
 	if (IsReadOnly())
 	{
 		throw DCLReadOnly;
@@ -473,7 +473,7 @@ TDCLMacCarbonFile::Write (const void *inBuffer, KUInt32 *ioCount)
 							mOpenedFork, 
 							fsAtMark, 
 							0,	// right here, right now
-								// (euh, il n'est pas ignorŽ ce paramtre?)
+								// (euh, il n'est pas ignorÃ© ce paramÃ¨tre?)
 							*ioCount, 
 							inBuffer, 
 							&count ); 
@@ -487,12 +487,12 @@ TDCLMacCarbonFile::Write (const void *inBuffer, KUInt32 *ioCount)
 } 
 
 // ------------------------------------------------------------------------- //
-//  *ÊFlushOutput( void )
+//  *Â FlushOutput( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacCarbonFile::FlushOutput( void )
 {
-	// VŽrifions que le fichier est ouvert.
+	// VÃ©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
@@ -524,12 +524,12 @@ TDCLMacCarbonFile::Close (void)
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetKind( void )
+//  *Â GetKind( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacCarbonFile::GetKind( void ) const
 {
-	// RŽcupŽration du type gr‰ce au LaunchServices.
+	// RÃ©cupÃ©ration du type grÃ¢ce au LaunchServices.
 	CFStringRef theKindString;
 	OSStatus theErr = ::LSCopyKindStringForRef( &mRef, &theKindString );
 	
@@ -544,26 +544,26 @@ TDCLMacCarbonFile::GetKind( void ) const
 	KUInt16* theString =
 			(KUInt16*) ::malloc( (theSize + 1) * sizeof( KUInt16 ) );
 
-	// Copie de la cha”ne.
+	// Copie de la chaÃ®ne.
 	::CFStringGetCharacters(
 				theKindString, CFRangeMake( 0, theSize ), theString );
 
 	// Terminateur.
 	theString[theSize] = 0;
 	
-	// LibŽration (1)
+	// LibÃ©ration (1)
 	::CFRelease( theKindString );
 
 	TDCLNSRef theResult = TDCLNSRef::MakeString( theString );
 
-	// LibŽration (2)
+	// LibÃ©ration (2)
 	::free( theString );	
 	
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetCreationDate( void ) const
+//  *Â GetCreationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLMacCarbonFile::GetCreationDate( void ) const
@@ -590,7 +590,7 @@ TDCLMacCarbonFile::GetCreationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetModificationDate( void ) const
+//  *Â GetModificationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLMacCarbonFile::GetModificationDate( void ) const
@@ -618,12 +618,12 @@ TDCLMacCarbonFile::GetModificationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetStringPath( void ) const
+//  *Â GetStringPath( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacCarbonFile::GetStringPath( void ) const
 {
-	// Allocation de la cha”ne.
+	// Allocation de la chaÃ®ne.
 	KUInt8* thePathString = (KUInt8*) ::malloc( 4096 );
 	OSStatus theErr = ::FSRefMakePath( &mRef, thePathString, 4096 );
 	if (theErr)
@@ -632,29 +632,29 @@ TDCLMacCarbonFile::GetStringPath( void ) const
 		throw DCLPlatformUnknownError( theErr );
 	}
 	
-	// La mme en UTF-16.
+	// La mÃªme en UTF-16.
 	KUInt16* thePathStringAsUTF16 = (KUInt16*) ::malloc( 8192 );
 	UUTF16CStr::FromUTF8( thePathString, thePathStringAsUTF16, 4096 );
 
-	// LibŽration.
+	// LibÃ©ration.
 	::free( thePathString );
 
-	// Conversion en cha”ne NewtonScript.
+	// Conversion en chaÃ®ne NewtonScript.
 	TDCLNSRef theResult = TDCLNSRef::MakeString( thePathStringAsUTF16 );
 	
-	// LibŽration.
+	// LibÃ©ration.
 	::free( thePathStringAsUTF16 );
 
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetIcon( void ) const
+//  *Â GetIcon( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacCarbonFile::GetIcon( void ) const
 {
-	// RŽcupŽration d'informations sur le fichier.
+	// RÃ©cupÃ©ration d'informations sur le fichier.
 	HFSUniStr255 theFileName;
 	FSCatalogInfo theCatalogInfo;
 	OSStatus theErr = ::FSGetCatalogInfo(
@@ -669,7 +669,7 @@ TDCLMacCarbonFile::GetIcon( void ) const
 		throw DCLPlatformUnknownError( theErr );
 	}
 	
-	// RŽcupŽration de l'ic™ne.
+	// RÃ©cupÃ©ration de l'icÃ´ne.
 	IconRef theIcon;
 	theErr = ::GetIconRefFromFileInfo (
 						&mRef,
@@ -711,16 +711,16 @@ TDCLMacCarbonFile::GetIcon( void ) const
 		throw DCLPlatformUnknownError( theErr );
 	}
 
-	// CrŽation du binaire.
+	// CrÃ©ation du binaire.
 	::HLock( theIconHandle );
 	TDCLNSRef theResult =
 				TDCLNSRef::MakeBinary( *theIconHandle, 128 /* 32*32/8 */ );
 
-	// LibŽration des donnŽes.
+	// LibÃ©ration des donnÃ©es.
 	::DisposeHandle( theIconHandle );
 	::DisposeHandle( (Handle) theIconFamilyHandle );
 	
-	// LibŽration de la rŽfŽrence.
+	// LibÃ©ration de la rÃ©fÃ©rence.
 	theErr = ReleaseIconRef( theIcon );
 	if (theErr != noErr)
 	{
@@ -736,7 +736,7 @@ TDCLMacCarbonFile::GetIcon( void ) const
 KUInt16*
 TDCLMacCarbonFile::MakeName( void ) const
 {
-	// MakeName ne peut tre appelŽ si mRef n'est pas valide.
+	// MakeName ne peut Ãªtre appelÃ© si mRef n'est pas valide.
 	if (!mRefIsValid)
 	{
 		throw DCLDoesntExist;
@@ -769,7 +769,7 @@ TDCLMacCarbonFile::DoMakeParentFolder(
 					Boolean* outIsOnDesktop,
 					const FSRef* inFSRef )
 {
-	// RŽfŽrence sur le dossier parent et sur volume.
+	// RÃ©fÃ©rence sur le dossier parent et sur volume.
 	FSRef theParentRef;
 	OSErr theErr = ::FSGetCatalogInfo(
 						inFSRef,
@@ -797,7 +797,7 @@ TDCLMacCarbonFile::DoMakeParentFolder(
 		&& (::FSCompareFSRefs( &theParentRef, &theDesktopFolderRef ) == noErr))
 	{
 		*outIsOnDesktop = true;
-		theResult = inFilesIntf->GetRootFolder( nil /* ignorŽ */ );
+		theResult = inFilesIntf->GetRootFolder( nil /* ignorÃ© */ );
 	} else {
 		*outIsOnDesktop = false;
 		theResult = TDCLFSItemRef(
@@ -828,7 +828,7 @@ TDCLMacCarbonFile::CreateFSRef( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊIsOnDesktop( void ) const
+//  *Â IsOnDesktop( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacCarbonFile::IsOnDesktop( void ) const
@@ -837,7 +837,7 @@ TDCLMacCarbonFile::IsOnDesktop( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊGetVRefNum( void ) const
+//  *Â GetVRefNum( void ) const
 // ------------------------------------------------------------------------- //
 short
 TDCLMacCarbonFile::GetVRefNum( void ) const

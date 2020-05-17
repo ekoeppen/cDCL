@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacGetPutFiles.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/01/2003
+// Cr√©√© le:			30/01/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacGetPutFiles.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -73,7 +73,7 @@
 TDCLMacGetPutFiles::TDCLMacGetPutFiles( TDCLMacFiles* inFilesIntf )
 	:
 		mFilesIntf( inFilesIntf ),
-		mNavServicesAvailable( true )	// Défaut sous OS X.
+		mNavServicesAvailable( true )	// D√©faut sous OS X.
 {
 #if CALL_NOT_IN_CARBON
 	mNavServicesAvailable = false;
@@ -97,7 +97,7 @@ TDCLMacGetPutFiles::~TDCLMacGetPutFiles( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * DoGetFile( const char*, Boolean )
+//  *¬†DoGetFile( const char*, Boolean )
 // ------------------------------------------------------------------------- //
 TDCLFSItemRef
 TDCLMacGetPutFiles::DoGetFile(
@@ -130,7 +130,7 @@ TDCLMacGetPutFiles::DoGetFile(
 		// (I translate it from CString)
 		UPStrings::C2PStrCopy( myDialogOptions.message, inPrompt );
 	
-		// Pas d'aperçu.
+		// Pas d'aper√ßu.
 		myDialogOptions.dialogOptionFlags &= ~kNavAllowPreviews;
 		// Ni de menu pour le type.
 		myDialogOptions.dialogOptionFlags |= kNavNoTypePopup;
@@ -183,7 +183,7 @@ TDCLMacGetPutFiles::DoGetFile(
                         
 			// Extraction du FSSpec
 			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
+							// Il n'y a qu'un seul √©l√©ment de toute fa√ßon.
 							&( myReply.selection ), 1,
 							typeFSS,
 							&theKeyword,
@@ -210,7 +210,7 @@ TDCLMacGetPutFiles::DoGetFile(
                         
 			// Extraction du FSRef
 			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
+							// Il n'y a qu'un seul √©l√©ment de toute fa√ßon.
 							&( myReply.selection ), 1,
 							typeFSRef,
 							&theKeyword,
@@ -279,7 +279,7 @@ TDCLMacGetPutFiles::DoGetFile(
 }
 
 // ------------------------------------------------------------------------- //
-//  * PutFile( const char*, const char* )
+//  *¬†PutFile( const char*, const char* )
 // ------------------------------------------------------------------------- //
 TDCLFSItemRef
 TDCLMacGetPutFiles::PutFile(
@@ -311,7 +311,7 @@ TDCLMacGetPutFiles::PutFile(
 		UPStrings::C2PStrCopy( myDialogOptions.savedFileName, inDefaultName );
 
 		// Drapeaux.
-		// Pas de modèle.
+		// Pas de mod√®le.
 		myDialogOptions.dialogOptionFlags &= ~kNavAllowStationery;
 		// Ni de menu pour le type
 		myDialogOptions.dialogOptionFlags &= ~kNavNoTypePopup;
@@ -354,7 +354,7 @@ TDCLMacGetPutFiles::PutFile(
                         
 			// Extraction du FSSpec
 			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
+							// Il n'y a qu'un seul √©l√©ment de toute fa√ßon.
 							&( myReply.selection ), 1,
 							typeFSS,
 							&theKeyword,
@@ -377,7 +377,7 @@ TDCLMacGetPutFiles::PutFile(
                         
 			// Extraction du FSRef
 			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
+							// Il n'y a qu'un seul √©l√©ment de toute fa√ßon.
 							&( myReply.selection ), 1,
 							typeFSRef,
 							&theKeyword,
@@ -400,7 +400,7 @@ TDCLMacGetPutFiles::PutFile(
 				((TDCLFile*) theResult)->Delete();
 			}
 		} catch( ... ) {
-			// Libération de la réponse.
+			// Lib√©ration de la r√©ponse.
 			(void) ::NavDisposeReply( &myReply );
 			
 			throw;	// Rethrow
@@ -477,7 +477,7 @@ TDCLMacGetPutFiles::PutFile(
 }
 
 // ------------------------------------------------------------------------- //
-//  * PackageNavServicesFilterProc( AEDesc*, void*, NavCallBackUserData, ... )
+//  *¬†PackageNavServicesFilterProc( AEDesc*, void*, NavCallBackUserData, ... )
 // ------------------------------------------------------------------------- //
 pascal Boolean
 TDCLMacGetPutFiles::PackageNavServicesFilterProc(
@@ -503,7 +503,7 @@ TDCLMacGetPutFiles::PackageNavServicesFilterProc(
         
 		FSSpec thePackageFSSpec;
 
-		// On récupère un FSRef directement.
+		// On r√©cup√®re un FSRef directement.
 		OSErr theErr;
 #if CALL_NOT_IN_CARBON
 		thePackageFSSpec = *((FSSpec*) *inItem->dataHandle);

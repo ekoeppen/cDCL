@@ -2,7 +2,7 @@
 // Fichier:			TDCLThread.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLThread.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,19 +44,19 @@
 #include <DCL/Interfaces/TDCLEvent.h>
 
 ///
-/// Classe pour un objet dans un processus léger.
-/// Pour les détails, voir IDCLThreads.
+/// Classe pour un objet dans un processus l√©ger.
+/// Pour les d√©tails, voir IDCLThreads.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLThread
 {
 public:
 	///
-	/// Constructeur à partir de l'interface IDCLThreads.
+	/// Constructeur √† partir de l'interface IDCLThreads.
 	///
 	TDCLThread( IDCLThreads* inThreadFactory );
 
@@ -66,7 +66,7 @@ public:
 	virtual ~TDCLThread( void );
 
 	///
-	/// Démarre le processus léger.
+	/// D√©marre le processus l√©ger.
 	///
 	inline void Start( void )
 		{
@@ -74,7 +74,7 @@ public:
 		}
 
 	///
-	/// Arrête le processus léger.
+	/// Arr√™te le processus l√©ger.
 	///
 	inline void Stop( void )
 		{
@@ -82,7 +82,7 @@ public:
 		}
 
 	///
-	/// Suspend le processus léger.
+	/// Suspend le processus l√©ger.
 	///
 	inline void Suspend( void )
 		{
@@ -90,7 +90,7 @@ public:
 		}
 
 	///
-	/// Reprend le processus léger.
+	/// Reprend le processus l√©ger.
 	///
 	inline void Resume( void )
 		{
@@ -98,18 +98,18 @@ public:
 		}
 
 	///
-	/// Poste un événement pour ce processus.
-	/// Les événements sont gérés dans l'ordre d'arrivée (à améliorer?)
-	/// L'événement sera supprimé par une méthode du processus léger
-	/// qui appellera WaitNextEvent ou par le destructeur du processus léger.
+	/// Poste un √©v√©nement pour ce processus.
+	/// Les √©v√©nements sont g√©r√©s dans l'ordre d'arriv√©e (√† am√©liorer?)
+	/// L'√©v√©nement sera supprim√© par une m√©thode du processus l√©ger
+	/// qui appellera WaitNextEvent ou par le destructeur du processus l√©ger.
 	///
-	/// \param inEvent	événement à poster
-	/// \throws TDCLException si un problème est survenu
+	/// \param inEvent	√©v√©nement √† poster
+	/// \throws TDCLException si un probl√®me est survenu
 	///
 	void PostEvent( TDCLEvent* inEvent );
 
 	///
-	/// Réveille le processus léger.
+	/// R√©veille le processus l√©ger.
 	///
 	/// Remarque: l'utilisation de WakeUp/Sleep est exclusive de l'utilisation de
 	/// WaitNextEvent/PostEvent.
@@ -120,19 +120,19 @@ public:
 		}
 
 	///
-	/// Méthode exécutée dans le processus.
+	/// M√©thode ex√©cut√©e dans le processus.
 	///
 	virtual void Run( void ) = 0;
 
 	///
-	/// Méthode appelée par le processus léger. C'est cette méthode
-	/// qui se charge d'appeler la méthode Run ci-dessus.
+	/// M√©thode appel√©e par le processus l√©ger. C'est cette m√©thode
+	/// qui se charge d'appeler la m√©thode Run ci-dessus.
 	///
 	void DoRun( void );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-	/// Lorsque cette méthode retourne, le processus est terminé.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+	/// Lorsque cette m√©thode retourne, le processus est termin√©.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -141,33 +141,33 @@ public:
 
 protected:
 	///
-	/// Récupère le prochain événement en attendant au plus inMilliseconds
-	/// (en millisecondes). Si aucun événement n'est arrivé, retourne nil.
+	/// R√©cup√®re le prochain √©v√©nement en attendant au plus inMilliseconds
+	/// (en millisecondes). Si aucun √©v√©nement n'est arriv√©, retourne nil.
 	/// Si le masque n'est pas kAnyEventMask, alors on attend inMilliseconds
-	/// au plus entre deux événements. L'arrivée d'événements qui ne cadrent
+	/// au plus entre deux √©v√©nements. L'arriv√©e d'√©v√©nements qui ne cadrent
 	/// pas avec le masque peut rallonger l'attente.
 	///
-	/// Cette méthode appelle Sleep.
+	/// Cette m√©thode appelle Sleep.
 	///
-	/// Remarque importante: l'appelant doit supprimer l'événement avec
+	/// Remarque importante: l'appelant doit supprimer l'√©v√©nement avec
 	/// delete.
 	///
-	/// \param inEventMask		masque pour les événements à attendre.
-	/// \param inMilliseconds	temps à attendre au maximum.
-	/// \return un pointeur vers l'événement ou \c nil.
-	/// \throws TDCLException si un problème est survenu
+	/// \param inEventMask		masque pour les √©v√©nements √† attendre.
+	/// \param inMilliseconds	temps √† attendre au maximum.
+	/// \return un pointeur vers l'√©v√©nement ou \c nil.
+	/// \throws TDCLException si un probl√®me est survenu
 	///
 	TDCLEvent* WaitNextEvent(
 			KUInt32 inEventMask = TDCLEvent::kAnyEventMask,
 			KUInt32 inMilliseconds = IDCLThreads::IThread::kForever );
 
 	///
-	/// Dort. Cette méthode doit être appelée par le processus.
+	/// Dort. Cette m√©thode doit √™tre appel√©e par le processus.
 	///
 	/// Remarque: l'utilisation de WakeUp/Sleep est exclusive de l'utilisation de
 	/// WaitNextEvent/PostEvent.
 	///
-	/// \param inMilliseconds	temps à dormir au maximum.
+	/// \param inMilliseconds	temps √† dormir au maximum.
 	/// \return \c true si on a dormi tout le temps, \c false sinon.
 	///
 	inline Boolean Sleep(
@@ -177,9 +177,9 @@ protected:
 		}
 
 	///
-	/// Détermine l'état du processus léger.
+	/// D√©termine l'√©tat du processus l√©ger.
 	///
-	/// \return l'état du processus léger.
+	/// \return l'√©tat du processus l√©ger.
 	///
 	inline IDCLThreads::EState GetThreadState( void )
 		{
@@ -188,8 +188,8 @@ protected:
 
 	///
 	/// Donne du temps aux autres processus.
-	/// Cette méthode est appelée à partir de la méthode
-	/// Run de TDCLThread ou du processus léger principal.
+	/// Cette m√©thode est appel√©e √† partir de la m√©thode
+	/// Run de TDCLThread ou du processus l√©ger principal.
 	///
 	inline	void	Yield( void )
 		{
@@ -197,9 +197,9 @@ protected:
 		}
 
 	///
-	/// Accesseur sur la fabrique de processus légers
+	/// Accesseur sur la fabrique de processus l√©gers
 	///
-	/// \return une référence sur l'interface sur les processus légers.
+	/// \return une r√©f√©rence sur l'interface sur les processus l√©gers.
 	///
 	inline	IDCLThreads*	GetThreadsIntf( void )
 			{
@@ -210,26 +210,26 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLThread( const TDCLThread& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLThread& operator = ( const TDCLThread& inCopy );
 
-	/// \name Variables privées.
-	IDCLThreads::IThread*		mThread;			///< Processus léger système
-													///< associé.
-	IDCLThreads::ISemaphore*	mQueueSemaphore;	///< Mutex sur la liste des événements.
+	/// \name Variables priv√©es.
+	IDCLThreads::IThread*		mThread;			///< Processus l√©ger syst√®me
+													///< associ√©.
+	IDCLThreads::ISemaphore*	mQueueSemaphore;	///< Mutex sur la liste des √©v√©nements.
 	TDCLEvent*					mNextEvent;			///< Pointeur sur le prochain
-													///< événement ou \c nil.
+													///< √©v√©nement ou \c nil.
 	TDCLEvent*					mLastEvent;			///< Pointeur sur le prochain
-													///< événement ou \c nil.
-	IDCLThreads*				mThreadsIntf;		///< Interface pour les processus légers.
+													///< √©v√©nement ou \c nil.
+	IDCLThreads*				mThreadsIntf;		///< Interface pour les processus l√©gers.
 };
 
 #endif

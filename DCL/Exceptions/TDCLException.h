@@ -2,7 +2,7 @@
 // Fichier:			TDCLException.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/02/2001
+// Cr√©√© le:			11/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLException.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,9 +45,9 @@
 ///
 /// Classe de base pour les exceptions dans la DCL.
 ///
-/// Stratégie pour les exceptions:
-/// Il existe plusieurs classes d'exception, chaque classe correspondant à un
-/// code qui peut-être obtenu ici.
+/// Strat√©gie pour les exceptions:
+/// Il existe plusieurs classes d'exception, chaque classe correspondant √† un
+/// code qui peut-√™tre obtenu ici.
 ///
 /// Toutes les exceptions peuvent aussi avoir un code d'erreur venant de la
 /// plateforme.
@@ -58,7 +58,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLException
 {
@@ -120,8 +120,8 @@ public:
 		}
 	
 	///
-	/// Accesseur sur le code d'erreur associé avec l'exception.
-	/// Ce code peut être zéro si aucun code d'erreur n'est associé.
+	/// Accesseur sur le code d'erreur associ√© avec l'exception.
+	/// Ce code peut √™tre z√©ro si aucun code d'erreur n'est associ√©.
 	///
 	/// \return	le code d'erreur.
 	///
@@ -131,19 +131,19 @@ public:
 		}
 
 	///
-	/// Détermine le nom de l'exception.
-	/// Par défaut, utilise le code.
+	/// D√©termine le nom de l'exception.
+	/// Par d√©faut, utilise le code.
 	///
 	virtual const char*		GetExceptionName( void ) const;
 
 #if kDCLDebugFILEandLINE
 
 	///
-	/// Accesseur sur le nom du fichier où l'exception a été
-	/// lancée.
+	/// Accesseur sur le nom du fichier o√π l'exception a √©t√©
+	/// lanc√©e.
 	///
 	/// \return	le nom du fichier. Celui-ci est normalement une constante
-	///			générée par le compilateur.
+	///			g√©n√©r√©e par le compilateur.
 	///
 	inline	const char*		GetFileName( void ) const
 		{
@@ -151,10 +151,10 @@ public:
 		}
 
 	///
-	/// Accesseur sur le numéro de ligne où l'exception a été
-	/// lancée.
+	/// Accesseur sur le num√©ro de ligne o√π l'exception a √©t√©
+	/// lanc√©e.
 	///
-	/// \return	le numéro de ligne.
+	/// \return	le num√©ro de ligne.
 	///
 	inline	KUInt32			GetLine( void ) const
 		{
@@ -164,10 +164,10 @@ public:
 
 #if kDCLDebugFILEandLINE
 	///
-	/// Constructeur par copie (si kDCLDebugFILEandLINE n'est pas à 1,
-	/// on utilise le constructeur par copie par défaut).
+	/// Constructeur par copie (si kDCLDebugFILEandLINE n'est pas √† 1,
+	/// on utilise le constructeur par copie par d√©faut).
 	///
-	/// \param inCopy		objet à copier.
+	/// \param inCopy		objet √† copier.
 	///
 	TDCLException( const TDCLException& inCopy );
 #endif
@@ -180,13 +180,13 @@ public:
 protected:
 #if kDCLDebugFILEandLINE
 	///
-	/// Constructeur à partir du code de l'exception, d'un code d'erreur, du
-	/// nom de fichier et du numéro de ligne.
+	/// Constructeur √† partir du code de l'exception, d'un code d'erreur, du
+	/// nom de fichier et du num√©ro de ligne.
 	///
 	/// \param inExCode		code de l'exception.
 	/// \param inError		code d'erreur.
-	/// \param inFileName	nom du fichier. N'est pas copié.
-	/// \param inLine		numéro de ligne.
+	/// \param inFileName	nom du fichier. N'est pas copi√©.
+	/// \param inLine		num√©ro de ligne.
 	///
 	TDCLException(
 			ExCode inExCode,
@@ -195,7 +195,7 @@ protected:
 			KUInt32 inLine );
 #else
 	///
-	/// Constructeur à partir du code de l'exception et de l'erreur seuls.
+	/// Constructeur √† partir du code de l'exception et de l'erreur seuls.
 	///
 	/// \param inExCode		code de l'exception.
 	/// \param inError		code d'erreur
@@ -205,25 +205,25 @@ protected:
 
 private:
 	///
-	/// Constructeur par défaut non disponible.
+	/// Constructeur par d√©faut non disponible.
 	///
 	TDCLException( void );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLException& operator = ( const TDCLException& inCopy );
 
 	/// \name Variables
 
 	ExCode					mExCode;		///< Code de l'exception
-	KSInt32					mError;			///< Erreur liée à l'exception
+	KSInt32					mError;			///< Erreur li√©e √† l'exception
 #if kDCLDebugFILEandLINE
-	const char*				mFileName;		///< Nom du fichier où l'exception
-											///< a été lancée
-	KUInt32					mLine;			///< Numéro de la ligne.
+	const char*				mFileName;		///< Nom du fichier o√π l'exception
+											///< a √©t√© lanc√©e
+	KUInt32					mLine;			///< Num√©ro de la ligne.
 #endif
 };
 

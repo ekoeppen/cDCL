@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdArray.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			14/4/2003
+// CrÃ©Ã© le:			14/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdArray.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,7 +45,7 @@
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdArray( KUInt32, KUInt32*, KUInt32 )
+//  *Â TDCLDockCmdArray( KUInt32, KUInt32*, KUInt32 )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdArray::TDCLDockCmdArray(
 								KUInt32 inCommand,
@@ -63,7 +63,7 @@ TDCLDockCmdArray::TDCLDockCmdArray(
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdArray( KUInt32, KUInt32 )
+//  *Â TDCLDockCmdArray( KUInt32, KUInt32 )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdArray::TDCLDockCmdArray( KUInt32 inCommand, KUInt32 inSize )
 	:
@@ -77,7 +77,7 @@ TDCLDockCmdArray::TDCLDockCmdArray( KUInt32 inCommand, KUInt32 inSize )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdArray( KUInt32, KUInt32, void* )
+//  *Â TDCLDockCmdArray( KUInt32, KUInt32, void* )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdArray::TDCLDockCmdArray(
 					KUInt32 inCommand,
@@ -97,13 +97,13 @@ TDCLDockCmdArray::TDCLDockCmdArray(
 			throw DCLMemError;
 		}
 
-		// Copie des donnŽes.
+		// Copie des donnÃ©es.
 		(void) ::memcpy( mBufferData, inBuffer, inBufferSize );
 	}	
 }
 
 // --------------------------------------------------------------------------------	//
-//  *Ê~TDCLDockCmdArray( void )
+//  *Â ~TDCLDockCmdArray( void )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdArray::~TDCLDockCmdArray( void )
 {
@@ -114,7 +114,7 @@ TDCLDockCmdArray::~TDCLDockCmdArray( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetData( void )
+//  *Â GetData( void )
 // --------------------------------------------------------------------------------	//
 const void*
 TDCLDockCmdArray::GetData( void )
@@ -123,7 +123,7 @@ TDCLDockCmdArray::GetData( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetLength( void )
+//  *Â GetLength( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLDockCmdArray::GetLength( void ) const

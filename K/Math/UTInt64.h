@@ -2,7 +2,7 @@
 // Fichier:			UTInt64.h
 // Projet:			K
 // 
-// Créé le:			10/9/2003
+// Cr√©√© le:			10/9/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -108,45 +108,45 @@ public:
 	static KSInt32	ToKSInt32( const KSInt64& in64BitsWord );
 
 	///
-	/// Sélecteur sur les 32 bits de poids fort.
+	/// S√©lecteur sur les 32 bits de poids fort.
 	///
 	/// \param io64BitsWord		mot dont on veut changer les 32 bits de poids
 	///							fort.
-	/// \param in32BitsValue	32 bits de poids fort à changer.
+	/// \param in32BitsValue	32 bits de poids fort √† changer.
 	///
 	static void		SetHi( KUInt64* io64BitsWord, const KUInt32 in32BitsValue );
 	
 	///
-	/// Sélecteur sur les 32 bits de poids fort.
+	/// S√©lecteur sur les 32 bits de poids fort.
 	///
 	/// \param io64BitsWord		mot dont on veut changer les 32 bits de poids
 	///							fort.
-	/// \param in32BitsValue	32 bits de poids fort à changer.
+	/// \param in32BitsValue	32 bits de poids fort √† changer.
 	///
 	static void		SetHi( KSInt64* io64BitsWord, const KSInt32 in32BitsValue );
 	
 	///
-	/// Sélecteur sur les 32 bits de poids faible.
+	/// S√©lecteur sur les 32 bits de poids faible.
 	///
 	/// \param io64BitsWord		mot dont on veut changer les 32 bits de poids
 	///							faible.
-	/// \param in32BitsValue	32 bits de poids faible à changer.
+	/// \param in32BitsValue	32 bits de poids faible √† changer.
 	///
 	static void		SetLo( KUInt64* io64BitsWord, const KUInt32 in32BitsValue );
 	
 	///
-	/// Sélecteur sur les 32 bits de poids faible.
+	/// S√©lecteur sur les 32 bits de poids faible.
 	///
 	/// \param io64BitsWord		mot dont on veut changer les 32 bits de poids
 	///							faible.
-	/// \param in32BitsValue	32 bits de poids faible à changer.
+	/// \param in32BitsValue	32 bits de poids faible √† changer.
 	///
 	static void		SetLo( KSInt64* io64BitsWord, const KUInt32 in32BitsValue );
 
 	///
-	/// Sélecteur sur les deux moitiés de 32 bits.
+	/// S√©lecteur sur les deux moiti√©s de 32 bits.
 	///
-	/// \param out64BitsWord	mot de 64 bits à changer
+	/// \param out64BitsWord	mot de 64 bits √† changer
 	/// \param inHiHalf			32 bits de poids fort.
 	/// \param inLoHalf			32 bits de poids faible.
 	///
@@ -156,9 +156,9 @@ public:
 						const KUInt32 inLoHalf );
 
 	///
-	/// Sélecteur sur les deux moitiés de 32 bits.
+	/// S√©lecteur sur les deux moiti√©s de 32 bits.
 	///
-	/// \param out64BitsWord	mot de 64 bits à changer
+	/// \param out64BitsWord	mot de 64 bits √† changer
 	/// \param inHiHalf			32 bits de poids fort.
 	/// \param inLoHalf			32 bits de poids faible.
 	///
@@ -168,7 +168,7 @@ public:
 						const KUInt32 inLoHalf );
 	
 	///
-	/// Créateur à partir de deux fois 32 bits.
+	/// Cr√©ateur √† partir de deux fois 32 bits.
 	///
 	/// \param inHiHalf			32 bits de poids fort.
 	/// \param inLoHalf			32 bits de poids faible.
@@ -179,7 +179,7 @@ public:
 						const KUInt32 inLoHalf );
 	
 	///
-	/// Créateur à partir de deux fois 32 bits.
+	/// Cr√©ateur √† partir de deux fois 32 bits.
 	///
 	/// \param inHiHalf			32 bits de poids fort.
 	/// \param inLoHalf			32 bits de poids faible.
@@ -194,7 +194,7 @@ public:
 	///
 	/// \param inArgOne	premier argument (facteur)
 	/// \param inArgTwo	second argument (facteur)
-	/// \param inModule	troisième argument (module)
+	/// \param inModule	troisi√®me argument (module)
 	/// \return (inArgOne * inArgTwo) % inModule
 	///
 	static KUInt64 MultModulo(
@@ -207,7 +207,7 @@ public:
 	///
 	/// \param inBase		premier argument (base)
 	/// \param inExponent	second argument (exposant)
-	/// \param inModule		troisième argument (module)
+	/// \param inModule		troisi√®me argument (module)
 	/// \return (inBase ^ inExponent) % inModule
 	///
 	static KUInt64 ExpModulo(

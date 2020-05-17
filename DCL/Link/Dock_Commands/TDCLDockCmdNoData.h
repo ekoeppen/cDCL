@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNoData.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNoData.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,12 +41,12 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 ///
-/// Classe pour une commande Dock sans données.
+/// Classe pour une commande Dock sans donn√©es.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdNoData
 	:
@@ -54,12 +54,12 @@ class TDCLDockCmdNoData
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLDockCmdNoData( void );
 
 	///
-	/// Constructeur à partir d'un identifiant de commande.
+	/// Constructeur √† partir d'un identifiant de commande.
 	///
 	/// \param inCommand	identifiant de commande.
 	///
@@ -67,7 +67,7 @@ public:
 
 protected:
 	///
-	/// Détermine la taille des données de la commande (ici 0).
+	/// D√©termine la taille des donn√©es de la commande (ici 0).
 	///
 	/// \return \c 0
 	///

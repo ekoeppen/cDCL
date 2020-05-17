@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdCString.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			13/4/2003
+// CrÃ©Ã© le:			13/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdCString.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -48,7 +48,7 @@
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdCString( KUInt32, const KUInt16* )
+//  *Â TDCLDockCmdCString( KUInt32, const KUInt16* )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdCString::TDCLDockCmdCString( KUInt32 inCommand, const KUInt16* inString )
 	:
@@ -61,7 +61,7 @@ TDCLDockCmdCString::TDCLDockCmdCString( KUInt32 inCommand, const KUInt16* inStri
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdCString( KUInt32, TDCLNSString& )
+//  *Â TDCLDockCmdCString( KUInt32, TDCLNSString& )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdCString::TDCLDockCmdCString(
 									KUInt32 inCommand, const TDCLNSString& inString )
@@ -75,7 +75,7 @@ TDCLDockCmdCString::TDCLDockCmdCString(
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdCString( KUInt32, KUInt32, void* )
+//  *Â TDCLDockCmdCString( KUInt32, KUInt32, void* )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdCString::TDCLDockCmdCString(
 					KUInt32 inCommand,
@@ -96,13 +96,13 @@ TDCLDockCmdCString::TDCLDockCmdCString(
 			throw DCLMemError;
 		}
 
-		// Copie des donnŽes.
+		// Copie des donnÃ©es.
 		(void) ::memcpy( mString, inBuffer, inBufferSize );
 	}	
 }
 
 // --------------------------------------------------------------------------------	//
-//  *Ê~TDCLDockCmdCString( void )
+//  *Â ~TDCLDockCmdCString( void )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdCString::~TDCLDockCmdCString( void )
 {
@@ -113,7 +113,7 @@ TDCLDockCmdCString::~TDCLDockCmdCString( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetData( void )
+//  *Â GetData( void )
 // --------------------------------------------------------------------------------	//
 const void*
 TDCLDockCmdCString::GetData( void )
@@ -122,7 +122,7 @@ TDCLDockCmdCString::GetData( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetLength( void )
+//  *Â GetLength( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLDockCmdCString::GetLength( void ) const

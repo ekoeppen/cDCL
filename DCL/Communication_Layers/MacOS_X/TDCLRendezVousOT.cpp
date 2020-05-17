@@ -2,7 +2,7 @@
 // Fichier:			TDCLRendezVousOT.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			25/1/2003
+// Cr√©√© le:			25/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLRendezVousOT.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,7 +56,7 @@ TDCLRendezVousOT::TDCLRendezVousOT(
 		TDCLOTTCP( inPort, inThreadsIntf, inMaxPipeCount ),
 		mNetServiceRef( nil )
 {
-	// Récupération du nom de la machine si nécessaire.
+	// R√©cup√©ration du nom de la machine si n√©cessaire.
 	const char* theMachineName;
 	if (inMachineName == nil)
 	{
@@ -148,7 +148,7 @@ TDCLRendezVousOT::DoStartListening( void )
 void
 TDCLRendezVousOT::DoStopListening( void )
 {
-	// On se désenregistre.
+	// On se d√©senregistre.
 	CFNetServiceCancel(mNetServiceRef);
 
 	TDCLOTTCP::DoStopListening();		

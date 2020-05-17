@@ -2,7 +2,7 @@
 // Fichier:			TDCLPkgDecoder.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			21/2/2004
+// Cr√©√© le:			21/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgDecoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -144,11 +144,11 @@ TDCLPkgDecoder::GetNextObject( void )
 	
 	if ((theLong & kTagMask) == kPointerTag)
 	{
-		// Félicitation, c'est un pointeur.
-		// Allons à l'objet.
+		// F√©licitation, c'est un pointeur.
+		// Allons √† l'objet.
 		theLong -= kPointerTag;
 		
-		// Un tel objet a-t-il déjà été encodé?
+		// Un tel objet a-t-il d√©j√† √©t√© encod√©?
 		theResult = GetNextObjectWithCookie( theLong );
 		
 		// Non.
@@ -158,7 +158,7 @@ TDCLPkgDecoder::GetNextObject( void )
 					mOriginOffset + theLong,
 					TDCLRandomAccessStream::kFromStart );
 			
-			// Entête.
+			// Ent√™te.
 			theLong = theStream->GetLong();
 			KUInt32 theNextLong = theStream->GetLong();
 			if (theNextLong != 0)
@@ -174,7 +174,7 @@ TDCLPkgDecoder::GetNextObject( void )
 			
 			if (theFlags & kObjSlotted)
 			{
-				// Retour arrière.
+				// Retour arri√®re.
 				theStream->SetCursor( -8, TDCLRandomAccessStream::kFromCursor );
 
 				// Tableau ou structure.
@@ -195,7 +195,7 @@ TDCLPkgDecoder::GetNextObject( void )
 				// Binaire ou symbole.
 				KUInt32 theClass = theStream->GetLong();
 				
-				// Retour arrière.
+				// Retour arri√®re.
 				theStream->SetCursor( -12, TDCLRandomAccessStream::kFromCursor );
 				if (theClass == kSymbolClass)
 				{
@@ -213,7 +213,7 @@ TDCLPkgDecoder::GetNextObject( void )
 				mMaxOffset = thePostObjectPosition;
 			}
 			
-			// On revient juste après le pointeur.
+			// On revient juste apr√®s le pointeur.
 			theStream->SetCursor(
 					theCurrentPosition,
 					TDCLRandomAccessStream::kFromStart );
@@ -226,7 +226,7 @@ TDCLPkgDecoder::GetNextObject( void )
 	{
 		mTopLevel = true;
 		
-		// Déplacement du flux à la fin.
+		// D√©placement du flux √† la fin.
 		if (mFourBytesPadding)
 		{
 			KSInt64 padding = mMaxOffset % 4;

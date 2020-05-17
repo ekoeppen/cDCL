@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockLink.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/08/2001
+// Cr√©√© le:			13/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockLink.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,12 +42,12 @@
 
 ///
 /// Classe pour un lien minimal.
-/// Les commandes du Newton qui sont gérées sont kDHello et kDDisconnect.
+/// Les commandes du Newton qui sont g√©r√©es sont kDHello et kDDisconnect.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockLink
 	:
@@ -55,29 +55,29 @@ class TDCLDockLink
 {
 public:
 	///
-	/// Icônes pour le paramètre inIcons du constructeur.
-	/// Un jour, nous pourrons mettre nos propres icônes dans le dialogue du dock.
+	/// Ic√¥nes pour le param√®tre inIcons du constructeur.
+	/// Un jour, nous pourrons mettre nos propres ic√¥nes dans le dialogue du dock.
 	///
-	/// La présence de l'icône signifie que l'utilisateur peut la cliquer
-	/// et donc qu'il faut gérer le protocole associé.
+	/// La pr√©sence de l'ic√¥ne signifie que l'utilisateur peut la cliquer
+	/// et donc qu'il faut g√©rer le protocole associ√©.
 	///
 	enum {
-		kNoIcon				= 0,	///< Pas d'icône
-		kBackupIcon			= 1,	///< Icône pour la sauvegarde.
-		kRestoreIcon		= 2,	///< Icône de restauration.
-		kInstallIcon		= 4,	///< Icône d'installation de paquet.
-		kImportIcon			= 8,	///< Icône d'importation de documents (sauf Works)
-	  	kSyncIcon			= 16,	///< Icône de synchronisation
-		kKeyboardIcon		= 32,	///< Icône pour utiliser le clavier
-		kAllIcons			= 63	///< Constante pour utiliser toutes les icônes.
+		kNoIcon				= 0,	///< Pas d'ic√¥ne
+		kBackupIcon			= 1,	///< Ic√¥ne pour la sauvegarde.
+		kRestoreIcon		= 2,	///< Ic√¥ne de restauration.
+		kInstallIcon		= 4,	///< Ic√¥ne d'installation de paquet.
+		kImportIcon			= 8,	///< Ic√¥ne d'importation de documents (sauf Works)
+	  	kSyncIcon			= 16,	///< Ic√¥ne de synchronisation
+		kKeyboardIcon		= 32,	///< Ic√¥ne pour utiliser le clavier
+		kAllIcons			= 63	///< Constante pour utiliser toutes les ic√¥nes.
 	};
 
 protected:
 	///
 	/// Constructeur unique.
 	///
-	/// \param inApplication	Référence sur l'application.	
-	/// \param inIcons			les icônes que l'on veut montrer dans
+	/// \param inApplication	R√©f√©rence sur l'application.	
+	/// \param inIcons			les ic√¥nes que l'on veut montrer dans
 	///							l'application Dock sur sur le Newton.
 	///
 	TDCLDockLink(
@@ -85,9 +85,9 @@ protected:
 			KUInt32 inIcons = kAllIcons );
 							
 	///
-	/// Méthode synchrone pour connecter le Newton.
+	/// M√©thode synchrone pour connecter le Newton.
 	///
-	/// Appelle d'abord TDCLLink::DoConnect pour le début du dialogue:
+	/// Appelle d'abord TDCLLink::DoConnect pour le d√©but du dialogue:
 	///
 	/// Desktop			Newton
 	///				<- kDRequestToDock
@@ -105,18 +105,18 @@ protected:
 	/// kDPassword ->
 	///				<- kDResult
 	///
-	/// \throws TDCLException si un problème est survenu.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual void		DoConnect( void );	
 
 	///
-	/// Méthode appelée pour gérer des commandes venant du Newton.
-	/// Cette classe ne gère que kDHello et kDDisconnect.
+	/// M√©thode appel√©e pour g√©rer des commandes venant du Newton.
+	/// Cette classe ne g√®re que kDHello et kDDisconnect.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée.
-	/// \return le prochain état du lien (l'état actuel étant kRunning),
-	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appelé
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
+	/// \return le prochain √©tat du lien (l'√©tat actuel √©tant kRunning),
+	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appel√©
 	///			dans la boucle)
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -125,21 +125,21 @@ protected:
 										Boolean* outProcessed );
 
 	///
-	///	Méthode pour récupérer le mot de passe.
-	/// Le mot de passe appartient au lien et n'est pas libéré par l'appelant.
-	/// La méthode par défaut fournit \c nil qui veut dire pas de mot de passe
-	/// (la chaîne vide). Au moment où cette méthode est appelée, l'identité du
-	/// Newton est connu (NewtonName a été reçu et les méthodes de TDCLLink
-	/// retournent des données cohérentes).
+	///	M√©thode pour r√©cup√©rer le mot de passe.
+	/// Le mot de passe appartient au lien et n'est pas lib√©r√© par l'appelant.
+	/// La m√©thode par d√©faut fournit \c nil qui veut dire pas de mot de passe
+	/// (la cha√Æne vide). Au moment o√π cette m√©thode est appel√©e, l'identit√© du
+	/// Newton est connu (NewtonName a √©t√© re√ßu et les m√©thodes de TDCLLink
+	/// retournent des donn√©es coh√©rentes).
 	///
 	/// \return le mot de passe ou \c nil
 	///
 	virtual const KUInt16*	GetPassword( void );
 	
 	///
-	/// Accesseur sur les icônes.
+	/// Accesseur sur les ic√¥nes.
 	///
-	/// \return les icônes pour la prochaine connexion.
+	/// \return les ic√¥nes pour la prochaine connexion.
 	///
 	inline KUInt32 GetIcons( void ) const
 		{
@@ -147,10 +147,10 @@ protected:
 		}
 	
 	///
-	/// Sélecteur sur les icônes.
+	/// S√©lecteur sur les ic√¥nes.
 	/// Remarque: ceci n'a d'effet que pour la prochaine connexion.
 	///
-	/// \param inNewIcons les nouvelles icônes pour la prochaine connexion.
+	/// \param inNewIcons les nouvelles ic√¥nes pour la prochaine connexion.
 	///
 	inline void SetIcons( KUInt32 inNewIcons )
 		{
@@ -158,8 +158,8 @@ protected:
 		}
 
 private:
-	/// \name Variables privées.
-	KUInt32				mIcons;	///< paramètre pour les icônes
+	/// \name Variables priv√©es.
+	KUInt32				mIcons;	///< param√®tre pour les ic√¥nes
 };
 
 #endif

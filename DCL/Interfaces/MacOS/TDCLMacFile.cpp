@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacFile.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			09/02/2003
+// CrÃ©Ã© le:			09/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacFile.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,7 +51,7 @@
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
 
 // ------------------------------------------------------------------------- //
-//  *ÊTDCLMacFile( TDCLMacFiles*, TDCLFSItemRef )
+//  *Â TDCLMacFile( TDCLMacFiles*, TDCLFSItemRef )
 // ------------------------------------------------------------------------- //
 TDCLMacFile::TDCLMacFile( TDCLMacFiles* inFilesIntf, TDCLFSItemRef inFolder )
 	:
@@ -63,7 +63,7 @@ TDCLMacFile::TDCLMacFile( TDCLMacFiles* inFilesIntf, TDCLFSItemRef inFolder )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊIsOpen( void ) const
+//  *Â IsOpen( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacFile::IsOpen( void ) const
@@ -72,7 +72,7 @@ TDCLMacFile::IsOpen( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊIsReadOnly( void ) const
+//  *Â IsReadOnly( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacFile::IsReadOnly( void ) const
@@ -81,7 +81,7 @@ TDCLMacFile::IsReadOnly( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊDoOpen( Boolean )
+//  *Â DoOpen( Boolean )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacFile::DoOpen( Boolean inReadOnly )
@@ -91,7 +91,7 @@ TDCLMacFile::DoOpen( Boolean inReadOnly )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊDoClose( void )
+//  *Â DoClose( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacFile::DoClose( void )
@@ -108,7 +108,7 @@ TDCLMacFile::DoSetMetaData(
 						OSType inCreator,
 						OSType inFileType )
 {
-	// Changement du type/crŽateur.
+	// Changement du type/crÃ©ateur.
 	FInfo theInfo;
 
 	OSErr theErr = ::FSpGetFInfo( inFSSpec, &theInfo );

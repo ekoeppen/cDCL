@@ -2,7 +2,7 @@
 // Fichier:			TDCLPkgPart.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			6/4/2004
+// Cr√©√© le:			6/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgPart.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -105,14 +105,14 @@ TDCLPkgPart::IsNOSPart( void ) const
 KUInt32
 TDCLPkgPart::GetSize( KUInt32 inOffset ) const
 {
-	// Faut-il ré-encoder?
+	// Faut-il r√©-encoder?
 	if (((inOffset != mOffset) && IsOffsetDependant())
 		|| (IsDirty()))
 	{
 		Encode( inOffset, &mBuffer, &mSize );
 	}
 
-	// Mise à jour du décalage.
+	// Mise √† jour du d√©calage.
 	mOffset = inOffset;
 
 	return mSize;
@@ -124,14 +124,14 @@ TDCLPkgPart::GetSize( KUInt32 inOffset ) const
 const void*
 TDCLPkgPart::GetBuffer( KUInt32 inOffset ) const
 {
-	// Faut-il ré-encoder?
+	// Faut-il r√©-encoder?
 	if (((inOffset != mOffset) && IsOffsetDependant())
 		|| (IsDirty()))
 	{
 		Encode( inOffset, &mBuffer, &mSize );
 	}
 	
-	// Mise à jour du décalage.
+	// Mise √† jour du d√©calage.
 	mOffset = inOffset;
 
 	return mBuffer;

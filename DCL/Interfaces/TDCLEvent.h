@@ -2,7 +2,7 @@
 // Fichier:			TDCLEvent.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			28/3/2003
+// Cr√©√© le:			28/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLEvent.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -40,29 +40,29 @@
 #include <DCL/Headers/DCLDefinitions.h>
 
 ///
-/// Classe pour les événements envoyés entre processus légers.
-/// Un processus léger dort normalement tant qu'un tel événement
-/// n'a pas été envoyé.
+/// Classe pour les √©v√©nements envoy√©s entre processus l√©gers.
+/// Un processus l√©ger dort normalement tant qu'un tel √©v√©nement
+/// n'a pas √©t√© envoy√©.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLEvent
 {
 public:
 	///
-	/// Types d'événements et masques pour filtrer avec WaitNextEvent.
+	/// Types d'√©v√©nements et masques pour filtrer avec WaitNextEvent.
 	///
 	enum EEventKind {
 		kServerEvent		= 0x00000001,
 		kServerEventMask	= kServerEvent,
 		
-		kLinkEvent			= 0x00000002,	///< Événements pour le lien (autre que les commandes)
-		kIdleAppCommand		= 0x00000004,	///< Messages traités lorsque
+		kLinkEvent			= 0x00000002,	///< √âv√©nements pour le lien (autre que les commandes)
+		kIdleAppCommand		= 0x00000004,	///< Messages trait√©s lorsque
 											///< le lien est inactif
-		kKbdAppCommand		= 0x00000008,	///< Messages traités lorsque
+		kKbdAppCommand		= 0x00000008,	///< Messages trait√©s lorsque
 											///< le lien est en mode clavier
 		kAnyAppCommandMask	= kIdleAppCommand | kKbdAppCommand,
 		kAnyLinkEventMask	= kLinkEvent | kAnyAppCommandMask,
@@ -71,50 +71,50 @@ public:
 	};
 
 	///
-	/// Identifiants pour les événements.	
-	/// Les identifiants en minuscule sont réservés.
+	/// Identifiants pour les √©v√©nements.	
+	/// Les identifiants en minuscule sont r√©serv√©s.
 	///
 	enum EEventID {
-		// Messages reçus par le serveur.
-		kStopServer			= FOUR_CHAR_CODE('stop'),	///< Il faut arrêter le serveur.
-		kWaitingConnection	= FOUR_CHAR_CODE('wait'),	///< Ayé, on attend le Newton (inData: l'objet TDCLCommLayer)
+		// Messages re√ßus par le serveur.
+		kStopServer			= FOUR_CHAR_CODE('stop'),	///< Il faut arr√™ter le serveur.
+		kWaitingConnection	= FOUR_CHAR_CODE('wait'),	///< Ay√©, on attend le Newton (inData: l'objet TDCLCommLayer)
 		kIncomingRequest	= FOUR_CHAR_CODE('toc '), 	///< Une connexion vient d'arriver (inData: l'objet TDCLCommLayer)
-		kDisconnected		= FOUR_CHAR_CODE('disc'), 	///< Le lien a été déconnecté (inData: l'objet TDCLLink)
+		kDisconnected		= FOUR_CHAR_CODE('disc'), 	///< Le lien a √©t√© d√©connect√© (inData: l'objet TDCLLink)
 
-		// Messages reçus par le lien.
-		kDisconnectLink		= FOUR_CHAR_CODE('disl'), 	///< Il faut déconnecter le lien.
-		kCloseLink			= FOUR_CHAR_CODE('clsl'),	///< Il faut fermer le lien (il a été déconnecté).
+		// Messages re√ßus par le lien.
+		kDisconnectLink		= FOUR_CHAR_CODE('disl'), 	///< Il faut d√©connecter le lien.
+		kCloseLink			= FOUR_CHAR_CODE('clsl'),	///< Il faut fermer le lien (il a √©t√© d√©connect√©).
 		kBytesAvailable		= FOUR_CHAR_CODE('byta'),	///< Des octets sont disponibles.
 
 		// Commandes
 		kInstallPackage 	= FOUR_CHAR_CODE('inst'),	///< Commande pour installer un paquet.
-										///< Le paramètre est un TFile.
-										///< L'objet doit être un TDCLAppCmdFile.
-		kStartUsingKeyboard = FOUR_CHAR_CODE('skbd'),	///< Commande pour commencer à utiliser le clavier.
-		kEndUsingKeyboard 	= FOUR_CHAR_CODE('ekbd'),	///< Commande pour arrêter d'utiliser le clavier.
-		kSendCharacter 		= FOUR_CHAR_CODE('kbdc'),	///< Commande pour envoyer un caractère.
-										///< Le paramètre est constitué de deux mots de 16 bits.
-										///< L'objet doit être un TDCLAppKbdChar
-		kSendString 		= FOUR_CHAR_CODE('kbds'),	///< Commande pour envoyer une chaîne.
-										///< Le paramètre est une chaîne.
-										///< L'objet doit être un TDCLAppKbdString
+										///< Le param√®tre est un TFile.
+										///< L'objet doit √™tre un TDCLAppCmdFile.
+		kStartUsingKeyboard = FOUR_CHAR_CODE('skbd'),	///< Commande pour commencer √† utiliser le clavier.
+		kEndUsingKeyboard 	= FOUR_CHAR_CODE('ekbd'),	///< Commande pour arr√™ter d'utiliser le clavier.
+		kSendCharacter 		= FOUR_CHAR_CODE('kbdc'),	///< Commande pour envoyer un caract√®re.
+										///< Le param√®tre est constitu√© de deux mots de 16 bits.
+										///< L'objet doit √™tre un TDCLAppKbdChar
+		kSendString 		= FOUR_CHAR_CODE('kbds'),	///< Commande pour envoyer une cha√Æne.
+										///< Le param√®tre est une cha√Æne.
+										///< L'objet doit √™tre un TDCLAppKbdString
 		kSynchronize	 	= FOUR_CHAR_CODE('sync')	///< Commande pour synchroniser.
 	};
 
 	///
-	/// Constructeur à partir d'un type, d'un ID et de données associées.
+	/// Constructeur √† partir d'un type, d'un ID et de donn√©es associ√©es.
 	///
 	/// \param inEventKind	type (pour filtrer avec WaitNextEvent)
-	/// \param inEventID	ID de l'événement
-	/// \param inData		données associées à l'événement.
+	/// \param inEventID	ID de l'√©v√©nement
+	/// \param inData		donn√©es associ√©es √† l'√©v√©nement.
 	///
 	TDCLEvent( EEventKind inEventKind, EEventID inEventID, void* inData = nil );
 
 	///
 	/// Constructeur par copie.
-	/// Ne copie pas les pointeurs sur les autres événements.
+	/// Ne copie pas les pointeurs sur les autres √©v√©nements.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLEvent( const TDCLEvent& inCopy );
 
@@ -124,9 +124,9 @@ public:
 	virtual ~TDCLEvent( void );
 
 	///
-	/// Accesseur sur le type de l'événement
+	/// Accesseur sur le type de l'√©v√©nement
 	///
-	/// \return	le type de cet événement
+	/// \return	le type de cet √©v√©nement
 	///
 	inline EEventKind	GetEventKind( void ) const
 		{
@@ -134,9 +134,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur l'ID de l'événement
+	/// Accesseur sur l'ID de l'√©v√©nement
 	///
-	/// \return	l'ID de cet événement
+	/// \return	l'ID de cet √©v√©nement
 	///
 	inline EEventID		GetEventID( void ) const
 		{
@@ -144,9 +144,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur les données de l'événement
+	/// Accesseur sur les donn√©es de l'√©v√©nement
 	///
-	/// \return	les données de cet événement
+	/// \return	les donn√©es de cet √©v√©nement
 	///
 	inline void*		GetEventData( void )
 		{
@@ -155,9 +155,9 @@ public:
 
 protected:
 	///
-	/// Sélecteur sur les données de l'événement
+	/// S√©lecteur sur les donn√©es de l'√©v√©nement
 	///
-	/// \param inEventData	nouvelles données de l'événement.
+	/// \param inEventData	nouvelles donn√©es de l'√©v√©nement.
 	///
 	inline void			SetEventData( void* inEventData )
 		{
@@ -167,14 +167,14 @@ protected:
 private:
 	///
 	/// La classe TDCLThread est une amie.
-	/// C'est elle qui gère la liste d'événements.
+	/// C'est elle qui g√®re la liste d'√©v√©nements.
 	///
 	friend class TDCLThread;
 	
 	///
-	/// Accesseur sur l'événement suivant.
+	/// Accesseur sur l'√©v√©nement suivant.
 	///
-	/// \return	le pointeur sur l'événement suivant
+	/// \return	le pointeur sur l'√©v√©nement suivant
 	///
 	inline TDCLEvent*	GetNextEvent( void ) const
 		{
@@ -182,9 +182,9 @@ private:
 		}
 
 	///
-	/// Sélecteur pour l'événement suivant.
+	/// S√©lecteur pour l'√©v√©nement suivant.
 	///
-	/// \param	inNextEvent	événement suivant.
+	/// \param	inNextEvent	√©v√©nement suivant.
 	///
 	inline void	SetNextEvent( TDCLEvent* inNextEvent )
 		{
@@ -192,17 +192,17 @@ private:
 		}
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLEvent& operator = ( const TDCLEvent& inCopy );
 
 	/// \name Variables
-	EEventKind		mEventKind;	///< Type de l'événement.
-	EEventID		mEventID;	///< ID de l'événement.
-	void*			mEventData;	///< Données associées à l'événement.
-	TDCLEvent*		mNextEvent;	///< Pointeur sur l'événement suivant
+	EEventKind		mEventKind;	///< Type de l'√©v√©nement.
+	EEventID		mEventID;	///< ID de l'√©v√©nement.
+	void*			mEventData;	///< Donn√©es associ√©es √† l'√©v√©nement.
+	TDCLEvent*		mNextEvent;	///< Pointeur sur l'√©v√©nement suivant
 };
 
 #endif

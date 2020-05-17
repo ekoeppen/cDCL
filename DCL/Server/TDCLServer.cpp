@@ -2,7 +2,7 @@
 // Fichier:			TDCLServer.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			14/1/2002
+// Cr√©√© le:			14/1/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLServer.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 #include <DCL/Interfaces/TDCLApplication.h>
 
 // ------------------------------------------------------------------------- //
-//  * TDCLServer( TDCLApplication* )
+//  *¬†TDCLServer( TDCLApplication* )
 // ------------------------------------------------------------------------- //
 TDCLServer::TDCLServer( TDCLApplication* inApplication )
 	:
@@ -59,7 +59,7 @@ TDCLServer::TDCLServer( TDCLApplication* inApplication )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ~TDCLServer( void )
+//  *¬†~TDCLServer( void )
 // ------------------------------------------------------------------------- //
 TDCLServer::~TDCLServer( void )
 {	
@@ -70,7 +70,7 @@ TDCLServer::~TDCLServer( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Start( void )
+//  *¬†Start( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::Start( void )
@@ -83,7 +83,7 @@ TDCLServer::Start( void )
 		mState = kStarting;
 
 		try {
-			// On lance le processus léger.
+			// On lance le processus l√©ger.
 			TDCLThread::Start();
 		} catch ( ... ) {
 			// The state is still kStopped.
@@ -95,12 +95,12 @@ TDCLServer::Start( void )
 		}
 	} // else: do nothing
 	
-	// Libération
+	// Lib√©ration
 	mStateMutex->Release();
 }
 
 // ------------------------------------------------------------------------- //
-//  * Stop( void )
+//  *¬†Stop( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::Stop( void )
@@ -114,12 +114,12 @@ TDCLServer::Stop( void )
 			new TDCLEvent( TDCLEvent::kServerEvent, TDCLEvent::kStopServer ) );
 	} // else: do nothing
 	
-	// Libération
+	// Lib√©ration
 	mStateMutex->Release();
 }
 
 // ------------------------------------------------------------------------- //
-//  * Kill( void )
+//  *¬†Kill( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::Kill( void )
@@ -148,12 +148,12 @@ TDCLServer::Kill( void )
 
 	} // else: do nothing
 	
-	// Libération
+	// Lib√©ration
 	mStateMutex->Release();
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetState( void )
+//  *¬†GetState( void )
 // ------------------------------------------------------------------------- //
 TDCLServer::EState
 TDCLServer::GetState( void )
@@ -165,14 +165,14 @@ TDCLServer::GetState( void )
 	
 	theResult = mState;
 	
-	// Libération
+	// Lib√©ration
 	mStateMutex->Release();
 	
 	return theResult;
 }
 
 // ------------------------------------------------------------------------- //
-//  * RequestPresent( TDCLCommLayer* )
+//  *¬†RequestPresent( TDCLCommLayer* )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
@@ -184,7 +184,7 @@ TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
 }
 
 // ------------------------------------------------------------------------- //
-//  * WaitingConnection( TDCLCommLayer* )
+//  *¬†WaitingConnection( TDCLCommLayer* )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
@@ -196,7 +196,7 @@ TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Disconnected( TDCLLink* )
+//  *¬†Disconnected( TDCLLink* )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::Disconnected( TDCLLink* inLink )
@@ -208,7 +208,7 @@ TDCLServer::Disconnected( TDCLLink* inLink )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Run( void )
+//  *¬†Run( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::Run( void )
@@ -226,25 +226,25 @@ TDCLServer::Run( void )
 		// Acquisition
 		mStateMutex->Acquire();
 
-		// Récupération.
+		// R√©cup√©ration.
 		theState = mState;
 		theNextState = theState;
 	
-		// Libération
+		// Lib√©ration
 		mStateMutex->Release();
 		
 		switch ( theState )
 		{
 			case kStarting:
-				// On dit aux sous-classes de commencer à écouter.
+				// On dit aux sous-classes de commencer √† √©couter.
 				DoStartListening();
 				
-				// L'étape suivante est d'attendre effectivement.
+				// L'√©tape suivante est d'attendre effectivement.
 				theNextState = kRunning;
 				break;
 
 			case kRunning:
-				// On attend un événement.
+				// On attend un √©v√©nement.
 				{
 					TSmartPtr< TDCLEvent > theNextEvent;
 					theNextEvent = WaitNextEvent(
@@ -256,7 +256,7 @@ TDCLServer::Run( void )
 						// On a dormi tout le temps.
 						DoIdle();
 					} else {
-						// Traitement de l'événement.
+						// Traitement de l'√©v√©nement.
 						Boolean processed = false;
 						theNextState = ProcessEvent(
 										theNextEvent.Get(), &processed );
@@ -284,25 +284,25 @@ TDCLServer::Run( void )
 			// Acquisition
 			mStateMutex->Acquire();
 
-			// Vérification que l'état n'a pas été changé pendant qu'on avait
-			// le dos tourné.
+			// V√©rification que l'√©tat n'a pas √©t√© chang√© pendant qu'on avait
+			// le dos tourn√©.
 			if (mState == theState)
 			{
 				// Changement
 				mState = theNextState;
 			}
 	
-			// Libération
+			// Lib√©ration
 			mStateMutex->Release();
 		}
 	}
 
-	// Indication à l'application que le serveur est fermé.
+	// Indication √† l'application que le serveur est ferm√©.
 	GetApplication()->ServerIsDown( this );
 }
 
 // ------------------------------------------------------------------------- //
-//  * HandleCommLayerException( TDCLCommLayer*, TDCLException* )
+//  *¬†HandleCommLayerException( TDCLCommLayer*, TDCLException* )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::HandleCommLayerException(
@@ -313,14 +313,14 @@ TDCLServer::HandleCommLayerException(
 }
 
 // ------------------------------------------------------------------------- //
-//  * ProcessEvent( TDCLEvent*, Boolean* )
+//  *¬†ProcessEvent( TDCLEvent*, Boolean* )
 // ------------------------------------------------------------------------- //
 TDCLServer::EState
 TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 {
 	EState theNextState = kRunning;
 	
-	// Quel est cet événement que nous avons reçu?
+	// Quel est cet √©v√©nement que nous avons re√ßu?
 	TDCLEvent::EEventID theEventID = inEvent->GetEventID();
 
 	switch( theEventID )
@@ -342,11 +342,11 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 
 		case TDCLEvent::kDisconnected:
 		{
-			// Un lien a été déconnecté.
+			// Un lien a √©t√© d√©connect√©.
 			TDCLLink* theLink = (TDCLLink*) (inEvent->GetEventData());
 			theNextState = HandleLinkDisconnection( theLink );
 			
-			// On indique à l'application que le lien est déconnecté.
+			// On indique √† l'application que le lien est d√©connect√©.
 			mApplication->Disconnected( theLink );
 			*outProcessed = true;
 		}
@@ -366,7 +366,7 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 }
 
 // ------------------------------------------------------------------------- //
-//  * HandleException( TDCLException* )
+//  *¬†HandleException( TDCLException* )
 // ------------------------------------------------------------------------- //
 void
 TDCLServer::HandleException( TDCLException* inException )
@@ -388,7 +388,7 @@ TDCLServer::HandleException( TDCLException* inException )
 			break;
 	}
 	
-	// Libération
+	// Lib√©ration
 	mStateMutex->Release();
 
 	mApplication->HandleServerException( this, inException );

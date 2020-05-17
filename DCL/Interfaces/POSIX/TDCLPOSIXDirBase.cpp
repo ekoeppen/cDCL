@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXDirBase.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			20/9/2003
+// Cr√©√© le:			20/9/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXDirBase.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -112,7 +112,7 @@ TDCLPOSIXDirBase::GetItemByName(
 {
 	TDCLFSItem* theItem = nil;
 	
-	// Recherche de l'élément.
+	// Recherche de l'√©l√©ment.
 	if (mDirRef)
 	{
 		// Conversion du nom en ISO-8859-1.
@@ -140,8 +140,8 @@ TDCLPOSIXDirBase::GetItemByName(
 				thePath[dirPathLength] = '/';
 				(void) ::memcpy( &thePath[dirPathLength + 1], theName, theNameLength + 1 );
 
-				// Determinons le type de cet élément, avec stat
-				// (pour résoudre le lien éventuel, surtout d_type est une extension BSD).
+				// Determinons le type de cet √©l√©ment, avec stat
+				// (pour r√©soudre le lien √©ventuel, surtout d_type est une extension BSD).
 				struct stat theFileInfos;
 				int statResult;
 				if (((TDCLPOSIXFiles*) GetFilesIntf())->GetFollowSymLinks())
@@ -161,7 +161,7 @@ TDCLPOSIXDirBase::GetItemByName(
 							throw DCLPlatformDoesntExist( theErr );
 						
 						case EACCES:
-							// En cas de problème de droits, on va dire que l'élément
+							// En cas de probl√®me de droits, on va dire que l'√©l√©ment
 							// n'existe pas.
 							break;
 						
@@ -183,14 +183,14 @@ TDCLPOSIXDirBase::GetItemByName(
 					}
 				}
 				
-				// Libération du chemin.
+				// Lib√©ration du chemin.
 				::free( thePath );
 				
 				break;
 			}
 		} while ( true );
 
-		// Libération du nom.
+		// Lib√©ration du nom.
 		::free( theName );
 	}
 		
@@ -209,7 +209,7 @@ TDCLPOSIXDirBase::CreateFile( const KUInt16* inName )
 	UUTF16CStr::ToISO88591( inName, (KUInt8*) theName, theNameLength );
 	theNameLength--;
 	
-	// Vérification qu'on ne crée pas de fichier .. ou .
+	// V√©rification qu'on ne cr√©e pas de fichier .. ou .
 	if ((::strcmp( theName, ".." ) == 0)
 		|| (::strcmp( theName, "." ) == 0))
 	{
@@ -223,7 +223,7 @@ TDCLPOSIXDirBase::CreateFile( const KUInt16* inName )
 	thePath[dirPathLength] = '/';
 	(void) ::memcpy( &thePath[dirPathLength + 1], theName, theNameLength + 1 );
 
-	// Libération du nom.
+	// Lib√©ration du nom.
 	::free( theName );
 
 	TDCLFSItemRef theResult =
@@ -232,7 +232,7 @@ TDCLPOSIXDirBase::CreateFile( const KUInt16* inName )
 							TDCLFSItemRef( this ),
 							thePath ));
 	
-	// Libération du chemin.
+	// Lib√©ration du chemin.
 	::free( thePath );
 
 	((TDCLPOSIXFile*) ((TDCLFile*) theResult))->Create();
@@ -252,7 +252,7 @@ TDCLPOSIXDirBase::CreateFolder( const KUInt16 *inName )
 	UUTF16CStr::ToISO88591( inName, (KUInt8*) theName, theNameLength );
 	theNameLength--;
 
-	// Vérification qu'on ne crée pas de dossier .. ou .
+	// V√©rification qu'on ne cr√©e pas de dossier .. ou .
 	if ((::strcmp( theName, ".." ) == 0)
 		|| (::strcmp( theName, "." ) == 0))
 	{
@@ -266,10 +266,10 @@ TDCLPOSIXDirBase::CreateFolder( const KUInt16 *inName )
 	thePath[dirPathLength] = '/';
 	(void) ::memcpy( &thePath[dirPathLength + 1], theName, theNameLength + 1 );
 
-	// Libération du nom.
+	// Lib√©ration du nom.
 	::free( theName );
 
-	// Création du répertoire.
+	// Cr√©ation du r√©pertoire.
 	if (::mkdir( thePath, 0777 ))
 	{
 		int theErr = errno;
@@ -293,7 +293,7 @@ TDCLPOSIXDirBase::CreateFolder( const KUInt16 *inName )
 							TDCLFSItemRef( this ),
 							thePath ));
 	
-	// Libération du chemin.
+	// Lib√©ration du chemin.
 	::free( thePath );
 	
 	return theResult;
@@ -318,7 +318,7 @@ TDCLPOSIXDirBase::OpenDir( void )
 				throw DCLPlatformDoesntExist( theErr );
 				
 			case EACCES:
-				// En cas de problème de droits, on va dire que le répertoire
+				// En cas de probl√®me de droits, on va dire que le r√©pertoire
 				// est vide.
 				break;
 				
@@ -336,7 +336,7 @@ TDCLPOSIXDirBase::CountElements( void )
 {
 	KUInt32 nbElements = 0;
 
-	// Si le répertoire est protégé, on dit qu'il est vide.
+	// Si le r√©pertoire est prot√©g√©, on dit qu'il est vide.
 	if (mDirRef)
 	{
 		::rewinddir( mDirRef );
@@ -366,7 +366,7 @@ TDCLPOSIXDirBase::CountElements( void )
 KUInt16*
 TDCLPOSIXDirBase::MakeName( void ) const
 {
-	// Copie du chemin (pour POSIX, basename ne prend pas forcément un
+	// Copie du chemin (pour POSIX, basename ne prend pas forc√©ment un
 	// const char*).
 	size_t theLength = ::strlen( mPath ) + 1;
 	char* thePath = (char*) ::malloc( theLength );
@@ -374,14 +374,14 @@ TDCLPOSIXDirBase::MakeName( void ) const
 
 	char* theBaseName = ::basename( thePath );
 	
-	// Création de la chaîne UTF-16.
+	// Cr√©ation de la cha√Æne UTF-16.
 	theLength = ::strlen( theBaseName ) + 1;
 	KUInt16* theResult =
 		(KUInt16*) ::malloc( theLength * sizeof( KUInt16 ) );
-	// En fait, je n'ai aucune idée de l'encodage du nom.
+	// En fait, je n'ai aucune id√©e de l'encodage du nom.
 	UUTF16CStr::FromISO88591( (const KUInt8*) theBaseName, theResult, theLength );
 		
-	// Libération du chemin.
+	// Lib√©ration du chemin.
 	::free( thePath );
 	
 	return theResult;	
@@ -427,8 +427,8 @@ TDCLPOSIXDirBase::GetItems( void )
 				thePath[dirPathLength] = '/';
 				(void) ::memcpy( &thePath[dirPathLength + 1], theEntry->d_name, theNameLength + 1 );
 
-				// Determinons le type de cet élément, avec stat
-				// (pour résoudre le lien éventuel, surtout d_type est une extension BSD).
+				// Determinons le type de cet √©l√©ment, avec stat
+				// (pour r√©soudre le lien √©ventuel, surtout d_type est une extension BSD).
 				struct stat theFileInfos;
 				int statResult;
 				if (((TDCLPOSIXFiles*) GetFilesIntf())->GetFollowSymLinks())
@@ -448,7 +448,7 @@ TDCLPOSIXDirBase::GetItems( void )
 							throw DCLPlatformDoesntExist( theErr );
 						
 						case EACCES:
-							// En cas de problème de droits, on n'ajoute pas l'élément à la liste.
+							// En cas de probl√®me de droits, on n'ajoute pas l'√©l√©ment √† la liste.
 							break;
 						
 						default:
@@ -472,15 +472,15 @@ TDCLPOSIXDirBase::GetItems( void )
 					
 					if (theItem)
 					{
-						// Ajout de l'élément
+						// Ajout de l'√©l√©ment
 						new (&theResult[indexItems]) TDCLFSItemRef( theItem );
 					
-						// Élément suivant.
+						// √âl√©ment suivant.
 						indexItems++;
 					}
 				} // if (statResult != 0)
 				
-				// Libération du chemin.
+				// Lib√©ration du chemin.
 				::free( thePath );
 			} // if ((::strcmp( theEntry->d_name ...
 		} // while (true)

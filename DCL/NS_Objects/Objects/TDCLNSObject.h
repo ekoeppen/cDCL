@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSObject.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSObject.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -49,14 +49,14 @@ class TDCLNSWeakRef;
 class TDCLNSRef;
 
 ///
-/// Classe racine pour les objets NewtonScript qui ne sont pas des immédiats.
+/// Classe racine pour les objets NewtonScript qui ne sont pas des imm√©diats.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
-/// \todo	gérer les références faibles.
+/// \todo	g√©rer les r√©f√©rences faibles.
 ///
 class TDCLNSObject
 			:
@@ -67,24 +67,24 @@ class TDCLNSObject
 
 public:
 	///
-	/// Ajoute une référence faible.
-	/// Attention: ne pas ajouter une référence deux fois.
+	/// Ajoute une r√©f√©rence faible.
+	/// Attention: ne pas ajouter une r√©f√©rence deux fois.
 	///
-	/// \param inWeakRef	référence faible à ajouter.
+	/// \param inWeakRef	r√©f√©rence faible √† ajouter.
 	///
 	void AddWeakRef( TDCLNSWeakRef* inWeakRef );
 	
 	///
-	/// Supprime une référence faible.
-	/// Attention: ne pas supprimer une référence qui n'était pas déjà là.
+	/// Supprime une r√©f√©rence faible.
+	/// Attention: ne pas supprimer une r√©f√©rence qui n'√©tait pas d√©j√† l√†.
 	///
-	/// \param inWeakRef	référence faible à supprimer.
+	/// \param inWeakRef	r√©f√©rence faible √† supprimer.
 	///
 	void RemoveWeakRef( TDCLNSWeakRef* inWeakRef );
 
 	///
-	/// Crée une copie de surface de l'objet.
-	/// Les sous-classes doivent dériver cette méthode et appeler leur
+	/// Cr√©e une copie de surface de l'objet.
+	/// Les sous-classes doivent d√©river cette m√©thode et appeler leur
 	/// constructeur par copie.
 	///
 	/// \return une copie de surface de this.
@@ -94,68 +94,68 @@ public:
 	/// \name Type de l'objet
 
 	///
-	/// Détermine si cet objet est une structure.
+	/// D√©termine si cet objet est une structure.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsFrame( void ) const;
 
 	///
-	/// Détermine si cet objet est une fonction.
+	/// D√©termine si cet objet est une fonction.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsFunction( void ) const;
 
 	///
-	/// Détermine si cet objet est un symbole.
+	/// D√©termine si cet objet est un symbole.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsSymbol( void ) const;
 
 	///
-	/// Détermine si cet objet est un tableau.
+	/// D√©termine si cet objet est un tableau.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsArray( void ) const;
 
 	///
-	/// Détermine si cet objet est un binaire.
+	/// D√©termine si cet objet est un binaire.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsBinary( void ) const;
 
 	///
-	/// Détermine si cet objet est une chaîne.
+	/// D√©termine si cet objet est une cha√Æne.
 	///
 	/// \return \c false
 	///
 	virtual Boolean IsString( void ) const;
 
 	///
-	/// Détermine la classe de cet objet.
-	/// Ce n'est pas forcément un symbole.
+	/// D√©termine la classe de cet objet.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \return une référence vers la classe de cet objet.
+	/// \return une r√©f√©rence vers la classe de cet objet.
 	///
 	virtual TDCLNSRef ClassOf( void ) const = 0;
 
 	///
-	/// Détermine la classe primaire de cet objet.
-	/// Il s'agit forcément d'un symbole.
+	/// D√©termine la classe primaire de cet objet.
+	/// Il s'agit forc√©ment d'un symbole.
 	///
-	/// \return une référence vers la classe primaire de cet objet.
+	/// \return une r√©f√©rence vers la classe primaire de cet objet.
 	///
 	virtual TDCLNSRef PrimClassOf( void ) const = 0;
 
 	///
 	/// Change la classe de cet objet.
-	/// Ce n'est pas forcément un symbole.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \param	inClass un objet qui sert de nouvelle classe à cet objet.
+	/// \param	inClass un objet qui sert de nouvelle classe √† cet objet.
 	/// \throws TDCLNSException si une erreur est survenue.
 	///
 	virtual void SetClass( const TDCLNSRef& inClass ) = 0;

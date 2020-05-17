@@ -2,7 +2,7 @@
 // Fichier:			TDCLHammerPipe.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/01/2002
+// Cr√©√© le:			27/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,14 +20,14 @@
 //
 // The Original Code is TDCLHammerPipe.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
-// Filip Zawadiak and Nicolas Zinovieff. Portions created by the Initial 
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k,
+// Filip Zawadiak and Nicolas Zinovieff. Portions created by the Initial
 // Developers are Copyright (C) 1998-2004 the Initial Developers. All Rights
 // Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Filip Zawadiak <philz@vyx.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
@@ -87,20 +87,20 @@ public:
 	enum {
 		kDefaultOutputMaxBufferSize	= 253,	///< 256 - 3.
 		///< Le code de microcom donne 64+5. Philz donne 2K
-		///< cependant il n'a pas de paquets plus gros que 256 (il tronçonne
-		///< le paquet Newton à installer en morceaux de 128 octets). Le Newton
-		///< n'aime pas mes paquets de 299 octets, en revanche, ça marche
+		///< cependant il n'a pas de paquets plus gros que 256 (il tron√ßonne
+		///< le paquet Newton √† installer en morceaux de 128 octets). Le Newton
+		///< n'aime pas mes paquets de 299 octets, en revanche, √ßa marche
 		///< avec 253+3.
 		kInputFrameIncrement		= 1024	///< 1 KB
 	};
 
 	///
-	/// Constructeur à partir d'une couche de communication et d'une taille
-	/// maximale de mémoire tampon de sortie.
+	/// Constructeur √† partir d'une couche de communication et d'une taille
+	/// maximale de m√©moire tampon de sortie.
 	///
 	/// \param inSubPipe				couche de communication sur laquelle
 	///									faire de la compression MNP.
-	/// \param inOutputMaxBufferSize	taille maximale de la mémoire tampon
+	/// \param inOutputMaxBufferSize	taille maximale de la m√©moire tampon
 	///									de sortie.
 	///
 	TDCLHammerPipe(
@@ -112,69 +112,69 @@ public:
 	///
 	virtual ~TDCLHammerPipe( void );
 
-	/// \name interface entrée/sortie
+	/// \name interface entr√©e/sortie
 
 	///
 	/// Lit des octets.
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que 
-	///						l'exception ne soit lancée si un problème est
+	/// \param outBuffer	m√©moire tampon pour les octets lus.
+	/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+	///						Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 	///
 	virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 
 	///
 	/// Read one frame only
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que 
-	///						l'exception ne soit lancée si un problème est
+	/// \param outBuffer	m√©moire tampon pour les octets lus.
+	/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+	///						Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 	///
 	virtual	void		ReadFrames( void* outBuffer, KUInt32* ioCount, bool inStopAfterOne );
 
 	///
 	/// Ecrit des octets.
 	///
-	/// \param inBuffer		mémoire tampon pour les octets à écrire.
-	/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-	///						sortie. Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
+	/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+	/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+	///						sortie. Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 
 	///
-	/// Vide la mémoire tampon de sortie.
+	/// Vide la m√©moire tampon de sortie.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		FlushOutput( void );
 
 	///
-	/// Détermine si des octets sont disponibles dans la mémoire tampon d'entrée.
+	/// D√©termine si des octets sont disponibles dans la m√©moire tampon d'entr√©e.
 	///
 	/// \return \c true s'il y a des octets disponibles, \c false sinon.
 	///
 	virtual	Boolean		BytesAvailable( void );
 
 	///
-	/// Déconnecte le canal de communication avec le client.
+	/// D√©connecte le canal de communication avec le client.
 	///
 	virtual	void		Disconnect( void );
 
 	///
-	/// Méthode appelée par le lien pour dire qu'il est connecté
-	/// via cette connexion. Cette méthode est appelée juste avant
-	/// que des données soient échangées.
+	/// M√©thode appel√©e par le lien pour dire qu'il est connect√©
+	/// via cette connexion. Cette m√©thode est appel√©e juste avant
+	/// que des donn√©es soient √©chang√©es.
 	///
-	/// Envoie l'entête MNP (et reçoit celui du Newton).
+	/// Envoie l'ent√™te MNP (et re√ßoit celui du Newton).
 	///
 	/// \return l'interface de communication.
 	///
@@ -184,85 +184,85 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLHammerPipe( const TDCLHammerPipe& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLHammerPipe& operator = ( const TDCLHammerPipe& inCopy );
-	
+
 	///
 	/// Lecture d'une structure MNP depuis le Newton.
 	///
-	/// \param outFrame	un pointeur, alloué avec malloc, sur les données d'une
-	///					structure MNP décodées.
-	/// \param outSize	taille des données.
-	/// \throws TDCLIOException si un problème est survenu.
+	/// \param outFrame	un pointeur, allou√© avec malloc, sur les donn√©es d'une
+	///					structure MNP d√©cod√©es.
+	/// \param outSize	taille des donn√©es.
+	/// \throws TDCLIOException si un probl√®me est survenu.
 	///
 	void	ReadFrame( KUInt8** outFrame, KUInt32* outSize );
 
 	///
-	/// Écriture d'une structure vers le Newton.
+	/// √âcriture d'une structure vers le Newton.
 	///
-	/// \param inFrame	pointeur vers les données d'une structure MNP.
-	/// \param inSize	nombre d'octets des données.
-	/// \throws TDCLIOException si un problème est survenu.
+	/// \param inFrame	pointeur vers les donn√©es d'une structure MNP.
+	/// \param inSize	nombre d'octets des donn√©es.
+	/// \throws TDCLIOException si un probl√®me est survenu.
 	///
 	void	WriteFrame( const KUInt8* inFrame, KUInt32 inSize );
 
 	///
-	/// Reçoit des données du Newton.
+	/// Re√ßoit des donn√©es du Newton.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		ReceiveData( void );
 
 	///
-	/// Envoie des données au Newton.
+	/// Envoie des donn√©es au Newton.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		SendData( void );
 
 	///
-	/// Met à jour la somme de contrôle.
+	/// Met √† jour la somme de contr√¥le.
 	///
-	/// \param inCRC		l'ancienne somme de contrôle.
-	/// \param inByte		octet dont on veut la somme de contrôle.
-	/// \return la nouvelle somme de contrôle.
+	/// \param inCRC		l'ancienne somme de contr√¥le.
+	/// \param inByte		octet dont on veut la somme de contr√¥le.
+	/// \return la nouvelle somme de contr√¥le.
 	///
 	KUInt16	UpdateCRC16( KUInt16 inCRC, KUInt8 inByte );
 
 	/// \name Constantes
 
 	static const KUInt16	kCRC16Table[256];	///< Table pour le calcul de la
-											///< somme de contrôle.
-	static const KUInt8 SYN;	///< Caractère SYN dans la transmission MNP.
-	static const KUInt8 DLE;	///< Caractère DLE dans la transmission MNP.
-	static const KUInt8 STX;	///< Caractère STX dans la transmission MNP.
-	static const KUInt8 ETX;	///< Caractère ETX dans la transmission MNP.
+											///< somme de contr√¥le.
+	static const KUInt8 SYN;	///< Caract√®re SYN dans la transmission MNP.
+	static const KUInt8 DLE;	///< Caract√®re DLE dans la transmission MNP.
+	static const KUInt8 STX;	///< Caract√®re STX dans la transmission MNP.
+	static const KUInt8 ETX;	///< Caract√®re ETX dans la transmission MNP.
 	static const KUInt8 LA;	///< Structure LA
 	static const KUInt8 LT;	///< Structure LT
-	static const KUInt8 kMNPHeader[24];		///< Entête MNP
-	static const KUInt8 kMNPFooter[8];		///< Série d'octets envoyés lors
-											///< de la déconnexion.
+	static const KUInt8 kMNPHeader[24];		///< Ent√™te MNP
+	static const KUInt8 kMNPFooter[8];		///< S√©rie d'octets envoy√©s lors
+											///< de la d√©connexion.
 	static const KUInt8 kDefaultCredits;
 
 	/// \name Variables
 
-	KUInt8*	mInputBuffer;			///< Mémoire tampon d'entrée.
-	KUInt32	mInputBufferCapacity;	///< Contenance de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferSize;		///< Taille de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferCrsr;		///< Curseur sur la mémoire tampon d'entrée.
-	KUInt8*	mOutputBuffer;			///< Mémoire tampon de sortie
-	KUInt32	mOutputBufferCapacity;	///< Taille maximale de la mémoire tampon de sortie.
-	KUInt32	mOutputBufferCrsr;		///< Index des prochains octets dans la mémoire
+	KUInt8*	mInputBuffer;			///< M√©moire tampon d'entr√©e.
+	KUInt32	mInputBufferCapacity;	///< Contenance de la m√©moire tampon d'entr√©e.
+	KUInt32	mInputBufferSize;		///< Taille de la m√©moire tampon d'entr√©e.
+	KUInt32	mInputBufferCrsr;		///< Curseur sur la m√©moire tampon d'entr√©e.
+	KUInt8*	mOutputBuffer;			///< M√©moire tampon de sortie
+	KUInt32	mOutputBufferCapacity;	///< Taille maximale de la m√©moire tampon de sortie.
+	KUInt32	mOutputBufferCrsr;		///< Index des prochains octets dans la m√©moire
 									///< tampon de sortie.
-	KUInt8	mInputPacketIndex;		///< Indice du paquet d'entrée.
+	KUInt8	mInputPacketIndex;		///< Indice du paquet d'entr√©e.
 	KUInt8	mOutputPacketIndex;		///< Indice du paquet de sortie.
 };
 
