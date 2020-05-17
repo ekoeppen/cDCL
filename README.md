@@ -19,7 +19,7 @@ authors are:
   - Paul Guyot https://github.com/pguyot
   - Nicolas Zinovieff https://github.com/krugazor
   - Michael Vacìk https://www.linkedin.com/in/mvacik
-  
+
 This version also includes changes by:
 
   - Eckhart Köppen https://github.com/ekoeppen
