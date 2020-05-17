@@ -600,7 +600,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	::free( theDirectoryData );
 
 	KUInt32 theRelocationSize = 0;
-	if (mPackageFlags && kDirRelocationFlag)
+	if (mPackageFlags & kDirRelocationFlag)
 	{
 		KUInt8* theRelocationData;
 		(void) inStream->GetLong(); // reserved
