@@ -250,15 +250,21 @@
 		#if (defined (__ppc__) || defined (__ppc64__))
 			#define TARGET_OS_OPENSTEP_PPC 1
 			#define TARGET_OS_OPENSTEP_I386 0
+			#define TARGET_OS_OPENSTEP_AMD64 0
 		#elif defined (__i386__)
 			#define TARGET_OS_OPENSTEP_PPC 0
 			#define TARGET_OS_OPENSTEP_I386 1
+			#define TARGET_OS_OPENSTEP_AMD64 0
+		#elif defined (__amd64__)
+			#define TARGET_OS_OPENSTEP_PPC 0
+			#define TARGET_OS_OPENSTEP_I386 0
+			#define TARGET_OS_OPENSTEP_AMD64 1
 		#else
 			#error "Unknown MacOS X architecture"
 		#endif
 
 		// The superior x86 is 32 bits.
-		#if defined(__ppc64__)
+		#if defined(__ppc64__) || defined (__amd64__)
 			#define KUIntPtr	KUInt64
 		#else
 			#define KUIntPtr	KUInt32
