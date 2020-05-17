@@ -8,8 +8,9 @@ This release of the DCL should be compiled with cmake.
 
     mkdir build
     cd build
-    cmake ..
-    make
+    cmake .. -DCMAKE_BUILD_TYPE=Debug
+    cmake --build .
+    ctest . -C Debug
 
 ## License and authors ##
 
