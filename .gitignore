@@ -4,3 +4,5 @@ GTAGS
 *.lo
 *.lo
 *.a
+.DS_Store
+build
