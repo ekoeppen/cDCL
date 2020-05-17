@@ -3,12 +3,12 @@
 // Projet:			DCL - NSOFtoXML
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			2/1/2004
+// Cr√©√© le:			2/1/2004
 // Tabulation:		4 espaces
 // 
-// Copyright:		© 2004 by Paul Guyot.
-// 					Tous droits réservés pour tous pays.
-// Licence:			Licence Réflexive Kallisys
+// Copyright:		¬© 2004 by Paul Guyot.
+// 					Tous droits r√©serv√©s pour tous pays.
+// Licence:			Licence R√©flexive Kallisys
 // 					http://www.kallisys.org/reflexive/
 // ===========
 // $Id: NSOFtoXML.cp,v 1.3 2004/01/07 06:49:33 paul Exp $
