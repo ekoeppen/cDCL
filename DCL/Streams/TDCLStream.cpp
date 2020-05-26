@@ -124,9 +124,91 @@ TDCLStream::GetCString( void )
 			}
 
 			theResult[ strLength ] = theChar;
-
+            strLength++;
 		} while (theChar != '\0');
 
+	} catch ( ... ) {
+		if (theResult)
+		{
+			::free( theResult );
+		}
+
+		throw;	// Rethrow
+	}
+
+	return theResult;
+}
+
+// ------------------------------------------------------------------------- //
+//  * GetLine( void )
+// ------------------------------------------------------------------------- //
+KUInt8*
+TDCLStream::GetLine( void )
+{
+	size_t bufferLength = 10; 	// Taille de la mémoire tampon
+	size_t strLength = 0;		// Taille de la chaîne
+	KUInt8* theResult = (KUInt8*) ::malloc( bufferLength );
+
+	if (theResult == nil)
+	{
+		throw DCLMemError;
+	}
+
+	try {
+		KUInt8 theChar = 0;
+		KUInt32 count = 1;
+
+		do {
+			Read( &theChar, &count );
+
+			if (count == 0)	// EOF.
+			{
+			    if (strLength == 0)
+			    {
+                    ::free(theResult);
+                    theResult = nil;
+			    }
+			    break;
+			}
+
+			// Add this byte.
+			if (strLength == bufferLength)
+			{
+				// Increase the buffer size with realloc.
+				bufferLength += 10;
+				theResult = (KUInt8*)  ::realloc( theResult, bufferLength );
+			}
+
+			theResult[ strLength ] = theChar;
+			strLength++;
+		} while (theChar != '\n' && theChar != '\r');
+		if (theResult)
+		{
+            size_t targetLength = strLength + 1;
+            if (targetLength < bufferLength)
+            {
+                // Increase the buffer size with realloc.
+                bufferLength = targetLength;
+                theResult = (KUInt8*)  ::realloc( theResult, targetLength );
+            }
+            if (theChar == '\r')
+            {
+                theResult[ strLength - 1 ] = '\n';
+            }
+            theResult[ strLength ] = 0;
+            if (theChar == '\r')
+            {
+                try {
+                    theChar = PeekByte();
+                    if (theChar == '\n')
+                    {
+                        (void) GetByte();
+                    }
+                } catch (TDCLEOFException& ex) {
+                    // OK.
+                }
+            }
+		}
 	} catch ( ... ) {
 		if (theResult)
 		{

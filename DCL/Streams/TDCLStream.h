@@ -119,6 +119,19 @@ public:
 		virtual	KUInt8*		GetCString( void );
 
 		///
+		/// Lit des caractères 8 bits et s'arrête dès qu'une fin de ligne
+		/// est trouvée (CR, LF ou CRLF). Met une fin de ligne standard "\n"
+		/// à la fin de la ligne, sauf si EOF est trouvé, ainsi qu'un nul.
+		///
+		/// La chaîne est allouée avec malloc.
+		///
+		/// \return la chaîne de caractère allouée avec malloc ou NULL si EOF
+		/// est rencontré.
+		/// \throws TDCLIOException	si un problème est survenu
+		///
+		virtual	KUInt8*		GetLine( void );
+
+		///
 		/// Ecrit une chaîne de caractères 8 bits au format C (terminée par un
 		/// caractère nul).
 		///
