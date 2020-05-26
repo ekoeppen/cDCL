@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (dcl)
 
+set(CMAKE_CXX_STANDARD 11)
+
 # build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
 set(default_build_type "Release")
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
