@@ -403,6 +403,7 @@ K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
 
+add_subdirectory (Sample_Code/ToolchainUtils)
 add_subdirectory (Sample_Code/NSOFtoXML)
 add_subdirectory (Sample_Code/PackageUtils)
 add_subdirectory (Tests)
