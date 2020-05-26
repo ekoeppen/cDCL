@@ -132,6 +132,38 @@ public:
 			return mOffset;
 		}
 
+	///
+	/// Détermine le nombre de pages de relocation.
+	/// Chaque page fait 1Ko (0x400). Le nombre final de pages doit être
+	/// inférieur ou égal au résultat de cette fonction.
+	///
+	/// \return un estimateur du nombre de pages de relocation.
+	///
+	virtual KUInt32     GetRelocationPageCountEstimate( void ) const
+	    {
+	        return 0;
+	    }
+
+	///
+	/// Accesseur sur les relocations.
+	///
+	/// \return  le nombre de relocations
+	///
+	virtual KUInt32 GetRelocationCount( void ) const
+        {
+            return 0;
+        }
+
+	///
+	/// Accesseur sur les relocations.
+	///
+	/// \return  les relocations.
+	///
+	virtual const KUInt32* GetRelocations( void ) const
+        {
+            return NULL;
+	    }
+
 protected:
 	///
 	/// Détermine la taille de la partie afin de la décoder.

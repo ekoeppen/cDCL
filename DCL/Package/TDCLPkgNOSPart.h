@@ -38,7 +38,7 @@
 #define _TDCLPKGNOSPART_H
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include <DCL/Package/TDCLPkgPart.h>
+#include <DCL/Package/TDCLPkgRelocatablePart.h>
 
 // DCL
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
@@ -58,7 +58,7 @@
 ///
 class TDCLPkgNOSPart
 	:
-		public TDCLPkgPart
+		public TDCLPkgRelocatablePart
 {
 public:
 	///

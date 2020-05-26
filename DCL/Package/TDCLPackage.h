@@ -40,6 +40,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 
 class TDCLFile;
+class TDCLRandomAccessStream;
 class TDCLStream;
 class TDCLPkgPart;
 
@@ -251,6 +252,27 @@ public:
 	};
 
 	///
+	/// Structure pour les données de relocation pour une page donnée.
+	///
+	struct SPackageRelocationSet {
+	    KUInt16         fPageNumber;
+	    KUInt16         fOffsetCount;
+	    KUInt8          fOffsets[256];
+	};
+
+	///
+	/// Structure pour les données de relocation
+	///
+	struct SPackageRelocationData {
+	    KUInt32         fReserved;
+	    KUInt32         fRelocationSize;
+	    KUInt32         fPageSize;
+	    KUInt32         fNumEntries;
+	    KUInt32         fBaseAddress;
+	    SPackageRelocationSet    fRelocationSets[];
+	};
+
+	///
 	/// Constructeur par défaut.
 	/// Crée un paquet vide.
 	///
@@ -304,6 +326,13 @@ public:
 	/// \return \c true si le fichier semble être un paquet, \c false sinon.
 	///
 	static Boolean IsPackage( TDCLFile* inFile );
+
+	///
+	/// Compile et écrit le paquet sur un flux.
+	///
+	/// \param inOutStream	flux de sortie.
+	///
+	void	WriteToStream( TDCLRandomAccessStream* inOutStream ) const;
 
 	///
 	/// Compile et écrit le paquet sur un flux.
@@ -444,6 +473,16 @@ public:
 		}
 
 	///
+	/// Accesseur sur le drapeau kDirRelocationFlag
+	///
+	/// \return \c true si le drapeau kDirRelocationFlag est à un.
+	///
+	inline Boolean		GetRelocation( void ) const
+		{
+			return ((GetPackageFlags() & kDirRelocationFlag) != 0);
+		}
+
+	///
 	/// Accesseur sur le drapeau kDirUseFasterCompressionFlag
 	///
 	/// \return \c true si le drapeau kDirUseFasterCompressionFlag est à un.
@@ -561,6 +600,16 @@ public:
 	/// \param inNameStr	nouveau nom (copié).
 	///
 	void			SetPackageName( const char* inNameStr );
+
+	///
+	/// Accesseur sur les données de relocation [const]
+	///
+	/// \return les données relocation ou \c NULL si absente.
+	///
+	inline const SPackageRelocationData*	GetRelocationData( void ) const
+		{
+		    return mRelocationData;
+		}
 
 	///
 	/// Accesseur sur le nombre de parties dans le paquet.
@@ -776,6 +825,8 @@ private:
 	KUInt16*		mNameStr;		///< Chaîne pour le nom.
 	KUInt32			mNumParts;		///< Nombre de parties dans le paquet.
 	SPartData*		mParts;			///< Parties.
+	/// Relocation data or NULL if there isn't any.
+	SPackageRelocationData*   mRelocationData;
 };
 
 #endif

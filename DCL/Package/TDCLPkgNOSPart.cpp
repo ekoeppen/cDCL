@@ -76,7 +76,7 @@ TDCLPkgNOSPart::TDCLPkgNOSPart(
 			const void* inData,
 			KUInt32 inSize )
 	:
-		TDCLPkgPart( inOffset, inData, inSize ),
+		TDCLPkgRelocatablePart( inOffset, inData, inSize ),
 		mDirty( false ),
 		mFourBytesPadding( false )
 {

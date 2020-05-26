@@ -151,6 +151,7 @@ DCL/NS_Objects/Objects/TDCLNSWeakRef.cpp
 DCL/Package/TDCLPackage.cpp
 DCL/Package/TDCLPkgNOSPart.cpp
 DCL/Package/TDCLPkgPart.cpp
+DCL/Package/TDCLPkgRelocatablePart.cpp
 DCL/Package/UDCLPaperback.cpp
 DCL/Server/TDCLOneLinkServer.cpp
 DCL/Server/TDCLServer.cpp
@@ -354,6 +355,7 @@ DCL/Package/KDCLPackageErrors.h
 DCL/Package/TDCLPackage.h
 DCL/Package/TDCLPkgNOSPart.h
 DCL/Package/TDCLPkgPart.h
+DCL/Package/TDCLPkgRelocatablePart.h
 DCL/Package/UDCLPaperback.h
 DCL/Server/TDCLOneLinkServer.h
 DCL/Server/TDCLServer.h
