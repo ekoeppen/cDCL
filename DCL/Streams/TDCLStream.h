@@ -64,7 +64,7 @@ public:
 		///
 		/// \param outBuffer	mémoire tampon pour les octets lus.
 		/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-		///						Cette valeur est mise à jour avant que 
+		///						Cette valeur est mise à jour avant que
 		///						l'exception ne soit lancée si un problème est
 		///						survenu.
 		/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
@@ -91,7 +91,7 @@ public:
 		virtual void		FlushOutput( void ) = 0;
 
 		/// \name fonctions utilitaires
-		
+
 		///
 		/// Lit n caractères 8 bits au format C. Un caractère nul est ajouté
 		/// à la fin.

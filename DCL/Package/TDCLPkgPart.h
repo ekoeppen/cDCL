@@ -1,7 +1,7 @@
 // ==============================
 // Fichier:			TDCLPkgPart.h
 // Projet:			Desktop Connection Library
-// 
+//
 // Créé le:			6/4/2004
 // Tabulation:		4 espaces
 //

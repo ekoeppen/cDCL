@@ -1,7 +1,7 @@
 // ==============================
 // Fichier:			TDCLPackage.cp
 // Projet:			Desktop Connection Library
-// 
+//
 // Créé le:			29/10/2003
 // Tabulation:		4 espaces
 //
@@ -83,7 +83,7 @@ TDCLPackage::TDCLPackage( void )
 		mParts( nil )
 {
 	mParts = (SPartData*) ::malloc( 0 );
-	
+
 	// Allocationd du nom.
 	mNameStr = (KUInt16*) ::malloc( sizeof( KUInt16 ) );
 	*mNameStr = 0;
@@ -209,7 +209,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	// - les différentes parties.
 	// - les données pour le gestionnaire pour chaque partie.
 	// - les parties.
-	
+
 	// Calcul de la taille.
 	KUInt32 theCopyrightStrLen =
 				(UUTF16CStr::StrLen( mCopyrightStr ) + 1) * sizeof(KUInt16);
@@ -227,7 +227,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 		// Informations.
 		theDirectorySize += mParts[indexParts].fInfoSize;
 	}
-	
+
 	KUInt32 directoryAlignment = 4 - (theDirectorySize % 4);
 	if (directoryAlignment != 4)
 	{
@@ -308,10 +308,10 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	inOutStream->PutLong( 0 );
 	inOutStream->PutLong( theDirectorySize );
 	inOutStream->PutLong( mNumParts );
-	
+
 	// Ensuite, les parties.
 	KUInt32 theInfoOffset = theCopyrightStrLen + theNameStrLen;
-	
+
 	KUInt32 theOffset = 0;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
@@ -337,7 +337,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 		theInfoOffset += theInfoSize;
 		inOutStream->PutLong( 0 );
 	}
-	
+
 	// Ensuite, les données du catalogue.
 	if (theCopyrightStrLen)
 	{
@@ -346,14 +346,14 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	}
 	writeCount = theNameStrLen;
 	inOutStream->Write( mNameStr, &writeCount );
-	
+
 	// Données des parties.
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		writeCount = mParts[indexParts].fInfoSize;
 		inOutStream->Write( mParts[indexParts].fInfoData, &writeCount );
 	}
-	
+
 	// Alignement.
 	for ( ; directoryAlignment > 0; directoryAlignment-- )
 	{
@@ -364,7 +364,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	KSInt64 numEntriesCursor = 0;
 	KUInt32* allRelocations = new KUInt32 [ allRelocationCount ];
 	KUInt32 allRelocationIx = 0;
-	
+
 	if (packageFlags & kDirRelocationFlag)
 	{
 	    KUInt32 relocationSetMaxSize = sizeof(KUInt16) * 2;
@@ -412,9 +412,9 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 		    }
 		}
 		theOffset += writeCount;
-		
+
 		inOutStream->Write( theData, &writeCount );
-		
+
 		KUInt32 remain = 4 - (theOffset % 4);
 		if (remain != 4)
 		{
@@ -506,7 +506,7 @@ Boolean
 TDCLPackage::IsPackage( TDCLFile* inFile )
 {
 	Boolean theResult = false;
-	
+
 	Boolean wasOpen = false;
 	KSInt64 theOldPosition = 0;
 	if (inFile->IsOpen())
@@ -517,13 +517,13 @@ TDCLPackage::IsPackage( TDCLFile* inFile )
 	} else {
 		inFile->Open( true /* read only */ );
 	}
-	
+
 	try {
 		// Lecture des 8 premiers octets (si possible).
 		KUInt8 thePreamble[8];
 		KUInt32 nbRead = 8;
 		inFile->Read( thePreamble, &nbRead );
-		
+
 		if (nbRead == 8)
 		{
 			// Test que ce sont bien package0 ou package1.
@@ -556,7 +556,7 @@ TDCLPackage::IsPackage( TDCLFile* inFile )
 	} else {
 		inFile->Close();
 	}
-	
+
 	return theResult;
 }
 
@@ -569,18 +569,18 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	KASSERT(mParts == nil);
 	KASSERT(mCopyrightStr == nil);
 	KASSERT(mNameStr == nil);
-	
+
 	// Lecture de la signature.
 	KUInt8 theSignature[8];
 	KUInt32 nbRead = 8;
-	
+
 	inStream->Read( theSignature, &nbRead );
-	
+
 	if (nbRead != 8)
 	{
 		throw DCLEOF;
 	}
-	
+
 	if (::memcmp( theSignature, kNOS1CompatibleSignature, 8 ) == 0)
 	{
 		mNOS1Compatible = true;
@@ -589,7 +589,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	} else {
 		throw DCLPackage( kPkgErrUnknownSignature );
 	}
-	
+
 	// Lecture de la suite.
 	mPackageID = inStream->GetLong();
 	mPackageFlags = inStream->GetLong();
@@ -598,7 +598,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	KUInt16 copyrightLength = inStream->GetShort();
 	KUInt16 nameOffset = inStream->GetShort();
 	KUInt16 nameLength = inStream->GetShort();
-	
+
 	// Les chaînes sont des chaînes de mots de 16 bits.
 	if (copyrightLength & 0x1)
 	{
@@ -615,7 +615,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	(void) inStream->GetLong();	// fReserved2
 	KUInt32 theDirectorySize = inStream->GetLong();
 	mNumParts = inStream->GetLong();
-	
+
 	// Lecture des entrées sur les parties.
 	mParts = (SPartData*) ::malloc( mNumParts * sizeof( SPartData ) );
 	SPartLocation* thePartsLocations =
@@ -628,7 +628,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		mParts[indexParts].fInfoData = nil;
 		mParts[indexParts].fPart = nil;
 	}
-	
+
 	KUInt32 theDirectoryInfoSize = sizeof( SPackageDirectory )
 				+ (sizeof(SPartEntry) * mNumParts);
 	if (theDirectorySize <= theDirectoryInfoSize)
@@ -653,21 +653,21 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 
 	// Ensuite, les données du catalogue.
 	KUInt32 theDirectoryDataSize = theDirectorySize - theDirectoryInfoSize;
-	
+
 	// Création d'une zone de mémoire.
 	KUInt8* theDirectoryData =
 					(KUInt8*) ::malloc( (size_t) theDirectoryDataSize );
-	
+
 	// Lecture.
 	try {
 		nbRead = theDirectoryDataSize;
 		inStream->Read( theDirectoryData, &nbRead );
-	
+
 		if (nbRead != theDirectoryDataSize)
 		{
 			throw DCLEOF;
 		}
-		
+
 		// Copie des différentes données.
 		if (copyrightLength > 0)
 		{
@@ -676,13 +676,13 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			{
 				throw DCLPackage( kPkgErrWeirdDirectorySize );
 			}
-			
+
 			mCopyrightStr = (KUInt16*) ::malloc( copyrightLength );
 			(void) ::memcpy(
 						mCopyrightStr,
 						(const void*) &theDirectoryData[copyrightOffset],
 						copyrightLength );
-			
+
 			if (mCopyrightStr[(copyrightLength / 2) - 1] != 0)
 			{
 				throw DCLPackage( kPkgStringsDontSeemUniCStr );
@@ -691,7 +691,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			mCopyrightStr = (KUInt16*) ::malloc( sizeof(KUInt16) );
 			*mCopyrightStr = 0;
 		}
-		
+
 		if (nameLength == 0)
 		{
 			throw DCLPackage( kPkgErrNoName );
@@ -701,7 +701,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		{
 			throw DCLPackage( kPkgErrWeirdDirectorySize );
 		}
-		
+
 		mNameStr = (KUInt16*) ::malloc( nameLength );
 		(void) ::memcpy(
 					mNameStr,
@@ -712,7 +712,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		{
 			throw DCLPackage( kPkgStringsDontSeemUniCStr );
 		}
-		
+
 		// Puis les informations pour les gestionnaires de parties.
 		for (indexParts = 0; indexParts < mNumParts; indexParts++)
 		{
@@ -720,16 +720,16 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 				thePartsLocations[indexParts].fInfoOffset
 					- theDirectoryInfoSize;
 			KUInt32 theSize = mParts[indexParts].fInfoSize;
-			
+
 			if (theOffset + theSize > theDirectoryDataSize)
 			{
 				throw DCLPackage( kPkgErrWeirdDirectorySize );
 			}
-			
+
 			// Allocation.
 			KUInt8* thePointer = (KUInt8*) ::malloc( theSize );
 			mParts[indexParts].fInfoData = thePointer;
-			
+
 			// Copie.
 			(void) ::memcpy(
 					thePointer,
@@ -740,11 +740,11 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		// Ménage.
 		::free( thePartsLocations );
 		::free( theDirectoryData );
-		
+
 		// Relance.
 		throw;
 	}
-	
+
 	::free( theDirectoryData );
 
 	KUInt32 theRelocationSize = 0;
@@ -798,17 +798,17 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
             (void) inStream->GetByte();
         }
 	}
-	
+
 	// Finalement, lecture des parties.
 	KUInt32 thePartDataSize = thePackageSize - theDirectorySize - theRelocationSize;
 	KUInt32 thePartDataOffset = theDirectorySize + theRelocationSize;
 	KUInt8* thePartData = (KUInt8*) ::malloc( thePartDataSize );
-	
+
 	// Lecture.
 	try {
 		nbRead = thePartDataSize;
 		inStream->Read( thePartData, &nbRead );
-	
+
 		if (nbRead != thePartDataSize)
 		{
 			throw DCLEOF;
@@ -819,12 +819,12 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		{
 			KUInt32 theOffset = thePartsLocations[indexParts].fDataOffset;
 			KUInt32 theSize = thePartsLocations[indexParts].fDataSize;
-			
+
 			if (theOffset + theSize > thePartDataSize)
 			{
 				throw DCLPackage( kPkgErrWeirdPartSize );
 			}
-			
+
 			// Création des données.
 			if ((mParts[indexParts].fFlags & kPartTypeMask)
 					== kPartNOSPart)
@@ -846,11 +846,11 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 		// Ménage.
 		::free( thePartsLocations );
 		::free( thePartData );
-		
+
 		// Relance.
 		throw;
 	}
-	
+
 	::free( thePartsLocations );
 	::free( thePartData );
 }
@@ -888,18 +888,18 @@ TDCLPackage::AddPart(
 	KUInt32 indexPart = mNumParts;
 	mNumParts++;
 	mParts = (SPartData*) ::realloc( mParts, sizeof(SPartData) * mNumParts );
-	
+
 	// Ajout des données.
 	mParts[indexPart].fType = inType;
 	mParts[indexPart].fFlags = inFlags;
 	mParts[indexPart].fInfoSize = inInfoSize;
 	mParts[indexPart].fPart = inPart;
-	
+
 	// Copie.
 	KUInt8* theInfoData = (KUInt8*) ::malloc( inInfoSize );
 	(void) ::memcpy( theInfoData, inInfoData, inInfoSize );
 	mParts[indexPart].fInfoData = theInfoData;
-	
+
 	return indexPart;
 }
 
@@ -912,7 +912,7 @@ TDCLPackage::RemovePart( KUInt32 inPartIndex )
 	KASSERT( inPartIndex < mNumParts );
 
 	// Suppression des données.
-	
+
 	// Ajout des données.
 	::free( mParts[inPartIndex].fInfoData );
 	delete mParts[inPartIndex].fPart;
@@ -922,7 +922,7 @@ TDCLPackage::RemovePart( KUInt32 inPartIndex )
 				(void*) &mParts[inPartIndex],
 				(const void*) &mParts[inPartIndex + 1],
 				(mNumParts - inPartIndex - 1) * sizeof(SPartData) );
-	
+
 	mNumParts--;
 	mParts = (SPartData*) ::realloc( mParts, sizeof(SPartData) * mNumParts );
 }
@@ -934,17 +934,17 @@ void
 TDCLPackage::SetCopyrightString( const KUInt16* inCopyrightStr )
 {
 	size_t theCopyrightLength = UUTF16CStr::StrLen( inCopyrightStr );
-	
+
 	if (theCopyrightLength > kCopyrightMaxLength)
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	KUInt32 theSize = (theCopyrightLength + 1) * sizeof( KUInt16 );
-		
+
 	// Modification de la taille.
 	mCopyrightStr = (KUInt16*) ::realloc( mCopyrightStr, theSize );
-		
+
 	// Copie.
 	(void) ::memcpy( mCopyrightStr, inCopyrightStr, theSize );
 }
@@ -956,17 +956,17 @@ void
 TDCLPackage::SetPackageName( const KUInt16* inNameStr )
 {
 	size_t theNameLength = UUTF16CStr::StrLen( inNameStr );
-	
+
 	if (theNameLength > kPackageNameMaxLength)
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	KUInt32 theSize = (theNameLength + 1) * sizeof( KUInt16 );
-	
+
 	// Modification de la taille.
 	mNameStr = (KUInt16*) ::realloc( mNameStr, theSize );
-	
+
 	// Copie.
 	(void) ::memcpy( mNameStr, inNameStr, theSize );
 }
@@ -978,12 +978,12 @@ void
 TDCLPackage::SetCopyrightString( const char* inCopyrightStr )
 {
 	size_t theCopyrightLength = ::strlen( inCopyrightStr );
-	
+
 	if (theCopyrightLength > kCopyrightMaxLength)
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	KUInt32 theSize = (theCopyrightLength + 1) * sizeof( KUInt16 );
 
 	// Modification de la taille.
@@ -1000,17 +1000,17 @@ void
 TDCLPackage::SetPackageName( const char* inNameStr )
 {
 	size_t theNameLength = ::strlen( inNameStr );
-	
+
 	if (theNameLength > kPackageNameMaxLength)
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	KUInt32 theSize = (theNameLength + 1) * sizeof( KUInt16 );
 
 	// Modification de la taille.
 	mNameStr = (KUInt16*) ::realloc( mNameStr, theSize );
-	
+
 	// Conversion
 	UUTF16CStr::FromISO88591( (const KUInt8*) inNameStr, mNameStr );
 }

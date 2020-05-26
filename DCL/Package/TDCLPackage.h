@@ -1,7 +1,7 @@
 // ==============================
 // Fichier:			TDCLPackage.h
 // Projet:			Desktop Connection Library
-// 
+//
 // Créé le:			29/10/2003
 // Tabulation:		4 espaces
 //
@@ -76,7 +76,7 @@ public:
 		/// Néanmoins, les mise à jour système ont ce bit à un, même si elles
 		/// sont composées de plusieurs parties.
 		kDirAutoRemoveFlag				= 0x80000000,
-		
+
 		/// Marque le paquet comme protégé pour la copie. Ce drapeau ne sert
 		/// que parce que les logiciels qui copient les paquets le respectent.
 		/// Ce n'est pas un verrou absolu contre la copie.
@@ -86,13 +86,13 @@ public:
 		/// ordinateur de bureau, donc les utilisateurs peuvent le copier. Ils
 		/// peuvent aussi utiliser EEUnprotect.
 		kDirCopyProtectFlag				= 0x40000000,
-		
+
 		/// Indique au système qu'il ne doit pas compresser le paquet (par
 		/// défaut les paquets sont compressés).
 		kDirNoCompressionFlag			= 0x10000000,
 
 		/// Indique que le paquet contient des informations de relogement.
-		/// Ce drapeau n'est valide que pour les paquets de type "package1".	
+		/// Ce drapeau n'est valide que pour les paquets de type "package1".
 		kDirRelocationFlag				= 0x04000000,
 
 		/// Spécifie que le paquet doit être compressé avec une méthode plus
@@ -100,17 +100,17 @@ public:
 		/// paquets de type "package1" et n'est pris en compte que si le
 		/// drapeau kDirNoCompressionFlag n'est pas à un.
 		kDirUseFasterCompressionFlag	= 0x02000000,
-		
+
 		/// Indique que le paquet a une signature numérique qui certifie
 		/// qu'il fonctionne sur Watson.
 		/// La signature est dans une partie de type raw et fait 32 bits.
 		/// C'est tout ce que je sais pour le moment.
 		kWatsonSignaturePresentFlag		= 0x01000000
 	};
-	
+
 	/// Signature pour un paquet sans information de relogement.
 	static const KUInt8	kNOS1CompatibleSignature[8];
-	
+
 	/// Signature pour un paquet qui ne fonctionne que sur NewtonOS 2.x.
 	static const KUInt8 kNOS1IncompatibleSignature[8];
 
@@ -121,37 +121,37 @@ public:
 	enum {
 		/// La partie est un protocole.
 		kPartProtocolPart	= 0x00000000,
-		
+
 		/// La partie est composée d'objets NewtonScript (au format Pkg)
 		kPartNOSPart		= 0x00000001,
-		
+
 		/// La partie est composée de données brutes.
 		kPartRawPart		= 0x00000002,
-		
+
 		/// Masque pour le type de partie.
 		kPartTypeMask		= 0x00000003,
-		
+
 		/// Uniquement pour les protocoles: précise que le protocole doit être
 		/// enregistré lorsque le paquet est activé.
 		kPartAutoLoadFlag	= 0x00000010,
-		
+
 		/// Uniquement pour les protocoles: précise que le protocole doit être
 		/// désenregistré lorsque le paquet est désactivé. Normalement à un
 		/// lorsque kPartAutoLoadFlag est à un.
 		kPartAutoRemoveFlag	= 0x00000020,
-		
+
 		/// Spécifie que le gestionnaire dans le système correspondant au type
 		/// de la partie doit être appelé. Normalement à un sauf si les
 		/// spécifications pour le type de partie indiquent le contraire.
 		kPartNotifyFlag		= 0x00000080,
-		
+
 		/// Spécifie que la partie doit être copiée en mémoire avant d'être
 		/// activée. Ne doit être utilisé que pour les parties (normalement des
 		/// protocoles) qui ne tolèrent pas le mécanisme de gestion de mémoire
 		/// virtuelle.
 		kPartAutoCopyFlag	= 0x00000100
 	};
-	
+
 	///
 	/// Types des parties.
 	///
@@ -165,7 +165,7 @@ public:
 		kStorePart	= FOUR_CHAR_CODE('soup')	///< Magasin avec des soupes en
 												///< lecture seule.
 	};
-	
+
 	///
 	/// Identifiants des paquets (non utilisé par NTK, probablement non
 	/// utilisés par le système).
@@ -177,7 +177,7 @@ public:
 		kSoundCodecID	= FOUR_CHAR_CODE('codt')	///< Identifiant utilisé par
 													///< les Codec.
 	};
-	
+
 	enum {
 		// La taille maximale autorisée par NTK est 28 caractères.
 		// (apparemment, NewtonOS en autorise 31).
@@ -186,7 +186,7 @@ public:
 		kCopyrightMaxLength		= 63	///< Taille maximale, en caractères,
 										///< de la chaîne avec le copyright.
 	};
-	
+
 	///
 	/// Les structures 'InfoRef' permettent de faire référence à des données de
 	/// taille variable dans la partie données du catalogue.
@@ -196,7 +196,7 @@ public:
 								///< données.
 		KUInt16		fLength;	///< Taille des données (en octets).
 	};
-	
+
 	///
 	/// Catalogue des paquets.
 	///
@@ -225,7 +225,7 @@ public:
 		// SPartEntry fParts[fNumParts]
 		// KUInt8 fVariableLengthData[];
 	};
-	
+
 	///
 	/// Après SPackageDirectory se trouve, pour chaque partie, une structure de
 	/// ce type. On fait parfois référence aux parties par leur numéro,
@@ -340,7 +340,7 @@ public:
 	/// \param inOutStream	flux de sortie.
 	///
 	void	WriteToStream( TDCLStream* inOutStream ) const;
-	
+
 	///
 	/// Accesseur sur la compatibilité du paquet.
 	///
@@ -620,7 +620,7 @@ public:
 		{
 			return mNumParts;
 		}
-	
+
 	///
 	/// Accesseur sur le type de la n-ième partie.
 	///
@@ -643,7 +643,7 @@ public:
 			KASSERT( inPartIndex < mNumParts );
 			mParts[inPartIndex].fType = inPartType;
 		}
-	
+
 	///
 	/// Accesseur sur les drapeaux de la n-ième partie.
 	///
@@ -757,7 +757,7 @@ public:
 	///
 	/// Supprime une partie du paquet.
 	///
-	/// \param inPartIndex	indice de la partie à supprimer. 
+	/// \param inPartIndex	indice de la partie à supprimer.
 	///
 	void 				RemovePart( KUInt32 inPartIndex );
 
@@ -789,7 +789,7 @@ private:
 		KUInt8*			fInfoData;	///< Données pour le gestionnaire.
 		TDCLPkgPart*	fPart;		///< Données de la partie.
 	};
-		
+
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
@@ -803,7 +803,7 @@ private:
 	/// \param inCopy		objet à copier
 	///
 	TDCLPackage& operator = ( const TDCLPackage& inCopy );
-	
+
 	///
 	/// Lecture du paquet à partir d'un flux.
 	/// Lance une exception en cas de problème.
