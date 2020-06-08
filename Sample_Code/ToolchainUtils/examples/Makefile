@@ -6,12 +6,12 @@ AS              := arm-none-eabi-as
 LINKER          := arm-none-eabi-ld
 OBJCOPY         := arm-none-eabi-objcopy
 
-MACHINEFLAGS    := -march=armv4 -mbig-endian
+MACHINEFLAGS    := -march=armv3 -mbig-endian
 ASFLAGS         := ${MACHINEFLAGS}
 CODEGENFLAGS    := -nostdinc -fPIC -fdata-sections -ffunction-sections -O3 -Os
 DEFINES         := -D__arm -DhasPCMCIA -DforARM -DNO_ERRNO_H -DSTDC
 CFLAGS          := ${MACHINEFLAGS} ${CODEGENFLAGS} ${DEFINES}
-CXXFLAGS        := ${MACHINEFLAGS} ${CODEGENFLAGS} ${DEFINES} -fno-exceptions
+CXXFLAGS        := ${MACHINEFLAGS} ${CODEGENFLAGS} ${DEFINES} -fno-exceptions -fno-rtti
 OBJDIR          := obj
 
 NEWTONINCLUDES  := -I$(NCT_PROJECTS)/DDKIncludes -I$(NCT_PROJECTS)/DDKIncludes/Bootstrap -I$(NCT_PROJECTS)/DDKIncludes/CLibrary -I$(NCT_PROJECTS)/DDKIncludes/CommAPI -I$(NCT_PROJECTS)/DDKIncludes/Communications -I$(NCT_PROJECTS)/DDKIncludes/Frames -I$(NCT_PROJECTS)/DDKIncludes/HAL -I$(NCT_PROJECTS)/DDKIncludes/Lantern -I$(NCT_PROJECTS)/DDKIncludes/OS600 -I$(NCT_PROJECTS)/DDKIncludes/Packages -I$(NCT_PROJECTS)/DDKIncludes/Power -I$(NCT_PROJECTS)/DDKIncludes/QD -I$(NCT_PROJECTS)/DDKIncludes/Toolbox -I$(NCT_PROJECTS)/DDKIncludes/UtilityClasses -I$(NCT_PROJECTS)/DDKIncludes/PCMCIA -I$(NCT_PROJECTS)/Includes -I$(NCT_PROJECTS)/Includes/CLibrary -I$(NCT_PROJECTS)/Includes/Frames -I$(NCT_PROJECTS)/Includes/Utilities -I$(NCT_PROJECTS)/LanternDriver_DDK/Includes -I$(NCT_PROJECTS)/NSandDDK
