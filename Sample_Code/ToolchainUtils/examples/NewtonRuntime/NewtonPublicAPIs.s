@@ -6661,31 +6661,31 @@ MPW-mangled: NSCallGlobalFn__FRC6RefVar
 C++: NSCallGlobalFn(const RefVar&, const RefVar&, const RefVar&)
 MPW-mangled: NSCallGlobalFn__FRC6RefVarN21
 */
-    JT NSCallGlobalFn__FRC6RefVarN21, 018026f0
+    JT _Z14NSCallGlobalFnRK6RefVarS1_S1_, 018026f0
 
 /*
 C++: NSCallGlobalFn(const RefVar&, const RefVar&, const RefVar&, const RefVar&)
 MPW-mangled: NSCallGlobalFn__FRC6RefVarN31
 */
-    JT NSCallGlobalFn__FRC6RefVarN31, 018026f4
+    JT _Z14NSCallGlobalFnRK6RefVarS1_S1_S1_, 018026f4
 
 /*
 C++: NSCallGlobalFn(const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&)
 MPW-mangled: NSCallGlobalFn__FRC6RefVarN41
 */
-    JT NSCallGlobalFn__FRC6RefVarN41, 018026f8
+    JT _Z14NSCallGlobalFnRK6RefVarS1_S1_S1_S1_, 018026f8
 
 /*
 C++: NSCallGlobalFn(const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&)
 MPW-mangled: NSCallGlobalFn__FRC6RefVarN51
 */
-    JT NSCallGlobalFn__FRC6RefVarN51, 018026fc
+    JT _Z14NSCallGlobalFnRK6RefVarS1_S1_S1_S1_S1_, 018026fc
 
 /*
 C++: NSCallGlobalFn(const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&, const RefVar&)
 MPW-mangled: NSCallGlobalFn__FRC6RefVarN61
 */
-    JT NSCallGlobalFn__FRC6RefVarN61, 01802700
+    JT _Z14NSCallGlobalFnRK6RefVarS1_S1_S1_S1_S1_S1_, 01802700
 
 /*
 C++: NSCallGlobalFn(const RefVar&, const RefVar&)
@@ -8308,7 +8308,7 @@ MPW-mangled: Putn__20CShadowBufferSegmentFPCUcl
 C++: Query(const RefVar&, const RefVar&)
 MPW-mangled: Query__FRC6RefVarT1
 */
-    JT Query__FRC6RefVarT1, 018009d0
+    JT _Z5QueryRK6RefVarS1_, 018009d0
     JT QuickEnableInterrupt, 01802be0
 
 /*
