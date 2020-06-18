@@ -11,12 +11,12 @@ add_executable (DumpPkgPart
 DumpPkgPart.cpp
 )
 
-target_link_libraries (nespackager LINK_PUBLIC DCL)
+target_link_libraries (nespackager LINK_PUBLIC DCL pthread)
 install(TARGETS nespackager RUNTIME DESTINATION bin)
 install(FILES NESPackager_Template/nespkgtemplate.nsof DESTINATION share/DCL/)
 
-target_link_libraries (DumpPkgDir LINK_PUBLIC DCL)
+target_link_libraries (DumpPkgDir LINK_PUBLIC DCL pthread)
 install(TARGETS DumpPkgDir RUNTIME DESTINATION bin)
 
-target_link_libraries (DumpPkgPart LINK_PUBLIC DCL)
+target_link_libraries (DumpPkgPart LINK_PUBLIC DCL pthread)
 install(TARGETS DumpPkgPart RUNTIME DESTINATION bin)
