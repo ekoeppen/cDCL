@@ -2,7 +2,7 @@
 // Fichier:			TDCLPipeProxy.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			5/4/2003
+// Cr√©√© le:			5/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPipeProxy.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,16 +41,16 @@
 #include <DCL/Communication_Layers/TDCLPipe.h>
 
 ///
-/// Classe pour un mandataire sur une connexion. Utilisée pour la compression
-/// MNP et pour l'utilisation d'une mémoire tampon.
+/// Classe pour un mandataire sur une connexion. Utilis√©e pour la compression
+/// MNP et pour l'utilisation d'une m√©moire tampon.
 ///
-/// Les méthodes de lecture et d'écriture doivent être mises en places par
-/// les sous-classes. Pareil pour les méthodes BytesAvailable et FlushOutput.
+/// Les m√©thodes de lecture et d'√©criture doivent √™tre mises en places par
+/// les sous-classes. Pareil pour les m√©thodes BytesAvailable et FlushOutput.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPipeProxy
 	:
@@ -58,8 +58,8 @@ class TDCLPipeProxy
 {
 public:
 	///
-	/// Constructeur à partir d'une connexion.
-	/// Cette connexion sera détruite par le destructeur de cette classe.
+	/// Constructeur √† partir d'une connexion.
+	/// Cette connexion sera d√©truite par le destructeur de cette classe.
 	///
 	/// \param inSubPipe	connexion dont cette classe est le mandataire.
 	///
@@ -67,13 +67,13 @@ public:
 
 	///
 	/// Destructeur.
-	/// Détruit la connexion dont cette classe est le mandataire.
+	/// D√©truit la connexion dont cette classe est le mandataire.
 	///
 	virtual ~TDCLPipeProxy( void );
 	
 	///
-	/// Détermine si des octets sont disponibles dans la mémoire tampon d'entrée.
-	/// Appelle la méthode de la couche de connexion dont
+	/// D√©termine si des octets sont disponibles dans la m√©moire tampon d'entr√©e.
+	/// Appelle la m√©thode de la couche de connexion dont
 	/// cette classe est le mandataire.
 	///
 	/// \return \c true s'il y a des octets disponibles, \c false sinon.
@@ -81,15 +81,15 @@ public:
 	virtual	Boolean		BytesAvailable( void );
 
 	///
-	/// Déconnecte le canal de communication avec le client.
+	/// D√©connecte le canal de communication avec le client.
 	///
-	/// \remark	une fois que cette méthode est appelée, l'objet connexion est inutilisable.
-	/// 		Il peut être supprimé par l'appelant à tout instant.
+	/// \remark	une fois que cette m√©thode est appel√©e, l'objet connexion est inutilisable.
+	/// 		Il peut √™tre supprim√© par l'appelant √† tout instant.
 	///
 	virtual	void		Disconnect( void );
 
 	///
-	/// Méthode appelée pour indiquer que c'est le moment de perdre un peu
+	/// M√©thode appel√©e pour indiquer que c'est le moment de perdre un peu
 	/// de temps.
 	///
 	/// Certaines couches de communication ont besoin de ceci.
@@ -97,9 +97,9 @@ public:
 	virtual	void		Idle( void );
 
 	///
-	/// Récupère la temporisation pour cette connexion.
-	/// La temporisation est exprimée en secondes ou c'est une des constantes
-	/// définies plus haut.
+	/// R√©cup√®re la temporisation pour cette connexion.
+	/// La temporisation est exprim√©e en secondes ou c'est une des constantes
+	/// d√©finies plus haut.
 	///
 	/// \return la temporisation au format TDCLCommLayer.
 	///
@@ -107,38 +107,38 @@ public:
 
 	///
 	/// Change la temporisation pour cette connexion.
-	/// La temporisation est exprimée en secondes ou c'est une des constantes
-	/// définies plus haut.
+	/// La temporisation est exprim√©e en secondes ou c'est une des constantes
+	/// d√©finies plus haut.
 	///
 	/// \param inTimeout	temporisation au format TDCLCommLayer.
 	///
 	virtual	void		SetTimeout( long inTimeout );
 
 	///
-	/// Récupère l'octet suivant sans avancer le curseur.
+	/// R√©cup√®re l'octet suivant sans avancer le curseur.
 	///
 	/// \return l'octet lu.
-	/// \throws TDCLException si l'opération n'est pas possible.
+	/// \throws TDCLException si l'op√©ration n'est pas possible.
 	///
 	virtual	KUInt8		PeekByte( void );
 
 	///
-	/// Méthode appelée par le lien pour dire qu'il est connecté
-	/// via cette connexion. Cette méthode est appelée juste avant
-	/// que des données soient échangées.
+	/// M√©thode appel√©e par le lien pour dire qu'il est connect√©
+	/// via cette connexion. Cette m√©thode est appel√©e juste avant
+	/// que des donn√©es soient √©chang√©es.
 	///
-	/// Par défaut règle mLink.
+	/// Par d√©faut r√®gle mLink.
 	///
-	/// \param inLink	lien qui est connecté.
+	/// \param inLink	lien qui est connect√©.
 	/// \return l'interface de communication.
 	///
 	virtual	TDCLCommLayer*	Connected( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée par le lien pour dire qu'il souhaite
-	/// être prévenu dès que des données sont présentes.
-	/// Au départ, l'interface de communication ne prévient
-	/// pas le lien de la présence de données.
+	/// M√©thode appel√©e par le lien pour dire qu'il souhaite
+	/// √™tre pr√©venu d√®s que des donn√©es sont pr√©sentes.
+	/// Au d√©part, l'interface de communication ne pr√©vient
+	/// pas le lien de la pr√©sence de donn√©es.
 	///
 	virtual	void		ClearDataPresent( void );
 
@@ -158,14 +158,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLPipeProxy( const TDCLPipeProxy& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLPipeProxy& operator = ( const TDCLPipeProxy& inCopy );
 

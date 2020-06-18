@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXFile.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			22/6/2003
+// Cr√©√© le:			22/6/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXFile.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -127,7 +127,7 @@ TDCLPOSIXFile::~TDCLPOSIXFile( void )
 void
 TDCLPOSIXFile::Open( Boolean inReadOnly )
 {
-	// On s'arrête si le fichier est déjà ouvert.
+	// On s'arr√™te si le fichier est d√©j√† ouvert.
 	if (mFile)
 	{
 		throw DCLBadStateError;
@@ -164,7 +164,7 @@ TDCLPOSIXFile::Open( Boolean inReadOnly )
 void
 TDCLPOSIXFile::Create( void )
 {
-	// Vérifions que le fichier n'est pas ouvert.
+	// V√©rifions que le fichier n'est pas ouvert.
 	if (mFile)
 	{
 		throw DCLBadStateError;
@@ -178,7 +178,7 @@ TDCLPOSIXFile::Create( void )
 		throw DCLPlatformExistsAlready( errno );
 	}
 	
-	// Création du fichier.
+	// Cr√©ation du fichier.
 	mFile = ::fopen( mPath, "w" );
 
 	if (mFile == nil)
@@ -208,7 +208,7 @@ TDCLPOSIXFile::Create( void )
 void
 TDCLPOSIXFile::Delete( void )
 {
-	// Vérifions que le fichier n'est pas ouvert.
+	// V√©rifions que le fichier n'est pas ouvert.
 	if (mFile)
 	{
 		throw DCLBadStateError;
@@ -257,7 +257,7 @@ TDCLPOSIXFile::IsReadOnly( void ) const
 void
 TDCLPOSIXFile::SetCursor( KSInt64 inPos, ECursorMode inMode )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!mFile)
 	{
 		throw DCLBadStateError;
@@ -296,7 +296,7 @@ TDCLPOSIXFile::SetCursor( KSInt64 inPos, ECursorMode inMode )
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetCursor( void )
+//  *¬†GetCursor( void )
 // ------------------------------------------------------------------------- //
 KSInt64
 TDCLPOSIXFile::GetCursor( void )
@@ -351,7 +351,7 @@ TDCLPOSIXFile::GetLength( void )
 void
 TDCLPOSIXFile::Read( void* outBuffer, KUInt32* ioCount )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!mFile)
 	{
 		throw DCLBadStateError;
@@ -378,13 +378,13 @@ TDCLPOSIXFile::Read( void* outBuffer, KUInt32* ioCount )
 void
 TDCLPOSIXFile::Write( const void* outBuffer, KUInt32* ioCount )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!mFile)
 	{
 		throw DCLBadStateError;
 	}
 	
-	// Vérifions que le fichier est ouvert en lecture/écriture.
+	// V√©rifions que le fichier est ouvert en lecture/√©criture.
 	if (mReadOnly)
 	{
 		throw DCLReadOnly;
@@ -414,7 +414,7 @@ TDCLPOSIXFile::FlushOutput( void )
 		throw DCLBadStateError;
 	}
 	
-	// Vérifions que le fichier est ouvert en lecture/écriture.
+	// V√©rifions que le fichier est ouvert en lecture/√©criture.
 	if (mReadOnly)
 	{
 		throw DCLReadOnly;
@@ -441,7 +441,7 @@ TDCLPOSIXFile::Close( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetKind( void )
+//  *¬†GetKind( void )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLPOSIXFile::GetKind( void ) const
@@ -450,7 +450,7 @@ TDCLPOSIXFile::GetKind( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetCreationDate( void ) const
+//  *¬†GetCreationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLPOSIXFile::GetCreationDate( void ) const
@@ -479,7 +479,7 @@ TDCLPOSIXFile::GetCreationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetModificationDate( void ) const
+//  *¬†GetModificationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLPOSIXFile::GetModificationDate( void ) const
@@ -508,12 +508,12 @@ TDCLPOSIXFile::GetModificationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetStringPath( void ) const
+//  *¬†GetStringPath( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLPOSIXFile::GetStringPath( void ) const
 {
-	// Conversion en chaîne NewtonScript.
+	// Conversion en cha√Æne NewtonScript.
 	return TDCLNSRef::MakeString( mPath );
 }
 
@@ -523,7 +523,7 @@ TDCLPOSIXFile::GetStringPath( void ) const
 KUInt16*
 TDCLPOSIXFile::MakeName( void ) const
 {
-	// Copie du chemin (pour POSIX, basename ne prend pas forcément un
+	// Copie du chemin (pour POSIX, basename ne prend pas forc√©ment un
 	// const char*).
 	size_t theLength = ::strlen( mPath ) + 1;
 	char* thePath = (char*) ::malloc( theLength );
@@ -531,11 +531,11 @@ TDCLPOSIXFile::MakeName( void ) const
 
 	char* theBaseName = ::basename( thePath );
 	
-	// Création de la chaîne UTF-16.
+	// Cr√©ation de la cha√Æne UTF-16.
 	theLength = ::strlen( theBaseName ) + 1;
 	KUInt16* theResult =
 		(KUInt16*) ::malloc( theLength * sizeof( KUInt16 ) );
-	// En fait, je n'ai aucune idée de l'encodage du nom.
+	// En fait, je n'ai aucune id√©e de l'encodage du nom.
 	UUTF16CStr::FromISO88591( (const KUInt8*) theBaseName, theResult, theLength );
 		
 	::free( thePath );
@@ -551,7 +551,7 @@ TDCLPOSIXFile::DoMakeParentFolder(
 					TDCLPOSIXFiles* inFilesIntf,
 					const char* inPath )
 {
-	// Copie du chemin (pour POSIX, dirname ne prend pas forcément un
+	// Copie du chemin (pour POSIX, dirname ne prend pas forc√©ment un
 	// const char*).
 	size_t theLength = ::strlen( inPath ) + 1;
 	char* thePath = (char*) ::malloc( theLength );

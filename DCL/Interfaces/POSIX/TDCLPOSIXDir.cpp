@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXDir.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			22/6/2003
+// Cr√©√© le:			22/6/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXDir.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -67,7 +67,7 @@ TDCLPOSIXDir::TDCLPOSIXDir(
 TDCLFSItemRef
 TDCLPOSIXDir::MakeParentFolder( void ) const
 {
-	// Copie du chemin (pour POSIX, dirname ne prend pas forcément un
+	// Copie du chemin (pour POSIX, dirname ne prend pas forc√©ment un
 	// const char*).
 	const char* thisPath = GetPOSIXPath();
 	size_t theLength = ::strlen( thisPath ) + 1;

@@ -2,7 +2,7 @@
 // Fichier:			TDCLPThreads.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			26/1/2003
+// Cr√©√© le:			26/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPThreads.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -73,7 +73,7 @@
 void
 TDCLPThreads::Yield( void )
 {
-	// Les processus légers POSIX sont préemptifs.
+	// Les processus l√©gers POSIX sont pr√©emptifs.
 }
 
 // ------------------------------------------------------------------------- //
@@ -114,7 +114,7 @@ TDCLPThreads::TSemaphore::TSemaphore( void )
 		case EAGAIN:
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -123,11 +123,11 @@ TDCLPThreads::TSemaphore::TSemaphore( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ~TSemaphore( void )
+//  *¬†~TSemaphore( void )
 // ------------------------------------------------------------------------- //
 TDCLPThreads::TSemaphore::~TSemaphore( void )
 {
-	// Lance une exception si le sémaphore est occupé.
+	// Lance une exception si le s√©maphore est occup√©.
 	if (mNbThreads != 0)
 	{
 		throw DCLSemaphoreBusy;
@@ -143,7 +143,7 @@ TDCLPThreads::TSemaphore::~TSemaphore( void )
 		case EBUSY:
 			throw DCLPlatformSemaphoreBusy( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -157,14 +157,14 @@ TDCLPThreads::TSemaphore::~TSemaphore( void )
 		case EBUSY:
 			throw DCLPlatformSemaphoreBusy( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
 }
 
 // ------------------------------------------------------------------------- //
-//  * Acquire( void )
+//  *¬†Acquire( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLPThreads::TSemaphore::Acquire( void )
@@ -179,7 +179,7 @@ TDCLPThreads::TSemaphore::Acquire( void )
 		case EDEADLK:	// DeadLock (bogue dans le code.)
 			throw DCLPlatformThreadDeadLock( theErr );
 			
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -198,29 +198,29 @@ TDCLPThreads::TSemaphore::Acquire( void )
 			
 			case ETIMEDOUT:	// Ne doit pas arriver, on ne fait pas un try_wait.
 
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				throw DCLPlatformUnknownError( theErr );
 		}
 	}
 
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	theErr = ::pthread_mutex_unlock( &mMutex );		
 	switch ( theErr )
 	{
 		case 0:
 			break;
 		
-		case EPERM:		// Impossible de libérer un sémaphore dans un autre
-						// processus léger.
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EPERM:		// Impossible de lib√©rer un s√©maphore dans un autre
+						// processus l√©ger.
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
 }
 
 // ------------------------------------------------------------------------- //
-//  * Release( void )
+//  *¬†Release( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLPThreads::TSemaphore::Release( void )
@@ -235,7 +235,7 @@ TDCLPThreads::TSemaphore::Release( void )
 		case EDEADLK:	// DeadLock (bogue dans le code.)
 			throw DCLPlatformThreadDeadLock( theErr );
 			
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -250,23 +250,23 @@ TDCLPThreads::TSemaphore::Release( void )
 			case 0:
 				break;
 
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				(void) ::pthread_mutex_unlock( &mMutex );
 				throw DCLPlatformUnknownError( theErr );
 		}
 	}
 
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	theErr = ::pthread_mutex_unlock( &mMutex );
 	switch ( theErr )
 	{
 		case 0:
 			break;
 		
-		case EPERM:		// Impossible de libérer un sémaphore dans un autre
-						// processus léger.
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EPERM:		// Impossible de lib√©rer un s√©maphore dans un autre
+						// processus l√©ger.
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -295,7 +295,7 @@ TDCLPThreads::TThread::TThread( TDCLThread* inThreadedObject )
 		case EAGAIN:
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -303,7 +303,7 @@ TDCLPThreads::TThread::TThread( TDCLThread* inThreadedObject )
 	// Initialisation de la variable de condition.
 	theErr = ::pthread_cond_init( &mSleepCond, NULL );
 	
-	// Le processus sera initialisé dans la méthode start.
+	// Le processus sera initialis√© dans la m√©thode start.
 	
 	switch ( theErr )
 	{
@@ -316,7 +316,7 @@ TDCLPThreads::TThread::TThread( TDCLThread* inThreadedObject )
 		case EAGAIN:
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -342,7 +342,7 @@ TDCLPThreads::TThread::~TThread( void )
 		case EBUSY:
 			throw DCLPlatformSemaphoreBusy( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -356,7 +356,7 @@ TDCLPThreads::TThread::~TThread( void )
 		case EBUSY:
 			throw DCLPlatformSemaphoreBusy( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -390,22 +390,22 @@ TDCLPThreads::TThread::Start( void )
 		case 0:
 			break;
 		
-		case EAGAIN:	// Nombre maximum de processus légers atteint?
+		case EAGAIN:	// Nombre maximum de processus l√©gers atteint?
 			mSyncSemaphore.Release();
 			ReleaseMutex();
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			mSyncSemaphore.Release();
 			ReleaseMutex();
 			throw DCLPlatformUnknownError( theErr );
 	}
 
-	// Attente que Run soit appelé et mState mis à jour.
+	// Attente que Run soit appel√© et mState mis √† jour.
 	mSyncSemaphore.Acquire();
 
-	// Libération du sémaphore.
+	// Lib√©ration du s√©maphore.
 	mSyncSemaphore.Release();
 
 	ReleaseMutex();
@@ -437,11 +437,11 @@ TDCLPThreads::TThread::Stop( void )
 			break;
 		
 		case ESRCH:		// mThread n'est pas valide: ne doit pas arriver.
-						// sauf peut-être dans un cas très particulier où
-						// le processus léger est fini (?)
+						// sauf peut-√™tre dans un cas tr√®s particulier o√π
+						// le processus l√©ger est fini (?)
 			throw DCLPlatformThreadStopped( theErr );
 			
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -465,7 +465,7 @@ TDCLPThreads::TThread::Suspend( void )
 	{
 		mState = kSuspended;
 
-		// Lorsque ce signal est appelé, on appelle sigsuspend.
+		// Lorsque ce signal est appel√©, on appelle sigsuspend.
 		// Cf SignalUSR2.
 		int theErr = ::pthread_kill( mThread, SIGUSR2 );
 	
@@ -477,11 +477,11 @@ TDCLPThreads::TThread::Suspend( void )
 				break;
 		
 			case ESRCH:		// mThread n'est pas valide: ne doit pas arriver.
-							// sauf peut-être dans un cas très particulier où
-							// le processus léger est fini (?)
+							// sauf peut-√™tre dans un cas tr√®s particulier o√π
+							// le processus l√©ger est fini (?)
 				throw DCLPlatformThreadStopped( theErr );
 			
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				throw DCLPlatformUnknownError( theErr );
 		}
@@ -518,11 +518,11 @@ TDCLPThreads::TThread::Resume( void )
 				break;
 		
 			case ESRCH:		// mThread n'est pas valide: ne doit pas arriver.
-							// sauf peut-être dans un cas très particulier où
-							// le processus léger est fini (?)
+							// sauf peut-√™tre dans un cas tr√®s particulier o√π
+							// le processus l√©ger est fini (?)
 				throw DCLPlatformThreadStopped( theErr );
 			
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				throw DCLPlatformUnknownError( theErr );
 		}
@@ -541,13 +541,13 @@ TDCLPThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 	
 	Boolean forever = (inMilliseconds == kForever);
 	
-	// Détermination de l'heure du réveil.
+	// D√©termination de l'heure du r√©veil.
 	timespec theTimeToWake;
 	if (!forever)
 	{
 		timeval theCurrentTime;
 		(void) ::gettimeofday( &theCurrentTime, nil );
-		// Traduction en timespec et ajout du délai.		
+		// Traduction en timespec et ajout du d√©lai.		
 		theTimeToWake.tv_sec =
 			((long) (inMilliseconds / 1000)) + theCurrentTime.tv_sec;
 		theTimeToWake.tv_nsec =
@@ -558,13 +558,13 @@ TDCLPThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 	// Acquisition du mutex
 	AcquireMutex();
 
-	// Le nombre de réveil est-il nul?
+	// Le nombre de r√©veil est-il nul?
 	if (mWakeCount > 0)
 	{
 		mWakeCount--;
-		theResult = false;	// On n'a pas dormi tout le temps demandé.
+		theResult = false;	// On n'a pas dormi tout le temps demand√©.
 
-		// Libération du mutex.
+		// Lib√©ration du mutex.
 		ReleaseMutex();
 	} else {
 		// On dort.
@@ -584,20 +584,20 @@ TDCLPThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 		// On ne dort plus.
 		mState = kRunning;
 		
-		// Libération du mutex.
+		// Lib√©ration du mutex.
 		ReleaseMutex();
 		
 		switch ( theErr )
 		{
 			case 0:
-				theResult = false;	// On n'a pas dormi tout le temps demandé.
+				theResult = false;	// On n'a pas dormi tout le temps demand√©.
 				break;
 			
 			case ETIMEDOUT:
-				theResult = true;	// On a dormi tout le temps demandé.
+				theResult = true;	// On a dormi tout le temps demand√©.
 				break;
 
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				throw DCLPlatformUnknownError( theErr );
 		}
@@ -615,7 +615,7 @@ TDCLPThreads::TThread::WakeUp( void )
 	// Acquisition du mutex.
 	AcquireMutex();
 
-	// Le processus léger dort-il?
+	// Le processus l√©ger dort-il?
 	if (mState == kSleeping)
 	{
 		int theErr = ::pthread_cond_signal( &mSleepCond );
@@ -625,17 +625,17 @@ TDCLPThreads::TThread::WakeUp( void )
 			case 0:
 				break;
 
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+			case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 			default:
 				ReleaseMutex();
 				throw DCLPlatformUnknownError( theErr );
 		}
 	} else {
-		// On incrémente juste le compteur.
+		// On incr√©mente juste le compteur.
 		mWakeCount++;
 	}
 	
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	ReleaseMutex();
 }
 
@@ -660,7 +660,7 @@ TDCLPThreads::TThread::Run( TThread* inThis )
 	}
 
 	// Ensuite, SIGUSR1 (resume).
-	// On bloque SIGUSR2 à ce moment pour éviter une
+	// On bloque SIGUSR2 √† ce moment pour √©viter une
 	// suspension pendant la reprise.
 	theSigAction.sa_handler = SignalUSR1;
 	sigaddset(&theSigAction.sa_mask, SIGUSR2);
@@ -729,7 +729,7 @@ TDCLPThreads::TThread::AcquireMutex( void )
 		case EDEADLK:	// DeadLock (bogue dans le code.)
 			throw DCLPlatformThreadDeadLock( theErr );
 			
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}
@@ -741,16 +741,16 @@ TDCLPThreads::TThread::AcquireMutex( void )
 void
 TDCLPThreads::TThread::ReleaseMutex( void )
 {
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	int theErr = ::pthread_mutex_unlock( &mMutex );		
 	switch ( theErr )
 	{
 		case 0:
 			break;
 		
-		case EPERM:		// Impossible de libérer un sémaphore dans un autre
-						// processus léger.
-		case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
+		case EPERM:		// Impossible de lib√©rer un s√©maphore dans un autre
+						// processus l√©ger.
+		case EINVAL:	// Probl√®mes d'arguments (ne doit pas arriver)
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	}

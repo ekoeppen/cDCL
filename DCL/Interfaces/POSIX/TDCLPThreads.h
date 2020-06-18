@@ -2,7 +2,7 @@
 // Fichier:			TDCLPThreads.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			26/1/2003
+// Cr√©√© le:			26/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPThreads.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -49,7 +49,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.7 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPThreads
 	:
@@ -58,34 +58,34 @@ class TDCLPThreads
 public:
 	///
 	/// Donne du temps aux autres processus.
-	/// Ne fait rien puisque les pthreads sont préemptifs.
+	/// Ne fait rien puisque les pthreads sont pr√©emptifs.
 	///
 	virtual	void	Yield( void );
 
 	///
-	/// Crée un objet IThread. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet IThread. √Ä surcharger pour chaque plateforme.
 	///
-	/// \param inThreadedObject		objet associé à passer comme paramètre
+	/// \param inThreadedObject		objet associ√© √† passer comme param√®tre
 	///								pour IThread
 	/// \return un nouvel objet IThread
 	///
 	virtual IThread*	CreateThread( TDCLThread* inThreadedObject );
 
 	///
-	/// Crée un objet sémaphore. À surcharger pour chaque plateforme.
+	/// Cr√©e un objet s√©maphore. √Ä surcharger pour chaque plateforme.
 	///
-	/// \return un nouvel objet sémaphore
+	/// \return un nouvel objet s√©maphore
 	///
 	virtual ISemaphore*	CreateSemaphore( void );
 
 private:
 	class TThread;
-	
+
 	///
-	/// Classe pour un sémaphore.
-	/// À l'inverse d'un mutex POSIX, le sémaphore dans la DCL peut:
-	/// - bloqué un processus léger avec deux acquisitions
-	/// - être débloqué par un autre processus léger
+	/// Classe pour un s√©maphore.
+	/// √Ä l'inverse d'un mutex POSIX, le s√©maphore dans la DCL peut:
+	/// - bloqu√© un processus l√©ger avec deux acquisitions
+	/// - √™tre d√©bloqu√© par un autre processus l√©ger
 	///
 	class TSemaphore
 		:
@@ -93,43 +93,43 @@ private:
 	{
 	public:
 		/// Le thread est un ami.
-		/// (permet de récupérer un pointeur sur l'objet pthread_mutex)
+		/// (permet de r√©cup√©rer un pointeur sur l'objet pthread_mutex)
 		friend class TThread;
 
 		///
 		/// Constructeur unique.
 		///
 		TSemaphore( void );
-		
+
 		///
 		/// Destructeur.
-		/// Le sémaphore ne doit pas être utilisé.
+		/// Le s√©maphore ne doit pas √™tre utilis√©.
 		///
 		virtual				~TSemaphore( void );
 
 		///
-		/// Attend jusqu'à ce que le sémaphore soit libéré si nécessaire
-		/// puis acquiert le sémaphore.
+		/// Attend jusqu'√† ce que le s√©maphore soit lib√©r√© si n√©cessaire
+		/// puis acquiert le s√©maphore.
 		///
 		virtual	void		Acquire ( void );
-		
+
 		///
-		/// Libère un processus léger du sémaphore.
+		/// Lib√®re un processus l√©ger du s√©maphore.
 		///
 		virtual	void		Release ( void );
-	
+
 	private:
-		/// \name variables privées.		
-		pthread_mutex_t		mMutex;		///< Mutex pour protéger le nombre
-										///< de processus dans le sémaphore.
+		/// \name variables priv√©es.
+		pthread_mutex_t		mMutex;		///< Mutex pour prot√©ger le nombre
+										///< de processus dans le s√©maphore.
 		KUInt32				mNbThreads;	///< Nombre de processus dans le
-										///< sémaphore.
+										///< s√©maphore.
 		pthread_cond_t		mWaitCond;	///< Variable de condition pour
 										///< l'attente.
 	};
 
 	///
-	/// Classe pour un processus léger.
+	/// Classe pour un processus l√©ger.
 	///
 	class TThread
 		:
@@ -137,111 +137,111 @@ private:
 	{
 	public:
 		///
-		/// Constructeur à partir d'un client.
+		/// Constructeur √† partir d'un client.
 		///
-		/// \param inThreadedObject	objet associé au processus léger.
+		/// \param inThreadedObject	objet associ√© au processus l√©ger.
 		///
 		TThread( TDCLThread* inThreadedObject );
-		
+
 		///
 		/// Destructeur.
 		///
-		/// \throws TDCLException si le processus léger n'est pas arrêté.
+		/// \throws TDCLException si le processus l√©ger n'est pas arr√™t√©.
 		///
 		virtual ~TThread( void );
 
 		///
-		/// Démarre le processus.
+		/// D√©marre le processus.
 		///
-		/// Appelle la méthode Run de TDCLThread dans le nouveau
-		/// processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté.
+		/// Appelle la m√©thode Run de TDCLThread dans le nouveau
+		/// processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger n'est pas arrêté.
+		/// \throws TDCLException si le processus l√©ger n'est pas arr√™t√©.
 		///
 		virtual void	Start( void );
-		
+
 		///
-		/// Arrête le processus (de manière violente).
+		/// Arr√™te le processus (de mani√®re violente).
 		///
-		/// Lance une exception si le processus léger est arrêté.
+		/// Lance une exception si le processus l√©ger est arr√™t√©.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual void	Stop( void );
 
 		///
-		/// Suspend le processus léger.
-		/// Cette méthode peut être appelée à partir d'un autre processus
-		/// léger.
-		/// Lance une exception si le processus léger est arrêté, mais
+		/// Suspend le processus l√©ger.
+		/// Cette m√©thode peut √™tre appel√©e √† partir d'un autre processus
+		/// l√©ger.
+		/// Lance une exception si le processus l√©ger est arr√™t√©, mais
 		/// est silencieux si le processus est suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Suspend( void );
 
 		///
-		/// Reprend le processus léger.
-		/// Cette méthode est appelée à partir d'un autre processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté,
+		/// Reprend le processus l√©ger.
+		/// Cette m√©thode est appel√©e √† partir d'un autre processus l√©ger.
+		/// Lance une exception si le processus l√©ger n'est pas arr√™t√©,
 		/// mais est silencieux si le processus n'est pas suspendu.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
+		/// \throws TDCLException si le processus l√©ger est arr√™t√©.
 		///
 		virtual	void	Resume( void );
-	
+
 		///
-		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
-		/// WakeUp soit appelée.
+		/// Dort pendant n millisecondes ou jusqu'√† ce que la m√©thode
+		/// WakeUp soit appel√©e.
 		/// Note: le processus peut aussi dormir plus longtemps.
-		/// Cette méthode doit être appelée par le processus courant.
-		/// Décrémente le compteur des réveils ou dort s'il est à zéro.
+		/// Cette m√©thode doit √™tre appel√©e par le processus courant.
+		/// D√©cr√©mente le compteur des r√©veils ou dort s'il est √† z√©ro.
 		/// Utilise les variables de condition.
 		///
-		/// \param inMillisecs		nombre de millisecondes à dormir
-		/// \return	\c true si l'on a dormi tout le temps demandé, \c false si on a été
+		/// \param inMillisecs		nombre de millisecondes √† dormir
+		/// \return	\c true si l'on a dormi tout le temps demand√©, \c false si on a √©t√©
 		///			interrompu.
 		///
 		virtual	Boolean	Sleep( KUInt32 inMillisecs );
 
 		///
-		/// Réveille un processus qui dort.
-		/// Incrémente le compteur des réveils.
+		/// R√©veille un processus qui dort.
+		/// Incr√©mente le compteur des r√©veils.
 		/// Utilise les variables de condition.
 		///
 		virtual	void	WakeUp( void );
 
 		///
-		/// Détermine l'état du processus.
+		/// D√©termine l'√©tat du processus.
 		///
-		/// \return l'état du processus (arrêté, actif, suspendu)
+		/// \return l'√©tat du processus (arr√™t√©, actif, suspendu)
 		///
 		virtual	EState	GetState( void );
 
 	private:
 		///
-		/// Constructeur par défaut volontairement indisponible.
+		/// Constructeur par d√©faut volontairement indisponible.
 		///
 		TThread( void );
-		
+
 		///
 		/// Constructeur par copie volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		TThread( const TThread& inCopy );
 
 		///
-		/// Opérateur d'assignation volontairement indisponible.
+		/// Op√©rateur d'assignation volontairement indisponible.
 		///
-		/// \param inCopy		objet à copier
+		/// \param inCopy		objet √† copier
 		///
 		TThread& operator = ( const TThread& inCopy );
 
 		///
-		/// La fonction vraiment appelée par le système.
-		/// Elle appelle la méthode Run du client.
+		/// La fonction vraiment appel√©e par le syst√®me.
+		/// Elle appelle la m√©thode Run du client.
 		///
 		/// \param inThis	pointeur sur l'objet TThread.
 		/// \return \c nil
@@ -249,18 +249,18 @@ private:
 		static void* Run( TThread* inThis );
 
 		///
-		/// Fonction appelée lorsque le signal SIGUSR1 est envoyé.
+		/// Fonction appel√©e lorsque le signal SIGUSR1 est envoy√©.
 		/// Ne fait rien.
 		///
-		/// \param inSignal	signal envoyé (toujours SIGUSR1).
+		/// \param inSignal	signal envoy√© (toujours SIGUSR1).
 		///
 		static void SignalUSR1( int inSignal );
 
 		///
-		/// Fonction appelée lorsque le signal SIGUSR2 est envoyé.
+		/// Fonction appel√©e lorsque le signal SIGUSR2 est envoy√©.
 		/// Appelle sigsuspend (on attend SIGUSR1 (seulement)).
 		///
-		/// \param inSignal	signal envoyé (toujours SIGUSR2).
+		/// \param inSignal	signal envoy√© (toujours SIGUSR2).
 		///
 		static void SignalUSR2( int inSignal );
 
@@ -270,20 +270,20 @@ private:
 		void		AcquireMutex( void );
 
 		///
-		/// Libération du mutex mMutex.
+		/// Lib√©ration du mutex mMutex.
 		///
 		void		ReleaseMutex( void );
-		
-		/// \name variables privées.
-		
-		pthread_t		mThread;		///< Ben le processus léger.
-		EState			mState;			///< L'état du processus.
-		TSemaphore		mSyncSemaphore;	///< Sémaphore utilisé pour
+
+		/// \name variables priv√©es.
+
+		pthread_t		mThread;		///< Ben le processus l√©ger.
+		EState			mState;			///< L'√©tat du processus.
+		TSemaphore		mSyncSemaphore;	///< S√©maphore utilis√© pour
 										///< synchroniser.
-		pthread_mutex_t	mMutex;			///< Mutex pour protéger l'état.
+		pthread_mutex_t	mMutex;			///< Mutex pour prot√©ger l'√©tat.
 		pthread_cond_t	mSleepCond;		///< Variable de condition pour
 										///< Sleep/WakeUp.
-		KUInt32			mWakeCount;		///< Compteur de réveils.
+		KUInt32			mWakeCount;		///< Compteur de r√©veils.
 	};
 };
 

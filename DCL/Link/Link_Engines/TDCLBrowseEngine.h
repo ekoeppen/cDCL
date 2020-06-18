@@ -2,7 +2,7 @@
 // Fichier:			TDCLBrowseEngine.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			8/4/2003
+// Cr√©√© le:			8/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLBrowseEngine.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,7 +45,7 @@
 #include <DCL/Link/Link_Engines/TDCLLinkEngine.h>
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class TDCLFolder;
 class TDCLPipe;
 class IDCLFiles;
@@ -56,8 +56,8 @@ class IDCLFiles;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
-/// \todo	gérer le butinage sur Windoze.
+/// \test	aucun test d√©fini.
+/// \todo	g√©rer le butinage sur Windoze.
 ///
 class TDCLBrowseEngine
 	:
@@ -65,18 +65,18 @@ class TDCLBrowseEngine
 {
 public:
 	///
-	/// Constructeur à partir d'un dossier par défaut.
+	/// Constructeur √† partir d'un dossier par d√©faut.
 	///
-	/// \param inLink			référence sur le lien dont nous faisons le travail.
-	/// \param inDefaultFolder	dossier de départ (si \c nil, on prend le dossier racine)
+	/// \param inLink			r√©f√©rence sur le lien dont nous faisons le travail.
+	/// \param inDefaultFolder	dossier de d√©part (si \c nil, on prend le dossier racine)
 	///
 	TDCLBrowseEngine(
 				TDCLFullDockLink* inLink,
 				TDCLFSItemRef inDefaultFolder = TDCLFSItemRef() );
 
 	///
-	/// Commence le butinage. Cette méthode est appelée juste après
-	/// avoir accepté le butinage auprès du Newton. Elle doit
+	/// Commence le butinage. Cette m√©thode est appel√©e juste apr√®s
+	/// avoir accept√© le butinage aupr√®s du Newton. Elle doit
 	/// envoyer une commande kDResult au Newton pour accepter le butinage.
 	///
 	/// \param inFileTypes	type de fichiers
@@ -85,12 +85,12 @@ public:
 	virtual void StartBrowsing( const TDCLNSRef& inFileTypes );
 
 	///
-	/// Méthode appelée pour gérer des commandes venant du Newton.
+	/// M√©thode appel√©e pour g√©rer des commandes venant du Newton.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée.
-	/// \return le prochain état du lien (l'état actuel étant kRunning),
-	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appelé
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
+	/// \return le prochain √©tat du lien (l'√©tat actuel √©tant kRunning),
+	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appel√©
 	///			dans la boucle)
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -100,9 +100,9 @@ public:
 
 protected:
 	///
-	/// Récupère les éléments du dossier courant.
+	/// R√©cup√®re les √©l√©ments du dossier courant.
 	///
-	/// \return un tableau contenant les éléments du dossier courant.
+	/// \return un tableau contenant les √©l√©ments du dossier courant.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	virtual TDCLNSRef GetFilesAndFolders( void );
@@ -110,10 +110,10 @@ protected:
 
 	///
 	/// Installe un paquet.
-	/// Appelle la méthode du lien.
-	/// Cette méthode est surtout là pour les sous-classes de cette classe.
+	/// Appelle la m√©thode du lien.
+	/// Cette m√©thode est surtout l√† pour les sous-classes de cette classe.
 	///
-	/// \param inPackage	paquet à installer.
+	/// \param inPackage	paquet √† installer.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	inline void DoInstallPackage( TDCLFSItemRef inPackage )
@@ -122,29 +122,29 @@ protected:
 		}
 
 	///
-	/// Récupération d'un élément à partir du dossier courant et d'une information
+	/// R√©cup√©ration d'un √©l√©ment √† partir du dossier courant et d'une information
 	/// de nom venant du Newton.
 	///
-	/// \param inFileName	nom (chaîne ou structure avec le nom dans Name et d'autres
+	/// \param inFileName	nom (cha√Æne ou structure avec le nom dans Name et d'autres
 	///						informations comme le volume dans whichVol)
-	/// \return une référence vers le fichier ou \c nil.
+	/// \return une r√©f√©rence vers le fichier ou \c nil.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	virtual TDCLFSItemRef	GetFile( const TDCLNSRef& inFileName );
 
 	///
-	/// Récupération d'informations sur un élément.
+	/// R√©cup√©ration d'informations sur un √©l√©ment.
 	///
-	/// \param inFileName	nom (chaîne ou structure, passé à GetFile)
-	/// \return une structure NewtonScript comprenant les informations à envoyer au Newton.
+	/// \param inFileName	nom (cha√Æne ou structure, pass√© √† GetFile)
+	/// \return une structure NewtonScript comprenant les informations √† envoyer au Newton.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	virtual TDCLNSRef		GetFileInfo( const TDCLNSRef& inFileName );
 
 	///
-	/// Changement du chemin courant à partir d'un nouveau chemin.
+	/// Changement du chemin courant √† partir d'un nouveau chemin.
 	///
-	/// \param inPath		chemin tel qu'envoyé par le Newton.
+	/// \param inPath		chemin tel qu'envoy√© par le Newton.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	virtual void 			SetPath( const TDCLNSRef& inPath );
@@ -153,23 +153,23 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLBrowseEngine( const TDCLBrowseEngine& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLBrowseEngine& operator = ( const TDCLBrowseEngine& inCopy );
 
 	/// \name Variables
 
 	IDCLFiles*				mFilesIntf;			///< Interface pour les fichiers.
-	TDCLFSItemRef			mCurrentFolderRef;	///< Référence sur le dossier courant.
+	TDCLFSItemRef			mCurrentFolderRef;	///< R√©f√©rence sur le dossier courant.
 	TDCLFolder*				mCurrentFolder;		///< Dossier courant.
-	Boolean					mIsMac;				///< Si on réagit comme un Mac.
+	Boolean					mIsMac;				///< Si on r√©agit comme un Mac.
 	TDCLNSRef				mFileTypes;			///< Types des fichiers.
 };
 

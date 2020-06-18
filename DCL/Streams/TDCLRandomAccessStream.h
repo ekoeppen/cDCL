@@ -1,8 +1,8 @@
 // ==============================
 // Fichier:			TDCLRandomAccessStream.h
 // Projet:			Desktop Connection Library
-// 
-// Créé le:			21/2/2004
+//
+// Cr√©√© le:			21/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLRandomAccessStream.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,12 +41,12 @@
 #include <DCL/Streams/TDCLStream.h>
 
 ///
-/// Classe pour un flux avec un retour arrière possible.
+/// Classe pour un flux avec un retour arri√®re possible.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLRandomAccessStream
 	:
@@ -54,30 +54,30 @@ class TDCLRandomAccessStream
 {
 public:
 	///
-	/// Différents modes pour le curseur.
-	/// Utilisés avec la méthode SetCursor.
+	/// Diff√©rents modes pour le curseur.
+	/// Utilis√©s avec la m√©thode SetCursor.
 	///
 	enum ECursorMode {
-		kFromStart,		///< depuis le début du fichier
+		kFromStart,		///< depuis le d√©but du fichier
 		kFromLEOF,		///< depuis la fin du fichier
 		kFromCursor		///< depuis la position courante du curseur
 	};
-	
+
 	///
-	/// Détermine la position du curseur dans le flux.
+	/// D√©termine la position du curseur dans le flux.
 	///
-	/// \return la position par rapport au début du flux.
+	/// \return la position par rapport au d√©but du flux.
 	///
 	virtual KSInt64 GetCursor( void ) = 0;
 
 	///
-	/// Déplace le curseur dans le flux. Peut lancer une exception
-	/// pour indiquer que la fin du flux a été atteinte.
+	/// D√©place le curseur dans le flux. Peut lancer une exception
+	/// pour indiquer que la fin du flux a √©t√© atteinte.
 	///
 	/// \param inPos	nouvelle position du curseur
-	/// \param inMode	définit l'origine de \c inPos
-	/// \throws TDCLPositionException si la fin du flux (ou le début) est
-	///			dépassée.
+	/// \param inMode	d√©finit l'origine de \c inPos
+	/// \throws TDCLPositionException si la fin du flux (ou le d√©but) est
+	///			d√©pass√©e.
 	///
 	virtual void SetCursor( KSInt64 inPos, ECursorMode inMode ) = 0;
 };

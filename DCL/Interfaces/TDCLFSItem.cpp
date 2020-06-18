@@ -2,7 +2,7 @@
 // Fichier:			TDCLFSItem.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			09/02/2003
+// Cr√©√© le:			09/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFSItem.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -79,12 +79,12 @@ TDCLFSItem::~TDCLFSItem( void )
 TDCLFSItemRef
 TDCLFSItem::GetParentFolder( void )
 {
-	// Si le parent n'existe pas, le créer, puis incrémenter son compteur de référence.
+	// Si le parent n'existe pas, le cr√©er, puis incr√©menter son compteur de r√©f√©rence.
 	if (mParentFolder.GetFSItem() == nil)
 	{
 		mParentFolder = MakeParentFolder();
 	}
-	
+
 	return mParentFolder;
 }
 
@@ -96,13 +96,13 @@ TDCLFSItem::GetName( void )
 {
 	KUInt16* theResult = mName;
 
-	// Si le nom n'existe pas, le créer.
+	// Si le nom n'existe pas, le cr√©er.
 	if (theResult == nil)
 	{
 		theResult = MakeName();
 		mName = theResult;
 	}
-	
+
 	return theResult;
 }
 
@@ -114,7 +114,7 @@ TDCLFSItem::GetPath( void )
 {
 	TDCLNSRef thePath = GetParentFolder()->GetPath();
 
-	// Ajout de cet élément.
+	// Ajout de cet √©l√©ment.
 	thePath.ToArray().Add( ToFrame() );
 
 	return thePath;
@@ -126,12 +126,12 @@ TDCLFSItem::GetPath( void )
 void
 TDCLFSItem::SetName( KUInt16* inName )
 {
-	// Le nom ne doit pas déjà exister.
+	// Le nom ne doit pas d√©j√† exister.
 	if (mName!= nil)
 	{
 		throw DCLUnknownError;
 	}
-	
+
 	mName = inName;
 }
 

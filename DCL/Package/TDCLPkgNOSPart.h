@@ -1,8 +1,8 @@
 // ==============================
 // Fichier:			TDCLPkgNOSPart.h
 // Projet:			Desktop Connection Library
-// 
-// Créé le:			6/4/2004
+//
+// Cr√©√© le:			6/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgNOSPart.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -38,34 +38,34 @@
 #define _TDCLPKGNOSPART_H
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include <DCL/Package/TDCLPkgPart.h>
+#include <DCL/Package/TDCLPkgRelocatablePart.h>
 
 // DCL
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
 ///
-/// Classe pour une partie contenant un objet NS encodé au format paquet.
+/// Classe pour une partie contenant un objet NS encod√© au format paquet.
 ///
-/// Les modifications apportées à l'objet doivent être notifiées pour que
-/// l'objet soit ré-encodé. Par ailleurs, l'objet ne doit être accédé que
-/// par un processus léger à la fois, i.e. il ne doit pas être encodé
-/// pendant qu'il est modifié.
+/// Les modifications apport√©es √† l'objet doivent √™tre notifi√©es pour que
+/// l'objet soit r√©-encod√©. Par ailleurs, l'objet ne doit √™tre acc√©d√© que
+/// par un processus l√©ger √† la fois, i.e. il ne doit pas √™tre encod√©
+/// pendant qu'il est modifi√©.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.7 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPkgNOSPart
 	:
-		public TDCLPkgPart
+		public TDCLPkgRelocatablePart
 {
 public:
 	///
-	/// Constructeur à partir d'un objet NewtonScript.
-	/// Si l'objet est modifié après la construction de la partie, il faut
-	/// appeler la méthode Dirty avant tout encodage. (en fait, ce n'est pas
-	/// nécessaire la première fois).
+	/// Constructeur √† partir d'un objet NewtonScript.
+	/// Si l'objet est modifi√© apr√®s la construction de la partie, il faut
+	/// appeler la m√©thode Dirty avant tout encodage. (en fait, ce n'est pas
+	/// n√©cessaire la premi√®re fois).
 	///
 	/// \param inObject	objet en question.
 	/// \param inFourBytesPadding	si on encode avec un alignement sur 32 bits
@@ -76,8 +76,8 @@ public:
 			Boolean inFourBytesPadding = false );
 
 	///
-	/// Constructeur à partir de données et d'un décalage.
-	/// L'objet n'est décodé que lorsque ce sera demandé.
+	/// Constructeur √† partir de donn√©es et d'un d√©calage.
+	/// L'objet n'est d√©cod√© que lorsque ce sera demand√©.
 	///
 	TDCLPkgNOSPart( KUInt32 inOffset, const void* inData, KUInt32 inSize );
 
@@ -87,7 +87,7 @@ public:
 	virtual ~TDCLPkgNOSPart( void );
 
 	///
-	/// Détermine si la partie est un objet NewtonScript, i.e.
+	/// D√©termine si la partie est un objet NewtonScript, i.e.
 	/// si cette partie est de la classe TDCLPkgNOSPart.
 	/// Oui.
 	///
@@ -96,43 +96,43 @@ public:
 	virtual Boolean	IsNOSPart( void ) const;
 
 	///
-	/// Retourne l'objet de cette partie (la décode si nécessaire).
-	/// Si l'objet a été modifié, la méthode Dirty doit être appelée
-	/// avant tout encodage pour s'assurer que l'objet sera réencodé.
+	/// Retourne l'objet de cette partie (la d√©code si n√©cessaire).
+	/// Si l'objet a √©t√© modifi√©, la m√©thode Dirty doit √™tre appel√©e
+	/// avant tout encodage pour s'assurer que l'objet sera r√©encod√©.
 	///
 	TDCLNSRef		GetObject( void );
 
 	///
-	/// Indique que l'objet a été modifié.
+	/// Indique que l'objet a √©t√© modifi√©.
 	///
 	void			Dirty( void );
 
 private:
 	///
-	/// Détermine si les données dépendent du décalage dans le paquet.
-	/// Par défaut, non (retourne \c false).
+	/// D√©termine si les donn√©es d√©pendent du d√©calage dans le paquet.
+	/// Par d√©faut, non (retourne \c false).
 	///
-	/// \return \c true si les données dépendent du décalage dans le paquet.
+	/// \return \c true si les donn√©es d√©pendent du d√©calage dans le paquet.
 	///
 	virtual Boolean IsOffsetDependant( void ) const;
 
 	///
-	/// Détermine si la partie a été modifiée et doit être ré-encodée.
-	/// Par défaut, non.
+	/// D√©termine si la partie a √©t√© modifi√©e et doit √™tre r√©-encod√©e.
+	/// Par d√©faut, non.
 	///
-	/// \return \c true si les données ont été modifiées et doivent être
-	///			ré-encodées.
+	/// \return \c true si les donn√©es ont √©t√© modifi√©es et doivent √™tre
+	///			r√©-encod√©es.
 	///
 	virtual Boolean IsDirty( void ) const;
 
 	///
-	/// Encode la partie pour un décalage donné (la décode si nécessaire).
-	/// Par défaut, ne fait rien.
+	/// Encode la partie pour un d√©calage donn√© (la d√©code si n√©cessaire).
+	/// Par d√©faut, ne fait rien.
 	///
-	/// \param inOffset				décalage dans le paquet.
-	/// \param ioBuffer				pointeur sur les données
-	///								(alloué avec malloc)
-	/// \param ioSize				taille des données (en entrée et en sortie)
+	/// \param inOffset				d√©calage dans le paquet.
+	/// \param ioBuffer				pointeur sur les donn√©es
+	///								(allou√© avec malloc)
+	/// \param ioSize				taille des donn√©es (en entr√©e et en sortie)
 	///
 	virtual void Encode(
 					KUInt32 inOffset,
@@ -141,8 +141,8 @@ private:
 
 	/// \name Variables
 	TDCLNSRef				mObject;	///< Objet (ou nil s'il n'est pas encore
-										///< décodé)
-	mutable Boolean			mDirty;		///< Si l'objet a été modifié.
+										///< d√©cod√©)
+	mutable Boolean			mDirty;		///< Si l'objet a √©t√© modifi√©.
 	Boolean			mFourBytesPadding;	///< Si on aligne sur 32 bits (vs 64).
 };
 

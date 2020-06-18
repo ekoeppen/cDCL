@@ -2,7 +2,7 @@
 // Fichier:			TDCLException.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/02/2002
+// Cr√©√© le:			11/02/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLException.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -45,8 +45,8 @@
 // K
 #include <K/Tests/KDebug.h>
 
-// Le déverminage doit toujours être activé pour cette classe
-// (si le projet est compilé avec debug bien sûr)
+// Le d√©verminage doit toujours √™tre activ√© pour cette classe
+// (si le projet est compil√© avec debug bien s√ªr)
 #undef KDEBUG_ENABLED
 #define KDEBUG_ENABLED 1
 

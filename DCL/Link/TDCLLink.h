@@ -2,7 +2,7 @@
 // Fichier:			TDCLLink.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			28/06/2000
+// Cr√©√© le:			28/06/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLLink.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -52,18 +52,18 @@ class TDCLPipe;
 ///
 /// Classe abstraite pour les liens.
 ///
-/// Un lien est une connexion avec un Newton donné et fournit des services.
+/// Un lien est une connexion avec un Newton donn√© et fournit des services.
 ///
-/// Le lien est représenté par un processus léger. Il itère dans une boucle en
+/// Le lien est repr√©sent√© par un processus l√©ger. Il it√®re dans une boucle en
 /// attendant:
-/// - des données du Newton
+/// - des donn√©es du Newton
 /// - l'expiration d'une temporisation (permet d'appeler Idle).
 /// - un appel du serveur ou de l'application.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLLink
 	:
@@ -75,19 +75,19 @@ public:
 	///
 	enum {
 		kDefaultIdlePeriod	= 15000	///< Temps d'attente en millisecondes entre
-									///< entre les appels à Idle.
+									///< entre les appels √† Idle.
 	};
 	
 	///
 	/// Etat du lien.
 	///
 	enum EState {
-		kDisconnected,	///< Déconnecté (le processus léger ne tourne pas)
+		kDisconnected,	///< D√©connect√© (le processus l√©ger ne tourne pas)
 		kConnecting,	///< En train de se connecter (la connexion avec le Newton
-						///< est établie)
-		kConnected,		///< Connecté au Newton (la phase de connexion est finie)
-		kRunning,		///< En train d'échanger des données avec le Newton.
-		kDisconnecting,	///< On est en train de se déconnecter.
+						///< est √©tablie)
+		kConnected,		///< Connect√© au Newton (la phase de connexion est finie)
+		kRunning,		///< En train d'√©changer des donn√©es avec le Newton.
+		kDisconnecting,	///< On est en train de se d√©connecter.
 		kUnknown		///< Etat inconnu.
 	};
 
@@ -115,11 +115,11 @@ public:
 	
 	///
 	/// Accesseur sur le type de la connexion.
-	/// Le type est utilisé avec ;a commande kDInitiateDocking.
-	/// Les constantes utilisables sont définies dans TDCLDockCommand.
+	/// Le type est utilis√© avec ;a commande kDInitiateDocking.
+	/// Les constantes utilisables sont d√©finies dans TDCLDockCommand.
 	/// Il y a deux constantes habituelles:
-	/// - TDCLDockCommand::kNone_SType (valeur par défaut): pour une connexion
-	///		générale.
+	/// - TDCLDockCommand::kNone_SType (valeur par d√©faut): pour une connexion
+	///		g√©n√©rale.
 	/// - TDCLDockCommand::kLoadPackage_SType: pour l'installation de paquets.
 	///
 	/// \return le type de la connexion.
@@ -130,7 +130,7 @@ public:
 		}
 	
 	///
-	/// Sélecteur sur le type de la connexion.
+	/// S√©lecteur sur le type de la connexion.
 	///
 	/// \param inType	nouveau type de la connexion
 	/// \see GetType
@@ -143,43 +143,43 @@ public:
 	/// \name interface avec le serveur/l'application.
 
 	///
-	/// Méthode asynchrone pour connecter le Newton.
-	/// Démarre le processus léger.
+	/// M√©thode asynchrone pour connecter le Newton.
+	/// D√©marre le processus l√©ger.
 	///
-	/// \param inPipe	Interface de communication associée au lien.
-	/// \param inServer	Serveur qui gère l'interface de communication.
-	/// \return \c true si le lien était déconnecté, \c false sinon.
+	/// \param inPipe	Interface de communication associ√©e au lien.
+	/// \param inServer	Serveur qui g√®re l'interface de communication.
+	/// \return \c true si le lien √©tait d√©connect√©, \c false sinon.
 	///
 	Boolean				Connect( TDCLPipe* inPipe, TDCLServer* inServer );
 		
 	///
-	/// Méthode asynchrone pour déconnecter le Newton.
-	/// Envoie un événement au processus léger pour qu'il se déconnecte.
-	/// Ne fait rien si le processus léger n'était pas démarré.
-	/// Ceci est la méthode souple pour déconnecter.
+	/// M√©thode asynchrone pour d√©connecter le Newton.
+	/// Envoie un √©v√©nement au processus l√©ger pour qu'il se d√©connecte.
+	/// Ne fait rien si le processus l√©ger n'√©tait pas d√©marr√©.
+	/// Ceci est la m√©thode souple pour d√©connecter.
 	///
-	/// \return \c true si le lien était connecté, \c false sinon.
+	/// \return \c true si le lien √©tait connect√©, \c false sinon.
 	///
 	Boolean				Disconnect( void );
 		
 	///
-	/// Méthode invoquée lorsque l'interface de connexion a été fermée.
+	/// M√©thode invoqu√©e lorsque l'interface de connexion a √©t√© ferm√©e.
 	///
-	/// \return \c true si le lien était connecté, \c false sinon.
+	/// \return \c true si le lien √©tait connect√©, \c false sinon.
 	///
 	Boolean				Close( void );
 
 	///
-	/// Détermine si le lien est connecté.
+	/// D√©termine si le lien est connect√©.
 	///
-	/// \return \c true si le lien est connecté, \c false sinon.
+	/// \return \c true si le lien est connect√©, \c false sinon.
 	///
 	Boolean				IsConnected( void );
 
 	///
-	/// Détermine si le lien est occupé à exécuter une commande.
+	/// D√©termine si le lien est occup√© √† ex√©cuter une commande.
 	///
-	/// \return \c true si le lien est occupé, \c false sinon.
+	/// \return \c true si le lien est occup√©, \c false sinon.
 	///
 	inline Boolean		IsBusy( void )
 		{
@@ -197,10 +197,10 @@ public:
 		}
 
 	///
-	/// Méthode appelée par l'interface de communication pour dire que
-	/// des données sont présentes. Cette méthode est appelée une seule fois
-	/// et sera rappellée lorsque le lien aura appelé ClearDataRequest.
-	/// Cette méthode envoie un événement au processus léger du serveur.
+	/// M√©thode appel√©e par l'interface de communication pour dire que
+	/// des donn√©es sont pr√©sentes. Cette m√©thode est appel√©e une seule fois
+	/// et sera rappell√©e lorsque le lien aura appel√© ClearDataRequest.
+	/// Cette m√©thode envoie un √©v√©nement au processus l√©ger du serveur.
 	///
 	void				DataPresent( void );
 
@@ -216,11 +216,11 @@ public:
 		}
 
 	///
-	/// Accesseur sur un nombre identifiant le Newton de façon plus ou
+	/// Accesseur sur un nombre identifiant le Newton de fa√ßon plus ou
 	/// moins unique.
-	/// Ceci ne peut pas être le numéro de série matériel du Newton vu que
+	/// Ceci ne peut pas √™tre le num√©ro de s√©rie mat√©riel du Newton vu que
 	/// (a) les Newton 2.0 n'en ont pas, (b) c'est une valeur sur 32 bits.
-	/// Je pense que c'est dérivé de l'ID du magasin ou un truc dans le genre.
+	/// Je pense que c'est d√©riv√© de l'ID du magasin ou un truc dans le genre.
 	///
 	/// \return l'ID du Newton
 	///
@@ -353,19 +353,19 @@ public:
 	
 protected:
 	///
-	/// Constantes protégées.
+	/// Constantes prot√©g√©es.
 	///
 	enum {
-		kDefaultTimeout	=	30	///< Valeur par défaut de la temporisation
-								///< passée au Newton avec kDSetTimeout.
+		kDefaultTimeout	=	30	///< Valeur par d√©faut de la temporisation
+								///< pass√©e au Newton avec kDSetTimeout.
 	};
 
 	///
 	/// Constructeur unique.
 	///
 	/// \param inApplication	interface avec l'application.
-	/// \param inType			type de connexion (expliqué plus haut)
-	/// \param inIdlePeriod		fréquence des appels à Idle.
+	/// \param inType			type de connexion (expliqu√© plus haut)
+	/// \param inIdlePeriod		fr√©quence des appels √† Idle.
 	/// \see GetType()
 	///
 	TDCLLink(
@@ -375,33 +375,33 @@ protected:
 	
 	///
 	/// Destructeur.
-	/// Indique que le lien a été déconnecté si nécessaire.
+	/// Indique que le lien a √©t√© d√©connect√© si n√©cessaire.
 	///
 	virtual		~TDCLLink( void );
 
 	///
-	/// Poste une commande à effectuer.
-	/// Trois cas se présentent:
-	/// - le lien n'est pas établi, la méthode retourne \c false.
-	/// - le lien était établi, la méthode retourne \c true et
-	///		envoie un événement.
-	///		- l'événement est récupéré, la commande est passée à
-	///			ProcessAppCommand et puis à TDCLApplication::AppCommandProcessed,
-	///			enfin l'événement sera supprimé avec delete par le lien.
-	///		- l'événement n'est pas récupéré avant que lien ne soit
-	///			interrompu, la commande sera supprimée lorsque le processus
-	///			léger sera terminé avec delete.
-	///		- un problème est survenu dans AppCommandProcessed, la commande
-	///			sera supprimée avec delete.
+	/// Poste une commande √† effectuer.
+	/// Trois cas se pr√©sentent:
+	/// - le lien n'est pas √©tabli, la m√©thode retourne \c false.
+	/// - le lien √©tait √©tabli, la m√©thode retourne \c true et
+	///		envoie un √©v√©nement.
+	///		- l'√©v√©nement est r√©cup√©r√©, la commande est pass√©e √†
+	///			ProcessAppCommand et puis √† TDCLApplication::AppCommandProcessed,
+	///			enfin l'√©v√©nement sera supprim√© avec delete par le lien.
+	///		- l'√©v√©nement n'est pas r√©cup√©r√© avant que lien ne soit
+	///			interrompu, la commande sera supprim√©e lorsque le processus
+	///			l√©ger sera termin√© avec delete.
+	///		- un probl√®me est survenu dans AppCommandProcessed, la commande
+	///			sera supprim√©e avec delete.
 	///
-	/// \return \c true si le lien était établi, \c false sinon.
+	/// \return \c true si le lien √©tait √©tabli, \c false sinon.
 	///
 	Boolean				PostAppCommand( TDCLAppCommand* inCommand );
 
 	///
-	/// Méthode synchrone pour connecter le Newton.
-	/// Peut être surchargée.
-	/// Cette méthode est appelée dans le processus léger du lien et effectue
+	/// M√©thode synchrone pour connecter le Newton.
+	/// Peut √™tre surcharg√©e.
+	/// Cette m√©thode est appel√©e dans le processus l√©ger du lien et effectue
 	/// le dialogue minimal pour la connexion:
 	///
 	/// Desktop			Newton
@@ -409,14 +409,14 @@ protected:
 	/// kDInitiateDocking ->
 	///				<- kDNewtonName
 	///
-	/// \throws TDCLException si un problème est survenu.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual void		DoConnect( void );
 
 	///
-	/// Méthode synchrone pour déconnecter le Newton.
-	/// Peut être surchargée.
-	/// Cette méthode est appelée dans le processus léger du lien et envoie la
+	/// M√©thode synchrone pour d√©connecter le Newton.
+	/// Peut √™tre surcharg√©e.
+	/// Cette m√©thode est appel√©e dans le processus l√©ger du lien et envoie la
 	/// commande kDDisconnect au Newton
 	///
 	/// Desktop			Newton
@@ -426,18 +426,18 @@ protected:
 
 
 	///
-	/// Méthode appelée lorsque le Newton a envoyé une commande.
+	/// M√©thode appel√©e lorsque le Newton a envoy√© une commande.
 	///
-	/// Cette méthode est appelée pour toutes les commandes interceptées
+	/// Cette m√©thode est appel√©e pour toutes les commandes intercept√©es
 	/// dans la boucle principale.
-	/// Les protocoles peuvent échanger des commandes avec le Newton sans
-	/// qu'elles soient traitées dans la boucle principale.
+	/// Les protocoles peuvent √©changer des commandes avec le Newton sans
+	/// qu'elles soient trait√©es dans la boucle principale.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée. Si la valeur est
-	///						\c false, une exception est levée dans la boucle.
-	/// \return le prochain état du lien (l'état actuel étant kRunning),
-	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appelé
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e. Si la valeur est
+	///						\c false, une exception est lev√©e dans la boucle.
+	/// \return le prochain √©tat du lien (l'√©tat actuel √©tant kRunning),
+	///			par exemple kRunning ou kDisconnecting (DoDisconnect est appel√©
 	///			dans la boucle)
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -446,15 +446,15 @@ protected:
 								Boolean* outProcessed ) = 0;
 
 	///
-	/// Méthode appelée lorsqu'on a reçu une commande de l'application.
-	/// La commande est supprimée une fois que cette méthode retourne.
+	/// M√©thode appel√©e lorsqu'on a re√ßu une commande de l'application.
+	/// La commande est supprim√©e une fois que cette m√©thode retourne.
 	/// Cette classe ne fait rien -- retourne kRunning et met false dans
 	/// \c outProcessed.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée. Si la valeur est
-	///						\c false, une exception est levée dans la boucle.
-	/// \return le prochain état du lien (l'état actuel étant kRunning)
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e. Si la valeur est
+	///						\c false, une exception est lev√©e dans la boucle.
+	/// \return le prochain √©tat du lien (l'√©tat actuel √©tant kRunning)
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	virtual	EState	ProcessAppCommand(
@@ -462,28 +462,28 @@ protected:
 								Boolean* outProcessed );
 
 	///
-	/// Méthode appelée de temps en temps lorsqu'on n'a pas de nouvelles
+	/// M√©thode appel√©e de temps en temps lorsqu'on n'a pas de nouvelles
 	/// ni de l'application du Newton.
 	///
-	/// Par défaut, appelle Yield.
+	/// Par d√©faut, appelle Yield.
 	/// Il faudrait en fait dire bonjour.
 	///
-	/// \return le prochain état du lien (l'état actuel étant kRunning)
+	/// \return le prochain √©tat du lien (l'√©tat actuel √©tant kRunning)
 	///
 	virtual	EState			Idle( void );
 
 	///
 	/// Boucle principale du lien.
 	/// Attend:
-	/// - un dépassement de la temporisation pour appeler Idle
-	/// - des données du Newton (lit alors toute la commande)
+	/// - un d√©passement de la temporisation pour appeler Idle
+	/// - des donn√©es du Newton (lit alors toute la commande)
 	/// - un appel de l'application.
 	///
 	virtual void	Run( void );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-	/// Lorsque cette méthode retourne, le processus est terminé.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+	/// Lorsque cette m√©thode retourne, le processus est termin√©.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -491,27 +491,27 @@ protected:
 	virtual void HandleException( TDCLException* inException );
 
 	///
-	/// Méthode invoquée lorsque le processus de connexion est
-	/// terminé.
+	/// M√©thode invoqu√©e lorsque le processus de connexion est
+	/// termin√©.
 	///
-	/// Cette méthode appelle l'interface des messages pour lui dire et lui
+	/// Cette m√©thode appelle l'interface des messages pour lui dire et lui
 	/// transmet le nom du Newton.
 	///
 	virtual void		Connected( void );
 
 	///
-	/// Méthode invoquée lorsque le processus de déconnexion est
-	/// terminé.
+	/// M√©thode invoqu√©e lorsque le processus de d√©connexion est
+	/// termin√©.
 	///
 	/// Elle appelle l'interface des messages pour lui dire.
-	/// Elle libère aussi le nom du Newton dont on n'a plus besoin.
+	/// Elle lib√®re aussi le nom du Newton dont on n'a plus besoin.
 	///
 	virtual void		Disconnected( void );
 
 	///
-	/// Détermine les commandes de l'application que le lien
-	/// peut traiter. Cette méthode est appelée à chaque fois que le
-	/// lien va attendre un événement. Par défaut, le lien peut traiter
+	/// D√©termine les commandes de l'application que le lien
+	/// peut traiter. Cette m√©thode est appel√©e √† chaque fois que le
+	/// lien va attendre un √©v√©nement. Par d√©faut, le lien peut traiter
 	/// toutes les commandes d'application.
 	///
 	/// \return le masque pour les commandes de l'application
@@ -530,21 +530,21 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLLink( const TDCLLink& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLLink& operator = ( const TDCLLink& inCopy );
 
 	///
-	/// Méthode appelée par la boucle du processus léger pour faire le boulot.
+	/// M√©thode appel√©e par la boucle du processus l√©ger pour faire le boulot.
 	///
-	/// \return le nouvel état.
+	/// \return le nouvel √©tat.
 	///
 	EState		TransitionFromRunning( void );
 
@@ -558,18 +558,18 @@ protected:
 								// 5 seconds is enough on my mac with ADSP CTB tool.
 	};
 
-	/// \name Variables privées.
+	/// \name Variables priv√©es.
 	TDCLPipe*					mPipe;				///< Interface de communication.
-													///< \c nil si on n'est pas connecté.
-	TDCLServer*					mServer;			///< Serveur qui gère l'interface de
+													///< \c nil si on n'est pas connect√©.
+	TDCLServer*					mServer;			///< Serveur qui g√®re l'interface de
 													///< communication.
-	TDCLApplication* 			mApplication;		///< Référence sur l'application.
-	IDCLThreads::ISemaphore*	mStateMutex;		///< Sémaphore sur l'état.
+	TDCLApplication* 			mApplication;		///< R√©f√©rence sur l'application.
+	IDCLThreads::ISemaphore*	mStateMutex;		///< S√©maphore sur l'√©tat.
 	EState						mState;				///< Etat.
 	KUInt32						mType;				///< Type de connexion Dock.
 	KUInt32						mIdlePeriod;		///< Temps en millisecondes entre les
-													///< appels à Idle
-	Boolean						mIsBusy;			///< Si le lien est occupé.
+													///< appels √† Idle
+	Boolean						mIsBusy;			///< Si le lien est occup√©.
 	
 	/// \name Informations sur le Newton.
 	const KUInt16*				mNewtonName;		///< Nom du (possesseur du) Newton

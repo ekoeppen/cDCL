@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCommand.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			31/01/2001
+// Cr√©√© le:			31/01/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCommand.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,7 +68,7 @@
 #define KDEBUG_ENABLED 1
 
 // ------------------------------------------------------------------------- //
-//  * ReceiveCommand( TDCLStream*, ProgressFuncPtr, void* )
+//  *¬†ReceiveCommand( TDCLStream*, ProgressFuncPtr, void* )
 // ------------------------------------------------------------------------- //
 TDCLDockCommand*
 TDCLDockCommand::ReceiveCommand(
@@ -80,14 +80,14 @@ TDCLDockCommand::ReceiveCommand(
 	
 	KUInt32 theCommand;	// Command ID.
 	
-	// Lecture de l'entête, i.e. des 4 premiers longs.
+	// Lecture de l'ent√™te, i.e. des 4 premiers longs.
 	KUInt32 theHeader[4] = { 0L , 0L , 0L , 0L };
 	KUInt32 length = sizeof( theHeader );
 	inStream->Read( &theHeader, &length );
 
 	// Ici, length == 0 devrait suffire.
-	// Cependant, on a un problème plus haut dans nos sockets, d'où ce test
-	// un peu (complètement) crado.	
+	// Cependant, on a un probl√®me plus haut dans nos sockets, d'o√π ce test
+	// un peu (compl√®tement) crado.	
 	if (length == 0 || theHeader[0] == 0 || theHeader[1] == 0)
 	{
 		if (length != 0)
@@ -98,9 +98,9 @@ TDCLDockCommand::ReceiveCommand(
 				(unsigned int) theHeader[0],
 				(unsigned int) theHeader[1] );
 		}
-		// Ça veut juste dire que l'autre côté à déconnecté.
+		// √áa veut juste dire que l'autre c√¥t√© √† d√©connect√©.
 		// Rien d'anormal.
-		// Je dis EOF et ça sera récupéré plus haut.
+		// Je dis EOF et √ßa sera r√©cup√©r√© plus haut.
 		throw DCLEOF;
 	}
 
@@ -126,13 +126,13 @@ TDCLDockCommand::ReceiveCommand(
 		theCommandObject =
 			(TDCLDockCommand*) new TDCLDockCmdNoData( theCommand );
 	} else if (theLength == 0xFFFFFFFF) {
-		// Cas spécial: kDBackupIDs
+		// Cas sp√©cial: kDBackupIDs
 		if (theCommand != kDBackupIDs)
 		{
 			throw DCLBadDockCmd;
 		}
 		
-		// Lecture des entiers de 16 bits jusqu'à avoir 0x8000.
+		// Lecture des entiers de 16 bits jusqu'√† avoir 0x8000.
 		KUInt16* theData = (KUInt16*) ::malloc( sizeof( KSInt16 ) );
 		KUInt32 nbShorts = 0;
 		
@@ -231,11 +231,11 @@ TDCLDockCommand::ReceiveCommand(
 					break;
 
 				case kDHello:
-					// Les commandes Hello sont sans données.
-					// Si on se trouve ici, c'est que le Newton a renvoyé une
-					// commande hello avec des données, ce qui n'est
+					// Les commandes Hello sont sans donn√©es.
+					// Si on se trouve ici, c'est que le Newton a renvoy√© une
+					// commande hello avec des donn√©es, ce qui n'est
 					// normalement pas possible.
-					// On dégage en exception, les données seront libérées
+					// On d√©gage en exception, les donn√©es seront lib√©r√©es
 					// plus bas.
 					throw DCLBadDockCmd;
 				
@@ -380,7 +380,7 @@ TDCLDockCommand::SendCommand(
 	KDEBUG2( "<< Commande %.8X de taille %i",
 				(unsigned int) GetCommand(), (int) GetLength() );
 
-	// Envoi de l'entête et récupération de la taille.
+	// Envoi de l'ent√™te et r√©cup√©ration de la taille.
 	KUInt32 theLength = SendHeader( inStream );
 	
 	// Si inProgressFuncPtr n'est pas \c nil, on indique ces 16 octets.
@@ -395,7 +395,7 @@ TDCLDockCommand::SendCommand(
 		SendBody( inStream, theLength, inProgressFuncPtr, inRefCon );
 	}
 	
-	// On complète avec des zéros
+	// On compl√®te avec des z√©ros
 	theLength = 4 - (theLength & 0x3);
 	if (theLength != 4)
 	{
@@ -470,7 +470,7 @@ TDCLDockCommand::SendHeader( TDCLStream* inStream )
 	KUInt32 someLong;
 
 	someLong = 'newt';
-	inStream->PutLong( someLong );	// Cette méthode convertit en big endian
+	inStream->PutLong( someLong );	// Cette m√©thode convertit en big endian
 									// comme il faut.
 	someLong = 'dock';
 	inStream->PutLong( someLong );
@@ -492,7 +492,7 @@ TDCLDockCommand::SendBody(
 					ProgressFuncPtr inProgressFuncPtr,
 					void* inRefCon )
 {
-	// Récupération des données.
+	// R√©cup√©ration des donn√©es.
 	const KUInt8* theData = (const KUInt8*) GetData();
 	KUInt32 theLength;
 	
@@ -512,7 +512,7 @@ TDCLDockCommand::SendBody(
 			
 			sentBytes += theLength;
 			
-			// On prévient.
+			// On pr√©vient.
 			(*inProgressFuncPtr)(
 					inRefCon,
 					((double) (16 + sentBytes)) / ((double) (16 + inLength)) );

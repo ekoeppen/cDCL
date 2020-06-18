@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSRef.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/06/2002
+// Cr√©√© le:			30/06/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSRef.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -54,56 +54,56 @@ class TDCLNSSymbol;
 class TDCLStream;
 
 ///
-/// Classe pour une référence sur un objet NewtonScript.
-/// Une référence est un immédiat ou un pointeur.
+/// Classe pour une r√©f√©rence sur un objet NewtonScript.
+/// Une r√©f√©rence est un imm√©diat ou un pointeur.
 /// Cette classe ne contient volontairement qu'un KUIntPtr.
-/// Si le type ne correspond pas à une opération donnée,
+/// Si le type ne correspond pas √† une op√©ration donn√©e,
 /// on lance une exception.
 ///
-/// Remarques générales sur l'utilisation des objets et des références.
+/// Remarques g√©n√©rales sur l'utilisation des objets et des r√©f√©rences.
 ///
-/// NewtonScript possède un ramasse-miettes. Cette classe vise à remplacer le
-/// ramasse-miettes tout en étant le plus facile d'utilisation possible. Il
-/// faut respecter certaines règles pour à la fois éviter les fuites de mémoire
-/// et les accès à des objets déjà supprimés et pour éviter que le code ne soit
+/// NewtonScript poss√®de un ramasse-miettes. Cette classe vise √† remplacer le
+/// ramasse-miettes tout en √©tant le plus facile d'utilisation possible. Il
+/// faut respecter certaines r√®gles pour √† la fois √©viter les fuites de m√©moire
+/// et les acc√®s √† des objets d√©j√† supprim√©s et pour √©viter que le code ne soit
 /// trop lourd.
 ///
-/// Aucun objet (pointeur) n'est copié implicitement. Pour copier un objet,
-/// il faut utiliser les méthodes Clone, DeepClone et TotalClone qui ont la
-/// même sémantique que sur le Newton.
+/// Aucun objet (pointeur) n'est copi√© implicitement. Pour copier un objet,
+/// il faut utiliser les m√©thodes Clone, DeepClone et TotalClone qui ont la
+/// m√™me s√©mantique que sur le Newton.
 ///
 /// - 1. Valeur de retour des fonctions
 ///
-/// Une référence est normalement ou le plus souvent une référence sur un
+/// Une r√©f√©rence est normalement ou le plus souvent une r√©f√©rence sur un
 /// objet qui n'est pas sur la pile. Les fonctions MakeArray, MakeFrame, etc.
-/// créent de tels pointeurs, et le constructeur TDCLNSRef( TDCLNSObject* )
+/// cr√©ent de tels pointeurs, et le constructeur TDCLNSRef( TDCLNSObject* )
 /// prend un pointeur.
 ///
-/// C'est ce type de référence qu'il faut retourner. Une fonction ne doit
+/// C'est ce type de r√©f√©rence qu'il faut retourner. Une fonction ne doit
 /// jamais retourner un objet directement (comme TDCLFrame, TDCLString, etc.).
-/// À la rigueur, une fonction peut retourner un pointeur sur un objet,
+/// √Ä la rigueur, une fonction peut retourner un pointeur sur un objet,
 /// l'appelant devant savoir qu'en faire.
 ///
 /// - 2. Objets sur la pile
 ///
-/// Pour des raisons d'efficacité, on peut vouloir créer des objets
+/// Pour des raisons d'efficacit√©, on peut vouloir cr√©er des objets
 /// NewtonScript comme des tableaux ou des structures sur la pile. Certaines
-/// fonctions prennent directement des références vers des objets et donc ceci
-/// ne pose aucun problème pour ces fonctions.
+/// fonctions prennent directement des r√©f√©rences vers des objets et donc ceci
+/// ne pose aucun probl√®me pour ces fonctions.
 ///
-/// D'autres fonctions en revanche, notamment celles qui insèrent des
-/// références dans des objets, prennent des références comme paramètre. Il y a
-/// une bonne raison pour cela, c'est qu'il ne faut (généralement) pas leur
-/// donner une référence sur un objet créé sur la pile.
+/// D'autres fonctions en revanche, notamment celles qui ins√®rent des
+/// r√©f√©rences dans des objets, prennent des r√©f√©rences comme param√®tre. Il y a
+/// une bonne raison pour cela, c'est qu'il ne faut (g√©n√©ralement) pas leur
+/// donner une r√©f√©rence sur un objet cr√©√© sur la pile.
 ///
-/// C'est quand même possible en créant pour les appeler une référence sur ces
-/// objets qui sont dans la pile. Ceci est possible grâce au constructeur
-/// TDCLNSRef( TDCLNSObject& ). Ce constructeur doit être appelé partout où
-/// s'assure que l'objet référence dure plus longtemps que son utilisation.
+/// C'est quand m√™me possible en cr√©ant pour les appeler une r√©f√©rence sur ces
+/// objets qui sont dans la pile. Ceci est possible gr√¢ce au constructeur
+/// TDCLNSRef( TDCLNSObject& ). Ce constructeur doit √™tre appel√© partout o√π
+/// s'assure que l'objet r√©f√©rence dure plus longtemps que son utilisation.
 ///
-/// Néanmoins, comme l'objet référencé est dans la pile, la référence ne doit
-/// pas lui survivre. (remarque: si DCLDebugOn est défini, une exception sera
-/// lancée si cette référence survit à l'objet).
+/// N√©anmoins, comme l'objet r√©f√©renc√© est dans la pile, la r√©f√©rence ne doit
+/// pas lui survivre. (remarque: si DCLDebugOn est d√©fini, une exception sera
+/// lanc√©e si cette r√©f√©rence survit √† l'objet).
 ///
 /// Voici un exemple de code foireux:
 /// <code>
@@ -114,7 +114,7 @@ class TDCLStream;
 ///		return TDCLNSRef(myFrame);
 /// } // <-- plantage
 /// </code>
-/// (c'est pourquoi le mot clé explicit est utilisé, afin d'empêcher
+/// (c'est pourquoi le mot cl√© explicit est utilis√©, afin d'emp√™cher
 /// <code>return myFrame;</code> qui appellerait implicitement le constructeur)
 ///
 /// Voici un autre exemple, plus subtil:
@@ -128,8 +128,8 @@ class TDCLStream;
 /// (remarque: <code>inFrame.ToFrame().Set("bar", myArray);</code> ne compile
 /// pas non plus mais appellerait aussi implicitement le constructeur)
 ///
-/// Dans ces deux exemples, il faut utiliser des références sur des objets
-/// créés avec <code>new</code>.
+/// Dans ces deux exemples, il faut utiliser des r√©f√©rences sur des objets
+/// cr√©√©s avec <code>new</code>.
 /// Par exemple:
 /// <code>
 /// TDCLNSRef TBar::Foo( void )
@@ -141,7 +141,7 @@ class TDCLStream;
 /// }
 /// </code>
 ///
-/// On peut aussi cloner l'objet si le renvoi de l'objet n'est pas sûr.
+/// On peut aussi cloner l'objet si le renvoi de l'objet n'est pas s√ªr.
 /// Par exemple:
 /// <code>
 /// TDCLNSRef TBar::Foo( TDCLNSFrame& inFrame )
@@ -154,7 +154,7 @@ class TDCLStream;
 /// }
 /// </code>
 ///
-/// Les objets sur la pile doivent être créés dans le bon ordre.
+/// Les objets sur la pile doivent √™tre cr√©√©s dans le bon ordre.
 /// <code>
 /// {
 /// 	TDCLArray myArray;
@@ -163,26 +163,26 @@ class TDCLStream;
 /// } // <-- plantage
 /// </code>
 ///
-/// - 3. Paramètres des fonctions
+/// - 3. Param√®tres des fonctions
 ///
-/// Si le paramètre d'une fonction est de type TDCLNSRef, le constructeur par
-/// copie de TDCLNSRef est appelé. Ceci introduit quelques opérations souvent,
+/// Si le param√®tre d'une fonction est de type TDCLNSRef, le constructeur par
+/// copie de TDCLNSRef est appel√©. Ceci introduit quelques op√©rations souvent,
 /// si ce n'est toujours, inutiles.
-/// Pour éviter ceci, il faut considérer deux autres types possibles pour les
-/// paramètres:
-/// 	- <code>const TDCLNSRef&</code> si la référence sera copiée au besoin
+/// Pour √©viter ceci, il faut consid√©rer deux autres types possibles pour les
+/// param√®tres:
+/// 	- <code>const TDCLNSRef&</code> si la r√©f√©rence sera copi√©e au besoin
 ///		  dans le corps d'une fonction (normalement tout le temps le cas)
 ///		- <code>TDCLNSObject&</code> (e.g. <code>TDCLNSFrame&</code>) si
-///		  l'objet ne sera pas référencé en dehors du corps de la fonction et
+///		  l'objet ne sera pas r√©f√©renc√© en dehors du corps de la fonction et
 ///		  que son type est connu -- dans ce cas, la fonction devra parfois
-///		  construire une référence avec TDCLNSRef( TDCLNSObject& ).
+///		  construire une r√©f√©rence avec TDCLNSRef( TDCLNSObject& ).
 ///
-/// - 4. Vérification du type & conversions
+/// - 4. V√©rification du type & conversions
 ///
-/// Si vous avez besoin d'effectuer plusieurs opération sur cet objet, il
-/// est plus sage de stocker la référence dans une variable locale. En effet,
-/// l'opérateur vérifie le type, et donc ne pas stocker va consister à vérifier
-/// le type à chaque conversion.
+/// Si vous avez besoin d'effectuer plusieurs op√©ration sur cet objet, il
+/// est plus sage de stocker la r√©f√©rence dans une variable locale. En effet,
+/// l'op√©rateur v√©rifie le type, et donc ne pas stocker va consister √† v√©rifier
+/// le type √† chaque conversion.
 /// Exemple:
 /// <code>
 ///		TDCLNSFrame& theFrame = (TDCLNSFrame&) inFrameRef;
@@ -194,7 +194,7 @@ class TDCLStream;
 ///		return theResult;
 /// </code>
 ///
-/// peut être remplacé par:
+/// peut √™tre remplac√© par:
 ///
 /// <code>
 ///		TDCLNSFrame& theFrame = (TDCLNSFrame&) inFrameRef;
@@ -208,25 +208,25 @@ class TDCLStream;
 /// </code>
 ///
 /// Remarques:
-///		- <code>(TDCLNSFrame&) inFrameRef</code> est équivalent à l'appel
-///		  à ToFrame()
-///		- <code>(TDCLNSSymbol&) inSymbolRef2</code> est équivalent à juste
+///		- <code>(TDCLNSFrame&) inFrameRef</code> est √©quivalent √† l'appel
+///		  √† ToFrame()
+///		- <code>(TDCLNSSymbol&) inSymbolRef2</code> est √©quivalent √† juste
 ///		  inSymbolRef2 dans ce cas.
 ///
-/// Enfin, le mot clé C++ explicit est utilisé pour vous empêcher de faire
+/// Enfin, le mot cl√© C++ explicit est utilis√© pour vous emp√™cher de faire
 /// l'erreur suivante:
 /// <code>
 ///		TDCLNSFrame theFrame = inFrameRef.ToFrame();
 /// </code>
 ///
 /// Cette ligne *copie* la structure (enfin, elle ne compile pas, mais si elle
-/// compilait, cela conduirait à une copie).
+/// compilait, cela conduirait √† une copie).
 ///
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.11 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLNSRef
 {
@@ -244,101 +244,101 @@ public:
 	/// \name Constructeurs et destructeurs publics
 
 	///
-	/// Constructeur par défaut.
-	/// Initialise la référence à kNILRefValue
+	/// Constructeur par d√©faut.
+	/// Initialise la r√©f√©rence √† kNILRefValue
 	///
 	TDCLNSRef( void );
 
 	///
 	/// Destructeur.
-	/// Décrémente la référence s'il s'agit d'un pointeur.
+	/// D√©cr√©mente la r√©f√©rence s'il s'agit d'un pointeur.
 	///
 	~TDCLNSRef( void );
 	
 	///
 	/// Constructeur par copie.
-	/// Incrémente la référence s'il s'agit d'un pointeur.
+	/// Incr√©mente la r√©f√©rence s'il s'agit d'un pointeur.
 	///
-	/// \param inCopy		référence à copier.
+	/// \param inCopy		r√©f√©rence √† copier.
 	///
 	TDCLNSRef( const TDCLNSRef& inCopy );
 
 	///
-	/// Constructeur à partir d'un objet sur la pile.
-	/// Non seulement l'objet NS n'est pas copié, mais en plus une exception
-	/// sera lancée si la référence continue d'exister après l'objet et si
-	/// <code>DCLDebugOn</code> est définie.
-	/// Attention, ceci peut ne pas être ce que vous souhaitez.
+	/// Constructeur √† partir d'un objet sur la pile.
+	/// Non seulement l'objet NS n'est pas copi√©, mais en plus une exception
+	/// sera lanc√©e si la r√©f√©rence continue d'exister apr√®s l'objet et si
+	/// <code>DCLDebugOn</code> est d√©finie.
+	/// Attention, ceci peut ne pas √™tre ce que vous souhaitez.
 	///
-	/// \param inObject		objet à référencer.
+	/// \param inObject		objet √† r√©f√©rencer.
 	///
 	explicit TDCLNSRef( TDCLNSObject& inObject );
 
 	///
-	/// Constructeur à partir d'un objet.
-	/// L'objet NS n'est pas copié.
-	/// Attention, ceci peut ne pas être ce que vous souhaitez.
+	/// Constructeur √† partir d'un objet.
+	/// L'objet NS n'est pas copi√©.
+	/// Attention, ceci peut ne pas √™tre ce que vous souhaitez.
 	///
-	/// \param inObject		objet à référencer.
+	/// \param inObject		objet √† r√©f√©rencer.
 	///
 	TDCLNSRef( TDCLNSObject* inObject );
 
 	///
-	/// Opérateur d'assignation.
-	/// Décrémente la copie de l'ancienne référence s'il s'agit
-	/// d'un pointeur et incrémente la nouvelle référence si
-	/// nécessaire.
+	/// Op√©rateur d'assignation.
+	/// D√©cr√©mente la copie de l'ancienne r√©f√©rence s'il s'agit
+	/// d'un pointeur et incr√©mente la nouvelle r√©f√©rence si
+	/// n√©cessaire.
 	///
-	/// \param inCopy		référence à copier.
+	/// \param inCopy		r√©f√©rence √† copier.
 	///
 	TDCLNSRef& operator = ( const TDCLNSRef& inCopy );
 
 	///
-	/// Opérateur d'assignation.
-	/// Décrémente la copie de l'ancienne référence s'il s'agit
-	/// d'un pointeur et incrémente la nouvelle référence.
+	/// Op√©rateur d'assignation.
+	/// D√©cr√©mente la copie de l'ancienne r√©f√©rence s'il s'agit
+	/// d'un pointeur et incr√©mente la nouvelle r√©f√©rence.
 	///
-	/// \param inObject		objet à référencer.
+	/// \param inObject		objet √† r√©f√©rencer.
 	///
 	TDCLNSRef& operator = ( TDCLNSObject& inObject );
 
 	///
-	/// Opérateur d'égalité.
-	/// Ceci est l'égalité de surface. Deux TDCLRef sont
-	/// égaux si leur valeurs (mRef) sont égales.
+	/// Op√©rateur d'√©galit√©.
+	/// Ceci est l'√©galit√© de surface. Deux TDCLRef sont
+	/// √©gaux si leur valeurs (mRef) sont √©gales.
 	/// Cependant, si ce sont tous deux des symboles, ils
-	/// sont comparés. Ceci donne un opérateur sémantiquement
-	/// équivalent à = en NewtonScript.
+	/// sont compar√©s. Ceci donne un op√©rateur s√©mantiquement
+	/// √©quivalent √† = en NewtonScript.
 	///
-	/// \param inAlter		référence à comparer.
+	/// \param inAlter		r√©f√©rence √† comparer.
 	///
 	Boolean operator == ( const TDCLNSRef& inAlter ) const;
 
 	///
-	/// Opérateur d'inégalité.
-	/// La négation du précédent.
+	/// Op√©rateur d'in√©galit√©.
+	/// La n√©gation du pr√©c√©dent.
 	///
-	/// \param inAlter		référence à comparer.
+	/// \param inAlter		r√©f√©rence √† comparer.
 	///
 	inline Boolean operator != ( const TDCLNSRef& inAlter ) const
 		{
 			return !(*this == inAlter);
 		}
 
-	/// \name Fonctions sur la référence
+	/// \name Fonctions sur la r√©f√©rence
 
 	///
-	/// Créateur à partir d'une référence.
+	/// Cr√©ateur √† partir d'une r√©f√©rence.
 	///
-	/// \param inRef	référence.
-	/// \return un nouvel objet TDCLNSRef avec cette référence.
+	/// \param inRef	r√©f√©rence.
+	/// \return un nouvel objet TDCLNSRef avec cette r√©f√©rence.
 	///
 	static TDCLNSRef Ref( KUIntPtr inRef );
 
 	///
-	/// Récupère la valeur de la référence.
+	/// R√©cup√®re la valeur de la r√©f√©rence.
 	///
-	/// \return la valeur de la référence.
+	/// \return la valeur de la r√©f√©rence.
 	///
 	inline KUIntPtr RefOf( void ) const
 		{
@@ -362,31 +362,31 @@ public:
 	///
 	static const TDCLNSRef kNewFuncClass;
 
-	/// \name Créateurs
+	/// \name Cr√©ateurs
 
 	///
-	/// Créateur à partir d'un entier.
+	/// Cr√©ateur √† partir d'un entier.
 	///
-	/// \param inInt	entier (signé).
-	/// \return un nouvel objet TDCLNSRef représentant cet entier.
+	/// \param inInt	entier (sign√©).
+	/// \return un nouvel objet TDCLNSRef repr√©sentant cet entier.
 	///	\throws	TDCLNSException si les deux bits de poids fort (30 & 29)
 	///			ne sont pas nuls.
 	///
 	static TDCLNSRef MakeInt( KSInt32 inInt );
 
 	///
-	/// Créateur à partir d'un caractère.
+	/// Cr√©ateur √† partir d'un caract√®re.
 	///
-	/// \param inChar	caractère (Unicode).
-	/// \return un nouvel objet TDCLNSRef représentant ce caractère.
+	/// \param inChar	caract√®re (Unicode).
+	/// \return un nouvel objet TDCLNSRef repr√©sentant ce caract√®re.
 	///
 	static TDCLNSRef MakeChar( KUInt16 inChar );
 
 	///
-	/// Créateur à partir d'un caractère.
+	/// Cr√©ateur √† partir d'un caract√®re.
 	///
-	/// \param inChar	caractère (ISO-8859-1).
-	/// \return un nouvel objet TDCLNSRef représentant ce caractère.
+	/// \param inChar	caract√®re (ISO-8859-1).
+	/// \return un nouvel objet TDCLNSRef repr√©sentant ce caract√®re.
 	///
 	inline static TDCLNSRef MakeChar( unsigned char inChar )
 		{
@@ -394,120 +394,120 @@ public:
 		}
 
 	///
-	/// Créateur à partir d'un booléen.
+	/// Cr√©ateur √† partir d'un bool√©en.
 	///
-	/// \param inBoolean	booléen.
-	/// \return un nouvel objet TDCLNSRef représentant ce booléen.
+	/// \param inBoolean	bool√©en.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant ce bool√©en.
 	///
 	static TDCLNSRef MakeBoolean( Boolean inBoolean );
 
 	///
-	/// Créateur pour un pointeur magique.
+	/// Cr√©ateur pour un pointeur magique.
 	///
 	/// \param inValue	valeur du pointeur magique (indice et table)
-	/// \return un nouvel objet TDCLNSRef représentant ce pointeur magique.
-	///	\throws	TDCLNSException si l'indice ou le numéro de la table sont trop
+	/// \return un nouvel objet TDCLNSRef repr√©sentant ce pointeur magique.
+	///	\throws	TDCLNSException si l'indice ou le num√©ro de la table sont trop
 	///			grands.
 	///
 	static TDCLNSRef MakeMagicPtr( KUInt32 inValue );
 
 	///
-	/// Créateur pour un pointeur magique.
+	/// Cr√©ateur pour un pointeur magique.
 	///
 	/// \param inTable	table pour le pointeur magique.
 	/// \param inIndex	indice du pointeur magique.
-	/// \return un nouvel objet TDCLNSRef représentant ce pointeur magique.
-	///	\throws	TDCLNSException si l'indice ou le numéro de la table sont trop
+	/// \return un nouvel objet TDCLNSRef repr√©sentant ce pointeur magique.
+	///	\throws	TDCLNSException si l'indice ou le num√©ro de la table sont trop
 	///			grands.
 	///
 	static TDCLNSRef MakeMagicPtr( KUInt32 inTable, KUInt32 inIndex );
 
 	///
-	/// Créateur pour une structure vide.
+	/// Cr√©ateur pour une structure vide.
 	///
-	/// \return un nouvel objet TDCLNSRef représentant une nouvelle structure.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant une nouvelle structure.
 	///
 	static TDCLNSRef MakeFrame( void );
 
 	///
-	/// Créateur pour une fonction vide.
+	/// Cr√©ateur pour une fonction vide.
 	///
-	/// \return un nouvel objet TDCLNSRef représentant une nouvelle fonction.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant une nouvelle fonction.
 	///
 	static TDCLNSRef MakeFunction( void );
 
 	///
-	/// Créateur pour un tableau.
+	/// Cr√©ateur pour un tableau.
 	///
 	/// \param inSize	taille du tableau
-	/// \param inRef	valeur initiale pour les éléments du tableau
-	/// \return un nouvel objet TDCLNSRef représentant un nouveau tableau.
+	/// \param inRef	valeur initiale pour les √©l√©ments du tableau
+	/// \return un nouvel objet TDCLNSRef repr√©sentant un nouveau tableau.
 	///
 	static TDCLNSRef MakeArray(
 						KUInt32 inSize = 0,
 						const TDCLNSRef& inRef = TDCLNSRef::kNILREF );
 
 	///
-	/// Créateur pour un symbole à partir d'une chaîne ISO-8859-1.
+	/// Cr√©ateur pour un symbole √† partir d'une cha√Æne ISO-8859-1.
 	///
-	/// \param inString		chaîne pour ce symbole.
-	/// \return un nouvel objet TDCLNSRef représentant un nouveau symbole.
+	/// \param inString		cha√Æne pour ce symbole.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant un nouveau symbole.
 	///
 	static TDCLNSRef MakeSymbol( const char* inString );
 
 	///
-	/// Créateur pour un symbole à partir d'une chaîne UCS-2.
+	/// Cr√©ateur pour un symbole √† partir d'une cha√Æne UCS-2.
 	///
-	/// \param inString		chaîne pour ce symbole.
-	/// \return un nouvel objet TDCLNSRef représentant un nouveau symbole.
+	/// \param inString		cha√Æne pour ce symbole.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant un nouveau symbole.
 	///
 	static TDCLNSRef MakeSymbol( const KUInt16* inString );
 
 	///
-	/// Créateur pour une chaîne à partir d'une chaîne ISO-8859-1.
+	/// Cr√©ateur pour une cha√Æne √† partir d'une cha√Æne ISO-8859-1.
 	///
-	/// \param inString		chaîne considérée.
-	/// \return un nouvel objet TDCLNSRef représentant une nouvelle chaîne.
+	/// \param inString		cha√Æne consid√©r√©e.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant une nouvelle cha√Æne.
 	///
 	static TDCLNSRef MakeString( const char* inString );
 
 	///
-	/// Créateur pour une chaîne à partir d'une chaîne UCS-2.
+	/// Cr√©ateur pour une cha√Æne √† partir d'une cha√Æne UCS-2.
 	///
-	/// \param inString		chaîne considérée (terminée par un nul).
-	/// \return un nouvel objet TDCLNSRef représentant une nouvelle chaîne.
+	/// \param inString		cha√Æne consid√©r√©e (termin√©e par un nul).
+	/// \return un nouvel objet TDCLNSRef repr√©sentant une nouvelle cha√Æne.
 	///
 	static TDCLNSRef MakeString( const KUInt16* inString );
 
 	///
-	/// Créateur pour une chaîne à partir d'une suite de caractères UCS-2.
+	/// Cr√©ateur pour une cha√Æne √† partir d'une suite de caract√®res UCS-2.
 	///
-	/// \param inString		suite de caractères considérée.
-	/// \param inSize		nombre de caractères.
-	/// \return un nouvel objet TDCLNSRef représentant une nouvelle chaîne.
+	/// \param inString		suite de caract√®res consid√©r√©e.
+	/// \param inSize		nombre de caract√®res.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant une nouvelle cha√Æne.
 	///
 	static TDCLNSRef MakeString( const KUInt16* inString, KUInt32 inSize );
 
 	///
-	/// Créateur pour un binaire à partir d'un pointeur et d'une taille.
-	/// La classe est la classe par défaut.
+	/// Cr√©ateur pour un binaire √† partir d'un pointeur et d'une taille.
+	/// La classe est la classe par d√©faut.
 	///
-	/// \param inData		données pour le binaire.
-	/// \param inSize		taille des données pour le binaire.
-	/// \return un nouvel objet TDCLNSRef représentant un nouveau binaire.
+	/// \param inData		donn√©es pour le binaire.
+	/// \param inSize		taille des donn√©es pour le binaire.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant un nouveau binaire.
 	///
 	static TDCLNSRef MakeBinary(
 							const void* inData,
 							KUInt32 inSize );
 
 	///
-	/// Créateur pour un binaire à partir d'un pointeur, d'une taille
+	/// Cr√©ateur pour un binaire √† partir d'un pointeur, d'une taille
 	/// et d'une classe.
 	///
-	/// \param inData		données pour le binaire.
-	/// \param inSize		taille des données pour le binaire.
+	/// \param inData		donn√©es pour le binaire.
+	/// \param inSize		taille des donn√©es pour le binaire.
 	/// \param inClass		classe du binaire.
-	/// \return un nouvel objet TDCLNSRef représentant un nouveau binaire.
+	/// \return un nouvel objet TDCLNSRef repr√©sentant un nouveau binaire.
 	///
 	static TDCLNSRef MakeBinary(
 							const void* inData,
@@ -517,7 +517,7 @@ public:
 	/// \name Tests sur le type
 
 	///
-	/// Détermine si la référence est un entier.
+	/// D√©termine si la r√©f√©rence est un entier.
 	///
 	/// \return \c true si c'est un entier, \c false sinon.
 	///
@@ -527,9 +527,9 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un caractère.
+	/// D√©termine si la r√©f√©rence est un caract√®re.
 	///
-	/// \return \c true si c'est un caractère, \c false sinon.
+	/// \return \c true si c'est un caract√®re, \c false sinon.
 	///
 	inline Boolean IsChar( void ) const
 		{
@@ -537,9 +537,9 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un booléen (un des deux booléens).
+	/// D√©termine si la r√©f√©rence est un bool√©en (un des deux bool√©ens).
 	///
-	/// \return \c true si c'est un booléen, \c false sinon.
+	/// \return \c true si c'est un bool√©en, \c false sinon.
 	///
 	inline Boolean IsBoolean( void ) const
 		{
@@ -547,7 +547,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est NIL.
+	/// D√©termine si la r√©f√©rence est NIL.
 	///
 	/// \return \c true si c'est NIL, \c false sinon.
 	///
@@ -557,7 +557,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est TRUE.
+	/// D√©termine si la r√©f√©rence est TRUE.
 	///
 	/// \return \c true si c'est TRUE, \c false sinon.
 	///
@@ -567,7 +567,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un pointeur (magique ou non).
+	/// D√©termine si la r√©f√©rence est un pointeur (magique ou non).
 	///
 	/// \return \c true si c'est un pointeur, \c false sinon.
 	///
@@ -577,7 +577,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un pointeur magique.
+	/// D√©termine si la r√©f√©rence est un pointeur magique.
 	///
 	/// \return \c true si c'est un pointeur magique, \c false sinon.
 	///
@@ -587,7 +587,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un pointeur normal.
+	/// D√©termine si la r√©f√©rence est un pointeur normal.
 	///
 	/// \return \c true si c'est un pointeur normal, \c false sinon.
 	///
@@ -597,7 +597,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un symbole.
+	/// D√©termine si la r√©f√©rence est un symbole.
 	///
 	/// \return \c true si c'est un symbole, \c false sinon.
 	///
@@ -607,7 +607,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est une structure.
+	/// D√©termine si la r√©f√©rence est une structure.
 	///
 	/// \return \c true si c'est une structure, \c false sinon.
 	///
@@ -617,7 +617,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un tableau.
+	/// D√©termine si la r√©f√©rence est un tableau.
 	///
 	/// \return \c true si c'est un tableau, \c false sinon.
 	///
@@ -627,7 +627,7 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est un binaire.
+	/// D√©termine si la r√©f√©rence est un binaire.
 	///
 	/// \return \c true si c'est un binaire, \c false sinon.
 	///
@@ -637,107 +637,107 @@ public:
 		}
 
 	///
-	/// Détermine si la référence est une chaîne.
+	/// D√©termine si la r√©f√©rence est une cha√Æne.
 	///
-	/// \return \c true si c'est une chaîne, \c false sinon.
+	/// \return \c true si c'est une cha√Æne, \c false sinon.
 	///
 	inline Boolean IsString( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsString();
 		}
 
-	/// \name Conversion des immédiats
+	/// \name Conversion des imm√©diats
 
 	///
-	/// Récupère l'entier représenté par cette référence.
+	/// R√©cup√®re l'entier repr√©sent√© par cette r√©f√©rence.
 	///
-	/// \return l'entier représenté par cette référence.
-	///	\throws	TDCLException si cette référence n'est pas un entier.
+	/// \return l'entier repr√©sent√© par cette r√©f√©rence.
+	///	\throws	TDCLException si cette r√©f√©rence n'est pas un entier.
 	///
 	KSInt32 ToInt( void ) const;
 
 	///
-	/// Récupère le caractère représenté par cette référence.
+	/// R√©cup√®re le caract√®re repr√©sent√© par cette r√©f√©rence.
 	///
-	/// \return le caractère représenté par cette référence (en unicode).
-	///	\throws	TDCLException si cette référence n'est pas un caractère.
+	/// \return le caract√®re repr√©sent√© par cette r√©f√©rence (en unicode).
+	///	\throws	TDCLException si cette r√©f√©rence n'est pas un caract√®re.
 	///
 	KUInt16 ToChar( void ) const;
 
 	///
-	/// Récupère le pointeur magique représenté par cette référence.
+	/// R√©cup√®re le pointeur magique repr√©sent√© par cette r√©f√©rence.
 	///
-	/// \return le pointeur magique représenté par cette référence.
-	///	\throws	TDCLException si cette référence n'est pas un pointeur magique.
+	/// \return le pointeur magique repr√©sent√© par cette r√©f√©rence.
+	///	\throws	TDCLException si cette r√©f√©rence n'est pas un pointeur magique.
 	///
 	KUInt32 ToMagicPtr( void ) const;
 
 	///
-	/// Récupère l'indice du pointeur magique représenté par cette référence.
+	/// R√©cup√®re l'indice du pointeur magique repr√©sent√© par cette r√©f√©rence.
 	///
 	/// \return l'indice du pointeur magique.
-	///	\throws	TDCLException si cette référence n'est pas un pointeur magique.
+	///	\throws	TDCLException si cette r√©f√©rence n'est pas un pointeur magique.
 	///
 	KUInt32 GetMagicPtrIndex( void ) const;
 
 	///
-	/// Récupère le numéro de la table du pointeur magique représenté par cette
-	/// référence.
+	/// R√©cup√®re le num√©ro de la table du pointeur magique repr√©sent√© par cette
+	/// r√©f√©rence.
 	///
-	/// \return le numéro de la table du pointeur magique.
-	///	\throws	TDCLException si cette référence n'est pas un pointeur magique.
+	/// \return le num√©ro de la table du pointeur magique.
+	///	\throws	TDCLException si cette r√©f√©rence n'est pas un pointeur magique.
 	///
 	KUInt32 GetMagicPtrTable( void ) const;
 
-	/// \name Fonctions générales
+	/// \name Fonctions g√©n√©rales
 
 	///
-	/// Copie l'objet référencé (s'il s'agit d'un pointeur).
+	/// Copie l'objet r√©f√©renc√© (s'il s'agit d'un pointeur).
 	///
-	/// \return une référence pointant vers une copie de l'objet.
+	/// \return une r√©f√©rence pointant vers une copie de l'objet.
 	///
 	TDCLNSRef Clone( void ) const;
 
 	///
-	/// Copie l'objet référencé en profondeur (s'il s'agit
+	/// Copie l'objet r√©f√©renc√© en profondeur (s'il s'agit
 	/// d'un pointeur).
 	///
-	/// \return une référence pointant vers une copie de l'objet.
+	/// \return une r√©f√©rence pointant vers une copie de l'objet.
 	///
 	TDCLNSRef DeepClone( void ) const;
 
 	///
-	/// Copie l'objet référencé en profondeur (s'il s'agit
+	/// Copie l'objet r√©f√©renc√© en profondeur (s'il s'agit
 	/// d'un pointeur).
 	///
-	/// \return une référence pointant vers une copie de l'objet.
+	/// \return une r√©f√©rence pointant vers une copie de l'objet.
 	///
 	TDCLNSRef TotalClone( void ) const;
 
 	/// \name Fonctions sur la classe
 
 	///
-	/// Détermine la classe cet objet.
-	/// Ce n'est pas forcément un symbole.
+	/// D√©termine la classe cet objet.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \return une référence vers la classe de cet objet.
+	/// \return une r√©f√©rence vers la classe de cet objet.
 	///
 	TDCLNSRef ClassOf( void ) const;
 
 	///
-	/// Détermine la classe primaire de cet objet.
-	/// Il s'agit forcément d'un symbole.
+	/// D√©termine la classe primaire de cet objet.
+	/// Il s'agit forc√©ment d'un symbole.
 	///
-	/// \return une référence vers la classe primaire de cet objet.
+	/// \return une r√©f√©rence vers la classe primaire de cet objet.
 	///
 	TDCLNSRef PrimClassOf( void ) const;
 
 	///
 	/// Change la classe de cet objet.
-	/// Ceci n'est pas possible pour les immédiats (lance
+	/// Ceci n'est pas possible pour les imm√©diats (lance
 	/// kNSErrObjectPointerOfNonPtr) ou pour les symboles (cf TDCLNSSymbol.h)
 	///
-	/// \param	inClass un objet qui sert de nouvelle classe à cet objet.
+	/// \param	inClass un objet qui sert de nouvelle classe √† cet objet.
 	/// \return *this
 	/// \throws TDCLNSException si une erreur est survenue.
 	///
@@ -745,7 +745,7 @@ public:
 
 	///
 	/// Change la classe de cet objet.
-	/// Ceci n'est pas possible pour les immédiats (lance
+	/// Ceci n'est pas possible pour les imm√©diats (lance
 	/// kNSErrObjectPointerOfNonPtr) ou pour les symboles (cf TDCLNSSymbol.h)
 	///
 	/// \param	inClass la nouvelle classe de l'objet
@@ -757,14 +757,14 @@ public:
 			return SetClass( MakeSymbol( inClass ) );
 		}
 
-	/// \name Fonctions sur les structures & les éléments
+	/// \name Fonctions sur les structures & les √©l√©ments
 
 	/// \name Conversion vers TDCLNSObject&
 
 	///
 	/// Conversion vers TDCLNSSymbol&
 	///
-	/// \return une référence vers le TDCLNSSymbol pointé par cet objet.
+	/// \return une r√©f√©rence vers le TDCLNSSymbol point√© par cet objet.
 	/// \throw TDCLException si l'objet n'est pas un symbole.
 	/// 
 	inline operator TDCLNSSymbol& ( void ) const
@@ -775,7 +775,7 @@ public:
 	///
 	/// Conversion vers TDCLNSSymbol&
 	///
-	/// \return une référence vers le TDCLNSSymbol pointé par cet objet.
+	/// \return une r√©f√©rence vers le TDCLNSSymbol point√© par cet objet.
 	/// \throw TDCLException si l'objet n'est pas un symbole.
 	/// 
 	TDCLNSSymbol& ToSymbol( void ) const;
@@ -783,7 +783,7 @@ public:
 	///
 	/// Conversion vers TDCLNSFrame&
 	///
-	/// \return une référence vers la TDCLNSFrame pointée par cet objet.
+	/// \return une r√©f√©rence vers la TDCLNSFrame point√©e par cet objet.
 	/// \throw TDCLException si l'objet n'est pas une structure.
 	/// 
 	inline operator TDCLNSFrame& ( void ) const
@@ -794,7 +794,7 @@ public:
 	///
 	/// Conversion vers TDCLNSFrame&
 	///
-	/// \return une référence vers la TDCLNSFrame pointée par cet objet.
+	/// \return une r√©f√©rence vers la TDCLNSFrame point√©e par cet objet.
 	/// \throw TDCLException si l'objet n'est pas une structure.
 	/// 
 	TDCLNSFrame& ToFrame( void ) const;
@@ -802,7 +802,7 @@ public:
 	///
 	/// Conversion vers TDCLNSArray&
 	///
-	/// \return une référence vers le TDCLNSArray pointé par cet objet.
+	/// \return une r√©f√©rence vers le TDCLNSArray point√© par cet objet.
 	/// \throw TDCLException si l'objet n'est pas un tableau.
 	/// 
 	inline operator TDCLNSArray& ( void ) const
@@ -813,7 +813,7 @@ public:
 	///
 	/// Conversion vers TDCLNSArray&
 	///
-	/// \return une référence vers le TDCLNSArray pointé par cet objet.
+	/// \return une r√©f√©rence vers le TDCLNSArray point√© par cet objet.
 	/// \throw TDCLException si l'objet n'est pas un tableau.
 	/// 
 	TDCLNSArray& ToArray( void ) const;
@@ -821,8 +821,8 @@ public:
 	///
 	/// Conversion vers TDCLNSBinary&
 	///
-	/// \return une référence vers la TDCLNSBinary pointée par cet objet.
-	/// \throw TDCLException si l'objet n'est pas une chaîne.
+	/// \return une r√©f√©rence vers la TDCLNSBinary point√©e par cet objet.
+	/// \throw TDCLException si l'objet n'est pas une cha√Æne.
 	/// 
 	inline operator TDCLNSBinary& ( void ) const
 		{
@@ -832,16 +832,16 @@ public:
 	///
 	/// Conversion vers TDCLNSBinary&
 	///
-	/// \return une référence vers la TDCLNSBinary pointée par cet objet.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \return une r√©f√©rence vers la TDCLNSBinary point√©e par cet objet.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	/// 
 	TDCLNSBinary& ToBinary( void ) const;
 	
 	///
 	/// Conversion vers TDCLNSString&
 	///
-	/// \return une référence vers la TDCLNSString pointée par cet objet.
-	/// \throw TDCLException si l'objet n'est pas une chaîne.
+	/// \return une r√©f√©rence vers la TDCLNSString point√©e par cet objet.
+	/// \throw TDCLException si l'objet n'est pas une cha√Æne.
 	/// 
 	inline operator TDCLNSString& ( void ) const
 		{
@@ -851,117 +851,117 @@ public:
 	///
 	/// Conversion vers TDCLNSString&
 	///
-	/// \return une référence vers la TDCLNSString pointée par cet objet.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \return une r√©f√©rence vers la TDCLNSString point√©e par cet objet.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	/// 
 	TDCLNSString& ToString( void ) const;
 	
 	///
-	/// Opérateur de concaténation.
+	/// Op√©rateur de concat√©nation.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator & ( const TDCLNSRef& inAlter ) const;
 	
 	///
-	/// Opérateur de concaténation.
+	/// Op√©rateur de concat√©nation.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator & ( const char* inAlter ) const;
 	
 	///
-	/// Opérateur de concaténation.
+	/// Op√©rateur de concat√©nation.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator & ( const KUInt16* inAlter ) const;
 	
 	///
-	/// Opérateur de concaténation avec une espace.
+	/// Op√©rateur de concat√©nation avec une espace.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator && ( const TDCLNSRef& inAlter ) const;
 
 	///
-	/// Opérateur de concaténation avec une espace.
+	/// Op√©rateur de concat√©nation avec une espace.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator && ( const char* inAlter ) const;
 
 	///
-	/// Opérateur de concaténation avec une espace.
+	/// Op√©rateur de concat√©nation avec une espace.
 	///
-	/// \param inAlter		chaîne à concaténer avec cette chaîne.
-	/// \throw TDCLNSException si l'objet n'est pas une chaîne.
+	/// \param inAlter		cha√Æne √† concat√©ner avec cette cha√Æne.
+	/// \throw TDCLNSException si l'objet n'est pas une cha√Æne.
 	///
 	TDCLNSRef operator && ( const KUInt16* inAlter ) const;
 
 private:
-	/// \name Constructeur privé
+	/// \name Constructeur priv√©
 
 	///
-	/// Constructeur à partir d'une référence.
-	/// Incrémente la référence s'il s'agit d'un pointeur.
+	/// Constructeur √† partir d'une r√©f√©rence.
+	/// Incr√©mente la r√©f√©rence s'il s'agit d'un pointeur.
 	///
 	TDCLNSRef( KUIntPtr inRef );
 
 	/// \name Gestion du pointeur
 
 	///
-	/// Récupère le pointeur sur l'objet.
+	/// R√©cup√®re le pointeur sur l'objet.
 	///
 	inline TDCLNSObject* GetPointer( void ) const
 		{
 			return (TDCLNSObject*) (mRef - kPointerTag);
 		}
 
-	/// \name Interface Entrée/Sortie
+	/// \name Interface Entr√©e/Sortie
 
 	///
-	/// Crée une représentation XML de la référence.
+	/// Cr√©e une repr√©sentation XML de la r√©f√©rence.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	void ToXML( TDCLXMLEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation NSOF de la référence.
+	/// Cr√©e une repr√©sentation NSOF de la r√©f√©rence.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	void ToNSOF( TDCLNSOFEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation sous forme de texte de la référence.
+	/// Cr√©e une repr√©sentation sous forme de texte de la r√©f√©rence.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	void ToText( TDCLTextEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation pour un paquet de la référence.
+	/// Cr√©e une repr√©sentation pour un paquet de la r√©f√©rence.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	void ToPkg( TDCLPkgEncoder* inEncoder ) const;
 
-	/// \name Référence
+	/// \name R√©f√©rence
 	KUIntPtr	mRef;
 	
 	///
-	/// Constantes pour la référence.
+	/// Constantes pour la r√©f√©rence.
 	///
 	enum {
 		kTagShift		= 0x2,
@@ -990,6 +990,6 @@ private:
 		// __TDCLNSREF__
 
 // ============================================================================= //
-// I *____knew* I had some reason for not logging you off... If I could just //
+// I *knew* I had some reason for not logging you off... If I could just //
 // remember what it was.                                                         //
 // ============================================================================= //

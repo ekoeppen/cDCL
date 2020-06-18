@@ -2,7 +2,7 @@
 // Fichier:			TDCLLoadPkgEngine.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/5/2003
+// Cr√©√© le:			10/5/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLLoadPkgEngine.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -47,7 +47,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLLoadPkgEngine
 	:
@@ -55,26 +55,26 @@ class TDCLLoadPkgEngine
 {
 public:
 	///
-	/// Constructeur à partir d'un lien.
+	/// Constructeur √† partir d'un lien.
 	///
-	/// \param inLink	référence sur le lien.
+	/// \param inLink	r√©f√©rence sur le lien.
 	///
 	TDCLLoadPkgEngine( TDCLFullDockLink* inLink );
-	
+
 	///
-	/// Méthode appelée par le lien pour installer un paquet.
+	/// M√©thode appel√©e par le lien pour installer un paquet.
 	///
-	/// \param inPackage	paquet à installer.
+	/// \param inPackage	paquet √† installer.
 	/// \throws TDCLException si une erreur est survenue.
 	///
 	void			InstallPackage(
 								TDCLFSItemRef inPackage );
 
 	///
-	/// Méthode appelée pour gérer des commandes venant du Newton.
+	/// M√©thode appel√©e pour g√©rer des commandes venant du Newton.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée.
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -84,17 +84,17 @@ public:
 
 protected:
 	///
-	/// Méthode appelée pour indiquer qu'on commence à installer le paquet.
-	/// Cette méthode doit initialiser la progression d'installation ou un truc
-	/// approchant. Par défaut ne fait rien.
+	/// M√©thode appel√©e pour indiquer qu'on commence √† installer le paquet.
+	/// Cette m√©thode doit initialiser la progression d'installation ou un truc
+	/// approchant. Par d√©faut ne fait rien.
 	///
-	/// \param inPackageName	nom du paquet installé.
+	/// \param inPackageName	nom du paquet install√©.
 	///
 	virtual void		StartInstallingPackage( const KUInt16* inPackageName );
 
 	///
-	/// Méthode appelée pour indiquer la progression de l'installation.
-	/// Par défaut ne fait rien.
+	/// M√©thode appel√©e pour indiquer la progression de l'installation.
+	/// Par d√©faut ne fait rien.
 	///
 	/// \param inProgress	progression de l'installation (valeur entre 0 et 1)
 	///
@@ -102,7 +102,7 @@ protected:
 
 private:
 	///
-	/// Méthode appelée par \c SendCommand pour savoir la progression de
+	/// M√©thode appel√©e par \c SendCommand pour savoir la progression de
 	/// l'envoi du paquet.
 	///
 	/// \param inRefCon		biscuit (en fait \c this)

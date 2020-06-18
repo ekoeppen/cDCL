@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdCString.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/4/2003
+// Cr√©√© le:			13/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdCString.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,13 +44,13 @@
 #include <DCL/NS_Objects/Objects/TDCLNSString.h>
 
 ///
-/// Classe pour une commande du dock contenant une chaîne UTF-16.
-/// terminée par un nul.
+/// Classe pour une commande du dock contenant une cha√Æne UTF-16.
+/// termin√©e par un nul.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdCString
 	:
@@ -58,27 +58,27 @@ class TDCLDockCmdCString
 {
 public:
 	///
-	/// Constructeur à partir d'une commande et d'une chaîne.
+	/// Constructeur √† partir d'une commande et d'une cha√Æne.
 	///
 	/// \param inCommand	identifiant de la commande.
-	/// \param inString		la chaîne composant cette commande (copiée)
+	/// \param inString		la cha√Æne composant cette commande (copi√©e)
 	///
 	TDCLDockCmdCString( KUInt32 inCommand, const KUInt16* inString );
 
 	///
-	/// Constructeur à partir d'une commande et d'une chaîne NS.
+	/// Constructeur √† partir d'une commande et d'une cha√Æne NS.
 	///
 	/// \param inCommand	identifiant de la commande.
-	/// \param inString		la chaîne composant cette commande (copiée)
+	/// \param inString		la cha√Æne composant cette commande (copi√©e)
 	///
 	TDCLDockCmdCString( KUInt32 inCommand, const TDCLNSString& inString );
 
 	///
-	/// Constructeur à partir d'une mémoire tampon et d'une taille.
+	/// Constructeur √† partir d'une m√©moire tampon et d'une taille.
 	///
 	/// \param inCommand	identifiant de la commande.
-	/// \param inBufferSize	taille de la mémoire tampon
-	/// \param inBuffer		mémoire tampon (copiée)
+	/// \param inBufferSize	taille de la m√©moire tampon
+	/// \param inBuffer		m√©moire tampon (copi√©e)
 	///
 	TDCLDockCmdCString( KUInt32 inCommand, KUInt32 inBufferSize, void* inBuffer );
 
@@ -88,9 +88,9 @@ public:
 	virtual ~TDCLDockCmdCString( void );
 
 	///
-	/// Accesseur sur la chaîne.
+	/// Accesseur sur la cha√Æne.
 	///
-	/// \return la chaîne composant cette commande.
+	/// \return la cha√Æne composant cette commande.
 	///
 	inline const KUInt16*	GetString( void ) const
 		{
@@ -98,15 +98,15 @@ public:
 		}
 protected:
 	///
-	/// Méthode pour récupérer un pointeur sur les données afin de les
+	/// M√©thode pour r√©cup√©rer un pointeur sur les donn√©es afin de les
 	/// envoyer au Newton.
 	///
-	/// \return un pointeur sur la chaîne
+	/// \return un pointeur sur la cha√Æne
 	///
 	virtual const void*		GetData( void );
 	
 	///
-	/// Méthode pour connaître la taille des données afin de les envoyer
+	/// M√©thode pour conna√Ætre la taille des donn√©es afin de les envoyer
 	/// au Newton.
 	///
 	/// \return mLength
@@ -117,21 +117,21 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdCString( const TDCLDockCmdCString& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdCString& operator = ( const TDCLDockCmdCString& inCopy );
 
 	/// \name Variables
 
-	KUInt16*	mString;		///< Chaîne.
-	KUInt32		mLength;		///< Taille de la chaîne (avec le terminateur, en octets).
+	KUInt16*	mString;		///< Cha√Æne.
+	KUInt32		mLength;		///< Taille de la cha√Æne (avec le terminateur, en octets).
 };
 
 #endif

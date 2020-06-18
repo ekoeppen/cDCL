@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdSingleLong.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdSingleLong.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -49,7 +49,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdSingleLong
 	:
@@ -57,12 +57,12 @@ class TDCLDockCmdSingleLong
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLDockCmdSingleLong( void );
 	
 	///
-	/// Constructeur à partir d'une commande et d'un long.
+	/// Constructeur √† partir d'une commande et d'un long.
 	///
 	/// \param inCommand	identifiant de la commande.
 	/// \param inLong		le long composant cette commande.
@@ -80,7 +80,7 @@ public:
 		}
 		
 	///
-	/// Sélecteur sur le long.
+	/// S√©lecteur sur le long.
 	///
 	/// \param inNewLong nouvelle valeur pour le long de cette commande.
 	///
@@ -91,7 +91,7 @@ public:
 	
 protected:
 	///
-	/// Méthode pour récupérer un pointeur sur les données afin de les
+	/// M√©thode pour r√©cup√©rer un pointeur sur les donn√©es afin de les
 	/// envoyer au Newton.
 	/// Retourne un pointeur sur le long.
 	///
@@ -100,7 +100,7 @@ protected:
 	virtual const void*		GetData( void );
 	
 	///
-	/// Méthode pour connaître la taille des données afin de les envoyer
+	/// M√©thode pour conna√Ætre la taille des donn√©es afin de les envoyer
 	/// au Newton.
 	/// Retourne 4.
 	///
@@ -109,7 +109,7 @@ protected:
 	virtual	KUInt32			GetLength( void ) const;
 
 private:
-	KUInt32		mLong;		///< Le long qui constitue les données de cette
+	KUInt32		mLong;		///< Le long qui constitue les donn√©es de cette
 							///< commande.
 };
 

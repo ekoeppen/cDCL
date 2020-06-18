@@ -2,7 +2,7 @@
 // Fichier:			TDCLSyncEngine.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			7/4/2003
+// Cr√©√© le:			7/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSyncEngine.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -64,7 +64,7 @@
 #include <DCL/NS_Objects/Objects/TDCLNSString.h>
 
 // ------------------------------------------------------------------------- //
-//  * Déverminage
+//  * D√©verminage
 // ------------------------------------------------------------------------- //
 
 #undef KERROR_ENABLED
@@ -143,10 +143,10 @@ TDCLSyncEngine::StartSynchronizing( void )
 	TDCLDockCmdNoData theGetSyncOptionCmd( TDCLDockCommand::kDGetSyncOptions );
 	theGetSyncOptionCmd.SendCommand( GetLink()->GetPipe() );
 	
-	// Début.
+	// D√©but.
 	mInterrupted = false;
 	
-	// Première source.
+	// Premi√®re source.
 	ResetSourceCursor();
 
 	// On attend les options.
@@ -308,7 +308,7 @@ TDCLSyncEngine::TransitionFromWFOptions(
 			mStores = &mStoresRef.ToArray();
 			mStoresCount = mStores->GetLength();
 
-			// On demande le temps pour connaître l'heure du Newton.
+			// On demande le temps pour conna√Ætre l'heure du Newton.
 			TDCLDockCmdSingleLong theGetSyncTimeCmd(
 										TDCLDockCommand::kDLastSyncTime, 0 );
 			theGetSyncTimeCmd.SendCommand( GetLink()->GetPipe() );
@@ -317,7 +317,7 @@ TDCLSyncEngine::TransitionFromWFOptions(
 			KTRACE( " -> kWFPreliminaryTime" );
 		} else {
 			// Les options sont NIL.
-			// Je prends les options par défaut et je demande la liste
+			// Je prends les options par d√©faut et je demande la liste
 			// des magasins.
 			TDCLNSFrame* theOptionsAsFrame = new TDCLNSFrame();
 
@@ -364,7 +364,7 @@ TDCLSyncEngine::TransitionFromWFStoreNames(
 		TDCLNSFrame& theOptionsAsFrame = mSyncOptions.ToFrame();
 		theOptionsAsFrame.Set( "stores", mStoresRef );
 		
-		// On demande le temps pour connaître l'heure du Newton.
+		// On demande le temps pour conna√Ætre l'heure du Newton.
 		TDCLDockCmdSingleLong theGetSyncTimeCmd(
 									TDCLDockCommand::kDLastSyncTime, 0 );
 		theGetSyncTimeCmd.SendCommand( GetLink()->GetPipe() );
@@ -397,13 +397,13 @@ TDCLSyncEngine::TransitionFromWFPreliminaryTime(
 		
 		if (DoSynchronizePatches() || (mDoPackages && DoSynchronizePackages()))
 		{
-			// Première itération sur les magasins pour les rustines &
+			// Premi√®re it√©ration sur les magasins pour les rustines &
 			// les paquets 1.x.
 
 			// On commence par le premier magasin.
 			mStoreIndex = 0;
 			
-			// Récupération dudit magasin et on demande au Newton de changer.
+			// R√©cup√©ration dudit magasin et on demande au Newton de changer.
 			TDCLDockCmdNSObject theSetStoreCmd(
 									TDCLDockCommand::kDSetCurrentStore,
 									mStores->Get( mStoreIndex ));
@@ -439,7 +439,7 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult(
 		KSInt32 theResultValue = (KSInt32) theResultCmd->GetLong();
 		if (theResultValue)
 		{
-			// On relance l'erreur reçue du Newton.
+			// On relance l'erreur re√ßue du Newton.
 			throw DCLNewton( theResultValue );
 		}
 
@@ -451,7 +451,7 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult(
 		} else {
 			// Synchronisation des paquets seulement.
 			
-			// Récupération des informations sur les paquets.
+			// R√©cup√©ration des informations sur les paquets.
 			TDCLDockCmdNoData theGetPacakageIDsCmd( TDCLDockCommand::kDGetPackageIDs );
 			theGetPacakageIDsCmd.SendCommand( GetLink()->GetPipe() );
 			theResult = kWFPackageIDs;
@@ -501,11 +501,11 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 		KSInt32 theResultValue = (KSInt32) theResultCmd->GetLong();
 		if (theResultValue)
 		{
-			// On relance l'erreur reçue du Newton.
+			// On relance l'erreur re√ßue du Newton.
 			throw DCLNewton( theResultValue );
 		}
 
-		// Optimise-t-on la synchronisation avec l'heure de la dernière
+		// Optimise-t-on la synchronisation avec l'heure de la derni√®re
 		// synchronisation?
 		mCompleteSync = true;
 
@@ -513,7 +513,7 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 
 		if (mCurrentSourceEngine->HasModificationDate())
 		{
-			// Recherche de ce magasin dans les données de synchronisation.
+			// Recherche de ce magasin dans les donn√©es de synchronisation.
 			(void) GetCurrentStoreFrame( &theLastSyncDate );
 
 			if (theLastSyncDate > 0)
@@ -524,12 +524,12 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 		
 		if (mCompleteSync)
 		{
-			// Première soupe.
+			// Premi√®re soupe.
 			mSoupIndex = -1;
 			theResult = SyncNextSoup();
 		} else {
-			// On récupère l'heure de la dernière synchronisation dans
-			// les données de synchronisation.
+			// On r√©cup√®re l'heure de la derni√®re synchronisation dans
+			// les donn√©es de synchronisation.
 			TDCLDockCmdSingleLong theGetSyncTimeCmd(
 					TDCLDockCommand::kDLastSyncTime,
 					theLastSyncDate
@@ -559,7 +559,7 @@ TDCLSyncEngine::TransitionFromWFStoreSyncTime(
 	
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDCurrentTime )
 	{
-		// Première soupe.
+		// Premi√®re soupe.
 		mSoupIndex = -1;
 		theResult = SyncNextSoup();
 
@@ -593,7 +593,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 			{
 				theResult = SyncNextSoup();
 			} else {
-				// On ajoute cette entrée.
+				// On ajoute cette entr√©e.
 				TDCLDockCmdNSObject theAddEntryCmd(
 							TDCLDockCommand::kDAddEntry,
 							theNewEntry );
@@ -602,7 +602,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 				KTRACE( " -> kWFAddedID" );
 			}
 		} else {
-			// Récupération de la liste des entrées des données de synchronisation.
+			// R√©cup√©ration de la liste des entr√©es des donn√©es de synchronisation.
 			mSyncDataEntriesArray = nil;
 			
 			KUInt32 nbSoups = mSyncDataSoupsArray->GetLength();
@@ -623,8 +623,8 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 			
 			if (mSyncDataEntriesArray == nil)
 			{
-				// Soupe non trouvée.
-				// Création de la structure.
+				// Soupe non trouv√©e.
+				// Cr√©ation de la structure.
 				TDCLNSRef theSyncDataSoupFrameRef = TDCLNSRef::MakeFrame();
 				TDCLNSFrame& theSyncDataSoupFrame =
 						theSyncDataSoupFrameRef.ToFrame();
@@ -635,7 +635,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 				mSyncDataEntriesArray = &theSyncDataSoupEntries.ToArray();
 			}
 			
-			// On demande la liste des entrées au Newton.
+			// On demande la liste des entr√©es au Newton.
 			TDCLDockCmdNoData theGetSoupsCmd( TDCLDockCommand::kDGetSoupIDs );
 			theGetSoupsCmd.SendCommand( GetLink()->GetPipe() );
 
@@ -663,7 +663,7 @@ TDCLSyncEngine::TransitionFromWFSoupIDs(
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDSoupIDs )
 	{
 		TDCLDockCmdArray* theSoupIDsCmd = (TDCLDockCmdArray*) inCommand;
-		// On copie le tableau avec les entrées.
+		// On copie le tableau avec les entr√©es.
 		mEntriesCount = theSoupIDsCmd->GetCount();
 		mEntries = TDCLNSRef::MakeArray( mEntriesCount );
 		mEntriesArray = &mEntries.ToArray();
@@ -683,14 +683,14 @@ TDCLSyncEngine::TransitionFromWFSoupIDs(
 		
 		if (!mCompleteSync)
 		{
-			// On demande la liste des entrées qui ont changé.
+			// On demande la liste des entr√©es qui ont chang√©.
 			TDCLDockCmdNoData theGetSoupsCmd( TDCLDockCommand::kDGetChangedIDs );
 			theGetSoupsCmd.SendCommand( GetLink()->GetPipe() );
 
 			theResult = kWFChangedIDs;
 			KTRACE( " -> kWFChangedIDs" );
 		} else {
-			// Entrée suivante.
+			// Entr√©e suivante.
 			mEntryIndex = -1;
 			theResult = SyncNextEntry();
 		}
@@ -715,7 +715,7 @@ TDCLSyncEngine::TransitionFromWFChangedIDs(
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDChangedIDs )
 	{
 		TDCLDockCmdArray* theChangedIDsCmd = (TDCLDockCmdArray*) inCommand;
-		// Ajout de l'information de modification dans le tableau des entrées.
+		// Ajout de l'information de modification dans le tableau des entr√©es.
 		KUInt32 indexEntry;
 		KUInt32 nbChanged = theChangedIDsCmd->GetCount();
 		for (indexEntry = 0; indexEntry < mEntriesCount; indexEntry++)
@@ -736,7 +736,7 @@ TDCLSyncEngine::TransitionFromWFChangedIDs(
 			}
 		}
 
-		// Entrée suivante.
+		// Entr√©e suivante.
 		mEntryIndex = -1;
 		theResult = FetchNextEntry();
 
@@ -759,7 +759,7 @@ TDCLSyncEngine::TransitionFromWFEntry(
 	
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDEntry )
 	{
-		// Récupération de l'entrée.
+		// R√©cup√©ration de l'entr√©e.
 		TDCLDockCmdNSObject* theEntryCmd = (TDCLDockCmdNSObject*) inCommand;
 		TDCLNSRef theEntry = theEntryCmd->GetObject();
 		
@@ -767,7 +767,7 @@ TDCLSyncEngine::TransitionFromWFEntry(
 		if (mCurrentSourceEngine->FilterEntry(
 									*mSoupName, theEntry ))
 		{
-			// Récupération/mise à jour de la clé.
+			// R√©cup√©ration/mise √† jour de la cl√©.
 			TDCLNSRef theKey =
 					mCurrentSourceEngine->GetEntryKey( *mSoupName, theEntry );
 			
@@ -777,8 +777,8 @@ TDCLSyncEngine::TransitionFromWFEntry(
 							theKey,
 							mCurrentEntry->Get( "key" ) ) != 0)
 				{
-					// La clé a changé.
-					// Il faudra supprimer l'ancien élément.
+					// La cl√© a chang√©.
+					// Il faudra supprimer l'ancien √©l√©ment.
 					mCurrentEntry->Set( "newKey", theKey );
 					mCurrentEntry->Set( "new", TDCLNSRef::kTRUEREF );
 				}
@@ -786,16 +786,16 @@ TDCLSyncEngine::TransitionFromWFEntry(
 				mCurrentEntry->Set( "key", theKey );
 			}
 			
-			// Enregistrement de l'entrée.
+			// Enregistrement de l'entr√©e.
 			mCurrentEntry->Set( "data", theEntry );
 		} else {
-			// La source n'est pas intéressée par cette entrée.
+			// La source n'est pas int√©ress√©e par cette entr√©e.
 			// Suppression du tableau.
 			mCurrentEntry = nil;
 			mEntriesArray->Set( (KUInt32) mEntryIndex, TDCLNSRef::kNILREF );
 		}
 		
-		// Entrée suivante.
+		// Entr√©e suivante.
 		theResult = FetchNextEntry();
 
 		*outProcessed = true;
@@ -821,11 +821,11 @@ TDCLSyncEngine::TransitionFromWFSetStoreToDefaultResult(
 		KSInt32 theResultValue = (KSInt32) theResultCmd->GetLong();
 		if (theResultValue)
 		{
-			// On relance l'erreur reçue du Newton.
+			// On relance l'erreur re√ßue du Newton.
 			throw DCLNewton( theResultValue );
 		}
 
-		// On commence par la première soupe.
+		// On commence par la premi√®re soupe.
 		mSoupIndex = -1;
 
 		theResult = SyncNextSoup();
@@ -853,11 +853,11 @@ TDCLSyncEngine::TransitionFromWFModifiedResult(
 		KSInt32 theResultValue = (KSInt32) theResultCmd->GetLong();
 		if (theResultValue)
 		{
-			// On relance l'erreur reçue du Newton.
+			// On relance l'erreur re√ßue du Newton.
 			throw DCLNewton( theResultValue );
 		}
 
-		// Entrée suivante.
+		// Entr√©e suivante.
 		theResult = SyncNextEntry();
 
 		*outProcessed = true;
@@ -884,7 +884,7 @@ TDCLSyncEngine::TransitionFromWFAddedID(
 		{
 			theResult = SyncNextSoup();
 		} else {
-			// On ajoute cette entrée.
+			// On ajoute cette entr√©e.
 			TDCLDockCmdNSObject theAddEntryCmd(
 						TDCLDockCommand::kDAddEntry,
 						theNewEntry );
@@ -897,7 +897,7 @@ TDCLSyncEngine::TransitionFromWFAddedID(
 	} else if ( inCommand->GetCommand() == TDCLDockCommand::kDResult ) {
 		TDCLDockCmdSingleLong* theResultCmd = (TDCLDockCmdSingleLong*) inCommand;
 		KSInt32 theResultValue = (KSInt32) theResultCmd->GetLong();
-		// On relance l'erreur reçue du Newton.
+		// On relance l'erreur re√ßue du Newton.
 		throw DCLNewton( theResultValue );
 	}
 	
@@ -984,7 +984,7 @@ TDCLSyncEngine::SyncNextSource( void )
 	KTRACE( "SyncNextSource" );
 	EState theResult = mState;
 	
-	// Récupération de la source suivante.
+	// R√©cup√©ration de la source suivante.
 	do {
 		mCurrentSourceEngine = GetNextSourceEngine();
 		
@@ -993,7 +993,7 @@ TDCLSyncEngine::SyncNextSource( void )
 			// On a fini avec toutes les sources.
 			theResult = kEnd;
 			
-			// Contrairement à la documentation, le Newton ne comprend pas
+			// Contrairement √† la documentation, le Newton ne comprend pas
 			// la commande kDSyncResults, donc on envoie kDOperationDone.
 			TDCLDockCmdNoData theOpCompleteCmd(
 									TDCLDockCommand::kDOperationDone );
@@ -1006,7 +1006,7 @@ TDCLSyncEngine::SyncNextSource( void )
 			TDCLNSRef::MakeInt(
 					(KSInt32) mCurrentSourceEngine->Init( mNewtonTime ) );
 
-		// Récupération de la liste des soupes gérées par la source.
+		// R√©cup√©ration de la liste des soupes g√©r√©es par la source.
 		mSoups = mCurrentSourceEngine->GetSoupNames();
 		mSoupsArray = &mSoups.ToArray();
 		mSoupsCount = (KSInt32) mSoupsArray->GetLength();
@@ -1015,7 +1015,7 @@ TDCLSyncEngine::SyncNextSource( void )
 		{
 			Boolean canProceedWithSource = true;
 
-			// Vérification qu'elle colle avec les desiderata de l'utilisateur.
+			// V√©rification qu'elle colle avec les desiderata de l'utilisateur.
 			if (!mSyncAll)
 			{
 #warning handle synchronization preferences.
@@ -1024,7 +1024,7 @@ TDCLSyncEngine::SyncNextSource( void )
 			
 			if (canProceedWithSource)
 			{
-				// Récupération des données de synchronisation pour
+				// R√©cup√©ration des donn√©es de synchronisation pour
 				// cette soupe.
 				mSyncData = mCurrentSourceEngine->GetSyncEngineData();
 				
@@ -1032,7 +1032,7 @@ TDCLSyncEngine::SyncNextSource( void )
 				{
 					TDCLNSFrame& theSyncDataFrame = mSyncData.ToFrame();
 					
-					// Vérification de la version.
+					// V√©rification de la version.
 					if (theSyncDataFrame.Get( "formatMajor" )
 							!= TDCLNSRef::MakeInt( 1 ))
 					{
@@ -1049,22 +1049,22 @@ TDCLSyncEngine::SyncNextSource( void )
 				
 				if (mSyncData.IsNIL())
 				{
-					// Création des données de synchronisation.
+					// Cr√©ation des donn√©es de synchronisation.
 					CreateSyncData( theSourceVersion );
 				} else {
 					LookForCurrentNewtonInSyncData();
 				}
 				
-				// On commence par la première soupe.
+				// On commence par la premi√®re soupe.
 				mSoupIndex = -1;
 				
-				// On n'ajoute pas encore d'entrées.
+				// On n'ajoute pas encore d'entr√©es.
 				mAddingEntries = false;
 				
 				// On commence par le premier magasin.
 				mStoreIndex = 0;
 				
-				// Récupération dudit magasin et on demande au Newton de
+				// R√©cup√©ration dudit magasin et on demande au Newton de
 				// changer.
 				TDCLDockCmdNSObject theSetStoreCmd(
 										TDCLDockCommand::kDSetCurrentStore,
@@ -1092,7 +1092,7 @@ TDCLSyncEngine::SyncNextSoup( void )
 	KTRACE( "SyncNextSoup" );
 	EState theResult = mState;
 
-	// Récupération de la prochaine soupe.
+	// R√©cup√©ration de la prochaine soupe.
 	while (++mSoupIndex < mSoupsCount)
 	{
 		TDCLNSString& theSoupName =
@@ -1112,8 +1112,8 @@ TDCLSyncEngine::SyncNextSoup( void )
 	{
 		if (mAddingEntries)
 		{
-			// La synchronisation est terminée.
-			// Passage à la source suivante.
+			// La synchronisation est termin√©e.
+			// Passage √† la source suivante.
 			theResult = SyncNextSource();
 		} else {
 			// On passe au magasin suivant.
@@ -1129,7 +1129,7 @@ TDCLSyncEngine::SyncNextSoup( void )
 				theResult = kWFSetStoreResult2;
 				KTRACE( " -> kWFSetStoreResult2" );
 			} else {
-				// On passe à l'ajout des entrées sur le magasin par défaut.
+				// On passe √† l'ajout des entr√©es sur le magasin par d√©faut.
 				mAddingEntries = true;
 				TDCLDockCmdNoData theSetStoreCmd(
 									TDCLDockCommand::kDSetStoreToDefault );
@@ -1157,9 +1157,9 @@ TDCLSyncEngine::FetchNextEntry( void )
 	{
 		mCurrentEntry = &mEntriesArray->Get( (KUInt32) mEntryIndex ).ToFrame();
 
-		// On récupère l'entrée (les données), uniquement si l'entrée a été
-		// modifiée ou si elle n'était pas présente ou si on fait une
-		// synchronisation complète.
+		// On r√©cup√®re l'entr√©e (les donn√©es), uniquement si l'entr√©e a √©t√©
+		// modifi√©e ou si elle n'√©tait pas pr√©sente ou si on fait une
+		// synchronisation compl√®te.
 		Boolean isNewEntry = mCurrentEntry->Get( "key" ).IsNIL();
 		mCurrentEntry->Set( "new", TDCLNSRef::MakeBoolean( isNewEntry ));
 
@@ -1183,8 +1183,8 @@ TDCLSyncEngine::FetchNextEntry( void )
 	
 	if (((KUInt32) mEntryIndex) == mEntriesCount)
 	{
-		// On a récupéré toutes les entrées.
-		// On passe à la modification des entrées
+		// On a r√©cup√©r√© toutes les entr√©es.
+		// On passe √† la modification des entr√©es
 		theResult = SyncEntries();
 	}
 	
@@ -1227,7 +1227,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 
 		if (!theCurrentEntryRef.IsNIL())
 		{
-			// L'entrée est toujours présente (i.e. a été retenue par la
+			// L'entr√©e est toujours pr√©sente (i.e. a √©t√© retenue par la
 			// source).
 
 			mCurrentEntry = &theCurrentEntryRef.ToFrame();
@@ -1256,7 +1256,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 				
 				TDCLSyncSourceEngine::ESyncResult theSyncResult;
 				
-				// à corriger
+				// √† corriger
 				theSyncResult = mCurrentSourceEngine->SyncNewtonEntry(
 									theModif,
 									0,
@@ -1280,7 +1280,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 						break;
 					
 					case TDCLSyncSourceEngine::kUnchanged:
-						// Passage à l'entrée suivante.
+						// Passage √† l'entr√©e suivante.
 						break;
 
 					case TDCLSyncSourceEngine::kDeleted:
@@ -1308,8 +1308,8 @@ TDCLSyncEngine::SyncNextEntry( void )
 	
 	if (((KUInt32) mEntryIndex) == mEntriesCount)
 	{
-		// On a synchronisé toutes les entrées sur le Newton.
-		// On passe à l'ajout des nouvelles entrées.		
+		// On a synchronis√© toutes les entr√©es sur le Newton.
+		// On passe √† l'ajout des nouvelles entr√©es.		
 #warning TODO: add entries
 		// Soupe suivante.
 		theResult = SyncNextSoup();
@@ -1332,7 +1332,7 @@ TDCLSyncEngine::NormalizeAddress( const TDCLNSRef& inOriginalEmail )
 			&& (theClass.IsSymbol())
 			&& (theClass.ToSymbol().IsSubClass(KDCLSYM::kSYMstring_email)))
 		{
-			// Traduction à la mimine pour l'instant.
+			// Traduction √† la mimine pour l'instant.
 			if (theClass == TDCLNSRef::MakeSymbol("string.email.netcourrier.com"))
 			{
 				theResult = inOriginalEmail & "@netcourrier.com";
@@ -1419,7 +1419,7 @@ TDCLSyncEngine::GetEmailSystemName( const TDCLNSRef& inEmailAddress )
 	if ((theClass.IsSymbol())
 		&& (theClass.ToSymbol().IsSubClass(KDCLSYM::kSYMstring_email)))
 	{
-		// Traduction à la mimine pour l'instant.
+		// Traduction √† la mimine pour l'instant.
 		if (theClass == TDCLNSRef::MakeSymbol("string.email.internet"))
 		{
 			theResult = TDCLNSRef::MakeString("Internet");
@@ -1439,7 +1439,7 @@ TDCLSyncEngine::GetEmailSystemName( const TDCLNSRef& inEmailAddress )
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.bigfoot.com")) {
 			theResult = TDCLNSRef::MakeString("BigFoot");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.cybercable.fr")) {
-			theResult = TDCLNSRef::MakeString("Cybercâble");
+			theResult = TDCLNSRef::MakeString("Cybercable");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.dotcom.fr")) {
 			theResult = TDCLNSRef::MakeString("DotCom");
 		} else if (theClass == TDCLNSRef::MakeSymbol("string.email.freesbee.fr")) {
@@ -1549,7 +1549,7 @@ TDCLSyncEngine::CreateSyncData( const TDCLNSRef& inSourceVersion )
 	TDCLNSRef theNewtonsArrayRef = TDCLNSRef::MakeArray();
 	theSyncDataFrame.Set( "newtons", theNewtonsArrayRef );
 	
-	// Ajout des informations sur le Newton connecté.
+	// Ajout des informations sur le Newton connect√©.
 	theNewtonsArrayRef.ToArray().Add( CreateCurrentNewtonFrame() );
 }
 
@@ -1622,7 +1622,7 @@ TDCLSyncEngine::GetCurrentStoreFrame( KUInt32* outLastSyncDate /* = nil */ )
 			mSyncDataStoresArray->Get(indexStores).ToFrame();
 		if (theStoreFrame.Get( "signature" ) == theSignature)
 		{
-			// Trouvé.
+			// Trouv√©.
 			mSyncDataSoupsArray = &theStoreFrame.Get( "soups" ).ToArray();
 			if (outLastSyncDate)
 			{
@@ -1644,7 +1644,7 @@ TDCLSyncEngine::GetCurrentStoreFrame( KUInt32* outLastSyncDate /* = nil */ )
 		*outLastSyncDate = 0;
 	}
 	
-	// Création d'une nouvelle structure.
+	// Cr√©ation d'une nouvelle structure.
 	TDCLNSRef theStoreFrameRef = TDCLNSRef::MakeFrame();
 	TDCLNSFrame& theStoreFrame = theStoreFrameRef.ToFrame();
 
@@ -1666,23 +1666,23 @@ TDCLSyncEngine::GetEntryKeyFromSyncData( const TDCLNSRef& inID )
 {
 	TDCLNSRef theResult;
 	
-	// Itération sur les entrées des données de synchronisation (qui restent).
+	// It√©ration sur les entr√©es des donn√©es de synchronisation (qui restent).
 	KUInt32 nbEntries = mSyncDataEntriesArray->GetLength();
 	KUInt32 indexEntries;
 	for (indexEntries = 0; indexEntries < nbEntries; indexEntries++)
 	{
 		TDCLNSRef theEntry = mSyncDataEntriesArray->Get( indexEntries );
 		
-		// L'entrée est-elle toujours là?
+		// L'entr√©e est-elle toujours l√†?
 		if (!theEntry.IsNIL())
 		{
-			// Est-ce notre entrée?
+			// Est-ce notre entr√©e?
 			TDCLNSFrame& theEntryFrame = theEntry.ToFrame();
 			if (theEntryFrame.Get( "id" ) == inID)
 			{
 				// Vi.
 				
-				// Copie de la clé.
+				// Copie de la cl√©.
 				theResult = theEntryFrame.Get( "key" );
 
 				// Suppression de la liste.

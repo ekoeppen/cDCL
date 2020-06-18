@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdLoadPkg.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			15/08/2001
+// Cr√©√© le:			15/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdLoadPkg.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,8 +68,8 @@ TDCLDockCmdLoadPkg::TDCLDockCmdLoadPkg( TDCLFSItemRef inPackage )
 KUInt32
 TDCLDockCmdLoadPkg::GetLength( void ) const
 {
-	// Récupération de la taille du paquet à partir du fichier.
-	// Si un paquet fait plus de 0x60000000, ça va merder sur le Newton.
+	// R√©cup√©ration de la taille du paquet √† partir du fichier.
+	// Si un paquet fait plus de 0x60000000, √ßa va merder sur le Newton.
 	// Donc on lance une exception dans ce cas.
 	KUInt64 theResult = mPackageFile->GetLength();
 	if (theResult >= 0x60000000)
@@ -126,7 +126,7 @@ TDCLDockCmdLoadPkg::SendBody(
 			// On ajuste la taille qui reste.
 			remaining -= packetSize;
 
-			// On prévient si inProgressFuncPtr n'est pas nil.
+			// On pr√©vient si inProgressFuncPtr n'est pas nil.
 			if (inProgressFuncPtr)
 			{
 				inStream->FlushOutput();
@@ -138,7 +138,7 @@ TDCLDockCmdLoadPkg::SendBody(
 		} while ( remaining );
 		
 	} catch (...) {
-		// Libération de la mémoire.
+		// Lib√©ration de la m√©moire.
 		delete [] theBuffer;
 
 		// Fermeture du fichier.
@@ -151,7 +151,7 @@ TDCLDockCmdLoadPkg::SendBody(
 	// Fermeture du fichier.
 	mPackageFile->Close();		
 	
-	// Libération de la mémoire.
+	// Lib√©ration de la m√©moire.
 	delete [] theBuffer;
 }
 

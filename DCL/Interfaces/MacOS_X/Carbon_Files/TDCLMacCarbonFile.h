@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacCarbonFile.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/1/2003
+// Cr√©√© le:			13/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacCarbonFile.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -58,7 +58,7 @@
 /// \author Nicolas Zinovieff <krugazor@free.fr>
 /// \version $Revision: 1.9 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacCarbonFile
 	:
@@ -66,11 +66,11 @@ class TDCLMacCarbonFile
 {
 public:
 	///
-	/// Constructeur pour un fichier existant à partir d'un FSRef uniquement.
-	/// Crée l'objet représentant le dossier parent.
+	/// Constructeur pour un fichier existant √† partir d'un FSRef uniquement.
+	/// Cr√©e l'objet repr√©sentant le dossier parent.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
-	/// \param inFSRef	référence sur le fichier
+	/// \param inFSRef	r√©f√©rence sur le fichier
 	///
 	TDCLMacCarbonFile( TDCLMacFiles* inFilesIntf, const FSRef* inFSRef );
 
@@ -83,28 +83,28 @@ public:
 	///
 	/// Ouvre le fichier.
 	///
-	/// \param inReadOnly	si le fichier doit être ouvert en lecture seule
-	/// \throws TDCLIOException si l'ouverture a échoué.
+	/// \param inReadOnly	si le fichier doit √™tre ouvert en lecture seule
+	/// \throws TDCLIOException si l'ouverture a √©chou√©.
 	///
 	virtual void		Open( Boolean inReadOnly );
 
 	///
-	/// Crée le fichier avec un code créateur et un type donnés.
+	/// Cr√©e le fichier avec un code cr√©ateur et un type donn√©s.
 	///
-	/// \param inCreator	code créateur du fichier à créer.
-	/// \param inFileType	type du fichier à créer.
-	/// \throws TDCLIOException si la création a échoué.
+	/// \param inCreator	code cr√©ateur du fichier √† cr√©er.
+	/// \param inFileType	type du fichier √† cr√©er.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void		Create(
 							OSType inCreator = TDCLMacFiles::kCreator,
 							OSType inFileType = TDCLMacFiles::kFileType );
 
 	///
-	/// Change les codes type et créateur.
+	/// Change les codes type et cr√©ateur.
 	///
-	/// \param inCreator	nouveau code créateur du fichier.
+	/// \param inCreator	nouveau code cr√©ateur du fichier.
 	/// \param inFileType	nouveau type du fichier.
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void		SetMetaData(
 							OSType inCreator,
@@ -115,7 +115,7 @@ public:
 	///
 	/// Supprime le fichier.
 	///
-	/// \throws TDCLIOException si la suppression a échoué.
+	/// \throws TDCLIOException si la suppression a √©chou√©.
 	///
 	virtual void		Delete( void );
 
@@ -127,83 +127,83 @@ public:
 	virtual KUInt64		GetLength( void );
 	
 	///
-	/// Déplace le curseur dans le fichier. Peut lancer une exception
-	/// pour indiquer que la fin du fichier a été atteinte.
+	/// D√©place le curseur dans le fichier. Peut lancer une exception
+	/// pour indiquer que la fin du fichier a √©t√© atteinte.
 	///
 	/// \param inPos	nouvelle position du curseur
-	/// \param inMode	définit l'origine de inPos
-	/// \throws TDCLPositionException si la fin du fichier (ou le début) est
-	///			dépassée.
+	/// \param inMode	d√©finit l'origine de inPos
+	/// \throws TDCLPositionException si la fin du fichier (ou le d√©but) est
+	///			d√©pass√©e.
 	/// \throws TDCLBadStateError si le fichier n'est pas ouvert.
 	///
 	virtual void		SetCursor( KSInt64 inPos, ECursorMode inMode );
 
 	///
-	/// Détermine la position du curseur dans le fichier.
+	/// D√©termine la position du curseur dans le fichier.
 	///
 	/// \return la position du curseur dans le fichier.
 	/// \throws TDCLBadStateError si le fichier n'est pas ouvert.
 	///
 	virtual KSInt64		GetCursor( void );
 
-	/// \name interface entrée/sortie
+	/// \name interface entr√©e/sortie
 
 	///
 	/// Lit des octets.
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que 
-	///						l'exception ne soit lancée si un problème est
+	/// \param outBuffer	m√©moire tampon pour les octets lus.
+	/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+	///						Cette valeur est mise √† jour avant que 
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 	///
 	virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 	
 	///
 	/// Ecrit des octets.
 	///
-	/// \param inBuffer		mémoire tampon pour les octets à écrire.
-	/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-	///						sortie. Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
+	/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+	/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+	///						sortie. Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 
 	///
-	/// Vide la mémoire tampon de sortie.
+	/// Vide la m√©moire tampon de sortie.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		FlushOutput( void );
 	
 	///
 	/// Ferme le fichier.
-	/// Ne fait rien si le fichier n'était pas ouvert.
-	/// Cette méthode est appelée par le destructeur.
+	/// Ne fait rien si le fichier n'√©tait pas ouvert.
+	/// Cette m√©thode est appel√©e par le destructeur.
 	///
 	virtual void		Close( void );
 
 	///
-	/// Récupère le type du fichier sous forme de chaîne NewtonScript.
-	/// C'est ce qui est retourné au Newton.
+	/// R√©cup√®re le type du fichier sous forme de cha√Æne NewtonScript.
+	/// C'est ce qui est retourn√© au Newton.
 	///
-	/// \return une chaîne NewtonScript avec le type du fichier.
+	/// \return une cha√Æne NewtonScript avec le type du fichier.
 	///
 	virtual TDCLNSRef	GetKind( void ) const;
 	
 	///
-	/// Récupère la date de création au format des dates Newton
+	/// R√©cup√®re la date de cr√©ation au format des dates Newton
 	/// (minutes depuis 1904).
 	///
-	/// \return la date de création du fichier.
+	/// \return la date de cr√©ation du fichier.
 	///
 	virtual KUInt32		GetCreationDate( void ) const;
 
 	///
-	/// Récupère la date de modification au format des dates Newton
+	/// R√©cup√®re la date de modification au format des dates Newton
 	/// (minutes depuis 1904).
 	///
 	/// \return la date de modification du fichier.
@@ -211,25 +211,25 @@ public:
 	virtual KUInt32		GetModificationDate( void ) const;
 
 	///
-	/// Récupère le chemin du fichier dans une forme lisible par
+	/// R√©cup√®re le chemin du fichier dans une forme lisible par
 	/// l'utilisateur. Ce chemin n'a pas d'autre fonction que
-	/// d'être affiché sur le Newton.
+	/// d'√™tre affich√© sur le Newton.
 	///
-	/// \return le chemin du fichier dans une chaîne NewtonScript.
+	/// \return le chemin du fichier dans une cha√Æne NewtonScript.
 	///
 	virtual TDCLNSRef	GetStringPath( void ) const;
 
 	///
-	/// Récupère l'icône du fichier sous forme de binaire noir et blanc
+	/// R√©cup√®re l'ic√¥ne du fichier sous forme de binaire noir et blanc
 	/// 32x32.
 	///
-	/// \return l'icône du fichier.
+	/// \return l'ic√¥ne du fichier.
 	///
 	virtual TDCLNSRef	GetIcon( void ) const;
 
 private:
 	///
-	/// La classe TDCLMacCarbonFolder crée les objets de type TDCLMacCarbonFile.
+	/// La classe TDCLMacCarbonFolder cr√©e les objets de type TDCLMacCarbonFile.
 	///
 	friend class TDCLMacCarbonFolder;
 	
@@ -237,12 +237,12 @@ private:
 	friend class TDCLMacCarbonDesktopFolder;
 
 	///
-	/// Constructeur à partir d'un dossier parent et d'un FSRef pour un
+	/// Constructeur √† partir d'un dossier parent et d'un FSRef pour un
 	/// fichier *existant* dans un dossier.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
-	/// \param inFolder	dossier où se trouve le fichier (peut-être le bureau)
-	/// \param inFSRef	référence sur le fichier
+	/// \param inFolder	dossier o√π se trouve le fichier (peut-√™tre le bureau)
+	/// \param inFSRef	r√©f√©rence sur le fichier
 	///
 	TDCLMacCarbonFile(
 					TDCLMacFiles* inFilesIntf,
@@ -250,17 +250,17 @@ private:
 					const FSRef* inFSRef );
 
 	///
-	/// Constructeur à partir d'un dossier parent et d'un FSRef pour un
-	/// fichier n'existant pas forcément dans un dossier.
-	/// Ce constructeur doit être appelé par un objet TDCLMacCarbonFolder.
-	/// Le nom du fichier est copié.
-	/// De plus, inFSRef doit correspondre à inFolder et inName.
+	/// Constructeur √† partir d'un dossier parent et d'un FSRef pour un
+	/// fichier n'existant pas forc√©ment dans un dossier.
+	/// Ce constructeur doit √™tre appel√© par un objet TDCLMacCarbonFolder.
+	/// Le nom du fichier est copi√©.
+	/// De plus, inFSRef doit correspondre √† inFolder et inName.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
-	/// \param inFolder	dossier où se trouve le fichier.
-	/// \param inFSRef	référence sur le fichier.
-	///					Si c'est nul, la référence est créée.
-	/// \param inName	nom du fichier (chaîne UTF-16 avec terminateur nul).
+	/// \param inFolder	dossier o√π se trouve le fichier.
+	/// \param inFSRef	r√©f√©rence sur le fichier.
+	///					Si c'est nul, la r√©f√©rence est cr√©√©e.
+	/// \param inName	nom du fichier (cha√Æne UTF-16 avec terminateur nul).
 	///
 	TDCLMacCarbonFile(
 					TDCLMacFiles* inFilesIntf,
@@ -271,24 +271,24 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacCarbonFile( const TDCLMacCarbonFile& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacCarbonFile& operator = ( const TDCLMacCarbonFile& inCopy );
 
 	///
-	/// \brief Crée l'objet représentant le dossier parent d'un objet donné.
+	/// \brief Cr√©e l'objet repr√©sentant le dossier parent d'un objet donn√©.
 	///
 	/// \param	inFilesIntf	interface pour les fichiers.
 	/// \param	outIsOnDesktop en sortie, si le fichier est sur le bureau.
-	/// \param	inFSRef référence sur l'objet dont on veut le dossier parent.
-	/// \return le dossier parent (peut-être le bureau).
+	/// \param	inFSRef r√©f√©rence sur l'objet dont on veut le dossier parent.
+	/// \return le dossier parent (peut-√™tre le bureau).
 	///
 	static TDCLFSItemRef	DoMakeParentFolder(
 								TDCLMacFiles* inFilesIntf,
@@ -296,42 +296,42 @@ private:
 								const FSRef* inFSRef );
 
 	///
-	/// Crée le nom du fichier.
+	/// Cr√©e le nom du fichier.
 	///
-	/// \return le nom du fichier en UTF-16 (cette chaîne est allouée avec
+	/// \return le nom du fichier en UTF-16 (cette cha√Æne est allou√©e avec
 	///			malloc).
-	/// \throw TDCLIOException si un problème est survenu.
+	/// \throw TDCLIOException si un probl√®me est survenu.
 	///
 	virtual KUInt16*	MakeName( void ) const;
 
 	///
-	/// Crée le FSRef.
-	/// Méthode appelée lorsque mRefIsValid est \c false et qu'on a besoin
+	/// Cr√©e le FSRef.
+	/// M√©thode appel√©e lorsque mRefIsValid est \c false et qu'on a besoin
 	/// de mRef.
 	///
-	/// \throw TDCLIOException si un problème est survenu (en particulier
+	/// \throw TDCLIOException si un probl√®me est survenu (en particulier
 	///			si le fichier n'existe pas).
 	///
 	void				CreateFSRef( void );
 
 	///
-	/// Détermine si le fichier est sur le bureau.
+	/// D√©termine si le fichier est sur le bureau.
 	///
 	/// \return \c true si le fichier est sur le bureau, \c false sinon.
 	///
 	virtual Boolean		IsOnDesktop( void ) const;
 
 	///
-	/// Récupère la référence sur le volume où se trouve le fichier.
+	/// R√©cup√®re la r√©f√©rence sur le volume o√π se trouve le fichier.
 	///
-	/// \return le volume où se trouve le fichier.
+	/// \return le volume o√π se trouve le fichier.
 	///
 	virtual short		GetVRefNum( void ) const;
 
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est
-	/// appelée que si l'objet parent qui a été fourni est \c nil.
-	/// Met à jour mIsOnDesktop.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est
+	/// appel√©e que si l'objet parent qui a √©t√© fourni est \c nil.
+	/// Met √† jour mIsOnDesktop.
 	///
 	/// \return le parent de \c this.
 	///
@@ -339,11 +339,11 @@ private:
 
 	/// \name Variables
 	
-	FSRef			mRef;			///< Le FSRef représentant ce fichier.
+	FSRef			mRef;			///< Le FSRef repr√©sentant ce fichier.
 	Boolean			mRefIsValid;	///< Si le FSRef est valide.
 	FSRef			mParentRef;		///< Le FSRef sur le parent.
 	KSInt16			mOpenedFork;	///< the ID of opened fork
-	FSVolumeRefNum	mVRefNum;		///< Référence du volume.
+	FSVolumeRefNum	mVRefNum;		///< R√©f√©rence du volume.
 	mutable Boolean	mIsOnDesktop;	///< Si le fichier est sur le bureau.
 };
 

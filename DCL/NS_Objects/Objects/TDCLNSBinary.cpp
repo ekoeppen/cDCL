@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSBinary.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			07/08/2002
+// Cr√©√© le:			07/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSBinary.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -105,7 +105,7 @@ TDCLNSBinary::TDCLNSBinary( const TDCLNSBinary& inCopy )
 			throw DCLMemError;
 		}
 	
-		// Copie des données.
+		// Copie des donn√©es.
 		(void) ::memcpy( mBuffer, inCopy.GetPointer(), theSize );
 	}
 }
@@ -122,7 +122,7 @@ TDCLNSBinary::TDCLNSBinary(
 		mBuffer( nil ),
 		mBufferSize( inLength )
 {
-	// Allocation de la mémoire tampon.
+	// Allocation de la m√©moire tampon.
 	mBuffer = ::malloc( inLength );
 	
 	if (inLength > 0)
@@ -132,7 +132,7 @@ TDCLNSBinary::TDCLNSBinary(
 			throw DCLMemError;
 		}
 	
-		// Copie des données.
+		// Copie des donn√©es.
 		(void) ::memcpy( mBuffer, inData, inLength );
 	}
 }
@@ -149,7 +149,7 @@ TDCLNSBinary::TDCLNSBinary(
 		mBuffer( nil ),
 		mBufferSize( inLength )
 {
-	// Allocation de la mémoire tampon.
+	// Allocation de la m√©moire tampon.
 	mBuffer = ::malloc( inLength );
 	
 	if (inLength > 0)
@@ -159,7 +159,7 @@ TDCLNSBinary::TDCLNSBinary(
 			throw DCLMemError;
 		}
 	
-		// Lecture des données.
+		// Lecture des donn√©es.
 		KUInt32 indexData;
 		for (indexData = 0; indexData < inLength; indexData++)
 		{
@@ -210,7 +210,7 @@ TDCLNSBinary::operator = ( const TDCLNSBinary& inCopy )
 			throw DCLMemError;
 		}
 	
-		// Copie des données.
+		// Copie des donn√©es.
 		(void) ::memcpy( mBuffer, inCopy.GetPointer(), theSize );
 	}
 	
@@ -310,13 +310,13 @@ TDCLNSBinary::ToXML(
 				TDCLXMLEncoder*		inEncoder,
 				KUInt32				inObjectID ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 
-	char theOutputStr[32]; 	// Suffisant à chaque fois
+	char theOutputStr[32]; 	// Suffisant √† chaque fois
 							// (c'est pour les balises).
 
-	// S'agit-il d'une chaîne?
+	// S'agit-il d'une cha√Æne?
 	Boolean isString = false;
 	// Dois-je inclure la classe?
 	Boolean putClass = true;
@@ -331,10 +331,10 @@ TDCLNSBinary::ToXML(
 	
 	if (isString)
 	{
-		(void) ::sprintf( theOutputStr, "<string id=\"n%lu\">", inObjectID );
+		(void) ::sprintf( theOutputStr, "<string id=\"n%lu\">", (unsigned long) inObjectID );
 		theOutputStream->PutString( theOutputStr );
 	} else {
-		(void) ::sprintf( theOutputStr, "<binary id=\"n%lu\">", inObjectID );
+		(void) ::sprintf( theOutputStr, "<binary id=\"n%lu\">", (unsigned long) inObjectID );
 		theOutputStream->PutString( theOutputStr );
 	}
 
@@ -351,12 +351,12 @@ TDCLNSBinary::ToXML(
 
 	KUInt32 nbBytes = mBufferSize;
 
-	// Balise de début pour la valeur.
+	// Balise de d√©but pour la valeur.
 	inEncoder->PutTabulations();
 	theOutputStream->PutString( "<value>" );
 	if (isString)
 	{
-		// Ai-je un terminateur dans la chaîne?
+		// Ai-je un terminateur dans la cha√Æne?
 		KUInt16* theData = (KUInt16*) mBuffer;
 		size_t strLen = nbBytes / 2;
 		if (theData[ strLen ] == 0)
@@ -376,22 +376,22 @@ TDCLNSBinary::ToXML(
 		// Ajout du terminateur.
 		theUTF8Str[utf8Len] = '\0';
 		
-		// Ecriture avec remplacement des caractères spéciaux
-		// par des entités.
+		// Ecriture avec remplacement des caract√®res sp√©ciaux
+		// par des entit√©s.
 		inEncoder->PrintUTF8WithEntities( theUTF8Str );
 
-		// Libération de la mémoire.
+		// Lib√©ration de la m√©moire.
 		delete [] theUTF8Str;
 	} else {
 		// Encodage en Base64.
-		// Allocation de la mémoire tampon pour le Base64.
+		// Allocation de la m√©moire tampon pour le Base64.
 		KUInt32 theBase64Size = ((nbBytes + 2) / 3) * 4;
 		
 		KUInt8* theBase64Buffer = new KUInt8[ theBase64Size ];
 		UBase64::Encode( mBuffer, theBase64Buffer, nbBytes );
 		
 		// Affichage sur radio OutputStream.
-		// En fait, je vais le faire par paquets de 32 caractères
+		// En fait, je vais le faire par paquets de 32 caract√®res
 		// (plus zoli).
 		
 		inEncoder->IncrementLevel();
@@ -410,7 +410,7 @@ TDCLNSBinary::ToXML(
 							&theBase64Buffer[indexBase64], &theAmount );
 		}
 		
-		// Libération de la mémoire
+		// Lib√©ration de la m√©moire
 		delete [] theBase64Buffer;
 	
 		// Retour d'un niveau et tabulations avant </value> pour le binaire.	
@@ -442,19 +442,19 @@ TDCLNSBinary::FromNSOF( TDCLNSOFDecoder* inDecoder )
 	
 	KUInt32 nbBytes = theStream->GetXLong();
 	
-	// Création de l'objet (sans la classe parce que la classe
-	// peut être ou contenir l'objet qui doit donc être dans la
-	// liste des références avant).
+	// Cr√©ation de l'objet (sans la classe parce que la classe
+	// peut √™tre ou contenir l'objet qui doit donc √™tre dans la
+	// liste des r√©f√©rences avant).
 	TDCLNSBinary* theResult =
 		new TDCLNSBinary( KDCLSYM::kSYMbinary, nbBytes );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
 	// Lecture de la classe.
 	theResult->mClass = inDecoder->GetNextObject();
 
-	// Lecture des données.
+	// Lecture des donn√©es.
 	KUInt32 indexData;
 	for (indexData = 0; indexData < nbBytes; indexData++)
 	{
@@ -472,31 +472,31 @@ TDCLNSBinary::FromNSOFAsLargeBinary( TDCLNSOFDecoder* inDecoder )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 	
-	// Création de l'objet (sans la classe parce que la classe
-	// peut être ou contenir l'objet qui doit donc être dans la
-	// liste des références avant).
+	// Cr√©ation de l'objet (sans la classe parce que la classe
+	// peut √™tre ou contenir l'objet qui doit donc √™tre dans la
+	// liste des r√©f√©rences avant).
 	TDCLNSBinary* theResult =
 		new TDCLNSBinary( KDCLSYM::kSYMbinary );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
 	// Lecture de la classe.
 	theResult->mClass = inDecoder->GetNextObject();
 
-	// Lecture du drapeau compressé.
+	// Lecture du drapeau compress√©.
 	KUInt8 isCompressed = theStream->GetByte();
 
-	// Taille des données.
+	// Taille des donn√©es.
 	KUInt32 nbBytes = theStream->GetLong();
 
 	// Nom du compresseur.
 	KUInt32 nbCharsInCompanderName = theStream->GetLong();
 
-	// Paramètres du compresseur.
+	// Param√®tres du compresseur.
 	KUInt32 nbBytesOfCompanderParams = theStream->GetLong();
 
-	// On ignore le long réservé.
+	// On ignore le long r√©serv√©.
 	(void) theStream->GetLong();
 	
 	// Nom du compresseur
@@ -512,7 +512,7 @@ TDCLNSBinary::FromNSOFAsLargeBinary( TDCLNSOFDecoder* inDecoder )
 	// Terminateur.
 	theCompanderName[nbCharsInCompanderName] = '\0';
 
-	// Paramètres du compresseur.
+	// Param√®tres du compresseur.
 	KUInt8* theCompanderParams =
 						(KUInt8*) ::malloc( nbBytesOfCompanderParams );
 	for (indexData = 0; indexData < nbBytesOfCompanderParams; indexData++)
@@ -520,7 +520,7 @@ TDCLNSBinary::FromNSOFAsLargeBinary( TDCLNSOFDecoder* inDecoder )
 		theCompanderParams[indexData] = theStream->GetByte();
 	}
 	
-	// Lecture des données.
+	// Lecture des donn√©es.
 	KUInt8* theData = (KUInt8*) ::malloc( nbBytes );
 	for (indexData = 0; indexData < nbBytes; indexData++)
 	{
@@ -528,7 +528,7 @@ TDCLNSBinary::FromNSOFAsLargeBinary( TDCLNSOFDecoder* inDecoder )
 	}
 
 	try {
-		// Décompression.
+		// D√©compression.
 		if (!isCompressed)
 		{
 			theResult->SetLength( nbBytes );
@@ -560,29 +560,29 @@ TDCLNSBinary::FromPkg( TDCLPkgDecoder* inDecoder )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 
-	// Décalage de l'objet.
+	// D√©calage de l'objet.
 	KUInt32 theObjectOffset = inDecoder->GetCurrentStreamOffset();
 	
 	// Taille
 	KUInt32 theFirstLong = theStream->GetLong();
 	KUInt32 nbBytes = (theFirstLong >> TDCLPkgDecoder::kSizeShift) - 12;
 	
-	// On passe le deuxième long.
+	// On passe le deuxi√®me long.
 	(void) theStream->GetLong();
 	
-	// Création de l'objet (sans la classe parce que la classe
-	// peut être ou contenir l'objet qui doit donc être dans la
-	// liste des références avant).
+	// Cr√©ation de l'objet (sans la classe parce que la classe
+	// peut √™tre ou contenir l'objet qui doit donc √™tre dans la
+	// liste des r√©f√©rences avant).
 	TDCLNSBinary* theResult =
 		new TDCLNSBinary( KDCLSYM::kSYMbinary, nbBytes );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ), theObjectOffset );
 
 	// Lecture de la classe.
 	theResult->mClass = inDecoder->GetNextObject();
 
-	// Lecture des données.
+	// Lecture des donn√©es.
 	KUInt32 indexData;
 	for (indexData = 0; indexData < nbBytes; indexData++)
 	{
@@ -599,31 +599,31 @@ void
 TDCLNSBinary::ToNSOF(
 				TDCLNSOFEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	KUInt32 nbBytes = mBufferSize;
 
-	// Détermination du type: il peut s'agir d'une chaîne.
+	// D√©termination du type: il peut s'agir d'une cha√Æne.
 	if (mClass == KDCLSYM::kSYMstring)
 	{
 		// Ecriture du type.
 		theOutputStream->PutByte( KDCLNSOF::kString );
 
-		// Puis la taille des données.
+		// Puis la taille des donn√©es.
 		theOutputStream->PutXLong( nbBytes );
 	} else {
 		// Ecriture du type.
 		theOutputStream->PutByte( KDCLNSOF::kBinaryObject );
 
-		// Puis la taille des données.
+		// Puis la taille des donn√©es.
 		theOutputStream->PutXLong( nbBytes );
 	
 		// Ecriture de la classe
 		inEncoder->AddObject( mClass );
 	}
 	
-	// Puis les données.
+	// Puis les donn√©es.
 	KUInt8* theData = (KUInt8*) mBuffer;
 	
 	KUInt32 indexBytes;
@@ -650,7 +650,7 @@ TDCLNSBinary::ToPkg(
 				TDCLPkgEncoder* inEncoder,
 				KUInt32* ioOffset ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	KUInt32 nbBytes = mBufferSize;
@@ -661,7 +661,7 @@ TDCLNSBinary::ToPkg(
 		throw DCLLimitReachedError;
 	}
 	
-	// Écriture de l'entête.
+	// √âcriture de l'ent√™te.
 	theOutputStream->PutLong(
 		(theSize << TDCLPkgEncoder::kSizeShift)
 		| TDCLPkgEncoder::kObjFlagHeader );
@@ -673,7 +673,7 @@ TDCLNSBinary::ToPkg(
 	// Classe.
 	inEncoder->AddObject( mClass );
 	
-	// Données binaires.
+	// Donn√©es binaires.
 	KUInt8* theData = (KUInt8*) mBuffer;
 	KUInt32 indexBytes;
 	for ( indexBytes = 0; indexBytes < nbBytes; indexBytes++ )

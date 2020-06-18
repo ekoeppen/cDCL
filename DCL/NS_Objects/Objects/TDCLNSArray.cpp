@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSArray.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			07/08/2002
+// Cr√©√© le:			07/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSArray.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -93,7 +93,7 @@ TDCLNSArray::TDCLNSArray(
 			throw DCLMemError;
 		}
 	
-		// Initialisation des éléments.
+		// Initialisation des √©l√©ments.
 		KUInt32 indexItems;
 		for ( indexItems = 0; indexItems < inSize; indexItems++ )
 		{
@@ -122,7 +122,7 @@ TDCLNSArray::TDCLNSArray( const TDCLNSArray& inCopy )
 			throw DCLMemError;
 		}
 	
-		// Copie des éléments (surface)
+		// Copie des √©l√©ments (surface)
 		KUInt32 indexItems;
 		for ( indexItems = 0; indexItems < theSize; indexItems++ )
 		{
@@ -136,7 +136,7 @@ TDCLNSArray::TDCLNSArray( const TDCLNSArray& inCopy )
 // ------------------------------------------------------------------------- //
 TDCLNSArray::~TDCLNSArray( void )
 {
-	// Suppression des éléments
+	// Suppression des √©l√©ments
 	if (mItems != nil)
 	{
 		KUInt32 nbItems = mSize;
@@ -156,7 +156,7 @@ TDCLNSArray::~TDCLNSArray( void )
 TDCLNSArray&
 TDCLNSArray::operator = ( const TDCLNSArray& inCopy )
 {
-	// Suppression des anciennes références.
+	// Suppression des anciennes r√©f√©rences.
 	KUInt32 theSize = mSize;
 	KUInt32 indexItems;
 	for (indexItems = 0; indexItems < theSize; indexItems++)
@@ -177,7 +177,7 @@ TDCLNSArray::operator = ( const TDCLNSArray& inCopy )
 			throw DCLMemError;
 		}
 	
-		// Copie des éléments (surface)
+		// Copie des √©l√©ments (surface)
 		for ( indexItems = 0; indexItems < theSize; indexItems++ )
 		{
 			new (&mItems[ indexItems ]) TDCLNSRef( inCopy.mItems[ indexItems ] );
@@ -202,7 +202,7 @@ TDCLNSArray::IsArray( void ) const
 TDCLNSRef
 TDCLNSArray::Get( KUInt32 inIndex ) const
 {
-	// Vérification de l'index.
+	// V√©rification de l'index.
 	if (inIndex >= mSize)
 	{
 		throw DCLNS( kNSErrOutOfBounds );
@@ -217,7 +217,7 @@ TDCLNSArray::Get( KUInt32 inIndex ) const
 void
 TDCLNSArray::Set( KUInt32 inIndex, const TDCLNSRef& inItem )
 {
-	// Vérification de l'index.
+	// V√©rification de l'index.
 	if (inIndex >= mSize)
 	{
 		throw DCLNS( kNSErrOutOfBounds );
@@ -241,7 +241,7 @@ TDCLNSArray::Add( const TDCLNSRef& inItem )
 		throw DCLMemError;
 	}
 	
-	// Ajout de l'élément (initialisation de l'élément dans le tableau)
+	// Ajout de l'√©l√©ment (initialisation de l'√©l√©ment dans le tableau)
 	new (&mItems[ mSize - 1 ]) TDCLNSRef( inItem );
 }
 
@@ -251,13 +251,13 @@ TDCLNSArray::Add( const TDCLNSRef& inItem )
 void
 TDCLNSArray::RemoveSlot( KUInt32 inIndex )
 {
-	// Vérification de l'index.
+	// V√©rification de l'index.
 	if (inIndex >= mSize)
 	{
 		throw DCLNS( kNSErrOutOfBounds );
 	}
 	
-	// Suppression de l'ancien élément.
+	// Suppression de l'ancien √©l√©ment.
 	mItems[ inIndex ].TDCLNSRef::~TDCLNSRef();
 
 	mSize--;
@@ -268,13 +268,13 @@ TDCLNSArray::RemoveSlot( KUInt32 inIndex )
 	// inIndex = 3
 	// mSize - inIndex = 2
 
-	// Déplacement des éléments.
+	// D√©placement des √©l√©ments.
 	(void) ::memmove(
 				(void*) &mItems[inIndex],
 				(const void*) &mItems[inIndex + 1],
 				(mSize - inIndex) * sizeof(TDCLNSRef));
 	
-	// Rétrécicement du tableau.
+	// R√©tr√©cicement du tableau.
 	mItems = (TDCLNSRef*) ::realloc( mItems, mSize * sizeof(TDCLNSRef) );
 	
 	if (mItems == nil)
@@ -289,7 +289,7 @@ TDCLNSArray::RemoveSlot( KUInt32 inIndex )
 void
 TDCLNSArray::Insert( KUInt32 inIndex, const TDCLNSRef& inItem )
 {
-	// Vérification de l'index.
+	// V√©rification de l'index.
 	if (inIndex > mSize)
 	{
 		throw DCLNS( kNSErrOutOfBounds );
@@ -310,13 +310,13 @@ TDCLNSArray::Insert( KUInt32 inIndex, const TDCLNSRef& inItem )
 	// inIndex = 3
 	// mSize - inIndex - 1 = 3
 	
-	// Déplacement des anciens éléments.
+	// D√©placement des anciens √©l√©ments.
 	(void) ::memmove(
 				(void*) &mItems[inIndex + 1],
 				(const void*) &mItems[inIndex],
 				(mSize - inIndex - 1) * sizeof(TDCLNSRef));
 	
-	// Ajout de l'élément (initialisation de l'élément dans le tableau)
+	// Ajout de l'√©l√©ment (initialisation de l'√©l√©ment dans le tableau)
 	new (&mItems[ inIndex ]) TDCLNSRef( inItem );
 }
 
@@ -368,13 +368,13 @@ TDCLNSArray::FromNSOF(
 	
 	KUInt32 nbItems = theStream->GetXLong();
 
-	// Création de l'objet. Je mets tout plein de NIL.
+	// Cr√©ation de l'objet. Je mets tout plein de NIL.
 	TDCLNSArray* theResult = new TDCLNSArray( nbItems );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
-	// Récupération de la classe si nécessaire.
+	// R√©cup√©ration de la classe si n√©cessaire.
 	if (!isPlain)
 	{
 		theResult->mClass = inDecoder->GetNextObject();
@@ -398,23 +398,23 @@ TDCLNSArray::FromPkg( TDCLPkgDecoder* inDecoder )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 
-	// Décalage de l'objet.
+	// D√©calage de l'objet.
 	KUInt32 theObjectOffset = inDecoder->GetCurrentStreamOffset();
 	
 	// Taille
 	KUInt32 theFirstLong = theStream->GetLong();
 	KUInt32 nbItems = ((theFirstLong >> TDCLPkgDecoder::kSizeShift) - 12) / 4;
 	
-	// On passe le deuxième long.
+	// On passe le deuxi√®me long.
 	(void) theStream->GetLong();
 
-	// Création de l'objet. Je mets tout plein de NIL.
+	// Cr√©ation de l'objet. Je mets tout plein de NIL.
 	TDCLNSArray* theResult = new TDCLNSArray( nbItems );
 	
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ), theObjectOffset );
 
-	// Récupération de la classe.
+	// R√©cup√©ration de la classe.
 	theResult->mClass = inDecoder->GetNextObject();
 
 	// Ensuite, on remplit.
@@ -435,15 +435,15 @@ TDCLNSArray::ToXML(
 				TDCLXMLEncoder*		inEncoder,
 				KUInt32				inObjectID ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 
 	// == est un comparateur de surface, sauf pour les symboles.	
 	Boolean isPlain = (mClass == KDCLSYM::kSYMarray);
 	
-	// Balise de début avec l'ID.
+	// Balise de d√©but avec l'ID.
 	char theOutputStr[32]; 	// Suffisant.
-	(void) ::sprintf( theOutputStr, "<array id=\"n%lu\">", inObjectID );
+	(void) ::sprintf( theOutputStr, "<array id=\"n%lu\">", (unsigned long) inObjectID );
 	theOutputStream->PutString( theOutputStr );
 
 	inEncoder->IncrementLevel();
@@ -457,7 +457,7 @@ TDCLNSArray::ToXML(
 		theOutputStream->PutString( "</class>" );
 	}
 	
-	// Puis les éléments.
+	// Puis les √©l√©ments.
 	KUInt32 indexItems;
 	KUInt32 nbItems = mSize;
 	for ( indexItems = 0; indexItems < nbItems; indexItems++ )
@@ -480,7 +480,7 @@ void
 TDCLNSArray::ToNSOF(
 				TDCLNSOFEncoder* inEncoder ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 
 	// == est un comparateur de surface, sauf pour les symboles.	
@@ -494,7 +494,7 @@ TDCLNSArray::ToNSOF(
 		theOutputStream->PutByte( KDCLNSOF::kArray );
 	}
 
-	// Ecriture du nombre d'éléments.
+	// Ecriture du nombre d'√©l√©ments.
 	KUInt32 nbItems = mSize;
 	theOutputStream->PutXLong( nbItems );
 
@@ -504,7 +504,7 @@ TDCLNSArray::ToNSOF(
 		inEncoder->AddObject( mClass );
 	}
 	
-	// Puis les éléments.
+	// Puis les √©l√©ments.
 	KUInt32 indexItems;
 	for ( indexItems = 0; indexItems < nbItems; indexItems++ )
 	{
@@ -529,10 +529,10 @@ TDCLNSArray::ToPkg(
 				TDCLPkgEncoder* inEncoder,
 				KUInt32* ioOffset ) const
 {
-	// Récupération du flux de sortie.
+	// R√©cup√©ration du flux de sortie.
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 	
-	// Ecriture du nombre d'éléments.
+	// Ecriture du nombre d'√©l√©ments.
 	KUInt32 nbItems = mSize;
 	KUInt32 theSize = (mSize * 4) + 12;
 
@@ -541,7 +541,7 @@ TDCLNSArray::ToPkg(
 		throw DCLLimitReachedError;
 	}
 	
-	// Écriture de l'entête.
+	// √âcriture de l'ent√™te.
 	theOutputStream->PutLong(
 		(theSize << TDCLPkgEncoder::kSizeShift)
 		| TDCLPkgEncoder::kObjFlagHeader
@@ -554,7 +554,7 @@ TDCLNSArray::ToPkg(
 	// Classe.
 	inEncoder->AddObject( mClass );
 
-	// Puis les éléments.
+	// Puis les √©l√©ments.
 	KUInt32 indexItems;
 	for ( indexItems = 0; indexItems < nbItems; indexItems++ )
 	{

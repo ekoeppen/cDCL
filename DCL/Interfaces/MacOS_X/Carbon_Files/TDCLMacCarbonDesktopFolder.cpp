@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacCarbonDesktopFolder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/1/2003
+// Cr√©√© le:			13/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacCarbonDesktopFolder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -83,7 +83,7 @@ TDCLMacCarbonDesktopFolder::GetItemByName(
 				const KUInt16* inName,
 				KSInt32 inVolRefNum /* = 0 */ )
 {
-	// Sous OS X, inVolRefNum n'est utilisé que pour les volumes.
+	// Sous OS X, inVolRefNum n'est utilis√© que pour les volumes.
 	
   	TDCLFSItem* theItem = nil;
 	FSRef theItemRef;
@@ -130,8 +130,8 @@ TDCLMacCarbonDesktopFolder::GetItemByName(
 				
 				if (inName[indexStr] == 0)
 				{
-					strEqual = false;	// On ne sait jamais, la chaîne Pascal
-										// peut avoir un caractère nul.
+					strEqual = false;	// On ne sait jamais, la cha√Æne Pascal
+										// peut avoir un caract√®re nul.
 					break;
 				}
 			}
@@ -257,14 +257,14 @@ TDCLMacCarbonDesktopFolder::GetItems( void )
 			{
 				break;
 			} else {
-				// Libération.
+				// Lib√©ration.
 				::free( theResult );
 				
 				throw DCLPlatformUnknownError( theErr );
 			}
 		}
 		
-		// Ajout au tableau des résultats.
+		// Ajout au tableau des r√©sultats.
 		theResult = (TDCLFSItemRef*)
 				::realloc(
 						theResult,

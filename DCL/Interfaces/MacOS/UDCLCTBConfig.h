@@ -2,7 +2,7 @@
 // Fichier:			UDCLCTBConfig.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is UDCLCTBConfig.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -39,7 +39,7 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
-// Vérification de la cible.
+// V√©rification de la cible.
 #if !TARGET_OS_MACOS || TARGET_OS_OPENSTEP
 	#error "La Communication Toolbox n'est disponible que sur MacOS"
 #endif
@@ -53,17 +53,17 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class UDCLCTBConfig
 {
 public:
 	///
-	/// Affiche le dialogue de configuration pour les outils CTB et récupère
-	/// le résultat.
+	/// Affiche le dialogue de configuration pour les outils CTB et r√©cup√®re
+	/// le r√©sultat.
 	///
 	/// \param outToolName			en sortie, nom de l'outil CTB (CString)
-	/// \param outConfigString		en sortie, chaîne de configuration pour l'outil (idem)
+	/// \param outConfigString		en sortie, cha√Æne de configuration pour l'outil (idem)
 	/// \throws	TDCLException si une erreur est survenue.
 	///
 	static void	GetCommToolConfig( char* outToolName, char* outConfigString );

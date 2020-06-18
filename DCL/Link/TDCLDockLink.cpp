@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockLink.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/08/2001
+// Cr√©√© le:			13/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockLink.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -64,7 +64,7 @@
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
 
 // ------------------------------------------------------------------------- //
-//  * TDCLDockLink( TDCLApplication*, KUInt32 )
+//  *¬†TDCLDockLink( TDCLApplication*, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLDockLink::TDCLDockLink(
 		TDCLApplication* inApplication,
@@ -74,16 +74,16 @@ TDCLDockLink::TDCLDockLink(
 		mIcons( inIcons )
 
 {
-	// Gaz à tous les étages.
+	// Gaz √† tous les √©tages.
 }
 
 // ------------------------------------------------------------------------- //
-//  * DoConnect( void )
+//  *¬†DoConnect( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLDockLink::DoConnect( void )
 {
-	// TDCLLink fait la première partie du boulot.
+	// TDCLLink fait la premi√®re partie du boulot.
 	TDCLLink::DoConnect();
 	
 	// Ouverture de la session.
@@ -117,17 +117,17 @@ TDCLDockLink::DoConnect( void )
 		// Cette structure va dans le tableau.
 		theDesktopAppsArray.Add( TDCLNSRef( theDesktopAppFrame ) );
 
-		// Le défi est constitué de deux nombres aléatoires
-		// Il faut donc initialiser le générateur aléatoire.
+		// Le d√©fi est constitu√© de deux nombres al√©atoires
+		// Il faut donc initialiser le g√©n√©rateur al√©atoire.
 		time_t theTime;
 		(void) ::time( &theTime );
 		::srand( (unsigned int) theTime );
 
-		// On crée le défi.
+		// On cr√©e le d√©fi.
 		TDCLDockCmdPassword::CreateChallenge( theChallenge );
 		
 		// Et on envoie l'information.
-		// Création de la commande.
+		// Cr√©ation de la commande.
 		TDCLDockCmdDesktopInfo theDesktopInfoMessage(
 										theDesktopAppsArray,
 										theChallenge[0],
@@ -143,11 +143,11 @@ TDCLDockLink::DoConnect( void )
 	
 	KUInt32 theNewtonChallenge[2];
 	
-	// Réception de kDNewtonInfo
+	// R√©ception de kDNewtonInfo
 	{
 		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
 
-		// Vérification que c'est bien une commande kDNewtonName.
+		// V√©rification que c'est bien une commande kDNewtonName.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDNewtonInfo)
 		{
 			// Duh!
@@ -166,13 +166,13 @@ TDCLDockLink::DoConnect( void )
 		theNewtonChallenge[0] = theNewtonInfo->GetChallenge()[0];
 		theNewtonChallenge[1] = theNewtonInfo->GetChallenge()[1];
 		
-		// Libération du message.
+		// Lib√©ration du message.
 		theNewtMessage.Delete();
 	}
 
 	// Envoi de kDWhichIcons.
 	{
-		// Création.
+		// Cr√©ation.
 		TDCLDockCmdSingleLong theWhichIconMessage(
 			TDCLDockCommand::kDWhichIcons, mIcons );
 
@@ -180,11 +180,11 @@ TDCLDockLink::DoConnect( void )
 		theWhichIconMessage.SendCommand( GetPipe() );
 	}
 	
-	// Réception de kDResult.
+	// R√©ception de kDResult.
 	{
 		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
 
-		// Vérification que c'est bien une commande kDResult.
+		// V√©rification que c'est bien une commande kDResult.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDResult)
 		{
 			// Duh!
@@ -195,29 +195,29 @@ TDCLDockLink::DoConnect( void )
 		TDCLDockCmdSingleLong* theResult =
 			(TDCLDockCmdSingleLong*) theNewtMessage.Get();
 		
-		// On lève une exception si le code n'est pas 0.
+		// On l√®ve une exception si le code n'est pas 0.
 		KSInt32 theResultInt = (KSInt32) theResult->GetLong();
 		if (theResultInt)
 		{
 			throw DCLNewton( theResultInt );
 		}
 		
-		// Libération.
+		// Lib√©ration.
 		theNewtMessage.Delete();
 	}
 
 	// Envoi de kDSetTimeout.
 	{
-		// Récupération de la temporisation de l'interface de
+		// R√©cup√©ration de la temporisation de l'interface de
 		// communication.
 		long theTimeout = GetPipe()->GetTimeout();
 		if (theTimeout < 0)
 		{
-			// Valeur par défaut.
+			// Valeur par d√©faut.
 			theTimeout = kDefaultTimeout;
 		}
 		
-		// Création.
+		// Cr√©ation.
 		TDCLDockCmdSingleLong theSetTimeoutMessage(
 			TDCLDockCommand::kDSetTimeout, (KUInt32) theTimeout );
 
@@ -225,8 +225,8 @@ TDCLDockLink::DoConnect( void )
 		theSetTimeoutMessage.SendCommand( GetPipe() );
 	}
 	
-	// Récupération de la commande kDPassword.
-	// Le Newton a droit à 3 essais.
+	// R√©cup√©ration de la commande kDPassword.
+	// Le Newton a droit √† 3 essais.
 	{
 		int indexAttempts;
 		
@@ -234,7 +234,7 @@ TDCLDockLink::DoConnect( void )
 		{
 			theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
 
-			// Vérification que c'est bien une commande kDPassword.
+			// V√©rification que c'est bien une commande kDPassword.
 			if (theNewtMessage->GetCommand() != TDCLDockCommand::kDPassword)
 			{
 				throw DCLUnexpDockCmd;
@@ -244,10 +244,10 @@ TDCLDockLink::DoConnect( void )
 			TDCLDockCmdPassword* thePassword =
 				(TDCLDockCmdPassword*) theNewtMessage.Get();
 		
-			// Je vérifie le mot de passe.
+			// Je v√©rifie le mot de passe.
 			Boolean correct =
 				thePassword->VerifyPassword( theChallenge, GetPassword() );
-			theNewtMessage.Delete();	// Libération.
+			theNewtMessage.Delete();	// Lib√©ration.
 			
 			if (correct)
 			{
@@ -287,26 +287,26 @@ TDCLDockLink::DoConnect( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  *¬†ProcessDockCommand( TDCLDockCommand*, Boolean* )
 // ------------------------------------------------------------------------- //
 TDCLLink::EState
 TDCLDockLink::ProcessDockCommand(
 					TDCLDockCommand* inCommand,
 					Boolean* outProcessed )
 {
-	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
+	TDCLLink::EState theResult = kRunning;	// Par d√©faut, on reste connect√©.
 
 	switch( inCommand->GetCommand() )
 	{
 		case TDCLDockCommand::kDDisconnect:
-			// Le Newton a déconnecté.
+			// Le Newton a d√©connect√©.
 			// Je retourne kDisconnected pour finir cette session.
 			theResult = kDisconnected;
 			*outProcessed = true;
 			break;
 
 		case TDCLDockCommand::kDHello:
-			// Je crois qu'il ne faut pas répondre bonjour ici.
+			// Je crois qu'il ne faut pas r√©pondre bonjour ici.
 			*outProcessed = true;
 			break;
 
@@ -319,7 +319,7 @@ TDCLDockLink::ProcessDockCommand(
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetPassword( void )
+//  *¬†GetPassword( void )
 // ------------------------------------------------------------------------- //
 const KUInt16*
 TDCLDockLink::GetPassword( void )

@@ -2,7 +2,7 @@
 // Fichier:			TDCLXMLEncoder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			16/10/2002
+// Cr√©√© le:			16/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLXMLEncoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLXMLEncoder
 	:
@@ -54,9 +54,9 @@ class TDCLXMLEncoder
 {
 public:
 	///
-	/// Constructeur à partir d'un flux.
+	/// Constructeur √† partir d'un flux.
 	///
-	/// \param inStream		flux où écrire les données encodées.
+	/// \param inStream		flux o√π √©crire les donn√©es encod√©es.
 	///
 	TDCLXMLEncoder( TDCLStream* inStream );
 
@@ -73,7 +73,7 @@ public:
 	void			PutTabulations( void );
 
 	///
-	/// Incrémente le niveau (pour les tabulations)
+	/// Incr√©mente le niveau (pour les tabulations)
 	///
 	inline void		IncrementLevel( void )
 		{
@@ -81,7 +81,7 @@ public:
 		}
 
 	///
-	/// Décrémente le niveau (pour les tabulations)
+	/// D√©cr√©mente le niveau (pour les tabulations)
 	///
 	inline void		DecrementLevel( void )
 		{
@@ -90,46 +90,46 @@ public:
 		}
 
 	///
-	/// Ecrit une chaîne (UTF-8, terminée par un caractère nul)
-	/// en remplaçant les caractères &, <, >, " et ' par des
-	/// entités.
+	/// Ecrit une cha√Æne (UTF-8, termin√©e par un caract√®re nul)
+	/// en rempla√ßant les caract√®res &, <, >, " et ' par des
+	/// entit√©s.
 	///
-	/// \param	inString	chaîne à écrire au format UTF-8 et
-	///						terminée par un caractère nul qui
-	///						n'est pas écrit.
+	/// \param	inString	cha√Æne √† √©crire au format UTF-8 et
+	///						termin√©e par un caract√®re nul qui
+	///						n'est pas √©crit.
 	///
 	void			PrintUTF8WithEntities( const KUInt8* inString );
 
 	///
-	/// Ecrit une chaîne ASCII (terminée par un caractère nul)
-	/// en remplaçant les caractères &, <, >, " et ' et les caractères
-	/// 8 bits par des entités.
+	/// Ecrit une cha√Æne ASCII (termin√©e par un caract√®re nul)
+	/// en rempla√ßant les caract√®res &, <, >, " et ' et les caract√®res
+	/// 8 bits par des entit√©s.
 	///
-	/// \param	inString	chaîne à écrire au format ASCII et
-	///						terminée par un caractère nul qui
-	///						n'est pas écrit.
+	/// \param	inString	cha√Æne √† √©crire au format ASCII et
+	///						termin√©e par un caract√®re nul qui
+	///						n'est pas √©crit.
 	///
 	void			Print8BitsWithEntities( const KUInt8* inString );
 
 protected:
 	///
-	/// Met dans le flux la référence d'un objet déjà encodé.
+	/// Met dans le flux la r√©f√©rence d'un objet d√©j√† encod√©.
 	///
-	/// \param inRefID		référence de l'objet ajouté.
-	/// \param inCookie		en entrée, biscuit laissé par PutObject
-	///						lorsque l'objet a été ajouté la première fois.
+	/// \param inRefID		r√©f√©rence de l'objet ajout√©.
+	/// \param inCookie		en entr√©e, biscuit laiss√© par PutObject
+	///						lorsque l'objet a √©t√© ajout√© la premi√®re fois.
 	///
 	virtual void	PutPrecedent( KUInt32 inRefID, KUIntPtr inCookie );
 
 	///
-	/// Met dans le flux un objet donné.
+	/// Met dans le flux un objet donn√©.
 	///
-	/// \param inObject		objet à ajouter.
-	/// \param inObjectID	ID de l'objet à ajouter, -1 si CanHavePrecedentID
-	///						a retourné \c false.
-	/// \param outCookie	en sortie, biscuit passé par la suite à
+	/// \param inObject		objet √† ajouter.
+	/// \param inObjectID	ID de l'objet √† ajouter, -1 si CanHavePrecedentID
+	///						a retourn√© \c false.
+	/// \param outCookie	en sortie, biscuit pass√© par la suite √†
 	///						PutPrecedent, \c nil si CanHavePrecedentID a
-	///						retourné \c false.
+	///						retourn√© \c false.
 	///
 	virtual void	PutObject(
 						const TDCLNSObject* inObject,
@@ -137,19 +137,19 @@ protected:
 						KUIntPtr* outCookie );
 
 	///
-	/// Met dans le flux une référence ou un immédiat donnés.
+	/// Met dans le flux une r√©f√©rence ou un imm√©diat donn√©s.
 	///
-	/// \param inRef		référence à ajouter.
+	/// \param inRef		r√©f√©rence √† ajouter.
 	///
 	virtual void	PutRef( const TDCLNSRef& inRef );
 
 	///
-	/// Détermine si l'objet donné peut être référencé par un "precedent".
+	/// D√©termine si l'objet donn√© peut √™tre r√©f√©renc√© par un "precedent".
 	///
 	/// Retourne \c false pour les symboles, \c true sinon.
 	///
-	/// \param inObject		objet considéré.
-	/// \return \c true si l'objet peut être référencé, \c false sinon.
+	/// \param inObject		objet consid√©r√©.
+	/// \return \c true si l'objet peut √™tre r√©f√©renc√©, \c false sinon.
 	///
 	virtual Boolean	CanHavePrecedentID( TDCLNSObject* inObject );
 
@@ -157,8 +157,8 @@ private:
 	KUInt32				mLevel;	///< Niveau (pour les tabulations)
 	
 	///< Constantes.
-	static const char*	kXMLHeader;			///< Entête XML (<?xml version ...)
-	static const char*	kDOCTYPEElement;	///< Elément DOCTYPE avec l'URL
+	static const char*	kXMLHeader;			///< Ent√™te XML (<?xml version ...)
+	static const char*	kDOCTYPEElement;	///< El√©ment DOCTYPE avec l'URL
 };
 
 #endif

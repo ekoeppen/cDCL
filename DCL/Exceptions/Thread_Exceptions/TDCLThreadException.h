@@ -2,7 +2,7 @@
 // Fichier:			TDCLThreadException.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/5/2003
+// Cr√©√© le:			11/5/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLThreadException.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,12 +41,12 @@
 #include <DCL/Exceptions/TDCLException.h>
 
 ///
-/// Classe pour les exceptions relatives aux processus légers.
+/// Classe pour les exceptions relatives aux processus l√©gers.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLThreadException
 	:
@@ -55,13 +55,13 @@ class TDCLThreadException
 protected:
 #if kDCLDebugFILEandLINE
 	///
-	/// Constructeur à partir du code de l'exception, d'un code d'erreur, du
-	/// nom de fichier et du numéro de ligne.
+	/// Constructeur √† partir du code de l'exception, d'un code d'erreur, du
+	/// nom de fichier et du num√©ro de ligne.
 	///
 	/// \param inExCode		code de l'exception.
 	/// \param inError		code d'erreur.
-	/// \param inFileName	nom du fichier. N'est pas copié.
-	/// \param inLine		numéro de ligne.
+	/// \param inFileName	nom du fichier. N'est pas copi√©.
+	/// \param inLine		num√©ro de ligne.
 	///
 	TDCLThreadException(
 			ExCode inExCode,
@@ -70,7 +70,7 @@ protected:
 			KUInt32 inLine );
 #else
 	///
-	/// Constructeur à partir du code de l'exception et de l'erreur seuls.
+	/// Constructeur √† partir du code de l'exception et de l'erreur seuls.
 	///
 	/// \param inExCode		code de l'exception.
 	/// \param inError		code d'erreur

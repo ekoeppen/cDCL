@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdSingleLong.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			02/02/2001
+// CrÃ©Ã© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdSingleLong.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -38,7 +38,7 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdSingleLong( void )
+//  *Â TDCLDockCmdSingleLong( void )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdSingleLong::TDCLDockCmdSingleLong( void )
 	:
@@ -48,7 +48,7 @@ TDCLDockCmdSingleLong::TDCLDockCmdSingleLong( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊTDCLDockCmdSingleLong( KUInt32, KUInt32 )
+//  *Â TDCLDockCmdSingleLong( KUInt32, KUInt32 )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdSingleLong::TDCLDockCmdSingleLong( KUInt32 inCommand, KUInt32 inLong )
 	:
@@ -58,7 +58,7 @@ TDCLDockCmdSingleLong::TDCLDockCmdSingleLong( KUInt32 inCommand, KUInt32 inLong 
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetData( void )
+//  *Â GetData( void )
 // --------------------------------------------------------------------------------	//
 const void*
 TDCLDockCmdSingleLong::GetData( void )
@@ -67,7 +67,7 @@ TDCLDockCmdSingleLong::GetData( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  *ÊGetLength( void )
+//  *Â GetLength( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLDockCmdSingleLong::GetLength( void ) const

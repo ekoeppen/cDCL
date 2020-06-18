@@ -1,0 +1,30 @@
+D](.*)TDCLException.cp+:[0-9]+> New Exception - 5 \(0\) at (.*)UTestThreads.cp+:[0-9]+
+
+TBlocker::TBlocker
+TestThreads - Start
+TBlocker::Run...
+TBlocker::Run - sem->Acquire - 1
+TBlocker::Run - sem->Acquire - 2
+TestThreads - ... Sleep - 1
+TestThreads - mutex->Acquire
+TestThreads - sem->Release
+TBlocker::Run - sem->Release
+TBlocker::Run - mutex->Acquire
+TestThreads - ... Sleep - 2
+TestThreads - mutex->Release
+TBlocker::Run - mutex->Release
+TBlocker::Run - ... Sleep - 1 (true)
+TestThreads - ... Sleep - 3
+TestThreads - thread->WakeUp
+TBlocker::Run - ... Sleep - 2 (false)
+TBlocker::Run - Loop ...
+TestThreads - ... Sleep - 4
+TestThreads - thread->Suspend ...
+TestThreads - ... Sleep - 5
+TestThreads - thread->Resume ...
+TBlocker::Run - ... Loop
+TBlocker::Run - throw DCLUnknownError
+TBlocker::HandleException
+>> TDCLUnknownError \(code: 5, error: 0\) \[(.*)UTestThreads.cp+:[0-9]+\]
+TestThreads - ... Sleep - 6
+TestThreads - thread->GetState: 0

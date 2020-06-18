@@ -2,7 +2,7 @@
 // Fichier:			TDCLStyleRef.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			19/3/2004
+// Cr√©√© le:			19/3/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLStyleRef.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -43,31 +43,31 @@ class TDCLFontSpecification;
 class TDCLPicture;
 
 ///
-/// Classe pour une référence sur un spécification de style texte ou une
+/// Classe pour une r√©f√©rence sur un sp√©cification de style texte ou une
 /// image.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLStyleRef
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLStyleRef( void );
 
 	///
-	/// Constructeur à partir d'une spécification de style de texte.
+	/// Constructeur √† partir d'une sp√©cification de style de texte.
 	///
 	/// \param inTextStyle	style de texte.
 	///
 	TDCLStyleRef( TDCLFontSpecification* inTextStyle );
 
 	///
-	/// Constructeur à partir d'une image.
+	/// Constructeur √† partir d'une image.
 	///
 	/// \param inPicture	image.
 	///
@@ -80,24 +80,24 @@ public:
 
 	///
 	/// Constructeur par copie.
-	/// Incrémente la référence.
+	/// Incr√©mente la r√©f√©rence.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLStyleRef( const TDCLStyleRef& inCopy );
 
 	///
-	/// Opérateur d'assignation.
+	/// Op√©rateur d'assignation.
 	/// Idem.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLStyleRef& operator = ( const TDCLStyleRef& inCopy );
 
 	///
-	/// Détermine si cette référence pointe sur un style de texte.
+	/// D√©termine si cette r√©f√©rence pointe sur un style de texte.
 	///
-	/// \return \c true si cette référence pointe sur un style de texte,
+	/// \return \c true si cette r√©f√©rence pointe sur un style de texte,
 	///			\c false si elle pointe sur une image ou sur rien.
 	///
 	inline Boolean	IsFontSpecification( void ) const
@@ -106,9 +106,9 @@ public:
 		}
 
 	///
-	/// Détermine si cette référence pointe sur une image.
+	/// D√©termine si cette r√©f√©rence pointe sur une image.
 	///
-	/// \return \c true si cette référence pointe sur une image,
+	/// \return \c true si cette r√©f√©rence pointe sur une image,
 	///			\c false si elle pointe sur un style ou sur rien.
 	///
 	inline Boolean	IsPicture( void ) const
@@ -117,30 +117,30 @@ public:
 		}
 
 	///
-	/// Retourne la référence sous forme de style de texte
-	/// (vérifie que c'est un style de texte)
+	/// Retourne la r√©f√©rence sous forme de style de texte
+	/// (v√©rifie que c'est un style de texte)
 	///
-	/// \throws TDCLClassCastException si la référence ne pointe pas sur
-	///			une spécification de style de texte.
+	/// \throws TDCLClassCastException si la r√©f√©rence ne pointe pas sur
+	///			une sp√©cification de style de texte.
 	///
 	operator TDCLFontSpecification& () const;
 
 	///
-	/// Retourne la référence sous forme d'image.
-	/// (vérifie que c'est une image)
+	/// Retourne la r√©f√©rence sous forme d'image.
+	/// (v√©rifie que c'est une image)
 	///
-	/// \throws TDCLClassCastException si la référence ne pointe pas sur
+	/// \throws TDCLClassCastException si la r√©f√©rence ne pointe pas sur
 	///			une image.
 	///
 	operator TDCLPicture& () const;
 
 private:
 	/// \name Variables
-	TDCLFontSpecification*	mFontSpecification;	///< Spécification sur le style
+	TDCLFontSpecification*	mFontSpecification;	///< Sp√©cification sur le style
 												///< de texte ou \c nil si ce
 												///< n'est pas un style de
 												///< texte.
-	TDCLPicture*			mPicture;			///< Spécification sur
+	TDCLPicture*			mPicture;			///< Sp√©cification sur
 												///< l'image ou \c nil si ce
 												///< n'est pas une image.
 };

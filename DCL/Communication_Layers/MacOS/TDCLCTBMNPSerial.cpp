@@ -2,7 +2,7 @@
 // Fichier:			TDCLCTBMNPSerial.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/01/2002
+// Cr√©√© le:			22/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLCTBMNPSerial.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -71,10 +71,10 @@ TDCLCTBMNPSerial::TDCLCTBMNPSerial(
 		:
 			TDCLCommToolBox(
 				inThreadsIntf,
-				1,			// Une seule connexion à la fois
+				1,			// Une seule connexion √† la fois
 				inTimeout )
 {
-	// Récupération du nom du port série.
+	// R√©cup√©ration du nom du port s√©rie.
 	char* thePortName = GetSerialPortName( inPort );
 	
 	// Si c'est nil, c'est que le port n'existe pas.
@@ -83,8 +83,8 @@ TDCLCTBMNPSerial::TDCLCTBMNPSerial(
 		throw DCLNotAvailable;
 	}
 	
-	// Mémoire tampon pour la configuration
-	// taille de chacune des chaînes moins 2 pour le %s, 2 pour %i,
+	// M√©moire tampon pour la configuration
+	// taille de chacune des cha√Ænes moins 2 pour le %s, 2 pour %i,
 	// plus 1 pour le terminateur plus 10 pour la vitesse.
 	char* theConfigString =
 		(char*) ::malloc(
@@ -93,12 +93,12 @@ TDCLCTBMNPSerial::TDCLCTBMNPSerial(
 	
 	(void) ::sprintf( theConfigString, kMNPConfigStr, inBaud, thePortName );
 	
-	// Libération du nom.
+	// Lib√©ration du nom.
 	::free( thePortName );
 
 	Init( kAppleModemToolStr, theConfigString );
 	
-	// Libération de la chaîne de configuration.
+	// Lib√©ration de la cha√Æne de configuration.
 	::free( theConfigString );
 }
 
@@ -114,7 +114,7 @@ TDCLCTBMNPSerial::IsAvailable( void )
 // ------------------------------------------------------------------------- //
 //	* GetSerialPortName( unsigned long )
 // ------------------------------------------------------------------------- //
-// Le code provient de l'exemple d'Apple que j'ai modifié.
+// Le code provient de l'exemple d'Apple que j'ai modifi√©.
 /*
 	File:		FindSerialPorts.c
 	
@@ -126,7 +126,7 @@ TDCLCTBMNPSerial::IsAvailable( void )
 
 	Author:		BB
 
-	Copyright: 	Copyright: © 1999 by Apple Computer, Inc.
+	Copyright: 	Copyright: ¬© 1999 by Apple Computer, Inc.
 				all rights reserved.
 	
 	Disclaimer:	You may incorporate this sample code into your applications
@@ -156,8 +156,8 @@ TDCLCTBMNPSerial::GetSerialPortName( unsigned long inIndex )
 		throw DCLPlatformUnknownError( theErr );
 	}
 	
-	CRMRec theRecord;							// Élément courant.
-	CRMRecPtr theCurrentRecPtr = &theRecord;	// Pointeur sur l'élément
+	CRMRec theRecord;							// √âl√©ment courant.
+	CRMRecPtr theCurrentRecPtr = &theRecord;	// Pointeur sur l'√©l√©ment
 												// courant.
 
 	theRecord.crmDeviceType = crmSerialDevice;
@@ -179,7 +179,7 @@ TDCLCTBMNPSerial::GetSerialPortName( unsigned long inIndex )
 				// Pointeur sur le nom.
 				char* theString = (char*) *(theSerialPtr->name);
 				
-				// Taille de la chaîne avec le terminateur.
+				// Taille de la cha√Æne avec le terminateur.
 				long theLen = theString[0] + 1;
 				theResult = (char*) ::malloc( (unsigned long) theLen );
 				if (theResult == nil)
@@ -198,8 +198,8 @@ TDCLCTBMNPSerial::GetSerialPortName( unsigned long inIndex )
 				break;
 			}
 		} else {
-			// Plus de port série.
-			// theResult vaut déjà nil.
+			// Plus de port s√©rie.
+			// theResult vaut d√©j√† nil.
 			break;
 		}
 	}
@@ -221,8 +221,8 @@ TDCLCTBMNPSerial::CountSerialPorts( void )
 		throw DCLPlatformUnknownError( theErr );
 	}
 
-	CRMRec theRecord;							// Élément courant.
-	CRMRecPtr theCurrentRecPtr = &theRecord;	// Pointeur sur l'élément
+	CRMRec theRecord;							// √âl√©ment courant.
+	CRMRecPtr theCurrentRecPtr = &theRecord;	// Pointeur sur l'√©l√©ment
 												// courant.
 
 	theRecord.crmDeviceType = crmSerialDevice;

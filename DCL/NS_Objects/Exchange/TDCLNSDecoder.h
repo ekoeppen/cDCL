@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSDecoder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			07/08/2002
+// Cr√©√© le:			07/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSDecoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -48,13 +48,13 @@ class TDCLStream;
 class TDCLNSObject;
 
 ///
-/// Classe pour le décodage d'un flux d'objets NS.
-/// Gère les références des objets déjà décodés.
+/// Classe pour le d√©codage d'un flux d'objets NS.
+/// G√®re les r√©f√©rences des objets d√©j√† d√©cod√©s.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLNSDecoder
 	:
@@ -67,9 +67,9 @@ public:
 	virtual ~TDCLNSDecoder( void );
 
 	///
-	/// Accesseur sur le flux d'entrée.
+	/// Accesseur sur le flux d'entr√©e.
 	///
-	/// \return le flux d'entrée d'où on lit les données.
+	/// \return le flux d'entr√©e d'o√π on lit les donn√©es.
 	///
 	inline TDCLStream* GetInputStream( void ) const
 		{
@@ -77,21 +77,21 @@ public:
 		}
 
 	///
-	/// Crée l'objet suivant.
-	/// Cette méthode doit être dérivée dans chacun des décodeurs
+	/// Cr√©e l'objet suivant.
+	/// Cette m√©thode doit √™tre d√©riv√©e dans chacun des d√©codeurs
 	/// qui doivent appeler AddObjectToList pour les pointeurs et
 	/// qui peuvent appeler GetObject pour obtenir le pointeur vers
-	/// l'objet d'un ID donné.
+	/// l'objet d'un ID donn√©.
 	///
-	/// \return une référence vers l'objet suivant.
+	/// \return une r√©f√©rence vers l'objet suivant.
 	///
 	virtual TDCLNSRef	GetNextObject( void ) = 0;
 
 	///
 	/// Ajoute un objet dans la liste des objets.
 	///
-	/// \param inObject		objet à ajouter
-	/// \param inCookie		biscuit à stocker avec l'objet.
+	/// \param inObject		objet √† ajouter
+	/// \param inCookie		biscuit √† stocker avec l'objet.
 	///
 	inline void	AddObjectToList(
 					const TDCLNSRef& inObject,
@@ -102,26 +102,26 @@ public:
 
 protected:
 	///
-	/// Constructeur à partir d'un flux.
+	/// Constructeur √† partir d'un flux.
 	///
 	TDCLNSDecoder( TDCLStream* inStream );
 
 	///
-	/// Récupère un objet de la liste des objets.
+	/// R√©cup√®re un objet de la liste des objets.
 	///
-	/// \param inID			ID de l'objet à récupérer.
+	/// \param inID			ID de l'objet √† r√©cup√©rer.
 	/// \return un pointeur vers l'objet en question
 	/// \throws TDCLNSException si l'ID n'est pas valide.
 	///
 	TDCLNSRef	GetObject( KUInt32 inID );
 
 	///
-	/// Récupère un objet de la liste des objets à partir de son biscuit, à
-	/// partir d'un indice donné.
+	/// R√©cup√®re un objet de la liste des objets √† partir de son biscuit, √†
+	/// partir d'un indice donn√©.
 	///
-	/// \param inCookie		Biscuit de l'objet à récupérer.
-	/// \param ioID			en entrée, ID de l'objet par lequel commencer,
-	///						en sortie, ID de l'objet trouvé.
+	/// \param inCookie		Biscuit de l'objet √† r√©cup√©rer.
+	/// \param ioID			en entr√©e, ID de l'objet par lequel commencer,
+	///						en sortie, ID de l'objet trouv√©.
 	/// \return un pointeur vers l'objet en question ou NILREF si aucun
 	///			objet ne correspond.
 	/// \throws TDCLNSException si l'ID n'est pas valide.
@@ -132,7 +132,7 @@ protected:
 
 private:
 	///
-	/// Constructeur par défaut non disponible.
+	/// Constructeur par d√©faut non disponible.
 	///
 	TDCLNSDecoder( void );
 };

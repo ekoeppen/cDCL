@@ -1,10 +1,39 @@
-cmake_minimum_required (VERSION 2.6) 
-project (cdcl)
-add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
-include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR}) 
-set(CMAKE_OSX_ARCHITECTURES "i386")
+cmake_minimum_required (VERSION 2.6)
+project (dcl)
 
-add_library (cdcl SHARED
+set(CMAKE_CXX_STANDARD 11)
+
+# build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
+set(default_build_type "Release")
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  set(default_build_type "Debug")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+endif()
+
+add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
+
+include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR})
+include(CTest)
+
+SET(CMAKE_MACOSX_RPATH 1)
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+IF("${isSystemDir}" STREQUAL "-1")
+   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+ENDIF("${isSystemDir}" STREQUAL "-1")
+
+add_library (DCL SHARED
 DCL/Communication_Layers/TDCLBufferedPipe.cpp
 DCL/Communication_Layers/TDCLCommLayer.cpp
 DCL/Communication_Layers/TDCLMNPPipe.cpp
@@ -122,6 +151,7 @@ DCL/NS_Objects/Objects/TDCLNSWeakRef.cpp
 DCL/Package/TDCLPackage.cpp
 DCL/Package/TDCLPkgNOSPart.cpp
 DCL/Package/TDCLPkgPart.cpp
+DCL/Package/TDCLPkgRelocatablePart.cpp
 DCL/Package/UDCLPaperback.cpp
 DCL/Server/TDCLOneLinkServer.cpp
 DCL/Server/TDCLServer.cpp
@@ -152,7 +182,7 @@ K/Unicode/UUTF16Conv.cpp
 K/Unicode/UUTF16CStr.cpp
 )
 
-set(HEADERS
+set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
 DCL/Communication_Layers/MacOS_X/at_proto.h
 DCL/Communication_Layers/MacOS_X/TDCLIOKitSerialPort.h
@@ -325,6 +355,7 @@ DCL/Package/KDCLPackageErrors.h
 DCL/Package/TDCLPackage.h
 DCL/Package/TDCLPkgNOSPart.h
 DCL/Package/TDCLPkgPart.h
+DCL/Package/TDCLPkgRelocatablePart.h
 DCL/Package/UDCLPaperback.h
 DCL/Server/TDCLOneLinkServer.h
 DCL/Server/TDCLServer.h
@@ -342,43 +373,7 @@ K/Exceptions/Errors/TMemError.h
 K/Exceptions/IO/TEOFException.h
 K/Exceptions/IO/TIOException.h
 K/Exceptions/TException.h
-K/GP/Creation/TGPCAKoza.h
-K/GP/Creation/TGPCreationAlgorithm.h
-K/GP/Data/Numbers/TGPNumberData.h
-K/GP/Data/Numbers/TGPSInt32Data.h
-K/GP/Data/TGPBooleanData.h
-K/GP/Data/TGPData.h
-K/GP/Data/TGPDataRef.h
-K/GP/Data/TGPStringData.h
-K/GP/Data/TGPType.h
-K/GP/Data/TGPVoidData.h
-K/GP/Fitness/TGPDoubleFitness.h
-K/GP/Fitness/TGPFitness.h
-K/GP/Language/TGPLanguage.h
-K/GP/Selection/TGPSelection.h
-K/GP/Selection/TGPSortSelection.h
-K/GP/Selection/TGPTournamentSelection.h
-K/GP/Selection/TGPTruncationSelection.h
-K/GP/TGPEvaluationContext.h
-K/GP/TGPInterpreter.h
-K/GP/TGPSimpleInterpreter.h
-K/GP/TGPSoup.h
-K/GP/Tree/Nodes/BooleanNodes/TGPNodeAnd.h
-K/GP/Tree/Nodes/BooleanNodes/TGPNodeBoolean.h
-K/GP/Tree/Nodes/BooleanNodes/TGPNodeNot.h
-K/GP/Tree/Nodes/BooleanNodes/TGPNodeOr.h
-K/GP/Tree/Nodes/FlowNodes/TGPNodeDo.h
-K/GP/Tree/Nodes/FlowNodes/TGPNodeIfThenElse.h
-K/GP/Tree/Nodes/TGPNode.h
-K/GP/Tree/Nodes/TGPNodeConst.h
-K/GP/Tree/Nodes/TGPNodeLeaf.h
-K/GP/Tree/Nodes/TGPNodeRef.h
-K/GP/Tree/Nodes/VarNodes/TGPGetStaticVariable.h
-K/GP/Tree/Nodes/VarNodes/TGPSetStaticVariable.h
-K/GP/Tree/TGPTree.h
 K/Math/TInt64.h
-K/Math/TMT19937RandomGenerator.h
-K/Math/TRandomGenerator.h
 K/Math/TSInt64.h
 K/Math/TUInt64.h
 K/Math/UTInt64.h
@@ -391,9 +386,6 @@ K/Misc/TRefCounter.h
 K/Misc/TSmartPtr.h
 K/Misc/UBase64.h
 K/Misc/UPStrings.h
-K/Streams/TFileStream.h
-K/Streams/TRandomAccessStream.h
-K/Streams/TStream.h
 K/Tests/KDebug.h
 K/Tests/TFunctionMonitor.h
 K/Tests/TMonitorMethodClient.h
@@ -411,11 +403,14 @@ K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
 
+add_subdirectory (Sample_Code/ToolchainUtils)
+add_subdirectory (Sample_Code/NSOFtoXML)
+add_subdirectory (Sample_Code/PackageUtils)
+add_subdirectory (Tests)
+
 foreach(HEADER ${HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-   install(FILES ${HEADER} DESTINATION include/cDCL/${DIR})
+   install(FILES ${HEADER} DESTINATION include/${DIR})
 endforeach(HEADER ${HEADERS})
 
-install(TARGETS cdcl LIBRARY DESTINATION lib)
-
-set_target_properties(cdcl PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+install(TARGETS DCL LIBRARY DESTINATION lib)

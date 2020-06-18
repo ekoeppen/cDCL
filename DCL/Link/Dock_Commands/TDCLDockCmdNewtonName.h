@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNewtonName.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNewtonName.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -50,7 +50,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdNewtonName
 	:
@@ -58,16 +58,16 @@ class TDCLDockCmdNewtonName
 {
 public:
 	///
-	/// Constructeur (unique) à partir des données (copiées)
+	/// Constructeur (unique) √† partir des donn√©es (copi√©es)
 	///
-	/// \param inLength		taille des données.
-	/// \param inData		données (copiées)
+	/// \param inLength		taille des donn√©es.
+	/// \param inData		donn√©es (copi√©es)
 	///
 	TDCLDockCmdNewtonName( KUInt32 inLength, const void* inData );
 
 	///
 	/// Destructeur.
-	/// Libère le nom du Newton.
+	/// Lib√®re le nom du Newton.
 	///
 	virtual					~TDCLDockCmdNewtonName( void );
 
@@ -122,9 +122,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la quantitié de RAM installée.
+	/// Accesseur sur la quantiti√© de RAM install√©e.
 	///
-	/// \return la quantitié de RAM installée.
+	/// \return la quantiti√© de RAM install√©e.
 	///
 	inline	KUInt32			GetRAMSize( void )
 		{
@@ -132,9 +132,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la hauteur de l'écran en pixels.
+	/// Accesseur sur la hauteur de l'√©cran en pixels.
 	///
-	/// \return la hauteur de l'écran.
+	/// \return la hauteur de l'√©cran.
 	///
 	inline	KUInt32			GetScreenHeight( void )
 		{
@@ -142,9 +142,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la largeur de l'écran en pixels.
+	/// Accesseur sur la largeur de l'√©cran en pixels.
 	///
-	/// \return la largeur de l'écran.
+	/// \return la largeur de l'√©cran.
 	///
 	inline	KUInt32			GetScreenWidth( void )
 		{
@@ -152,9 +152,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la version de la rustine installée.
+	/// Accesseur sur la version de la rustine install√©e.
 	///
-	/// \return la version de la rustine installée.
+	/// \return la version de la rustine install√©e.
 	///
 	inline	KUInt32			GetSystemUpdate( void )
 		{
@@ -162,9 +162,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la version du format NSOF gérée.
+	/// Accesseur sur la version du format NSOF g√©r√©e.
 	///
-	/// \return la version du format NSOF gérée.
+	/// \return la version du format NSOF g√©r√©e.
 	///
 	inline	KUInt32			GetNOSVersion( void )
 		{
@@ -182,9 +182,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la résolution verticale de l'écran.
+	/// Accesseur sur la r√©solution verticale de l'√©cran.
 	///
-	/// \return la résolution verticale de l'écran.
+	/// \return la r√©solution verticale de l'√©cran.
 	///
 	inline	KUInt32			GetVertScreenRes( void )
 		{
@@ -192,9 +192,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la résolution horizontale de l'écran.
+	/// Accesseur sur la r√©solution horizontale de l'√©cran.
 	///
-	/// \return la résolution horizontale de l'écran.
+	/// \return la r√©solution horizontale de l'√©cran.
 	///
 	inline	KUInt32			GetHoriScreenRes( void )
 		{
@@ -202,9 +202,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la profondeur de l'écran (nombre de bits par pixel).
+	/// Accesseur sur la profondeur de l'√©cran (nombre de bits par pixel).
 	///
-	/// \return la profondeur de l'écran.
+	/// \return la profondeur de l'√©cran.
 	///
 	inline	KUInt32			GetScreenDepth( void )
 		{
@@ -223,7 +223,7 @@ public:
 
 	///
 	/// Accesseur sur la longueur du nom du Newton.
-	/// (en caractères, sans le terminateur)
+	/// (en caract√®res, sans le terminateur)
 	///
 	/// \return la longueur du nom du Newton.
 	///
@@ -236,14 +236,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdNewtonName( const TDCLDockCmdNewtonName& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdNewtonName& operator = ( const TDCLDockCmdNewtonName& inCopy );
 
@@ -263,21 +263,21 @@ private:
 		KUInt32		fSystemUpdate;		///< version de la rustine.
 		KUInt32		fNOSVersion;		///< version du Newton Object System/NSOF
 		KUInt32		fInternalStoreSig;	///< Signature du magasin interne.
-		KUInt32		fVertScreenRes;		///< Résolution verticale (ppi)
-		KUInt32		fHoriScreenRes;		///< Résolution horizontale (ppi)
+		KUInt32		fVertScreenRes;		///< R√©solution verticale (ppi)
+		KUInt32		fHoriScreenRes;		///< R√©solution horizontale (ppi)
 		KUInt32		fScreenDepth;		///< Profondeur (en bpp)
 		KUInt32		fSystemFlags;		///< [2.1] Drapeaux divers:
 										///< 1 = has serial number
 										///< 2 = has target protocol
-		KUInt32		fSerialNumber[2];	///< [2.1] Numéro de série.
+		KUInt32		fSerialNumber[2];	///< [2.1] Num√©ro de s√©rie.
 		KUInt32		fTargetProtocol;	///< [2.1] ?
 	};
 	
 	/// \name Variables
 
 	SVersionInfo		mVersionInfo;	///< Informations sur le Newton.
-	const KUInt16*		mNewtonName;	///< Mémoire tampon avec le nom du Newton.
-	KUInt32				mNameLength;	///< Taille en caractères (sans le terminateur).
+	const KUInt16*		mNewtonName;	///< M√©moire tampon avec le nom du Newton.
+	KUInt32				mNameLength;	///< Taille en caract√®res (sans le terminateur).
 };
 
 #endif

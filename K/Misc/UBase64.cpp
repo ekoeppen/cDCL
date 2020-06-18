@@ -2,7 +2,7 @@
 // Fichier:			UBase64.cp
 // Projet:			K
 //
-// CrŽŽ le:			28/01/2003
+// CrÃ©Ã© le:			28/01/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -84,7 +84,7 @@ UBase64::Encode(
 	
 	while (inDataSize > 0)
 	{
-		// Caractre ˆ traiter.
+		// CaractÃ¨re Ã  traiter.
 		KUInt8 theByte = *theBinary;
 		switch (theCursor)
 		{
@@ -115,7 +115,7 @@ UBase64::Encode(
 		}
 		theCursor = (theCursor + 1) % 3;
 
-		// Caractres suivants.		
+		// CaractÃ¨res suivants.		
 		inDataSize--;
 		theBinary++;
 	}
@@ -146,16 +146,16 @@ UBase64::Decode(
 {
 	KUInt8* theBinary = (KUInt8*) outBinary;
 								// Curseur sur le binaire en sortie.
-	int theCursor = 0;			// Curseur sur les 4 caractres Base64,
+	int theCursor = 0;			// Curseur sur les 4 caractÃ¨res Base64,
 								// entre 0 et 3.
-	KUInt8 theRemaining = 0;	// Ce qu'il reste entre les caractres Base64
+	KUInt8 theRemaining = 0;	// Ce qu'il reste entre les caractÃ¨res Base64
 	KUInt32 theBinarySize = 0;	// Taille du binaire.
 	
 	while (inBase64Size > 0)
 	{
 		do {
-			KUInt8 theBase64Char = *inBase64Data;	// Caractre Base64.
-			KUInt8 theValue;							// Valeur du caractre.
+			KUInt8 theBase64Char = *inBase64Data;	// CaractÃ¨re Base64.
+			KUInt8 theValue;							// Valeur du caractÃ¨re.
 			
 			if ((theBase64Char >= 'A') && (theBase64Char <= 'Z'))
 			{
@@ -169,7 +169,7 @@ UBase64::Decode(
 			} else if (theBase64Char == '-') {
 				theValue = 64;
 			} else {
-				break;	// Autre caractre: on sort (et on l'ignore).
+				break;	// Autre caractÃ¨re: on sort (et on l'ignore).
 			}
 			
 			switch (theCursor)
@@ -207,7 +207,7 @@ UBase64::Decode(
 			theCursor = (theCursor + 1) % 4;
 		} while ( false );
 		
-		// Caractre suivant.		
+		// CaractÃ¨re suivant.		
 		inBase64Size--;
 		inBase64Data++;
 	}

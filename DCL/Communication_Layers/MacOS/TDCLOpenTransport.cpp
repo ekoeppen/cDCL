@@ -2,7 +2,7 @@
 // Fichier:			TDCLOpenTransport.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			23/01/2002
+// Cr√©√© le:			23/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOpenTransport.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -224,7 +224,7 @@ TDCLOpenTransport::Accept( void )
 	TDCLPipe* theResult = nil;	// Default result (when no connection request is
 								// present)
 	
-	// Récupération de l'appel.
+	// R√©cup√©ration de l'appel.
 	TCall theCall;
 	// On ne veut aucune information.
 	theCall.addr.len = 0;
@@ -239,7 +239,7 @@ TDCLOpenTransport::Accept( void )
 	OSStatus theErr = mServerEndpoint->Listen( &theCall );
 	if (theErr == noErr)
 	{
-		// Une requête est présente.
+		// Une requ√™te est pr√©sente.
 		KUInt32 theMaxPipeCount = GetMaxPipeCount();
 		if ((theMaxPipeCount == 0) || (mCurrentPipeCount < theMaxPipeCount))
 		{
@@ -265,7 +265,7 @@ TDCLOpenTransport::Accept( void )
 				throw DCLMemError;
 			}
 
-			// Incrément du compteur
+			// Incr√©ment du compteur
 			mCurrentPipeCount++;			
 		} else {
 			theErr = mServerEndpoint->SndDisconnect( &theCall );
@@ -286,7 +286,7 @@ TDCLOpenTransport::Accept( void )
 void
 TDCLOpenTransport::Refuse( void )
 {
-	// Récupération de l'appel.
+	// R√©cup√©ration de l'appel.
 	TCall theCall;
 	// On ne veut aucune information.
 	theCall.addr.len = 0;
@@ -301,7 +301,7 @@ TDCLOpenTransport::Refuse( void )
 	OSStatus theErr = mServerEndpoint->Listen( &theCall );
 	if (theErr == noErr)
 	{
-		// Une requête est présente.
+		// Une requ√™te est pr√©sente.
 		theErr = mServerEndpoint->SndDisconnect( &theCall );
 		
 		if (theErr != noErr)
@@ -500,7 +500,7 @@ TDCLOpenTransport::GetNewEndpoint( Boolean forListening )
 		// This endpoint is not for listening.
 		// So we don't accept connection requests.
 		// Je ne lie pas cet EP. En effet, la doc dit que je ne suis
-		// pas obligé, et si je le fais, même avec qlen mis à 0, j'ai une
+		// pas oblig√©, et si je le fais, m√™me avec qlen mis √† 0, j'ai une
 		// erreur.
 		// mLocalBindInfo.qlen = 0;
 	}
@@ -565,7 +565,7 @@ TDCLOpenTransport::Notify(
 	{
 		TDCLOpenTransport* theLayer = (TDCLOpenTransport*) inContext;
 	
-		// On dit au serveur qu'on a reçu une requête.
+		// On dit au serveur qu'on a re√ßu une requ√™te.
 		theLayer->GetServer()->RequestPresent( theLayer );
 	}
 }
@@ -636,10 +636,10 @@ TDCLOpenTransport::TOTPipe::Read( void* outBuffer, KUInt32* ioCount )
 {
 	if (mEndpoint)
 	{
-		// Nombre d'octets à lire.
+		// Nombre d'octets √† lire.
 		OTByteCount toRead = (OTByteCount) *ioCount;
 		
-		// Curseur sur les données.
+		// Curseur sur les donn√©es.
 		char* theBuffer = (char*) outBuffer;	
 		
 		OTFlags someFlags;	// I don't care about.
@@ -673,7 +673,7 @@ TDCLOpenTransport::TOTPipe::Read( void* outBuffer, KUInt32* ioCount )
 					(((long)(::time(NULL) - lastOperation))
 															> timeoutInSecs))
 				{
-					// Mise à jour du nombre d'octets lus.
+					// Mise √† jour du nombre d'octets lus.
 					*ioCount -= toRead;
 
 					throw DCLTimeout;
@@ -682,7 +682,7 @@ TDCLOpenTransport::TOTPipe::Read( void* outBuffer, KUInt32* ioCount )
 				if (theResult < 0)
 				{
 					// Erreur
-					// Mise à jour du nombre d'octets lus.
+					// Mise √† jour du nombre d'octets lus.
 					*ioCount -= toRead;
 					
 					throw DCLPlatformUnknownError( theResult );
@@ -713,10 +713,10 @@ TDCLOpenTransport::TOTPipe::Write( const void* inBuffer, KUInt32* ioCount )
 {
 	if (mEndpoint)
 	{
-		// Nombre d'octets à écrire.
+		// Nombre d'octets √† √©crire.
 		OTByteCount toWrite = (OTByteCount) *ioCount;
 		
-		// Curseur sur les données.
+		// Curseur sur les donn√©es.
 		const char* theBuffer = (const char*) inBuffer;	
 		
 		// Temporisation		
@@ -742,12 +742,12 @@ TDCLOpenTransport::TOTPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			if (theResult == kOTFlowErr)
 			{
 #warning to improve: we should wait for T_GODATA
-				// On vérifie que la temporisation n'est pas terminée.
+				// On v√©rifie que la temporisation n'est pas termin√©e.
 
 				if ((timeoutInSecs != kNoTimeout) && 
 					(((long) (::time(NULL) - lastOperation)) > timeoutInSecs))
 				{
-					// Mise à jour du nombre d'octets écrits.
+					// Mise √† jour du nombre d'octets √©crits.
 					*ioCount -= toWrite;
 					
 					throw DCLTimeout;
@@ -755,7 +755,7 @@ TDCLOpenTransport::TOTPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			} else {
 				if (theResult < 0)
 				{
-					// Mise à jour du nombre d'octets écrits.
+					// Mise √† jour du nombre d'octets √©crits.
 					*ioCount -= toWrite;
 					
 					throw DCLPlatformUnknownError( theResult );
@@ -863,19 +863,19 @@ TDCLOpenTransport::TOTPipe::SetTimeout( long inTimeout )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ClearDataPresent( void )
+//  *¬†ClearDataPresent( void )
 // -------------------------------------------------------------------------- //
 void
 TDCLOpenTransport::TOTPipe::ClearDataPresent( void )
 {
 	mDataPresent = false;
 
-	// Des données peuvent être présentes à l'instant.
+	// Des donn√©es peuvent √™tre pr√©sentes √† l'instant.
 	if (BytesAvailable())
 	{
 		// (ici le risque est d'envoyer deux messages, ce qui n'est
-		// pas tellement grave, donc pas besoin de sémaphore, ce qui
-		// poserait d'ailleurs des problèmes vu que notre classe sémaphore
+		// pas tellement grave, donc pas besoin de s√©maphore, ce qui
+		// poserait d'ailleurs des probl√®mes vu que notre classe s√©maphore
 		// utilise YieldToAnyThread pour attendre ce qui est sans effet
 		// lorsqu'on est dans une interruption).
 		GetLink()->DataPresent();

@@ -2,7 +2,7 @@
 // Fichier:			TDCLRendezVous.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			25/1/2003
+// Cr√©√© le:			25/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLRendezVous.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -55,7 +55,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLRendezVousOT
 	:
@@ -63,16 +63,16 @@ class TDCLRendezVousOT
 {
 public:
 	///
-	/// Unique constructeur, à partir d'un nom de service, d'un numéro
+	/// Unique constructeur, √† partir d'un nom de service, d'un num√©ro
 	/// de port, et du nombre maximum de connexions.
 	///
 	/// Le nombre de connexions et le timeout pour cette couche de
-	/// communication sont définies comme des constantes.
+	/// communication sont d√©finies comme des constantes.
 	///
-	/// \param inThreadsIntf	interface pour les processus légers.
-	/// \param inMachineName	le nom de la machine telle que publiée sur RDV.
-	/// \param inPort			le port sur lequel on désire écouter.
-	/// \param inMaxPipeCount	nombre maximal de connexion simultanées autorisées.
+	/// \param inThreadsIntf	interface pour les processus l√©gers.
+	/// \param inMachineName	le nom de la machine telle que publi√©e sur RDV.
+	/// \param inPort			le port sur lequel on d√©sire √©couter.
+	/// \param inMaxPipeCount	nombre maximal de connexion simultan√©es autoris√©es.
 	///
 	TDCLRendezVousOT(
 			IDCLThreads*	inThreadsIntf,
@@ -89,12 +89,12 @@ protected:
 	/// \name interface serveur
 
 	///
-	/// Commence à écouter.
+	/// Commence √† √©couter.
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
+	/// Arr√™te d'√©couter, i.e. arr√™te d'accepter les requ√™tes de connexions.
 	///
 	virtual	void		DoStopListening( void );
 
@@ -102,14 +102,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLRendezVousOT( const TDCLRendezVousOT& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLRendezVousOT& operator = ( const TDCLRendezVousOT& inCopy );
 

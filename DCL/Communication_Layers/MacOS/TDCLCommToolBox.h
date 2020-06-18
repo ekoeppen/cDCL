@@ -2,7 +2,7 @@
 // Fichier:			TDCLCommToolBox.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			20/01/2000
+// Cr√©√© le:			20/01/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLCommToolBox.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -40,7 +40,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 
-// Vérification de la cible.
+// V√©rification de la cible.
 #if !TARGET_OS_MACOS
 	#error "The Communication Toolbox is only available on MacOS < X"
 #endif
@@ -65,14 +65,14 @@ class IDCLThreads;
 
 ///
 /// Classe pour une couche de communication utilisant la Communication ToolBox.
-/// Cette classe est initialisée à partir d'un nom d'outil CTB et d'une chaîne
+/// Cette classe est initialis√©e √† partir d'un nom d'outil CTB et d'une cha√Æne
 /// de configuration. Le constructeur a aussi besoin de l'interface parce qu'il
-/// faut appeler Yield de temps en temps pour les outils CTB un peu bogués.
+/// faut appeler Yield de temps en temps pour les outils CTB un peu bogu√©s.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLCommToolBox
 	:
@@ -82,16 +82,16 @@ public:
 	///
 	/// Constructeur public.
 	/// Le nombre de connexions et la temporisation pour cette couche de
-	/// communication sont définies comme des constantes.
-	/// Les sous-classes devront probablement utiliser plutôt l'autre
+	/// communication sont d√©finies comme des constantes.
+	/// Les sous-classes devront probablement utiliser plut√¥t l'autre
 	/// constructeur.
 	///
-	/// \param inToolName		nom de l'outil de communication à utiliser
-	/// \param inConfigString	chaîne de configuration pour l'outil de
+	/// \param inToolName		nom de l'outil de communication √† utiliser
+	/// \param inConfigString	cha√Æne de configuration pour l'outil de
 	///							communication.
-	/// \param inThreadsIntf	interface pour les processus légers
-	/// \param inMaxPipeCount	nombre de connexions simultanées maximum.
-	/// \param inTimeout		délai de temporisation.
+	/// \param inThreadsIntf	interface pour les processus l√©gers
+	/// \param inMaxPipeCount	nombre de connexions simultan√©es maximum.
+	/// \param inTimeout		d√©lai de temporisation.
 	///
 	TDCLCommToolBox(
 				const char* inToolName,
@@ -108,12 +108,12 @@ public:
 	
 protected:
 	///
-	/// Commence à écouter.
+	/// Commence √† √©couter.
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
+	/// Arr√™te d'√©couter, i.e. arr√™te d'accepter les requ√™tes de connexions.
 	///
 	virtual	void		DoStopListening( void );
 
@@ -122,26 +122,26 @@ protected:
 //	virtual	Boolean		ConnectionRequestPresent( void );
 
 	///
-	/// Retourne un objet connexion représentant le canal de communication avec
-	/// le client ou \c nil s'il n'y a pas de requête de connexion présente.
-	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
+	/// Retourne un objet connexion repr√©sentant le canal de communication avec
+	/// le client ou \c nil s'il n'y a pas de requ√™te de connexion pr√©sente.
+	/// C'est un objet cr√©√© avec \c new. L'appelant devra le supprimer.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la
+	/// \return un nouvel objet TDCLPipe cr√©√© avec \c new repr√©sentant la
 	///			connexion ou \c nil.
 	///
 	virtual	TDCLPipe*	Accept( void );
 	
 	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
+	/// Refuse la premi√®re requ√™te de connexion.
+	/// Ne fait rien si aucune connexion n'est pr√©sente.
 	///
 	virtual	void		Refuse( void );
 
 	///
-	/// Méthode appelée pour perdre du temps.
+	/// M√©thode appel√©e pour perdre du temps.
 	///
-	/// Elle est appelée (par l'implémentation par défaut de TDCLPipe::Idle par
-	/// exemple) à intervalles réguliers.
+	/// Elle est appel√©e (par l'impl√©mentation par d√©faut de TDCLPipe::Idle par
+	/// exemple) √† intervalles r√©guliers.
 	///
 	/// Appelle CMIdle avec le ConnHandle et mInterface->Yield.
 	///
@@ -149,32 +149,32 @@ protected:
 
 	///
 	/// Change la temporisation pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
+	/// La temporisation est exprim√©e au format TDCLCommLayer.
 	///
 	/// \param inTimeout	nouvelle temporisation au format \c TDCLCommLayer
 	///
 	virtual	void		SetTimeout( long inTimeout );
 
 	///
-	/// Récupère la temporisation utilisée pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
+	/// R√©cup√®re la temporisation utilis√©e pour les nouvelles connexions.
+	/// La temporisation est exprim√©e au format TDCLCommLayer.
 	///
 	/// \return la temporisation au format \c TDCLCommLayer
 	///
 	virtual	long		GetTimeout( void );
 
 	///
-	/// Méthode appelée par TDCLPipe::Disconnect() pour indiquer qu'une
-	/// connexion a été fermée. Décrémente le compteur des connexions ouvertes.
-	/// Récupère l'indice de la connexion et met la référence ConnHandle
-	/// correspondante à \c nil.
+	/// M√©thode appel√©e par TDCLPipe::Disconnect() pour indiquer qu'une
+	/// connexion a √©t√© ferm√©e. D√©cr√©mente le compteur des connexions ouvertes.
+	/// R√©cup√®re l'indice de la connexion et met la r√©f√©rence ConnHandle
+	/// correspondante √† \c nil.
 	///
-	/// \param inPipe	connexion qui a été fermée
+	/// \param inPipe	connexion qui a √©t√© ferm√©e
 	///
 	virtual	void		Disconnected( TDCLPipe* inPipe );
 
 	///
-	/// Détermine si les outils de communications CTB sont disponibles.
+	/// D√©termine si les outils de communications CTB sont disponibles.
 	///
 	/// \return \c true si la CTB est disponible, \c false sinon.
 	///
@@ -183,7 +183,7 @@ protected:
 	///
 	/// Convert a timeout from seconds (or one of the constants) to CTB.
 	///
-	/// \param inSecsTimeout	délai de temporisation en secondes.
+	/// \param inSecsTimeout	d√©lai de temporisation en secondes.
 	/// \return un temps au format CTB.
 	///
 	static	long		ConvertTimeoutFromSeconds( long inSecsTimeout );
@@ -191,7 +191,7 @@ protected:
 	///
 	/// Convert a timeout from CTB to seconds.
 	///
-	/// \param inCTBTimeout	délai de temporisation au format CTB
+	/// \param inCTBTimeout	d√©lai de temporisation au format CTB
 	/// \return un nombre de secondes.
 	///
 	static	long		ConvertTimeoutToSeconds( long inCTBTimeout );
@@ -222,9 +222,9 @@ public:
 #endif
 
 	///
-	/// Détermine si un outil de communication est disponible.
+	/// D√©termine si un outil de communication est disponible.
 	///
-	/// \param inToolName	nom de l'outil à tester.
+	/// \param inToolName	nom de l'outil √† tester.
 	/// \return \c true si l'outil de communication est disponible, \c false
 	///			sinon.
 	///
@@ -247,30 +247,30 @@ private:
 		///
 		/// Lit des octets.
 		///
-		/// \param outBuffer	mémoire tampon pour les octets lus.
-		/// \param ioCount		nombre d'octets à lire en entrée, lus en
-		///						sortie. Cette valeur est mise à jour avant que
-		///						l'exception ne soit lancée si un problème est
+		/// \param outBuffer	m√©moire tampon pour les octets lus.
+		/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en
+		///						sortie. Cette valeur est mise √† jour avant que
+		///						l'exception ne soit lanc√©e si un probl√®me est
 		///						survenu.
-		/// \throws TDCLException	si un problème est survenu (autre que EOF)
+		/// \throws TDCLException	si un probl√®me est survenu (autre que EOF)
 		///
 		virtual	void		DoRead( void* outBuffer, KUInt32* ioCount );
 
 		///
 		/// Ecrit des octets.
 		///
-		/// \param inBuffer		mémoire tampon pour les octets à écrire.
-		/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-		///						sortie. Cette valeur est mise à jour avant que
-		///						l'exception ne soit lancée si un problème est
+		/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+		/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+		///						sortie. Cette valeur est mise √† jour avant que
+		///						l'exception ne soit lanc√©e si un probl√®me est
 		///						survenu.
-		/// \throws TDCLException	si un problème est survenu.
+		/// \throws TDCLException	si un probl√®me est survenu.
 		///
 		virtual	void		DoWrite( const void* inBuffer, KUInt32* ioCount );
 		
 		///
-		/// Détermine si des octets sont disponibles dans la mémoire tampon
-		/// d'entrée.
+		/// D√©termine si des octets sont disponibles dans la m√©moire tampon
+		/// d'entr√©e.
 		///
 		/// \return \c true s'il y a des octets disponibles, \c false sinon.
 		///
@@ -279,29 +279,29 @@ private:
 		// Flush does not work with CTB. So we use default implementation.
 		
 		///
-		/// Déconnecte le canal de communication avec le client.
+		/// D√©connecte le canal de communication avec le client.
 		///
-		/// L'implémentation par défaut appelle la méthode
+		/// L'impl√©mentation par d√©faut appelle la m√©thode
 		/// Disconnected( TDCLPipe* ) de TDCLCommLayer.
 		///
-		/// \remark	une fois que cette méthode est appelée, l'objet connexion
-		///			est inutilisable. Il peut être supprimé par l'appelant à
+		/// \remark	une fois que cette m√©thode est appel√©e, l'objet connexion
+		///			est inutilisable. Il peut √™tre supprim√© par l'appelant √†
 		///			tout instant.
 		///
 		virtual	void		Disconnect( void );
 		
 		///
-		/// Méthode appelée pour indiquer que c'est le moment de perdre un peu
+		/// M√©thode appel√©e pour indiquer que c'est le moment de perdre un peu
 		/// de temps.
 		///
 		/// Certaines couches de communication ont besoin de ceci.
-		/// L'implémentation par défaut appelle la méthode Idle( void ) de la
+		/// L'impl√©mentation par d√©faut appelle la m√©thode Idle( void ) de la
 		/// couche de communication.
 		///
 		virtual	void		Idle( void );
 
 		///
-		/// Récupère la temporisation pour cette connexion.
+		/// R√©cup√®re la temporisation pour cette connexion.
 		///
 		/// \return la temporisation au format \c TDCLCommLayer.
 		///
@@ -316,11 +316,11 @@ private:
 
 	protected:
 		///
-		/// Constructeur protégé.
+		/// Constructeur prot√©g√©.
 		///
-		/// \param inCommLayer	référence sur la couche de communication.
-		/// \param inConnHandle	référence sur la connexion.
-		/// \param inTimeout	délai de temporisation (format CTB).
+		/// \param inCommLayer	r√©f√©rence sur la couche de communication.
+		/// \param inConnHandle	r√©f√©rence sur la connexion.
+		/// \param inTimeout	d√©lai de temporisation (format CTB).
 		// You're not supposed to create TCTBPipes yourself.
 		TCTBPipe(
 					TDCLCommToolBox*	inCommLayer,
@@ -329,9 +329,9 @@ private:
 				);
 
 		///
-		/// Accesseur sur la référence CTB de la connexion.
+		/// Accesseur sur la r√©f√©rence CTB de la connexion.
 		///
-		/// \return la référence CTB de la connexion.
+		/// \return la r√©f√©rence CTB de la connexion.
 		///
 		inline	ConnHandle	GetConnHandle( void )
 			{

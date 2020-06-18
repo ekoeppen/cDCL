@@ -2,7 +2,7 @@
 // Fichier:			DCLErrorMessages.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/08/2000
+// Cr√©√© le:			22/08/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is DCLErrorMessages.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -344,5 +344,5 @@
 
 // ========================================================================= //
 // Viens chez moi, je te montrerai mon e2fsck ...                            //
-// -+- LF in Guide du linuxien pervers - jusqu'où irez vous avec nous ? -+-  //
+// -+- LF in Guide du linuxien pervers - jusqu'o√π irez vous avec nous ? -+-  //
 // ========================================================================= //

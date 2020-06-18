@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNoData.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			02/02/2001
+// CrÃ©Ã© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNoData.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -38,11 +38,11 @@
 
 
 // =========================================================== //
-//   ¥¥¥¥¥ Implementation for class TDCLDockCmdNoData ¥¥¥¥¥    //
+//   â€¢â€¢â€¢â€¢â€¢ Implementation for class TDCLDockCmdNoData â€¢â€¢â€¢â€¢â€¢    //
 // =========================================================== //
 
 // --------------------------------------------------------------------------------	//
-//	¥ÊTDCLDockCmdNoData( void )
+//	â€¢Â TDCLDockCmdNoData( void )
 // --------------------------------------------------------------------------------	//
 // Default Constructor
 
@@ -53,7 +53,7 @@ TDCLDockCmdNoData::TDCLDockCmdNoData( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//	¥ÊTDCLDockCmdNoData( KUInt32 )
+//	â€¢Â TDCLDockCmdNoData( KUInt32 )
 // --------------------------------------------------------------------------------	//
 // Preferred Constructor
 
@@ -64,7 +64,7 @@ TDCLDockCmdNoData::TDCLDockCmdNoData( KUInt32 inCommand )
 }
 
 // --------------------------------------------------------------------------------	//
-//	¥ÊGetLength( void )
+//	â€¢Â GetLength( void )
 // --------------------------------------------------------------------------------	//
 // Required function for the implementation. Returns 0.
 

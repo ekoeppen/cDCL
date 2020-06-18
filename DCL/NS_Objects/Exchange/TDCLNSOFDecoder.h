@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSOFDecoder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/10/2002
+// Cr√©√© le:			22/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSOFDecoder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,7 +42,7 @@
 #include <DCL/NS_Objects/Exchange/KDCLNSOF.h>
 
 ///
-/// Classe pour le décodage d'objets NS au format NSOF.
+/// Classe pour le d√©codage d'objets NS au format NSOF.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
@@ -56,10 +56,10 @@ class TDCLNSOFDecoder
 {
 public:
 	///
-	/// Constructeur à partir d'un flux.
-	/// Commence à lire le flux (la version).
+	/// Constructeur √† partir d'un flux.
+	/// Commence √† lire le flux (la version).
 	///
-	/// \param inStream		flux où lire les données.
+	/// \param inStream		flux o√π lire les donn√©es.
 	///
 	TDCLNSOFDecoder( TDCLStream* inStream );
 
@@ -69,9 +69,9 @@ public:
 	virtual ~TDCLNSOFDecoder( void );
 
 	///
-	/// Crée l'objet suivant.
+	/// Cr√©e l'objet suivant.
 	///
-	/// \return une référence vers l'objet suivant.
+	/// \return une r√©f√©rence vers l'objet suivant.
 	///
 	virtual TDCLNSRef	GetNextObject( void );
 };

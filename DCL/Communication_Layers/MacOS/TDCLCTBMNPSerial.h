@@ -2,7 +2,7 @@
 // Fichier:			TDCLCTBMNPSerial.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/01/2002
+// Cr√©√© le:			22/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLCTBMNPSerial.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,14 +41,14 @@
 #include <DCL/Communication_Layers/MacOS/TDCLCommToolBox.h>
 
 ///
-/// Classe pour la couche de communication port série avec la CTB (avec
+/// Classe pour la couche de communication port s√©rie avec la CTB (avec
 /// compression MNP inclue dans la CTB).
 /// 
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
 /// \todo	revoir les temporisations.
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLCTBMNPSerial
 	:
@@ -58,12 +58,12 @@ public:
 	///
 	/// Constructeur.
 	///
-	/// \param inThreadsIntf	interface pour les threads (utilisée pour
+	/// \param inThreadsIntf	interface pour les threads (utilis√©e pour
 	///							Yield).
-	/// \param inPort			index du port série (base 0)
-	/// \param inBaud			vitesse du port série (par défaut, 38400, la
-	///							vitesse par défaut sur le Newton)
-	/// \param inTimeout		délai de temporisation, format CommLayer.
+	/// \param inPort			index du port s√©rie (base 0)
+	/// \param inBaud			vitesse du port s√©rie (par d√©faut, 38400, la
+	///							vitesse par d√©faut sur le Newton)
+	/// \param inTimeout		d√©lai de temporisation, format CommLayer.
 	///
 	TDCLCTBMNPSerial(
 					IDCLThreads* inThreadsIntf,
@@ -73,26 +73,26 @@ public:
 				);
 	
 	///
-	/// Vérifie que le service est disponible.
+	/// V√©rifie que le service est disponible.
 	///
 	/// \return \c true si le service est disponible, \c false sinon.
 	///
 	static	Boolean			IsAvailable( void );
 
 	///
-	/// Détermine le nom d'un port série. Utile pour être sympa avec
-	/// l'utilisateur. Retourne une chaîne allouée avec malloc.
+	/// D√©termine le nom d'un port s√©rie. Utile pour √™tre sympa avec
+	/// l'utilisateur. Retourne une cha√Æne allou√©e avec malloc.
 	///
-	/// \param inIndex			index du port série (base 0)
-	/// \return une chaîne allouée avec malloc ou nil si le port n'existe pas.
+	/// \param inIndex			index du port s√©rie (base 0)
+	/// \return une cha√Æne allou√©e avec malloc ou nil si le port n'existe pas.
 	///
 	static	char*			GetSerialPortName( unsigned long inIndex );
 
 	///
-	/// Détermine le nombre de ports série disponibles.
+	/// D√©termine le nombre de ports s√©rie disponibles.
 	///
-	/// \return le nombre de ports série (n) sur cette machine. L'index du port
-	///			pour les autres méthodes doit être entre 0 et n - 1.
+	/// \return le nombre de ports s√©rie (n) sur cette machine. L'index du port
+	///			pour les autres m√©thodes doit √™tre entre 0 et n - 1.
 	///
 	static	unsigned long	CountSerialPorts( void );
 };

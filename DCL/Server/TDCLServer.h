@@ -2,7 +2,7 @@
 // Fichier:			TDCLServer.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			14/01/2002
+// Cr√©√© le:			14/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLServer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,28 +51,28 @@ class TDCLLink;
 ///
 /// Classe abstraite pour les serveurs.
 ///
-/// Un serveur écoute sur une ou plusieurs interfaces (pipes) et les associe à
+/// Un serveur √©coute sur une ou plusieurs interfaces (pipes) et les associe √†
 /// un lien (link) lorsque le Newton se connecte.
-/// Il peut alors créer plus d'interfaces ou tuer les interfaces précédentes ou
-/// leur dire de ne plus écouter. Tout ceci dépend de la sous-classe.
+/// Il peut alors cr√©er plus d'interfaces ou tuer les interfaces pr√©c√©dentes ou
+/// leur dire de ne plus √©couter. Tout ceci d√©pend de la sous-classe.
 ///
-/// L'accès aux interfaces et aux liens doit être fait en
-/// verrouillant/déverrouillant les listes. Verrouiller les listes empêche le
-/// serveur de créer des nouveaux liens ou des nouvelles interfaces. Donc vous
-/// devez les déverrouiller dès que possible.
+/// L'acc√®s aux interfaces et aux liens doit √™tre fait en
+/// verrouillant/d√©verrouillant les listes. Verrouiller les listes emp√™che le
+/// serveur de cr√©er des nouveaux liens ou des nouvelles interfaces. Donc vous
+/// devez les d√©verrouiller d√®s que possible.
 ///
-/// Par ailleurs, le serveur comprend un sémaphore mutex pour protéger les
-/// accès aux méthodes Start/Stop/Kill.
+/// Par ailleurs, le serveur comprend un s√©maphore mutex pour prot√©ger les
+/// acc√®s aux m√©thodes Start/Stop/Kill.
 ///
-/// Le serveur est représenté par un processus léger qui généralement reste en
+/// Le serveur est repr√©sent√© par un processus l√©ger qui g√©n√©ralement reste en
 /// attente. La boucle est:
 /// - Tant qu'il n'y a pas de connexion ou qu'il ne faut pas quitter, attendre.
-/// - Faire ce qu'il y a à faire.
+/// - Faire ce qu'il y a √† faire.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLServer
 	:
@@ -82,8 +82,8 @@ public:
 	///
 	/// Le constructeur est public, mais la classe est abstraite.
 	///
-	/// \param inApplication	interface avec le système hôte. Utilisé
-	///							pour le sémaphore.
+	/// \param inApplication	interface avec le syst√®me h√¥te. Utilis√©
+	///							pour le s√©maphore.
 	///
 	TDCLServer( TDCLApplication* inApplication );
 
@@ -99,64 +99,64 @@ public:
 	///
 	enum EState {
 		kStopped,	///< Etat initial.
-		kStarting,	///< Etat juste après que Start ait été appelé.
-		kRunning,	///< Etat une fois que DoStart a terminé.
-		kStopping,	///< En cours d'arrêt.
+		kStarting,	///< Etat juste apr√®s que Start ait √©t√© appel√©.
+		kRunning,	///< Etat une fois que DoStart a termin√©.
+		kStopping,	///< En cours d'arr√™t.
 		kUnknown	///< Etat inconnu (en cas d'exception)
 	};	
 
 	///
-	/// Démarre le serveur.
-	/// Ne fait rien si le serveur n'est pas à l'arrêt.
-	/// Change l'état en kStarting si tout va bien.
+	/// D√©marre le serveur.
+	/// Ne fait rien si le serveur n'est pas √† l'arr√™t.
+	/// Change l'√©tat en kStarting si tout va bien.
 	///
-	/// \throws	TDCLException si un problème est survenu. Dans ce cas
-	///			le serveur est maintenu dans l'état arrêté.
+	/// \throws	TDCLException si un probl√®me est survenu. Dans ce cas
+	///			le serveur est maintenu dans l'√©tat arr√™t√©.
 	///
 	void				Start( void );
 
 	///
-	/// Commence l'arrêt du serveur en douceur.
-	/// Normalement asynchrone, mais ceci peut être synchrone.
+	/// Commence l'arr√™t du serveur en douceur.
+	/// Normalement asynchrone, mais ceci peut √™tre synchrone.
 	/// Ne fait rien si le serveur ne tourne pas.
-	/// Change l'état en kStopping ou kStopped suivant que l'opération
-	/// était asynchrone ou synchrone.
+	/// Change l'√©tat en kStopping ou kStopped suivant que l'op√©ration
+	/// √©tait asynchrone ou synchrone.
 	///
-	/// \throws	TDCLException si un problème est survenu. Dans ce cas
-	///			le serveur est dans l'état inconnu (ne devrait pas arriver).
+	/// \throws	TDCLException si un probl√®me est survenu. Dans ce cas
+	///			le serveur est dans l'√©tat inconnu (ne devrait pas arriver).
 	///
 	void				Stop( void );
 	
 	///
-	/// Termine brutalement toute connexion (opération synchrone).
+	/// Termine brutalement toute connexion (op√©ration synchrone).
 	/// Ne fait rien si le serveur ne tourne pas.
 	/// Tue aussi les interfaces de communication qui sont en train de
-	/// se fermer. Change l'état en kStopped.
+	/// se fermer. Change l'√©tat en kStopped.
 	///
-	/// \throws	TDCLException si un problème est survenu. Dans ce cas
-	///			le serveur est dans l'état inconnu (ne devrait pas arriver).
+	/// \throws	TDCLException si un probl√®me est survenu. Dans ce cas
+	///			le serveur est dans l'√©tat inconnu (ne devrait pas arriver).
 	///
 	void				Kill( void );
 
 	///
-	/// Récupère l'état du serveur.
-	/// Note: cette méthode utilise le sémaphore comme Start/Stop/Kill.
+	/// R√©cup√®re l'√©tat du serveur.
+	/// Note: cette m√©thode utilise le s√©maphore comme Start/Stop/Kill.
 	///
-	/// \return l'état actuel du serveur
+	/// \return l'√©tat actuel du serveur
 	///
 	EState				GetState( void );
 
 	///
-	/// Méthode appelée par les couches de communication pour indiquer qu'une
-	/// requête est présente. Cette méthode envoie un événement au processus
-	/// léger du serveur.
+	/// M√©thode appel√©e par les couches de communication pour indiquer qu'une
+	/// requ√™te est pr√©sente. Cette m√©thode envoie un √©v√©nement au processus
+	/// l√©ger du serveur.
 	///
-	/// \param inCommLayer	couche de communication qui a reçu une requête.
+	/// \param inCommLayer	couche de communication qui a re√ßu une requ√™te.
 	///
 	void				RequestPresent( TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée par les couches de communication pour indiquer qu'elles
+	/// M√©thode appel√©e par les couches de communication pour indiquer qu'elles
 	/// attendent une connexion. C'est le moment pour l'utilisateur de demander
 	/// au Newton de se connecter.
 	///
@@ -165,19 +165,19 @@ public:
 	void				WaitingConnection( TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée par les liens pour indiquer qu'ils sont déconnectés
-	/// (i.e. que la communication avec le Newton est terminée).
+	/// M√©thode appel√©e par les liens pour indiquer qu'ils sont d√©connect√©s
+	/// (i.e. que la communication avec le Newton est termin√©e).
 	///
-	/// \param inLink		lien qui est déconnecté.
+	/// \param inLink		lien qui est d√©connect√©.
 	///
 	void				Disconnected( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée dans
-	/// le processus léger d'une/de la couche de communication.
-	/// Cette méthode prévient l'application.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e dans
+	/// le processus l√©ger d'une/de la couche de communication.
+	/// Cette m√©thode pr√©vient l'application.
 	///
-	/// \param inCommLayer	couche qui s'est vautrée.
+	/// \param inCommLayer	couche qui s'est vautr√©e.
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
 	///
@@ -187,24 +187,24 @@ public:
 
 protected:
 	///
-	/// Méthode appelée lorsqu'on a reçu un événement.
-	/// Cette méthode peut être dérivée si un serveur a besoin de recevoir
-	/// des événements non prévus.
-	/// Par défaut
+	/// M√©thode appel√©e lorsqu'on a re√ßu un √©v√©nement.
+	/// Cette m√©thode peut √™tre d√©riv√©e si un serveur a besoin de recevoir
+	/// des √©v√©nements non pr√©vus.
+	/// Par d√©faut
 	///
-	/// \param 	inEvent	l'événement reçu.
-	/// \param 	outProcessed en sortie, \c true si l'événement a été géré,
-	///			inchangé sinon. Si l'événement n'est pas géré, une exception
-	///			sera levée.
-	/// \return le nouvel état du serveur.
+	/// \param 	inEvent	l'√©v√©nement re√ßu.
+	/// \param 	outProcessed en sortie, \c true si l'√©v√©nement a √©t√© g√©r√©,
+	///			inchang√© sinon. Si l'√©v√©nement n'est pas g√©r√©, une exception
+	///			sera lev√©e.
+	/// \return le nouvel √©tat du serveur.
 	///
 	virtual EState		ProcessEvent(
 							TDCLEvent* inEvent,
 							Boolean* outProcessed );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-	/// Lorsque cette méthode retourne, le processus est terminé.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+	/// Lorsque cette m√©thode retourne, le processus est termin√©.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -214,24 +214,24 @@ protected:
 	/// \name Interface TDCLThread
 	
 	///
-	/// Cette méthode est appelée dans le processus léger du serveur.
+	/// Cette m√©thode est appel√©e dans le processus l√©ger du serveur.
 	/// C'est la boucle principale du serveur.
-	/// Cette boucle est terminée lorsqu'une exception survient ou lorsque
-	/// le serveur est arrêté.
+	/// Cette boucle est termin√©e lorsqu'une exception survient ou lorsque
+	/// le serveur est arr√™t√©.
 	///
 	virtual void		Run( void );
 
 	/// \name Interface TDCLServer
 	
 	///
-	/// Commence à écouter.
-	/// Cette méthode est appelée lorsque le serveur est démarré (depuis
-	/// le processus léger du serveur).
+	/// Commence √† √©couter.
+	/// Cette m√©thode est appel√©e lorsque le serveur est d√©marr√© (depuis
+	/// le processus l√©ger du serveur).
 	///
 	virtual	void		DoStartListening( void ) = 0;
 
 	///
-	/// Arrête le serveur.
+	/// Arr√™te le serveur.
 	///
 	virtual	void		DoStop( void ) = 0;
 	
@@ -241,28 +241,28 @@ protected:
 	virtual	void		DoKill( void ) = 0;
 
 	///
-	/// Gère l'arrivée d'une nouvelle connexion.
+	/// G√®re l'arriv√©e d'une nouvelle connexion.
 	///
-	/// \param inCommLayer	interface de communication qui a reçu la requête.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inCommLayer	interface de communication qui a re√ßu la requ√™te.
+	/// \return le nouvel √©tat du serveur.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual EState		HandleIncomingConnection(
 								TDCLCommLayer* inCommLayer ) = 0;
 
 	///
-	/// Méthode appelée dans le processus léger du serveur pour indiquer
-	/// qu'un lien a été déconnecté et qu'il faut fermer l'interface de
+	/// M√©thode appel√©e dans le processus l√©ger du serveur pour indiquer
+	/// qu'un lien a √©t√© d√©connect√© et qu'il faut fermer l'interface de
 	/// communication.
 	///
-	/// \param inLink	le lien qui a été déconnecté.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inLink	le lien qui a √©t√© d√©connect√©.
+	/// \return le nouvel √©tat du serveur.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink ) = 0;
 
 	///
-	/// Méthode appelée par le serveur lorsque rien ne se passe.
+	/// M√©thode appel√©e par le serveur lorsque rien ne se passe.
 	/// Elle permet d'appeler Idle sur les interfaces de communication qui en
 	/// ont besoin.
 	///
@@ -277,22 +277,22 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLServer( const TDCLServer& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLServer& operator = ( const TDCLServer& inCopy );
 
 	/// \name Variables
 
-	TDCLApplication*			mApplication;	///< Référence sur
+	TDCLApplication*			mApplication;	///< R√©f√©rence sur
 												///< l'application.
-	IDCLThreads::ISemaphore*	mStateMutex;	///< Mutex sur l'état.
+	IDCLThreads::ISemaphore*	mStateMutex;	///< Mutex sur l'√©tat.
 	EState						mState;			///< Etat.
 };
 

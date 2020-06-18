@@ -2,7 +2,7 @@
 // Fichier:			U3DES.cp
 // Projet:			K
 // 
-// Créé le:			6/9/2003
+// Cr√©√© le:			6/9/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****

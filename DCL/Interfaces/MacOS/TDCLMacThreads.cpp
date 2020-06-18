@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacThreads.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacThreads.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,16 +46,16 @@
 #include <DCL/Interfaces/TDCLThread.h>
 
 ///
-/// Structure pour le réveil programmé.
+/// Structure pour le r√©veil programm√©.
 ///
 typedef struct
 {
-	TMTask			fTask;			///< Tâche du TM pour nous réveiller
-	ThreadID		fThreadID;		///< Référence sur le processus léger à
-									///< réveiller
-	ThreadTaskRef	fTaskRef;		///< Contexte (nécessaire pour réveiller
+	TMTask			fTask;			///< T√¢che du TM pour nous r√©veiller
+	ThreadID		fThreadID;		///< R√©f√©rence sur le processus l√©ger √†
+									///< r√©veiller
+	ThreadTaskRef	fTaskRef;		///< Contexte (n√©cessaire pour r√©veiller
 									///< depuis l'interruption)
-	Boolean			fExpired;		///< Si on a été réveillé par la tâche.
+	Boolean			fExpired;		///< Si on a √©t√© r√©veill√© par la t√¢che.
 } TMTaskExtended;
 
 // ------------------------------------------------------------------------- //
@@ -65,7 +65,7 @@ TDCLMacThreads::TDCLMacThreads( void )
 	:
 		mTimerProcUPP( NewTimerUPP((TimerProcPtr) TimerProc ) )
 {
-	// Gaz à tous les étages.
+	// Gaz √† tous les √©tages.
 }
 
 // ------------------------------------------------------------------------- //
@@ -125,7 +125,7 @@ TDCLMacThreads::CreateSemaphore( void )
 TDCLMacThreads::TSemaphore::TSemaphore( TDCLMacThreads* inThreadsIntf )
 	:
 		mThreads( inThreadsIntf ),
-		mSemaphore( false )	// Le sémaphore est libre
+		mSemaphore( false )	// Le s√©maphore est libre
 {
 	// Initialisation de la queue.
 	mQueue.qFlags = 0;
@@ -134,7 +134,7 @@ TDCLMacThreads::TSemaphore::TSemaphore( TDCLMacThreads* inThreadsIntf )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ~TSemaphore( void )
+//  *¬†~TSemaphore( void )
 // ------------------------------------------------------------------------- //
 TDCLMacThreads::TSemaphore::~TSemaphore( void )
 {
@@ -145,24 +145,24 @@ TDCLMacThreads::TSemaphore::~TSemaphore( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Acquire( void )
+//  *¬†Acquire( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacThreads::TSemaphore::Acquire( void )
 {
 	QElem	myElem;
 
-	// Initialisation de l'élément
+	// Initialisation de l'√©l√©ment
 	myElem.qLink = nil;
 	myElem.qType = dummyType;
 
 	while ( true )
 	{
-		// Attente jusqu'à ce que le sémaphore ait été libéré.
+		// Attente jusqu'√† ce que le s√©maphore ait √©t√© lib√©r√©.
 
 		if ( mSemaphore == false )
 		{
-			// Cette opération est atomique.
+			// Cette op√©ration est atomique.
 			::Enqueue( &myElem, &mQueue );
 		
 			Boolean	done = false;
@@ -170,41 +170,41 @@ TDCLMacThreads::TSemaphore::Acquire( void )
 			// Suis-je le premier dans la queue.
 			if ( mQueue.qHead == &myElem )
 			{
-				// Vivi. J'ai le droit de jouer avec le sémaphore.
+				// Vivi. J'ai le droit de jouer avec le s√©maphore.
 			
 				if ( mSemaphore == false )
 				{
 					mSemaphore = true;
 					done = true;
-				} // Sinon, je continue à boucler.
+				} // Sinon, je continue √† boucler.
 			}
 
-			// Suppression de l'élément de la liste.
+			// Suppression de l'√©l√©ment de la liste.
 			OSErr theErr = ::Dequeue ( &myElem, &mQueue );
 			if (theErr != noErr)
 			{
 				throw DCLPlatformUnknownError( theErr );
 			}
 	
-			// Terminé?
+			// Termin√©?
 			if (done)
 			{
 				break;
 			}
 		}
 
-		// On passe un peu de temps à faire autre chose.
+		// On passe un peu de temps √† faire autre chose.
 		mThreads->Yield();
 	}
 }
 
 // ------------------------------------------------------------------------- //
-//  * Release( void )
+//  *¬†Release( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacThreads::TSemaphore::Release( void )
 {
-	// Je marque juste le sémaphore comme libre.
+	// Je marque juste le s√©maphore comme libre.
 	mSemaphore = false;
 }
 
@@ -274,17 +274,17 @@ TDCLMacThreads::TThread::Start( void )
 			mMutex.Release();
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case threadNotFoundErr:	// Problèmes d'arguments (ne doit pas arriver)
+		case threadNotFoundErr:	// Probl√®mes d'arguments (ne doit pas arriver)
 		case threadProtocolErr:
 		default:
 			mMutex.Release();
 			throw DCLPlatformUnknownError( theErr );
 	}
 
-	// Attente que Run soit appelé et mState mis à jour.
+	// Attente que Run soit appel√© et mState mis √† jour.
 	mMutex.Acquire();
 
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	mMutex.Release();
 }
 
@@ -313,7 +313,7 @@ TDCLMacThreads::TThread::Stop( void )
 		case threadTooManyReqsErr:
 			throw DCLPlatformLimitReachedError( theErr );
 		
-		case threadNotFoundErr:	// Problèmes d'arguments (ne doit pas arriver)
+		case threadNotFoundErr:	// Probl√®mes d'arguments (ne doit pas arriver)
 		case threadProtocolErr:
 		default:
 			throw DCLPlatformUnknownError( theErr );
@@ -346,7 +346,7 @@ TDCLMacThreads::TThread::Suspend( void )
 			case threadTooManyReqsErr:
 				throw DCLPlatformLimitReachedError( theErr );
 			
-			case threadNotFoundErr:	// Problèmes d'arguments (ne doit pas arriver)
+			case threadNotFoundErr:	// Probl√®mes d'arguments (ne doit pas arriver)
 			case threadProtocolErr:
 			default:
 				throw DCLPlatformUnknownError( theErr );
@@ -380,7 +380,7 @@ TDCLMacThreads::TThread::Resume( void )
 			case threadTooManyReqsErr:
 				throw DCLPlatformLimitReachedError( theErr );
 			
-			case threadNotFoundErr:	// Problèmes d'arguments (ne doit pas arriver)
+			case threadNotFoundErr:	// Probl√®mes d'arguments (ne doit pas arriver)
 			case threadProtocolErr:
 			default:
 				throw DCLPlatformUnknownError( theErr );
@@ -396,11 +396,11 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 {
 	Boolean theResult;
 	
-	// Le nombre de réveil est-il nul?
+	// Le nombre de r√©veil est-il nul?
 	if (mWakeCount > 0)
 	{
 		mWakeCount--;
-		theResult = false;	// On n'a pas dormi tout le temps demandé.
+		theResult = false;	// On n'a pas dormi tout le temps demand√©.
 	} else {
 		if (inMilliseconds == kForever)
 		{
@@ -411,7 +411,7 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 				throw DCLPlatformUnknownError( theErr );
 			}
 
-			theResult = true;	// On a toujours été réveillé.
+			theResult = true;	// On a toujours √©t√© r√©veill√©.
 		} else {
 			TMTaskExtended theSleepTask;
 
@@ -425,17 +425,17 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 
 			theSleepTask.fThreadID = mThreadID;
 			
-			// On note la référence sur l'application.
+			// On note la r√©f√©rence sur l'application.
 			OSErr theErr = ::GetThreadCurrentTaskRef( &theSleepTask.fTaskRef );
 			if (theErr != noErr)
 			{
 				throw DCLPlatformUnknownError( theErr );
 			}
 			
-			// On installe cette tâche.
+			// On installe cette t√¢che.
 			::InsTime( (QElemPtr) &theSleepTask );
 			
-			// On lance la tâche pour dans inMilliseconds.
+			// On lance la t√¢che pour dans inMilliseconds.
 			Boolean doItTwice = false;
 			KUInt32 theMilliseconds = inMilliseconds;
 			if (inMilliseconds & 0x80000000)
@@ -445,7 +445,7 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 			}
 			
 			do {
-				// Par défaut, on n'a pas dormi tout le temps.
+				// Par d√©faut, on n'a pas dormi tout le temps.
 				theSleepTask.fExpired = false;
 				
 				::PrimeTime( (QElemPtr) &theSleepTask, (long) (theMilliseconds) );
@@ -459,7 +459,7 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 					throw DCLPlatformUnknownError( theErr );
 				}
 			
-				// On vient d'être réveillé.
+				// On vient d'√™tre r√©veill√©.
 				// Doit-on retourner faire un petit somme?	
 				if (doItTwice && theSleepTask.fExpired)
 				{
@@ -469,10 +469,10 @@ TDCLMacThreads::TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 				}
 			} while ( true );
 			
-			// Il s'agit finalement d'enlever la tâche.
+			// Il s'agit finalement d'enlever la t√¢che.
 			::RmvTime( (QElemPtr) &theSleepTask );
 
-			// On dit si on a été réveillé ou non.
+			// On dit si on a √©t√© r√©veill√© ou non.
 			theResult = theSleepTask.fExpired;
 		}
 	}
@@ -489,7 +489,7 @@ TDCLMacThreads::TThread::WakeUp( void )
 	// Acquisition du mutex.
 	mMutex.Acquire();
 
-	// Le processus léger dort-il?
+	// Le processus l√©ger dort-il?
 	if (mState == kSleeping)
 	{
 		// Debout.
@@ -501,11 +501,11 @@ TDCLMacThreads::TThread::WakeUp( void )
 			throw DCLPlatformUnknownError( theErr );
 		}		
 	} else {
-		// On incrémente juste le compteur.
+		// On incr√©mente juste le compteur.
 		mWakeCount++;
 	}
 	
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	mMutex.Release();
 }
 

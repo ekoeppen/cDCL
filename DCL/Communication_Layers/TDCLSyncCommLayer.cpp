@@ -2,7 +2,7 @@
 // Fichier:			TDCLSyncCommLayer.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			28/3/2003
+// Cr√©√© le:			28/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSyncCommLayer.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -57,12 +57,12 @@ TDCLSyncCommLayer::TDCLSyncCommLayer(
 }
 
 // ------------------------------------------------------------------------- //
-//  * StartListening( TDCLServer* )
+//  *¬†StartListening( TDCLServer* )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
 {
-	// Exception si on est déjà en train d'écouter.
+	// Exception si on est d√©j√† en train d'√©couter.
 	if (GetServer())
 	{
 		throw DCLBadStateError;
@@ -71,28 +71,28 @@ TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
 	// Enregistrement du serveur.
 	SetServer( inServer );
 	
-	// Démarrage du processus léger.
+	// D√©marrage du processus l√©ger.
 	// Celui-ci appellera DoStartListening.
 	Start();
 }
 
 // ------------------------------------------------------------------------- //
-//  * StopListening( void )
+//  *¬†StopListening( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::StopListening( void )
 {
-	// On ne fait rien si on n'est pas en train d'écouter.
+	// On ne fait rien si on n'est pas en train d'√©couter.
 	if (GetServer())
 	{
-		// On appelle la méthode qui fait vraiment le travail.
+		// On appelle la m√©thode qui fait vraiment le travail.
 		try {
 			DoStopListening();
 		
-			// Réveil du processus léger
+			// R√©veil du processus l√©ger
 			WakeUp();
 
-			// On attend que le processus léger termine.
+			// On attend que le processus l√©ger termine.
 			while (GetThreadState() != IDCLThreads::kStopped)
 			{
 				Yield();
@@ -106,21 +106,21 @@ TDCLSyncCommLayer::StopListening( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Run( void )
+//  *¬†Run( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::Run( void )
 {
-	// On commence à écouter.
+	// On commence √† √©couter.
 	DoStartListening();
 	
-	// Ayé, on écoute.
+	// Ay√©, on √©coute.
 	GetServer()->WaitingConnection( this );
 
-	// On attend qu'une requête soit présente.
+	// On attend qu'une requ√™te soit pr√©sente.
 	while ( WaitForIncomingRequest() )
 	{
-		// Une requête vient d'arriver. On prévient le serveur.
+		// Une requ√™te vient d'arriver. On pr√©vient le serveur.
 		TDCLServer* theServer = GetServer();
 		
 		if (theServer)
@@ -130,7 +130,7 @@ TDCLSyncCommLayer::Run( void )
 			break;
 		}
 
-		(void) Sleep();	// On attend que la requête soit acceptée ou refusée.
+		(void) Sleep();	// On attend que la requ√™te soit accept√©e ou refus√©e.
 	}
 }
 
@@ -142,7 +142,7 @@ TDCLSyncCommLayer::Accept( void )
 {
 	TDCLPipe* thePipe = DoAccept();
 
-	// Réveil du processus léger (pour la prochaine requête).
+	// R√©veil du processus l√©ger (pour la prochaine requ√™te).
 	WakeUp();
 
 	return thePipe;
@@ -156,12 +156,12 @@ TDCLSyncCommLayer::Refuse( void )
 {
 	DoRefuse();
 	
-	// Réveil du processus léger (pour la prochaine requête).
+	// R√©veil du processus l√©ger (pour la prochaine requ√™te).
 	WakeUp();
 }
 
 // --------------------------------------------------------------------------------	//
-//  * HandleException( TDCLException* )
+//  *¬†HandleException( TDCLException* )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::HandleException( TDCLException* inException )
@@ -171,7 +171,7 @@ TDCLSyncCommLayer::HandleException( TDCLException* inException )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * TSyncPipe( IDCLThreads*, TDCLSyncCommLayer* )
+//  *¬†TSyncPipe( IDCLThreads*, TDCLSyncCommLayer* )
 // --------------------------------------------------------------------------------	//
 TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
 					IDCLThreads* inThreadsIntf, TDCLSyncCommLayer* inCommLayer )
@@ -182,20 +182,20 @@ TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Disconnect( void )
+//  *¬†Disconnect( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 {
 	if (GetLink())
 	{
-		// On appelle la méthode qui fait vraiment le travail.
+		// On appelle la m√©thode qui fait vraiment le travail.
 		DoDisconnect();
 		
-		// On relâche le processus s'il attendait
+		// On rel√¢che le processus s'il attendait
 		WakeUp();
 		
-		// On attend que le processus léger termine.
+		// On attend que le processus l√©ger termine.
 		while (GetThreadState() != IDCLThreads::kStopped)
 		{
 			Yield();
@@ -204,22 +204,22 @@ TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Connected( TDCLLink* )
+//  *¬†Connected( TDCLLink* )
 // --------------------------------------------------------------------------------	//
 TDCLCommLayer*
 TDCLSyncCommLayer::TSyncPipe::Connected( TDCLLink* inLink )
 {
-	// Appel de la méthode par défaut.
+	// Appel de la m√©thode par d√©faut.
 	TDCLCommLayer* theResult = TDCLPipe::Connected( inLink );
 	
-	// Démarrage du processus léger.
+	// D√©marrage du processus l√©ger.
 	Start();
 	
 	return theResult;
 }
 
 // --------------------------------------------------------------------------------	//
-//  * ClearDataPresent( void )
+//  *¬†ClearDataPresent( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::ClearDataPresent( void )
@@ -228,17 +228,17 @@ TDCLSyncCommLayer::TSyncPipe::ClearDataPresent( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Run( void )
+//  *¬†Run( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::Run( void )
 {
 	do {
-		(void) Sleep();	// On attend que le lien nous demande si on veut des données.
+		(void) Sleep();	// On attend que le lien nous demande si on veut des donn√©es.
 
 		if ( WaitForIncomingData() )
 		{
-			// Des données viennent d'arriver. On prévient le lien.
+			// Des donn√©es viennent d'arriver. On pr√©vient le lien.
 			GetLink()->DataPresent();
 		} else {
 			break;
@@ -247,12 +247,12 @@ TDCLSyncCommLayer::TSyncPipe::Run( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * HandleException( TDCLException* )
+//  *¬†HandleException( TDCLException* )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::HandleException( TDCLException* inException )
 {
-	// On transmet à la couche de communication.
+	// On transmet √† la couche de communication.
 	((TDCLSyncCommLayer*) GetCommLayer())->HandleException( inException );
 }
 

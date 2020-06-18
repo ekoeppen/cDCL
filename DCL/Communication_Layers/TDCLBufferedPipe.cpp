@@ -2,7 +2,7 @@
 // Fichier:			TDCLBufferedPipe.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			26/10/2002
+// Cr√©√© le:			26/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLBufferedPipe.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,7 +51,7 @@
 // #define KDEBUG_ENABLED 1
 
 // ------------------------------------------------------------------------- //
-//	* TDCLBufferedPipe( TDCLCommLayer*, KUInt32 )
+//	*¬†TDCLBufferedPipe( TDCLCommLayer*, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLBufferedPipe::TDCLBufferedPipe(
 			TDCLPipe* inSubPipe,
@@ -70,7 +70,7 @@ TDCLBufferedPipe::TDCLBufferedPipe(
 }
 
 // ------------------------------------------------------------------------- //
-//	* ~TDCLBufferedPipe( void )
+//	*¬†~TDCLBufferedPipe( void )
 // ------------------------------------------------------------------------- //
 TDCLBufferedPipe::~TDCLBufferedPipe( void )
 {
@@ -81,14 +81,14 @@ TDCLBufferedPipe::~TDCLBufferedPipe( void )
 }
 
 // ------------------------------------------------------------------------- //
-//	* FlushOutput( void )
+//	*¬†FlushOutput( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLBufferedPipe::FlushOutput( void )
 {
 	KDEBUG( "FlushOutput" );
 
-	// Ecriture des données.
+	// Ecriture des donn√©es.
 	KUInt32 actualAmountWritten = mBufferSize;
 	if (actualAmountWritten > 0)
 	{
@@ -97,7 +97,7 @@ TDCLBufferedPipe::FlushOutput( void )
 		} catch (...) {
 			if (actualAmountWritten != mBufferSize)
 			{
-				// Déplacement des données.
+				// D√©placement des donn√©es.
 				(void) ::memmove(
 							(void*) mBuffer,
 							&((const KUInt8*) mBuffer)[actualAmountWritten],
@@ -107,16 +107,16 @@ TDCLBufferedPipe::FlushOutput( void )
 			throw;	// Rethrow
 		}
 
-		// Tout a été écrit avec succès.
+		// Tout a √©t√© √©crit avec succ√®s.
 		mBufferSize = 0;
 	}
-	
-	// On vide la mémoire tampon du flux fils.
+
+	// On vide la m√©moire tampon du flux fils.
 	GetSubPipe()->FlushOutput();
 }
 
 // ------------------------------------------------------------------------- //
-//  * Read( void* outBuffer, KUInt32* ioCount )
+//  *¬†Read( void* outBuffer, KUInt32* ioCount )
 // ------------------------------------------------------------------------- //
 void
 TDCLBufferedPipe::Read( void* outBuffer, KUInt32* ioCount )
@@ -125,32 +125,32 @@ TDCLBufferedPipe::Read( void* outBuffer, KUInt32* ioCount )
 }
 
 // ------------------------------------------------------------------------- //
-//	* Write( const void*, KUInt32* )
+//	*¬†Write( const void*, KUInt32* )
 // ------------------------------------------------------------------------- //
 void
 TDCLBufferedPipe::Write( const void* inBuffer, KUInt32* ioCount )
 {
 	KDEBUG1( "Write( inBuffer, ioCount = %u)", (unsigned int) *ioCount );
 
-	// On remplit la mémoire tampon.
+	// On remplit la m√©moire tampon.
 	KUInt32 toWrite = *ioCount;
 	const KUInt8* theBuffer = (const KUInt8*) inBuffer;
 	try {
 		while (toWrite > 0)
 		{
-			// Remplissage de la mémoire tampon.
+			// Remplissage de la m√©moire tampon.
 			KUInt32 copyAmount = toWrite;
 			if (copyAmount + mBufferSize > mBufferCapacity)
 			{
 				copyAmount = mBufferCapacity - mBufferSize;
 			}
-			
+
 			(void) ::memcpy(
 				&((KUInt8*) mBuffer)[mBufferSize], theBuffer, copyAmount );
-			
+
 			mBufferSize += copyAmount;
-			
-			// Envoi des données si la mémoire tampon est pleine.
+
+			// Envoi des donn√©es si la m√©moire tampon est pleine.
 			if (mBufferSize == mBufferCapacity)
 			{
 				KUInt32 actualAmountWritten = mBufferSize;
@@ -159,7 +159,7 @@ TDCLBufferedPipe::Write( const void* inBuffer, KUInt32* ioCount )
 				} catch (...) {
 					if (mBufferSize != actualAmountWritten)
 					{
-						// Déplacement des données.
+						// D√©placement des donn√©es.
 						(void) ::memmove(
 									(void*) mBuffer,
 									&((const KUInt8*) mBuffer)
@@ -172,12 +172,12 @@ TDCLBufferedPipe::Write( const void* inBuffer, KUInt32* ioCount )
 
 				mBufferSize = 0;
 			}
-			
+
 			toWrite -= copyAmount;
 			theBuffer += copyAmount;
 		}
 	} catch ( ... ) {
-		// Mise à jour de ce qu'on a réussi à écrire.
+		// Mise √† jour de ce qu'on a r√©ussi √† √©crire.
 		*ioCount -= toWrite;
 		throw;	// On relance.
 	}

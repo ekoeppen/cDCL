@@ -2,7 +2,7 @@
 // Fichier:			TDCLFSItemRef.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			9/4/2003
+// CrÃ©Ã© le:			9/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFSItemRef.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,7 +56,7 @@ TDCLFSItemRef::TDCLFSItemRef( TDCLFSItem* inItem )
 }
 
 // ------------------------------------------------------------------------- //
-// 	*ÊTDCLFSItemRef( const TDCLNSObject& )
+// 	*Â TDCLFSItemRef( const TDCLNSObject& )
 // ------------------------------------------------------------------------- //
 TDCLFSItemRef::TDCLFSItemRef( const TDCLFSItemRef& inCopy )
 	:
@@ -80,7 +80,7 @@ TDCLFSItemRef::~TDCLFSItemRef( void )
 }
 
 // ------------------------------------------------------------------------- //
-// 	*Êoperator = ( const TDCLFSItemRef& )
+// 	*Â operator = ( const TDCLFSItemRef& )
 // ------------------------------------------------------------------------- //
 TDCLFSItemRef&
 TDCLFSItemRef::operator = ( const TDCLFSItemRef& inCopy )

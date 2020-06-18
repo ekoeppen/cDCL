@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdPassword.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/08/2001
+// Cr√©√© le:			27/08/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdPassword.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,12 +42,12 @@
 
 ///
 /// Classe pour la gestion du mot de passe.
-/// Permet de créer ou de vérifier un mot de passe.
+/// Permet de cr√©er ou de v√©rifier un mot de passe.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdPassword
 	:
@@ -56,18 +56,18 @@ class TDCLDockCmdPassword
 public:
 
 	///
-	/// Constructeur à partir des données qui viennent du Newton.
-	/// Ces données sont converties avec le boutien local.
+	/// Constructeur √† partir des donn√©es qui viennent du Newton.
+	/// Ces donn√©es sont converties avec le boutien local.
 	///
-	/// \param inLength	taille des données
-	/// \param inData	données
+	/// \param inLength	taille des donn√©es
+	/// \param inData	donn√©es
 	///
 	TDCLDockCmdPassword( KUInt32 inLength, const void* inData );
 
 	///
-	/// Constructeur pour une commande Password à envoyer.
+	/// Constructeur pour une commande Password √† envoyer.
 	///
-	/// \param inChallenge	défi
+	/// \param inChallenge	d√©fi
 	/// \param inPassword	mot de passe (\c nil signifie le mot de passe vide)
 	///
 	TDCLDockCmdPassword(
@@ -75,20 +75,20 @@ public:
 						const KUInt16* inPassword = nil );
 
 	///
-	/// Crée un défi à l'aide de deux nombres aléatoires.
+	/// Cr√©e un d√©fi √† l'aide de deux nombres al√©atoires.
 	///
-	/// \param outChallenge	en sortie, deux nombres aléatoires pour le défi.
+	/// \param outChallenge	en sortie, deux nombres al√©atoires pour le d√©fi.
 	///
 	static	void	CreateChallenge( KUInt32 outChallenge[2] );
 
 	///
-	/// Vérifie le mot de passe à partir du défi envoyé au Newton.
+	/// V√©rifie le mot de passe √† partir du d√©fi envoy√© au Newton.
 	///
-	/// \param inChallenge	défi que nous avons envoyé au Newton.
-	/// \param inPassword	mot de passe à vérifier (\c nil signifie le mot de
+	/// \param inChallenge	d√©fi que nous avons envoy√© au Newton.
+	/// \param inPassword	mot de passe √† v√©rifier (\c nil signifie le mot de
 	///						passe vide)
-	/// \return \c true si les données renvoyées par le Newton correspond au
-	///			défi et au mot de passe.
+	/// \return \c true si les donn√©es renvoy√©es par le Newton correspond au
+	///			d√©fi et au mot de passe.
 	///
 	Boolean	VerifyPassword(
 						const KUInt32 inChallenge[2],
@@ -96,7 +96,7 @@ public:
 
 protected:
 	///
-	/// Méthode appelée pour récupèrer la taille de la commande avant de
+	/// M√©thode appel√©e pour r√©cup√®rer la taille de la commande avant de
 	/// l'envoyer.
 	///
 	/// \return la taille de la commande
@@ -104,16 +104,16 @@ protected:
 	virtual	KUInt32			GetLength( void ) const;
 
 	///
-	/// Méthode appelée pour récupèrer les données à envoyer.
+	/// M√©thode appel√©e pour r√©cup√®rer les donn√©es √† envoyer.
 	///
-	/// \return un pointeur sur les données à envoyer.
+	/// \return un pointeur sur les donn√©es √† envoyer.
 	///
 	virtual const void*		GetData( void );
 
 private:
 	/// \name Variables
 	
-	KUInt32	mCipheredChallenge[2];	///< Défi crypté par le mot de passe
+	KUInt32	mCipheredChallenge[2];	///< D√©fi crypt√© par le mot de passe
 									///< (en grand-boutien)
 };
 

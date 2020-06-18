@@ -2,7 +2,7 @@
 // Fichier:			TDCLLinkEngine.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/4/2003
+// Cr√©√© le:			10/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLLinkEngine.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,7 +42,7 @@
 // DCL
 #include <DCL/Link/TDCLLink.h>
 
-// Pré-déclarations.
+// Pr√©-d√©clarations.
 class TDCLDockCommand;
 class TDCLFullDockLink;
 
@@ -53,15 +53,15 @@ class TDCLFullDockLink;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLLinkEngine
 {
 public:
 	///
-	/// Constructeur à partir d'une référence sur le lien.
+	/// Constructeur √† partir d'une r√©f√©rence sur le lien.
 	///
-	/// \param inLink	référence sur le lien.
+	/// \param inLink	r√©f√©rence sur le lien.
 	///
 	TDCLLinkEngine( TDCLFullDockLink* inLink );
 
@@ -71,11 +71,11 @@ public:
 	virtual ~TDCLLinkEngine( void );
 
 	///
-	/// Méthode appelée pour gérer des commandes venant du Newton.
-	/// Par défaut retourne \c true et met outProcessed à \c false.
+	/// M√©thode appel√©e pour g√©rer des commandes venant du Newton.
+	/// Par d√©faut retourne \c true et met outProcessed √† \c false.
 	///
-	/// \param inCommand	commande reçue.
-	/// \param outProcessed	si la commande a été traitée.
+	/// \param inCommand	commande re√ßue.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -84,11 +84,11 @@ public:
 									Boolean* outProcessed );
 
 	///
-	/// Méthode appelée pour gérer des commandes venant de l'application.
-	/// Par défaut retourne \c true et met outProcessed à \c false.
+	/// M√©thode appel√©e pour g√©rer des commandes venant de l'application.
+	/// Par d√©faut retourne \c true et met outProcessed √† \c false.
 	///
-	/// \param inCommand	commande à exécuter.
-	/// \param outProcessed	si la commande a été traitée.
+	/// \param inCommand	commande √† ex√©cuter.
+	/// \param outProcessed	si la commande a √©t√© trait√©e.
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
@@ -97,17 +97,17 @@ public:
 									Boolean* outProcessed );
 
 	///
-	/// Méthode appelée par le lien pour signifier que le travail du
-	/// moteur est terminé.
-	/// Par défaut ne fait rien.
+	/// M√©thode appel√©e par le lien pour signifier que le travail du
+	/// moteur est termin√©.
+	/// Par d√©faut ne fait rien.
 	///
 	virtual void				WorkIsOver( void );
 
 	///
-	/// Détermine les commandes de l'application que le lien
-	/// peut traiter. Cette méthode est appelée à chaque fois que le
-	/// lien va attendre un événement. Par défaut, on accepte toutes
-	/// les commandes d'application sauf les commandes envoyées lorsqu'on
+	/// D√©termine les commandes de l'application que le lien
+	/// peut traiter. Cette m√©thode est appel√©e √† chaque fois que le
+	/// lien va attendre un √©v√©nement. Par d√©faut, on accepte toutes
+	/// les commandes d'application sauf les commandes envoy√©es lorsqu'on
 	/// est oisif.
 	///
 	/// \return le masque pour les commandes de l'application
@@ -127,19 +127,19 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLLinkEngine( const TDCLLinkEngine& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLLinkEngine& operator = ( const TDCLLinkEngine& inCopy );
 
 	/// \name Variables
-	TDCLFullDockLink*			mLink;			///< Référence sur le lien.
+	TDCLFullDockLink*			mLink;			///< R√©f√©rence sur le lien.
 };
 
 #endif

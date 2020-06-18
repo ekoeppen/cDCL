@@ -1,8 +1,8 @@
 // ==============================
 // Fichier:			TDCLPkgPart.h
 // Projet:			Desktop Connection Library
-// 
-// Créé le:			6/4/2004
+//
+// Cr√©√© le:			6/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPkgPart.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,30 +41,30 @@
 
 ///
 /// Classe pour une partie dans un paquet.
-/// La partie est représentée par une mémoire tampon tant qu'elle
-/// n'est pas analysée.
+/// La partie est repr√©sent√©e par une m√©moire tampon tant qu'elle
+/// n'est pas analys√©e.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPkgPart
 {
 public:
 	///
-	/// Constructeur par défaut.
-	/// L'ensemble des données est vide.
+	/// Constructeur par d√©faut.
+	/// L'ensemble des donn√©es est vide.
 	///
 	TDCLPkgPart( void );
 
 	///
-	/// Constructeur à partir de données.
-	/// Les données sont copiées.
+	/// Constructeur √† partir de donn√©es.
+	/// Les donn√©es sont copi√©es.
 	///
-	/// \param inOffset	décalage dans le paquet.
-	/// \param inData	données (copiées)
-	/// \param inSize	taille des données.
+	/// \param inOffset	d√©calage dans le paquet.
+	/// \param inData	donn√©es (copi√©es)
+	/// \param inSize	taille des donn√©es.
 	///
 	TDCLPkgPart( KUInt32 inOffset, const void* inData, KUInt32 inSize );
 
@@ -74,37 +74,37 @@ public:
 	virtual ~TDCLPkgPart( void );
 
 	///
-	/// Détermine si la partie est un objet NewtonScript, i.e.
+	/// D√©termine si la partie est un objet NewtonScript, i.e.
 	/// si cette partie est de la classe TDCLPkgNOSPart.
-	/// Par défaut, non.
+	/// Par d√©faut, non.
 	///
 	/// \return \c true si l'objet est de la classe TDCLPkgNOSPart
 	///
 	virtual Boolean		IsNOSPart( void ) const;
 
 	///
-	/// Détermine la taille de la partie.
-	/// Ré-encode les données si nécessaire.
+	/// D√©termine la taille de la partie.
+	/// R√©-encode les donn√©es si n√©cessaire.
 	///
-	/// \param inOffset		décalage par rapport au début du paquet.
-	/// \return la taille des données.
+	/// \param inOffset		d√©calage par rapport au d√©but du paquet.
+	/// \return la taille des donn√©es.
 	///
 	KUInt32				GetSize( KUInt32 inOffset ) const;
 
 	///
-	/// Récupère un pointeur sur les données.
-	/// Ré-encode les données si nécessaire.
+	/// R√©cup√®re un pointeur sur les donn√©es.
+	/// R√©-encode les donn√©es si n√©cessaire.
 	///
-	/// \param inOffset		décalage par rapport au début du paquet.
-	/// \return un pointeur sur les données.
+	/// \param inOffset		d√©calage par rapport au d√©but du paquet.
+	/// \return un pointeur sur les donn√©es.
 	///
 	const void*			GetBuffer( KUInt32 inOffset ) const;
 
 	///
-	/// Détermine la taille de la partie.
-	/// Ré-encode les données si nécessaire.
+	/// D√©termine la taille de la partie.
+	/// R√©-encode les donn√©es si n√©cessaire.
 	///
-	/// \return la taille des données.
+	/// \return la taille des donn√©es.
 	///
 	inline KUInt32		GetSize( void ) const
 		{
@@ -112,10 +112,10 @@ public:
 		}
 
 	///
-	/// Récupère un pointeur sur les données.
-	/// Ré-encode les données si nécessaire.
+	/// R√©cup√®re un pointeur sur les donn√©es.
+	/// R√©-encode les donn√©es si n√©cessaire.
 	///
-	/// \return un pointeur sur les données.
+	/// \return un pointeur sur les donn√©es.
 	///
 	inline const void*	GetBuffer( void ) const
 		{
@@ -123,20 +123,52 @@ public:
 		}
 
 	///
-	/// Récupère le décalage dans le paquet.
+	/// R√©cup√®re le d√©calage dans le paquet.
 	///
-	/// \return le décalage dans le paquet.
+	/// \return le d√©calage dans le paquet.
 	///
 	inline KUInt32		GetOffset( void ) const
 		{
 			return mOffset;
 		}
 
+	///
+	/// D√©termine le nombre de pages de relocation.
+	/// Chaque page fait 1Ko (0x400). Le nombre final de pages doit √™tre
+	/// inf√©rieur ou √©gal au r√©sultat de cette fonction.
+	///
+	/// \return un estimateur du nombre de pages de relocation.
+	///
+	virtual KUInt32     GetRelocationPageCountEstimate( void ) const
+	    {
+	        return 0;
+	    }
+
+	///
+	/// Accesseur sur les relocations.
+	///
+	/// \return  le nombre de relocations
+	///
+	virtual KUInt32 GetRelocationCount( void ) const
+        {
+            return 0;
+        }
+
+	///
+	/// Accesseur sur les relocations.
+	///
+	/// \return  les relocations.
+	///
+	virtual const KUInt32* GetRelocations( void ) const
+        {
+            return NULL;
+	    }
+
 protected:
 	///
-	/// Détermine la taille de la partie afin de la décoder.
+	/// D√©termine la taille de la partie afin de la d√©coder.
 	///
-	/// \return la taille des données.
+	/// \return la taille des donn√©es.
 	///
 	inline KUInt32		DoGetSize( void ) const
 		{
@@ -144,9 +176,9 @@ protected:
 		}
 
 	///
-	/// Récupère un pointeur sur les données afin de les décoder.
+	/// R√©cup√®re un pointeur sur les donn√©es afin de les d√©coder.
 	///
-	/// \return un pointeur sur les données.
+	/// \return un pointeur sur les donn√©es.
 	///
 	inline const void*	DoGetBuffer( void ) const
 		{
@@ -155,29 +187,29 @@ protected:
 
 private:
 	///
-	/// Détermine si les données dépendent du décalage dans le paquet.
-	/// Par défaut, non (retourne \c false).
+	/// D√©termine si les donn√©es d√©pendent du d√©calage dans le paquet.
+	/// Par d√©faut, non (retourne \c false).
 	///
-	/// \return \c true si les données dépendent du décalage dans le paquet.
+	/// \return \c true si les donn√©es d√©pendent du d√©calage dans le paquet.
 	///
 	virtual Boolean IsOffsetDependant( void ) const;
 
 	///
-	/// Détermine si la partie a été modifiée et doit être ré-encodée.
-	/// Par défaut, non.
+	/// D√©termine si la partie a √©t√© modifi√©e et doit √™tre r√©-encod√©e.
+	/// Par d√©faut, non.
 	///
-	/// \return \c true si les données ont été modifiées et doivent être
-	///			ré-encodées.
+	/// \return \c true si les donn√©es ont √©t√© modifi√©es et doivent √™tre
+	///			r√©-encod√©es.
 	///
 	virtual Boolean IsDirty( void ) const;
 
 	///
-	/// Encode la partie pour un décalage donné (la décode si nécessaire).
-	/// Par défaut, ne fait rien.
+	/// Encode la partie pour un d√©calage donn√© (la d√©code si n√©cessaire).
+	/// Par d√©faut, ne fait rien.
 	///
-	/// \param inOffset		décalage dans le paquet.
-	/// \param ioBuffer		pointeur sur les données (alloué avec malloc)
-	/// \param ioSize		taille des données (en entrée et en sortie)
+	/// \param inOffset		d√©calage dans le paquet.
+	/// \param ioBuffer		pointeur sur les donn√©es (allou√© avec malloc)
+	/// \param ioSize		taille des donn√©es (en entr√©e et en sortie)
 	///
 	virtual void Encode(
 					KUInt32 inOffset,
@@ -187,20 +219,20 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLPkgPart( const TDCLPkgPart& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLPkgPart& operator = ( const TDCLPkgPart& inCopy );
 
 	/// \name Variables
-	mutable KUInt32		mOffset;			///< Décalage original.
-	mutable void*		mBuffer;			///< Pointeur sur la mémoire tampon.
+	mutable KUInt32		mOffset;			///< D√©calage original.
+	mutable void*		mBuffer;			///< Pointeur sur la m√©moire tampon.
 	mutable KUInt32		mSize;				///< Taille de la partie.
 };
 

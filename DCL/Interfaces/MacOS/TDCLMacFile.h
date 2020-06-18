@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacFile.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			09/02/2003
+// Cr√©√© le:			09/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacFile.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -55,17 +55,17 @@
 class TDCLFolder;
 
 ///
-/// Classe de base pour les fichiers sous MacOS. Cette classe est dérivée
+/// Classe de base pour les fichiers sous MacOS. Cette classe est d√©riv√©e
 /// en une classe pour les fichiers version classique et une classe pour les
 /// fichiers version porno.
 ///
-/// La particularité de cette classe ne réside que dans la méthode Create qui
-/// a le code type et le code créateur.
+/// La particularit√© de cette classe ne r√©side que dans la m√©thode Create qui
+/// a le code type et le code cr√©ateur.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacFile
 	:
@@ -73,20 +73,20 @@ class TDCLMacFile
 {
 public:
 	///
-	/// Crée le fichier avec un code créateur et un type donnés.
+	/// Cr√©e le fichier avec un code cr√©ateur et un type donn√©s.
 	///
-	/// \param inCreator	code créateur du fichier à créer.
-	/// \param inFileType	type du fichier à créer.
-	/// \throws TDCLIOException si la création a échoué.
+	/// \param inCreator	code cr√©ateur du fichier √† cr√©er.
+	/// \param inFileType	type du fichier √† cr√©er.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void		Create(
 							OSType inCreator,
 							OSType inFileType ) = 0;
 
 	///
-	/// Crée le fichier.
+	/// Cr√©e le fichier.
 	///
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	inline virtual void		Create( void )
 		{
@@ -94,11 +94,11 @@ public:
 		}
 
 	///
-	/// Change les codes type et créateur.
+	/// Change les codes type et cr√©ateur.
 	///
-	/// \param inCreator	nouveau code créateur du fichier.
+	/// \param inCreator	nouveau code cr√©ateur du fichier.
 	/// \param inFileType	nouveau type du fichier.
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void	SetMetaData(
 							OSType inCreator,
@@ -107,24 +107,24 @@ public:
 	/// \name interface TDCLFile
 
 	///
-	/// Détermine si le fichier est ouvert.
+	/// D√©termine si le fichier est ouvert.
 	///
 	/// \return \c true si le fichier est ouvert, \c false sinon.
 	///
 	virtual Boolean		IsOpen( void ) const;
 
 	///
-	/// Détermine si le fichier est ouvert en lecture seule.
+	/// D√©termine si le fichier est ouvert en lecture seule.
 	///
 	/// \return \c true si le fichier est ouvert en lecture seule,
-	///			\c false sinon. Le résultat est indéterminé si le fichier
+	///			\c false sinon. Le r√©sultat est ind√©termin√© si le fichier
 	///			n'est pas ouvert.
 	///
 	virtual Boolean		IsReadOnly( void ) const;
 
 	///
-	/// Récupère la description de l'élément sous forme de structure.
-	/// Ajoute 'whichVol à la structure si le fichier est sur le bureau.
+	/// R√©cup√®re la description de l'√©l√©ment sous forme de structure.
+	/// Ajoute 'whichVol √† la structure si le fichier est sur le bureau.
 	///
 	/// \return la description de l'objet pour le butinage.
 	///
@@ -132,36 +132,36 @@ public:
 
 protected:
 	///
-	/// Constructeur à partir d'un dossier parent.
-	/// Le dossier parent doit être compatible avec la classe du fichier.
+	/// Constructeur √† partir d'un dossier parent.
+	/// Le dossier parent doit √™tre compatible avec la classe du fichier.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
 	/// \param inFolder		dossier parent.
 	///						(\c nil signifie que MakeParentFolder sera
-	///							appelé plus tard).
+	///							appel√© plus tard).
 	///
 	TDCLMacFile( TDCLMacFiles* inFilesIntf, TDCLFSItemRef inFolder );
 
 	///
-	/// Méthode appelée par les sous-classes lorsque le fichier est ouvert.
+	/// M√©thode appel√©e par les sous-classes lorsque le fichier est ouvert.
 	///
 	/// \param inReadOnly	si le fichier est en lecture seule.
 	///
 	void DoOpen( Boolean inReadOnly );
 	
 	///
-	/// Méthode appelée par les sous-classes lorsque le fichier est fermé.
+	/// M√©thode appel√©e par les sous-classes lorsque le fichier est ferm√©.
 	///
 	void DoClose( void );
 
 	///
-	/// Change les codes type et créateur d'un fichier représenté par
+	/// Change les codes type et cr√©ateur d'un fichier repr√©sent√© par
 	/// son FSSpec.
 	///
-	/// \param inFSSpec		référence sur le fichier.
-	/// \param inCreator	nouveau code créateur du fichier.
+	/// \param inFSSpec		r√©f√©rence sur le fichier.
+	/// \param inCreator	nouveau code cr√©ateur du fichier.
 	/// \param inFileType	nouveau type du fichier.
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	static void	DoSetMetaData(
 							const FSSpec* inFSSpec,
@@ -170,22 +170,22 @@ protected:
 	
 private:
 	///
-	/// Détermine si le fichier est sur le bureau.
+	/// D√©termine si le fichier est sur le bureau.
 	///
 	/// \return \c true si le fichier est sur le bureau, \c false sinon.
 	///
 	virtual Boolean		IsOnDesktop( void ) const = 0;
 	
 	///
-	/// Récupère la référence sur le volume où se trouve le fichier.
+	/// R√©cup√®re la r√©f√©rence sur le volume o√π se trouve le fichier.
 	///
-	/// \return le volume où se trouve le fichier.
+	/// \return le volume o√π se trouve le fichier.
 	///
 	virtual short		GetVRefNum( void ) const = 0;
 
-	/// \name variables privées
+	/// \name variables priv√©es
 	
-	Boolean				mReadOnly;		///< Si le fichier a été ouvert en
+	Boolean				mReadOnly;		///< Si le fichier a √©t√© ouvert en
 										///< lecture seule.
 	Boolean				mIsOpen;		///< Si le fichier est ouvert.
 };

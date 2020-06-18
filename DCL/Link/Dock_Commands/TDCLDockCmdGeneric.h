@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdGeneric.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdGeneric.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,14 +41,14 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 ///
-/// Classe pour une commande du dock avec des données quelconques.
-/// (s'il n'y a pas de données, autant utiliser TDCLDockCmdNoData, s'il
+/// Classe pour une commande du dock avec des donn√©es quelconques.
+/// (s'il n'y a pas de donn√©es, autant utiliser TDCLDockCmdNoData, s'il
 /// n'y a qu'un long, c'est TDCLDockCmdSingleLong qui convient le mieux).
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdGeneric
 	:
@@ -56,16 +56,16 @@ class TDCLDockCmdGeneric
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLDockCmdGeneric( void );
 	
 	///
-	/// Constructeur à partir d'un identifiant de commande et des données.
+	/// Constructeur √† partir d'un identifiant de commande et des donn√©es.
 	///
 	/// \param inCommand	identifiant pour la commande.
-	/// \param inLength		taille des données.
-	/// \param inData		pointeur sur les données (copiées)
+	/// \param inLength		taille des donn√©es.
+	/// \param inData		pointeur sur les donn√©es (copi√©es)
 	///
 	TDCLDockCmdGeneric(
 					KUInt32 inCommand,
@@ -74,12 +74,12 @@ public:
 
 	///
 	/// Destructeur.
-	/// Libère la copie des données.
+	/// Lib√®re la copie des donn√©es.
 	///
 	virtual		~TDCLDockCmdGeneric( void );
 
 	///
-	/// Sélecteur sur l'identifiant de la commande.
+	/// S√©lecteur sur l'identifiant de la commande.
 	///
 	/// \param inCommand	nouvel identifiant pour la commande.
 	///
@@ -89,24 +89,24 @@ public:
 		};
 	
 	///
-	/// Accesseur sur la taille des données.
+	/// Accesseur sur la taille des donn√©es.
 	///
-	/// \return la taille des données.
+	/// \return la taille des donn√©es.
 	///
 	virtual	KUInt32			GetLength( void ) const;
 	
 	///
-	/// Sélecteur sur la taille des données.
-	/// Redimensionne la mémoire tampon.
+	/// S√©lecteur sur la taille des donn√©es.
+	/// Redimensionne la m√©moire tampon.
 	///
-	/// \param inLength		nouvelle taille des données.
+	/// \param inLength		nouvelle taille des donn√©es.
 	///
 	void					SetLength( KUInt32 inLength );
 
 	///
-	/// Accesseur sur les données (pour pouvoir les changer).
+	/// Accesseur sur les donn√©es (pour pouvoir les changer).
 	///
-	/// \return le pointeur sur les données.
+	/// \return le pointeur sur les donn√©es.
 	///
 	inline	void*			GetDataPtr( void )
 		{
@@ -114,20 +114,20 @@ public:
 		};
 	
 	///
-	/// Sélecteur sur les données.
-	/// Copie les données fournies en paramètre dans la mémoire
+	/// S√©lecteur sur les donn√©es.
+	/// Copie les donn√©es fournies en param√®tre dans la m√©moire
 	/// tampon de la commande.
 	///
-	/// \param inData		données à copier.
+	/// \param inData		donn√©es √† copier.
 	///
 	void					CopyData( const void* inData );
 
 protected:
 	///
-	/// Accesseur sur les données (en lecture seule).
-	/// Utilisé pour envoyer la commande.
+	/// Accesseur sur les donn√©es (en lecture seule).
+	/// Utilis√© pour envoyer la commande.
 	///
-	/// \return le pointeur sur les données (non modifiables)
+	/// \return le pointeur sur les donn√©es (non modifiables)
 	///
 	virtual const void*		GetData( void );
 
@@ -135,21 +135,21 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdGeneric( const TDCLDockCmdGeneric& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdGeneric& operator = ( const TDCLDockCmdGeneric& inCopy );
 
 	/// \name Variables
 
-	KUInt32			mLength;	///< Taille de la mémoire tampon.
-	void*			mData;		///< Mémoire tampon avec les données.
+	KUInt32			mLength;	///< Taille de la m√©moire tampon.
+	void*			mData;		///< M√©moire tampon avec les donn√©es.
 };
 
 #endif

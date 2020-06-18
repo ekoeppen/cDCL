@@ -2,7 +2,7 @@
 // Fichier:			TDCLSyncCommLayer.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			28/3/2003
+// Cr√©√© le:			28/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSyncCommLayer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,17 +42,17 @@
 #include <DCL/Interfaces/TDCLThread.h>
 #include <DCL/Communication_Layers/TDCLPipe.h>
 
-// Pré-déclarations.
+// Pr√©-d√©clarations.
 class IDCLThreads;
 
 ///
 /// Classe pour une interface de communication synchrone qui requiert
-/// donc un processus léger séparé.
+/// donc un processus l√©ger s√©par√©.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLSyncCommLayer
 	:
@@ -65,17 +65,17 @@ public:
 	///
 	/// Enregistre le nombre maximum de connexion dans \c mMaxPipeCount.
 	/// Enregistre aussi \p inFlushAvailable et \p inTimeout dans les champs
-	/// privés correspondants.
+	/// priv√©s correspondants.
 	///
 	/// \remark ce constructeur est publique, mais la classe est abstraite.
 	///
-	/// \param inThreadsIntf	interface pour les processus légers.
+	/// \param inThreadsIntf	interface pour les processus l√©gers.
 	/// \param inFlushAvailable	si la couche de communication sait vider la
-	///							mémoire tampon de sortie.
+	///							m√©moire tampon de sortie.
 	///							Si la couche de communication ne sait pas le
 	///							faire, l'appelant devra attendre avant de
 	///							fermer la connexion.
-	/// \param inMaxPipeCount	nombre maximum de connexion simultanées.
+	/// \param inMaxPipeCount	nombre maximum de connexion simultan√©es.
 	///							0 signifie pas de limite.
 	///
 	TDCLSyncCommLayer(
@@ -85,91 +85,91 @@ public:
 			);
 	
 	///
-	/// Commence à écouter.
-	/// Lance le processus léger.
+	/// Commence √† √©couter.
+	/// Lance le processus l√©ger.
 	///
-	/// \param inServer	serveur à prévenir lorsqu'une requête est arrivée.
-	/// \throws TDCLException si le serveur est déjà en train d'écouter.
+	/// \param inServer	serveur √† pr√©venir lorsqu'une requ√™te est arriv√©e.
+	/// \throws TDCLException si le serveur est d√©j√† en train d'√©couter.
 	///
 	virtual void		StartListening( TDCLServer* inServer );
 
 	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	/// Dit au processus léger de s'arrêter une fois que DoStopListening a terminé.
-	/// Ne fait rien si on n'est pas en train d'écouter.
+	/// Arr√™te d'√©couter, i.e. arr√™te d'accepter les requ√™tes de connexions.
+	/// Dit au processus l√©ger de s'arr√™ter une fois que DoStopListening a termin√©.
+	/// Ne fait rien si on n'est pas en train d'√©couter.
 	///
 	virtual void		StopListening( void );
 
 protected:
 	///
-	/// Méthode appelée dans la méthode Run juste avant la boucle qui appelle
+	/// M√©thode appel√©e dans la m√©thode Run juste avant la boucle qui appelle
 	/// WaitForIncomingRequest.
 	///
 	virtual	void		DoStartListening( void ) = 0;
 
 	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	/// Cette méthode doit d'abord interrompre l'attente dans la méthode Run
-	/// et ceci ne doit pas avoir de conséquence si on n'est pas en train d'attendre dans
-	/// cette méthode.
-	/// Attention aux possible problème d'attente/de réveil.
+	/// Arr√™te d'√©couter, i.e. arr√™te d'accepter les requ√™tes de connexions.
+	/// Cette m√©thode doit d'abord interrompre l'attente dans la m√©thode Run
+	/// et ceci ne doit pas avoir de cons√©quence si on n'est pas en train d'attendre dans
+	/// cette m√©thode.
+	/// Attention aux possible probl√®me d'attente/de r√©veil.
 	///
 	virtual	void		DoStopListening( void ) = 0;
 
 	///
-	/// Attend qu'une requête se présente. Cette méthode est synchrone (c'est l'intérêt
-	/// de cette classe). Elle retourne si une requête est présente ou si elle a été
+	/// Attend qu'une requ√™te se pr√©sente. Cette m√©thode est synchrone (c'est l'int√©r√™t
+	/// de cette classe). Elle retourne si une requ√™te est pr√©sente ou si elle a √©t√©
 	/// interrompue par DoStopListening.
 	///
-	/// \return \c true si une requête est présente, \c false si la méthode a été
-	/// interrompue (ou si on n'écoute plus).
+	/// \return \c true si une requ√™te est pr√©sente, \c false si la m√©thode a √©t√©
+	/// interrompue (ou si on n'√©coute plus).
 	///
 	virtual Boolean 	WaitForIncomingRequest( void ) = 0;
 
 	///
-	/// Retourne un objet connexion représentant le canal de communication avec le client
-	/// ou \c nil s'il n'y a pas de requête de connexion présente.
-	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
-	/// Cette méthode appelle DoAccept et ensuite réveille le processus léger pour attendre la
-	/// présence de nouvelles requêtes.
+	/// Retourne un objet connexion repr√©sentant le canal de communication avec le client
+	/// ou \c nil s'il n'y a pas de requ√™te de connexion pr√©sente.
+	/// C'est un objet cr√©√© avec \c new. L'appelant devra le supprimer.
+	/// Cette m√©thode appelle DoAccept et ensuite r√©veille le processus l√©ger pour attendre la
+	/// pr√©sence de nouvelles requ√™tes.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la connexion ou \c nil.
+	/// \return un nouvel objet TDCLPipe cr√©√© avec \c new repr√©sentant la connexion ou \c nil.
 	///
 	virtual	TDCLPipe*	Accept( void );
 	
 	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
-	/// Cette méthode appelle DoRefuse et ensuite réveille le processus léger pour attendre la
-	/// présence de nouvelles requêtes.
+	/// Refuse la premi√®re requ√™te de connexion.
+	/// Ne fait rien si aucune connexion n'est pr√©sente.
+	/// Cette m√©thode appelle DoRefuse et ensuite r√©veille le processus l√©ger pour attendre la
+	/// pr√©sence de nouvelles requ√™tes.
 	///
 	virtual	void		Refuse( void );
 	
 	///
-	/// Retourne un objet connexion représentant le canal de communication avec le client
-	/// ou \c nil s'il n'y a pas de requête de connexion présente.
-	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
+	/// Retourne un objet connexion repr√©sentant le canal de communication avec le client
+	/// ou \c nil s'il n'y a pas de requ√™te de connexion pr√©sente.
+	/// C'est un objet cr√©√© avec \c new. L'appelant devra le supprimer.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la connexion ou \c nil.
+	/// \return un nouvel objet TDCLPipe cr√©√© avec \c new repr√©sentant la connexion ou \c nil.
 	///
 	virtual	TDCLPipe*	DoAccept( void ) = 0;
 	
 	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
+	/// Refuse la premi√®re requ√™te de connexion.
+	/// Ne fait rien si aucune connexion n'est pr√©sente.
 	///
 	virtual	void		DoRefuse( void ) = 0;
 	
 	///
-	/// Méthode exécutée dans le processus.
-	/// Boucle tant que WaitForIncomingRequest retourne \c true. À chaque fois que
-	/// cette dernière méthode retourne \c true, envoie un événement au serveur.
+	/// M√©thode ex√©cut√©e dans le processus.
+	/// Boucle tant que WaitForIncomingRequest retourne \c true. √Ä chaque fois que
+	/// cette derni√®re m√©thode retourne \c true, envoie un √©v√©nement au serveur.
 	///
 	virtual void Run( void );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-	/// Lorsque cette méthode retourne, le processus est terminé.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+	/// Lorsque cette m√©thode retourne, le processus est termin√©.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -191,69 +191,69 @@ protected:
 			protected TDCLThread
 	{
 	public:
-		/// La classe mère est une amie.
+		/// La classe m√®re est une amie.
 		friend class TDCLSyncCommLayer;
 
 		///
 		/// Constructeur.
-		/// Remplit les champs privés.
+		/// Remplit les champs priv√©s.
 		///
-		/// \param inThreadsIntf	interface pour les processus légers.
-		/// \param inCommLayer		couche de communication à laquelle est
-		///							rattachée la connexion.
+		/// \param inThreadsIntf	interface pour les processus l√©gers.
+		/// \param inCommLayer		couche de communication √† laquelle est
+		///							rattach√©e la connexion.
 		///
 		TSyncPipe(
 				IDCLThreads* inThreadsIntf,
 				TDCLSyncCommLayer*	inCommLayer );
 
 		///
-		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt
-		/// de cette classe). Elle retourne si des données sont présentes ou si elle a été
+		/// Attend que des donn√©es se pr√©sentent. Cette m√©thode est synchrone (c'est l'int√©r√™t
+		/// de cette classe). Elle retourne si des donn√©es sont pr√©sentes ou si elle a √©t√©
 		/// interrompue par Disconnect.
 		///
-		/// \return \c true si des données sont présentes, \c false si la méthode a été
+		/// \return \c true si des donn√©es sont pr√©sentes, \c false si la m√©thode a √©t√©
 		/// interrompue.
 		///
 		virtual Boolean 	WaitForIncomingData( void ) = 0;
 
 		///
-		/// Déconnecte le canal de communication avec le client.
-		/// Appelle DoDisconnect et attend que le processus léger ait terminé.
+		/// D√©connecte le canal de communication avec le client.
+		/// Appelle DoDisconnect et attend que le processus l√©ger ait termin√©.
 		///
-		/// \remark	une fois que cette méthode est appelée, l'objet connexion est inutilisable.
-		/// 		Il peut être supprimé par l'appelant à tout instant.
+		/// \remark	une fois que cette m√©thode est appel√©e, l'objet connexion est inutilisable.
+		/// 		Il peut √™tre supprim√© par l'appelant √† tout instant.
 		///
 		virtual	void		Disconnect( void );
 
 		///
-		/// Déconnecte effectivement le canal de communication avec le client.
-		/// Cette méthode doit envoyer une interruption pour que WaitForIncomingData
+		/// D√©connecte effectivement le canal de communication avec le client.
+		/// Cette m√©thode doit envoyer une interruption pour que WaitForIncomingData
 		/// retourne.
 		///
 		virtual	void		DoDisconnect( void ) = 0;
 
 		///
-		/// Méthode appelée par le lien pour dire qu'il est connecté
-		/// via cette connexion. Cette méthode est appelée juste avant
-		/// que des données soient échangées.
+		/// M√©thode appel√©e par le lien pour dire qu'il est connect√©
+		/// via cette connexion. Cette m√©thode est appel√©e juste avant
+		/// que des donn√©es soient √©chang√©es.
 		///
-		/// Lance le processus léger et appelle la méthode par défaut.
+		/// Lance le processus l√©ger et appelle la m√©thode par d√©faut.
 		///
 		/// \return l'interface de communication.
 		///
 		virtual	TDCLCommLayer*	Connected( TDCLLink* inLink );
 
 		///
-		/// Méthode appelée par le lien pour dire qu'il souhaite
-		/// être prévenu dès que des données sont présentes.
-		/// Au départ, l'interface de communication ne prévient
-		/// pas le lien de la présence de données.
+		/// M√©thode appel√©e par le lien pour dire qu'il souhaite
+		/// √™tre pr√©venu d√®s que des donn√©es sont pr√©sentes.
+		/// Au d√©part, l'interface de communication ne pr√©vient
+		/// pas le lien de la pr√©sence de donn√©es.
 		///
 		virtual	void		ClearDataPresent( void );
 
 		///
-		/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-		/// Lorsque cette méthode retourne, le processus est terminé.
+		/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+		/// Lorsque cette m√©thode retourne, le processus est termin√©.
 		///
 		/// \param inException	l'exception si c'est une TDCLException,
 		///			\c nil sinon.
@@ -262,9 +262,9 @@ protected:
 
 	protected:
 		///
-		/// Méthode exécutée dans le processus.
-		/// Boucle tant que WaitForIncomingData retourne \c true. À chaque fois que
-		/// cette dernière méthode retourne \c true, envoie un événement au serveur.
+		/// M√©thode ex√©cut√©e dans le processus.
+		/// Boucle tant que WaitForIncomingData retourne \c true. √Ä chaque fois que
+		/// cette derni√®re m√©thode retourne \c true, envoie un √©v√©nement au serveur.
 		///
 		virtual void Run( void );
 	};

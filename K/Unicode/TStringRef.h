@@ -2,7 +2,7 @@
 // Fichier:			TStringRef.h
 // Projet:			K
 // 
-// Créé le:			3/8/2003
+// Cr√©√© le:			3/8/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -46,30 +46,30 @@
 #include <K/Unicode/TMutableStringRef.h>
 
 ///
-/// Classe pour une référence sur une chaîne de caractères.
+/// Classe pour une r√©f√©rence sur une cha√Æne de caract√®res.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.11 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TStringRef
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TStringRef( void );
 
 	///
-	/// Constructeur à partir d'un objet TString.
+	/// Constructeur √† partir d'un objet TString.
 	///
 	/// \param inString	objet TString
 	///
 	TStringRef( TString* inString );
 
 	///
-	/// Constructeur à partir d'un objet TString sur la pile.
+	/// Constructeur √† partir d'un objet TString sur la pile.
 	///
 	/// \param inString	objet TString
 	///
@@ -77,31 +77,31 @@ public:
 
 	///
 	/// Constructeur par copie.
-	/// Incrémente la référence.
+	/// Incr√©mente la r√©f√©rence.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TStringRef( const TStringRef& inCopy );
 
 	///
-	/// Constructeur à partir d'une chaîne C.
+	/// Constructeur √† partir d'une cha√Æne C.
 	///
-	/// \param inString	chaîne C.
+	/// \param inString	cha√Æne C.
 	///
 	TStringRef( const char* inString );
 
 	///
-	/// Constructeur à partir d'une chaîne C++.
+	/// Constructeur √† partir d'une cha√Æne C++.
 	///
-	/// \param inString	chaîne C++.
+	/// \param inString	cha√Æne C++.
 	///
 	TStringRef( const std::string& inString );
 
 	///
-	/// Constructeur à partir d'une référence modifiable.
-	/// Incrémente la référence.
+	/// Constructeur √† partir d'une r√©f√©rence modifiable.
+	/// Incr√©mente la r√©f√©rence.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TStringRef( const TMutableStringRef& inCopy );
 
@@ -111,45 +111,45 @@ public:
 	~TStringRef( void );
 
 	///
-	/// Opérateur d'assignation (TString*)
+	/// Op√©rateur d'assignation (TString*)
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TStringRef& operator = ( TString* inCopy );
 
 	///
-	/// Opérateur d'assignation (const char*)
+	/// Op√©rateur d'assignation (const char*)
 	///
-	/// \param inString		chaîne à copier
+	/// \param inString		cha√Æne √† copier
 	///
 	TStringRef& operator = ( const char* inString );
 
 	///
-	/// Opérateur d'assignation (const string)
+	/// Op√©rateur d'assignation (const string)
 	///
-	/// \param inString		chaîne à copier
+	/// \param inString		cha√Æne √† copier
 	///
 	TStringRef& operator = ( const std::string& inString );
 
 	///
-	/// Opérateur d'assignation (const TStringRef&)
+	/// Op√©rateur d'assignation (const TStringRef&)
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TStringRef& operator = ( const TStringRef& inCopy );
 
 	///
-	/// Opérateur d'assignation avec une référence modifiable.
+	/// Op√©rateur d'assignation avec une r√©f√©rence modifiable.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TStringRef& operator = ( const TMutableStringRef& inCopy );
 
 	///
-	/// Opérateur de comparaison (ordre quelconque compatible avec l'égalité).
+	/// Op√©rateur de comparaison (ordre quelconque compatible avec l'√©galit√©).
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est strictement inférieur à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est strictement inf√©rieur √† \c inAlter, \c false sinon.
 	///
 	inline Boolean operator < ( const TStringRef& inAlter ) const
 		{
@@ -161,10 +161,10 @@ public:
 		}
 
 	///
-	/// Opérateur de comparaison (ordre quelconque compatible avec l'égalité).
+	/// Op√©rateur de comparaison (ordre quelconque compatible avec l'√©galit√©).
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est strictement inférieur à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est strictement inf√©rieur √† \c inAlter, \c false sinon.
 	///
 	inline Boolean operator < ( const TMutableStringRef& inAlter ) const
 		{
@@ -176,41 +176,41 @@ public:
 		}
 
 	///
-	/// Opérateur d'égalité.
+	/// Op√©rateur d'√©galit√©.
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est √©gal √† \c inAlter, \c false sinon.
 	///
 	inline Boolean operator == ( const TStringRef& inAlter ) const
 		{
 			return
 				((mString == inAlter.mString)
 				||
-					(mString != nil)
+					((mString != nil)
 					&& (inAlter.mString != nil)
-					&& (*mString == *inAlter.mString));
+					&& (*mString == *inAlter.mString)));
 		}
 
 	///
-	/// Opérateur d'égalité.
+	/// Op√©rateur d'√©galit√©.
 	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
+	/// \param inAlter		objet √† comparer avec \c this.
+	/// \return \c true si \c this est √©gal √† \c inAlter, \c false sinon.
 	///
 	inline Boolean operator == ( const TMutableStringRef& inAlter ) const
 		{
 			return
 				((mString == inAlter.GetString())
 				||
-					(mString != nil)
+					((mString != nil)
 					&& (inAlter.GetString() != nil)
-					&& (*mString == *inAlter.GetString()));
+					&& (*mString == *inAlter.GetString())));
 		}
 
 	///
-	/// Opérateur de déréférencement
+	/// Op√©rateur de d√©r√©f√©rencement
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline const TString& operator * ( void ) const
 		{
@@ -218,9 +218,9 @@ public:
 		}
 
 	///
-	/// Opérateur de déréférencement
+	/// Op√©rateur de d√©r√©f√©rencement
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline const TString* operator -> ( void ) const
 		{
@@ -230,7 +230,7 @@ public:
 	///
 	/// Accesseur sur l'objet TString
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline const TString* GetString( void ) const
 		{
@@ -238,9 +238,9 @@ public:
 		}
 
 	///
-	/// Écrit la chaîne sur un flux.
+	/// √âcrit la cha√Æne sur un flux.
 	///
-	/// \param inStream	flux considéré.
+	/// \param inStream	flux consid√©r√©.
 	///
 	inline void		PrintToStream( std::ostream& inStream ) const
 		{
@@ -251,14 +251,14 @@ public:
 		}
 
 	///
-	/// Convertit la chaîne et la copie dans une mémoire tampon.
-	/// Cette méthode peut convertir mString en UTF-16.
+	/// Convertit la cha√Æne et la copie dans une m√©moire tampon.
+	/// Cette m√©thode peut convertir mString en UTF-16.
 	///
-	/// \param outBuffer 	mémoire tampon
-	/// \param ioLength		en entrée, nombre d'octets disponibles,
-	///						en sortie, nombre d'octets écrits.
+	/// \param outBuffer 	m√©moire tampon
+	/// \param ioLength		en entr√©e, nombre d'octets disponibles,
+	///						en sortie, nombre d'octets √©crits.
 	/// \param inEncoding	encodage cible.
-	/// \return le résultat de la conversion.
+	/// \return le r√©sultat de la conversion.
 	///
 	inline UUTF16Conv::EResult	Convert(
 							void* outBuffer,
@@ -276,14 +276,14 @@ public:
 
 private:
 	/// \name Variables
-	TString*		mString;	///< Objet référencé.
+	TString*		mString;	///< Objet r√©f√©renc√©.
 };
 
 // -------------------------------------------------------------------------- //
 //  * operator << ( std::ostream&, const TStringRef& )
 // -------------------------------------------------------------------------- //
 ///
-/// Opérateur pour écrire sur un flux.
+/// Op√©rateur pour √©crire sur un flux.
 ///
 inline std::ostream&
 operator << ( std::ostream& inStream, const TStringRef& inStringRef )

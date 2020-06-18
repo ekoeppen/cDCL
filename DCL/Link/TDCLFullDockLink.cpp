@@ -2,7 +2,7 @@
 // Fichier:			TDCLFullDockLink.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/06/2002
+// Cr√©√© le:			22/06/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFullDockLink.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,7 +68,7 @@
 #include <DCL/Link/Link_Engines/TDCLSyncEngine.h>
 
 // ------------------------------------------------------------------------- //
-//  * Déverminage
+//  * D√©verminage
 // ------------------------------------------------------------------------- //
 
 #undef KERROR_ENABLED
@@ -108,7 +108,7 @@ TDCLFullDockLink::TDCLFullDockLink(
 		mDefaultBrowseEngine( nil ),
 		mDefaultLoadPkgEngine( nil )
 {
-	// Création des moteurs par défaut.
+	// Cr√©ation des moteurs par d√©faut.
 	mDefaultBrowseEngine = new TDCLBrowseEngine( this );
 	mDefaultLoadPkgEngine = new TDCLLoadPkgEngine( this );
 }
@@ -138,9 +138,9 @@ TDCLFullDockLink::ProcessDockCommand(
 				TDCLDockCommand* inCommand,
 				Boolean* outProcessed )
 {
-	TDCLLink::EState theResult = kRunning;	// Par défaut on reste connecté.
+	TDCLLink::EState theResult = kRunning;	// Par d√©faut on reste connect√©.
 	Boolean processed = false;
-	
+
 	// Y a-t-il un moteur courant?
 	// Si oui, on lui demande de faire le boulot.
 	if (mCurrentEngine)
@@ -150,7 +150,7 @@ TDCLFullDockLink::ProcessDockCommand(
 					mCurrentEngine->ProcessDockCommand( inCommand, &processed );
 			if (processed)
 			{
-				// La commande a été gérée, on le dit à l'application.
+				// La commande a √©t√© g√©r√©e, on le dit √† l'application.
 				GetApplication()->DockCommandProcessed(
 						this,
 						mCurrentEngine,
@@ -158,12 +158,12 @@ TDCLFullDockLink::ProcessDockCommand(
 			}
 			if (!workIsNotOver)
 			{
-				// Le moteur en a terminé.
+				// Le moteur en a termin√©.
 				mCurrentEngine->WorkIsOver();
 				mCurrentEngine = nil;
 			}
 		} catch ( TDCLException& inException ) {
-			// On va dire que la commande a été gérée.
+			// On va dire que la commande a √©t√© g√©r√©e.
 			processed = true;
 			GetApplication()->DockCommandProcessed(
 					this,
@@ -171,13 +171,13 @@ TDCLFullDockLink::ProcessDockCommand(
 					&inException );
 		}
 	}
-		
+
 	if (!processed)
 	{
 		theResult = TDCLDockLink::ProcessDockCommand( inCommand, &processed );
 	}
 
-	// Si ni le moteur ni le lien n'ont exécuté la commande, alors on
+	// Si ni le moteur ni le lien n'ont ex√©cut√© la commande, alors on
 	// n'utilise plus le moteur.
 	if (!processed)
 	{
@@ -202,7 +202,7 @@ TDCLFullDockLink::ProcessDockCommand(
 					DoBrowse( theRequestToBrowseCommand->GetObject() );
 					processed = true;
 				}
-				break;			
+				break;
 
 			case TDCLDockCommand::kDStartKeyboardPassthrough:
 				if (mHandledCommandSets & kKeyboardSet)
@@ -220,7 +220,7 @@ TDCLFullDockLink::ProcessDockCommand(
 					DoSynchronize();
 					processed = true;
 				}
-				break;			
+				break;
 
 			case TDCLDockCommand::kDOperationCanceled:
 			case TDCLDockCommand::kDOperationCanceled2:
@@ -238,7 +238,7 @@ TDCLFullDockLink::ProcessDockCommand(
 			}
 			break;
 		}
-		
+
 		// Un nouveau moteur est-il en route?
 		if (mCurrentEngine)
 		{
@@ -250,10 +250,10 @@ TDCLFullDockLink::ProcessDockCommand(
 	}
 
 	*outProcessed = processed;
-	
-	// On appelle Idle de toute façon.
+
+	// On appelle Idle de toute fa√ßon.
 	(void) Idle();
-	
+
 	return theResult;
 }
 
@@ -265,7 +265,7 @@ TDCLFullDockLink::ProcessAppCommand(
 				TDCLAppCommand* inCommand,
 				Boolean* outProcessed )
 {
-	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
+	TDCLLink::EState theResult = kRunning;	// Par d√©faut, on reste connect√©.
 	Boolean processed = false;
 
 	// Si on a un moteur de lien, on lui demande.
@@ -281,40 +281,40 @@ TDCLFullDockLink::ProcessAppCommand(
 			mCurrentEngine = nil;
 		}
 	} else {
-		// Commandes exécutées lorsqu'il n'y a pas de moteur.
+		// Commandes ex√©cut√©es lorsqu'il n'y a pas de moteur.
 		switch( inCommand->GetCommandID() )
 		{
 			case TDCLAppCommand::kInstallPackage:
 			{
-				// Récupération du moteur pour l'installation
+				// R√©cup√©ration du moteur pour l'installation
 				TDCLLoadPkgEngine* theEngine = GetLoadPkgEngine();
-				
-				// Vérifions qu'il y a un moteur pour l'installation
+
+				// V√©rifions qu'il y a un moteur pour l'installation
 				if (theEngine)
 				{
 					// On note le moteur.
 					mCurrentEngine = theEngine;
-					
+
 					// On dit au Newton qu'on va installer un paquet.
 					SendRequest( TDCLDockCommand::kDRequestToInstall );
-					
+
 					// Puis on l'installe.
 					DoInstallPackage( (TDCLFile*) inCommand->GetEventData() );
 					processed = true;
 				}
 			}
 			break;
-			
+
 			case TDCLAppCommand::kStartUsingKeyboard:
 			{
-				// Récupération du moteur pour le clavier.
+				// R√©cup√©ration du moteur pour le clavier.
 				TDCLKeyboardEngine* theEngine = GetKeyboardEngine();
-				
+
 				if (theEngine)
 				{
 					// On note le moteur.
 					mCurrentEngine = theEngine;
-					
+
 					// On dit au Newton qu'on va utiliser le clavier.
 					{
 						TDCLDockCmdNoData theRequestCmd(
@@ -322,8 +322,8 @@ TDCLFullDockLink::ProcessAppCommand(
 
 						theRequestCmd.SendCommand( GetPipe() );
 					}
-					
-					// Il doit répondre par kDStartKeyboardPassthrough
+
+					// Il doit r√©pondre par kDStartKeyboardPassthrough
 					TDCLDockCommand* theNewtMessage =
 							TDCLDockCommand::ReceiveCommand(
 										GetPipe() );
@@ -332,25 +332,25 @@ TDCLFullDockLink::ProcessAppCommand(
 					{
 						delete theNewtMessage;	// Plus besoin.
 					} else {
-						// Je ne m'attendais pas à cette commande. On dégage.
+						// Je ne m'attendais pas √† cette commande. On d√©gage.
 						delete theNewtMessage;
 						throw DCLUnexpDockCmd;
 					}
-					
-					// On dit au moteur qu'on commence à utiliser le clavier.
+
+					// On dit au moteur qu'on commence √† utiliser le clavier.
 					theEngine->StartUsingKeyboard();
-					
+
 					processed = true;
 				}
-				// Sinon la commande est ignorée et l'application
+				// Sinon la commande est ignor√©e et l'application
 				// recevra une erreur.
 			}
 			break;
 
-			
+
 			case TDCLAppCommand::kSynchronize:
 			{
-				// Vérifions qu'il y a un moteur pour la synchronisation.
+				// V√©rifions qu'il y a un moteur pour la synchronisation.
 				if (GetSyncEngine())
 				{
 					// On synchronise directement (on ne dit pas au Newton
@@ -362,14 +362,14 @@ TDCLFullDockLink::ProcessAppCommand(
 			break;
 		}
 	}
-	
+
 	if (processed)
 	{
 		*outProcessed = true;
 	} else {
 		theResult = TDCLDockLink::ProcessAppCommand( inCommand, outProcessed );
 	}
-	
+
 	return theResult;
 }
 
@@ -379,22 +379,22 @@ TDCLFullDockLink::ProcessAppCommand(
 Boolean
 TDCLFullDockLink::InstallPackage( TDCLFSItemRef inPackage )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCmdFile(
 				TDCLAppCommand::kIdleAppCommand,
 				TDCLAppCommand::kInstallPackage,
 				inPackage );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
 
@@ -404,21 +404,21 @@ TDCLFullDockLink::InstallPackage( TDCLFSItemRef inPackage )
 Boolean
 TDCLFullDockLink::Synchronize( void )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCommand(
 				TDCLAppCommand::kIdleAppCommand,
 				TDCLAppCommand::kSynchronize );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
 
@@ -428,104 +428,104 @@ TDCLFullDockLink::Synchronize( void )
 Boolean
 TDCLFullDockLink::StartUsingKeyboard( void )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCommand(
 				TDCLAppCommand::kIdleAppCommand,
 				TDCLAppCommand::kStartUsingKeyboard );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
-	
+
 // --------------------------------------------------------------------------------	//
 //  * SendKeyboardString( const KUInt16* )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLFullDockLink::SendKeyboardString( const KUInt16* inString )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCmdString(
 				TDCLAppCommand::kKbdAppCommand,
 				TDCLAppCommand::kSendString,
 				inString );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
-	
+
 // --------------------------------------------------------------------------------	//
 //  * SendKeyboardChar( KUInt16, KUInt16 )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLFullDockLink::SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCmdKbdChar( inChar, inFlags );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
-	
+
 // --------------------------------------------------------------------------------	//
 //  * StopUsingKeyboard( void )
 // --------------------------------------------------------------------------------	//
 Boolean
 TDCLFullDockLink::StopUsingKeyboard( void )
 {
-	// Création de la commande à envoyer.
+	// Cr√©ation de la commande √† envoyer.
 	TDCLAppCommand* theCommand =
 		new TDCLAppCommand(
 				TDCLAppCommand::kKbdAppCommand,
 				TDCLAppCommand::kEndUsingKeyboard );
-	
+
 	// Envoi (si possible).
 	Boolean theResult = PostAppCommand( theCommand );
-	
+
 	if (!theResult)
 	{
-		// On n'est pas connecté, donc on nettoie.
+		// On n'est pas connect√©, donc on nettoie.
 		delete theCommand;
 	}
-	
+
 	return theResult;
 }
-	
+
 // --------------------------------------------------------------------------------	//
 //  * DoInstallPackage( TDCLFSItemRef )
 // --------------------------------------------------------------------------------	//
 void
 TDCLFullDockLink::DoInstallPackage( TDCLFSItemRef inPackage )
 {
-	// Récupération de l'objet pour faire la synchro.
+	// R√©cup√©ration de l'objet pour faire la synchro.
 	TDCLLoadPkgEngine* theEngine = GetLoadPkgEngine();
-	
+
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd(
@@ -537,16 +537,16 @@ TDCLFullDockLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	}
 
 }
-	
+
 // --------------------------------------------------------------------------------	//
 //  * DoSynchronize( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLFullDockLink::DoSynchronize( void )
 {
-	// Récupération de l'objet pour faire la synchro.
+	// R√©cup√©ration de l'objet pour faire la synchro.
 	TDCLSyncEngine* theEngine = GetSyncEngine();
-	
+
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
@@ -563,9 +563,9 @@ TDCLFullDockLink::DoSynchronize( void )
 void
 TDCLFullDockLink::DoUseKeyboard( void )
 {
-	// Récupération de l'objet pour utiliser le clavier.
+	// R√©cup√©ration de l'objet pour utiliser le clavier.
 	TDCLKeyboardEngine* theEngine = GetKeyboardEngine();
-	
+
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
@@ -582,18 +582,18 @@ TDCLFullDockLink::DoUseKeyboard( void )
 void
 TDCLFullDockLink::SendRequest( KUInt32 inRequest )
 {
-	// On dit au Newton qu'on va effectuer une opération.
+	// On dit au Newton qu'on va effectuer une op√©ration.
 	{
 		TDCLDockCmdNoData theRequestCmd( inRequest );
 
 		theRequestCmd.SendCommand( GetPipe() );
 	}
-		
-	// Récupération du kDResult (je filtre les commandes "hello").
+
+	// R√©cup√©ration du kDResult (je filtre les commandes "hello").
 	KSInt32 theResult = TDCLDockCommand::GetResultCmd( GetPipe() );
 	if (theResult)
 	{
-		// On relance l'erreur reçue du Newton.
+		// On relance l'erreur re√ßue du Newton.
 		throw DCLNewton( theResult );
 	}
 }
@@ -604,9 +604,9 @@ TDCLFullDockLink::SendRequest( KUInt32 inRequest )
 void
 TDCLFullDockLink::DoBrowse( const TDCLNSRef& inFileTypes )
 {
-	// Récupération de l'objet pour faire le butinage.
+	// R√©cup√©ration de l'objet pour faire le butinage.
 	TDCLBrowseEngine* theEngine = GetBrowseEngine();
-	
+
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
@@ -654,22 +654,22 @@ TDCLFullDockLink::GetSyncEngine( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * GetAppCommandMask( void )
+//  *¬†GetAppCommandMask( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLFullDockLink::GetAppCommandMask( void )
 {
 	KUInt32 theResult;
-	
+
 	// Si on a un moteur, on lui demande.
 	if (mCurrentEngine)
 	{
 		theResult = mCurrentEngine->GetAppCommandMask();
 	} else {
-		// On demande à la classe mère.
+		// On demande √† la classe m√®re.
 		theResult = TDCLDockLink::GetAppCommandMask();
 	}
-	
+
 	return theResult;
 }
 

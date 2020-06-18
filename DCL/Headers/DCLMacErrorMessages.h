@@ -2,7 +2,7 @@
 // Fichier:			DCLMacErrorMessages.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/08/2000
+// Cr√©√© le:			22/08/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is DCLMacErrorMessages.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -79,11 +79,11 @@ type kMacErrorResType {
 #endif
 
 ///
-/// Structure pour un message d'erreur avec un ID et une chaîne C.
+/// Structure pour un message d'erreur avec un ID et une cha√Æne C.
 ///
 typedef struct {
 	long			fID;			///< Identifiant de l'erreur.
-	char			fString[1];		///< Chaîne de caractère.
+	char			fString[1];		///< Cha√Æne de caract√®re.
 } SErrorMessage;
 
 ///
@@ -109,8 +109,8 @@ typedef struct {
 		// __DCLMACERRORMESSAGES__
 
 // ======================================================================= //
-// « C'est l'histoire d'un gars qui veut la machine la plus puissante du   //
-// monde sous Windows 95 en émulation sous Wine qui tourne sur une station //
-// FreeBSD avec bibliotheque de compatibilité Linux. »                     //
+// ¬´ C'est l'histoire d'un gars qui veut la machine la plus puissante du   //
+// monde sous Windows 95 en √©mulation sous Wine qui tourne sur une station //
+// FreeBSD avec bibliotheque de compatibilit√© Linux. ¬ª                     //
 //     -+- ST in Guide du linuxien pervers : "A quoi sert Unix ?" -+-      //
 // ======================================================================= //

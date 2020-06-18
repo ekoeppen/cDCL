@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacOS7File.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			09/02/2003
+// Cr√©√© le:			09/02/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacOS7File.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -93,7 +93,7 @@ TDCLMacOS7File::TDCLMacOS7File(
 }
 
 // ------------------------------------------------------------------------- //
-//  * ~TDCLMacOS7File( void )
+//  *¬†~TDCLMacOS7File( void )
 // ------------------------------------------------------------------------- //
 TDCLMacOS7File::~TDCLMacOS7File()
 {
@@ -114,15 +114,15 @@ TDCLMacOS7File::Open( Boolean inReadOnly )
 	
 	/*
 		noErr 0 No error
-		nsvErr –35 No such volume
-		ioErr –36 I/O error
-		bdNamErr –37 Bad filename
-		tmfoErr –42 Too many files open
-		fnfErr –43 File not found
-		opWrErr –49 File already open for writing
-		permErr –54 Attempt to open locked file for writing
-		dirNFErr –120 Directory not found or incomplete pathname
-		afpAccessDenied –5000 User does not have the correct access to the file
+		nsvErr ‚Äì35 No such volume
+		ioErr ‚Äì36 I/O error
+		bdNamErr ‚Äì37 Bad filename
+		tmfoErr ‚Äì42 Too many files open
+		fnfErr ‚Äì43 File not found
+		opWrErr ‚Äì49 File already open for writing
+		permErr ‚Äì54 Attempt to open locked file for writing
+		dirNFErr ‚Äì120 Directory not found or incomplete pathname
+		afpAccessDenied ‚Äì5000 User does not have the correct access to the file
 	*/
 	switch (theErr)
 	{	
@@ -148,7 +148,7 @@ TDCLMacOS7File::Open( Boolean inReadOnly )
 			throw DCLPlatformUnknownError( theErr );
 	} /* switch (theErr) */
 	
-	// Puisque le fichier est ouvert, on l'indique à la classe mère.
+	// Puisque le fichier est ouvert, on l'indique √† la classe m√®re.
 	DoOpen( inReadOnly );
 }
 
@@ -159,24 +159,24 @@ void
 TDCLMacOS7File::Create( OSType inCreator,
 						OSType inFileType )
 {
-	// Tentons de créer le fichier.
+	// Tentons de cr√©er le fichier.
 	OSErr theErr = ::FSpCreate(
 				&mFileFSSpec, inCreator, inFileType, smSystemScript );
 	
 	/*
 		noErr 0 No error
-		dirFulErr –33 File directory full
-		dskFulErr –34 Disk is full
-		nsvErr –35 No such volume
-		ioErr –36 I/O error
-		bdNamErr –37 Bad filename
-		fnfErr –43 Directory not found or incomplete pathname
-		wPrErr –44 Hardware volume lock
-		vLckdErr –46 Software volume lock
-		dupFNErr –48 Duplicate filename and version
-		dirNFErr –120 Directory not found or incomplete pathname
-		afpAccessDenied –5000 User does not have the correct access
-		afpObjectTypeErr –5025 A directory exists with that name
+		dirFulErr ‚Äì33 File directory full
+		dskFulErr ‚Äì34 Disk is full
+		nsvErr ‚Äì35 No such volume
+		ioErr ‚Äì36 I/O error
+		bdNamErr ‚Äì37 Bad filename
+		fnfErr ‚Äì43 Directory not found or incomplete pathname
+		wPrErr ‚Äì44 Hardware volume lock
+		vLckdErr ‚Äì46 Software volume lock
+		dupFNErr ‚Äì48 Duplicate filename and version
+		dirNFErr ‚Äì120 Directory not found or incomplete pathname
+		afpAccessDenied ‚Äì5000 User does not have the correct access
+		afpObjectTypeErr ‚Äì5025 A directory exists with that name
 	*/
 	switch (theErr)
 	{	
@@ -231,7 +231,7 @@ TDCLMacOS7File::SetMetaData(
 void
 TDCLMacOS7File::Delete( void )
 {
-	// Vérifions que le fichier n'est pas ouvert.
+	// V√©rifions que le fichier n'est pas ouvert.
 	if (IsOpen())
 	{
 		throw DCLBadStateError;
@@ -287,7 +287,7 @@ TDCLMacOS7File::Delete( void )
 KUInt16*
 TDCLMacOS7File::MakeName( void ) const
 {
-	// Allocation de l'espace nécessaire (avec malloc)
+	// Allocation de l'espace n√©cessaire (avec malloc)
 	unsigned int theSize = (unsigned int) mFileFSSpec.name[0];
 	KUInt16* theResult = (KUInt16*)
 		::malloc( theSize * sizeof( KUInt16 ) );
@@ -303,7 +303,7 @@ TDCLMacOS7File::MakeName( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetLength( void )
+//  *¬†GetLength( void )
 // ------------------------------------------------------------------------- //
 KUInt64
 TDCLMacOS7File::GetLength( void )
@@ -349,7 +349,7 @@ TDCLMacOS7File::GetLength( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * SetCursor( KSInt64, ECursorMode )
+//  *¬†SetCursor( KSInt64, ECursorMode )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacOS7File::SetCursor( KSInt64 inPos, ECursorMode inMode )
@@ -378,11 +378,11 @@ TDCLMacOS7File::SetCursor( KSInt64 inPos, ECursorMode inMode )
 	
 	/*
 		noErr 0 No error
-		ioErr –36 I/O error
-		fnOpnErr –38 File not open
-		eofErr –39 Logical end-of-file reached
-		posErr –40 Attempt to position mark before start of file
-		rfNumErr –51 Bad reference number
+		ioErr ‚Äì36 I/O error
+		fnOpnErr ‚Äì38 File not open
+		eofErr ‚Äì39 Logical end-of-file reached
+		posErr ‚Äì40 Attempt to position mark before start of file
+		rfNumErr ‚Äì51 Bad reference number
 	*/
 	
 	switch ( theErr )
@@ -408,7 +408,7 @@ TDCLMacOS7File::SetCursor( KSInt64 inPos, ECursorMode inMode )
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetCursor( void )
+//  *¬†GetCursor( void )
 // ------------------------------------------------------------------------- //
 KSInt64
 TDCLMacOS7File::GetCursor( void )
@@ -447,7 +447,7 @@ TDCLMacOS7File::GetCursor( void )
 } 
 
 // ------------------------------------------------------------------------- //
-//  * Close( void )
+//  *¬†Close( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacOS7File::Close( void )
@@ -458,10 +458,10 @@ TDCLMacOS7File::Close( void )
 	
 		/*
 			noErr 0 No error
-			ioErr –36 I/O error
-			fnOpnErr –38 File not open
-			fnfErr –43 File not found
-			rfNumErr –51 Bad reference number
+			ioErr ‚Äì36 I/O error
+			fnOpnErr ‚Äì38 File not open
+			fnfErr ‚Äì43 File not found
+			rfNumErr ‚Äì51 Bad reference number
 		*/
 	
 		switch ( theErr )
@@ -484,12 +484,12 @@ TDCLMacOS7File::Close( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Read( void*, long* )
+//  *¬†Read( void*, long* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacOS7File::Read( void* outBuffer, KUInt32* ioCount )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
@@ -498,18 +498,18 @@ TDCLMacOS7File::Read( void* outBuffer, KUInt32* ioCount )
 	// J'appelle FSRead tout simplement.
 	OSErr theErr = ::FSRead( mRefNum, (long*) ioCount, outBuffer );
 	
-	// Si j'ai trouvé une erreur autre que EOF, je lance une exception
+	// Si j'ai trouv√© une erreur autre que EOF, je lance une exception
 	
 	/*
 		noErr 0 No error
-		ioErr –36 I/O error
-		fnOpnErr –38 File not open
-		eofErr –39 Logical end-of-file reached
-		posErr –40 Attempt to position mark before start of file
+		ioErr ‚Äì36 I/O error
+		fnOpnErr ‚Äì38 File not open
+		eofErr ‚Äì39 Logical end-of-file reached
+		posErr ‚Äì40 Attempt to position mark before start of file
 		fLckdErr -45 File is locked
-		paramErr –50 Negative count
-		rfNumErr –51 Bad reference number
-		afpAccessDenied –5000 User does not have the correct access to the file
+		paramErr ‚Äì50 Negative count
+		rfNumErr ‚Äì51 Bad reference number
+		afpAccessDenied ‚Äì5000 User does not have the correct access to the file
 	*/
 	
 	switch (theErr)
@@ -538,41 +538,41 @@ TDCLMacOS7File::Read( void* outBuffer, KUInt32* ioCount )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Write( const void*, long* )
+//  *¬†Write( const void*, long* )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacOS7File::Write( const void* outBuffer,
 					KUInt32* ioCount )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
 	}
 	
-	// Vérifions que le fichier est ouvert en lecture/écriture.
+	// V√©rifions que le fichier est ouvert en lecture/√©criture.
 	if (IsReadOnly())
 	{
 		throw DCLReadOnly;
 	}
 
-	// Appel à FSWrite
+	// Appel √† FSWrite
 	OSErr theErr = ::FSWrite( mRefNum, (long*) ioCount, outBuffer );
 	
-	// Si j'ai trouvé une erreur autre que EOF, je lance une exception
+	// Si j'ai trouv√© une erreur autre que EOF, je lance une exception
 	
 	/*
 		noErr 0 No error
-		dskFulErr –34 Disk full
-		ioErr –36 I/O error
-		fnOpnErr –38 File not open
-		posErr –40 Attempt to position mark before start of file
-		wPrErr –44 Hardware volume lock
-		fLckdErr –45 File is locked
-		vLckdErr –46 Software volume lock
-		paramErr –50 Negative count
-		rfNumErr –51 Bad reference number
-		wrPermErr –61 Read/write permission doesn’t allow writing
+		dskFulErr ‚Äì34 Disk full
+		ioErr ‚Äì36 I/O error
+		fnOpnErr ‚Äì38 File not open
+		posErr ‚Äì40 Attempt to position mark before start of file
+		wPrErr ‚Äì44 Hardware volume lock
+		fLckdErr ‚Äì45 File is locked
+		vLckdErr ‚Äì46 Software volume lock
+		paramErr ‚Äì50 Negative count
+		rfNumErr ‚Äì51 Bad reference number
+		wrPermErr ‚Äì61 Read/write permission doesn‚Äôt allow writing
 	*/
 	
 	switch (theErr)
@@ -603,23 +603,23 @@ TDCLMacOS7File::Write( const void* outBuffer,
 }
 
 // ------------------------------------------------------------------------- //
-//  * FlushOutput( void )
+//  *¬†FlushOutput( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLMacOS7File::FlushOutput( void )
 {
-	// Vérifions que le fichier est ouvert.
+	// V√©rifions que le fichier est ouvert.
 	if (!IsOpen())
 	{
 		throw DCLBadStateError;
 	}
 
-	// Appel à PBFlushFileSync
+	// Appel √† PBFlushFileSync
 	ParamBlockRec myParamBlock;	// Parameter block pour PBFlushFileSync.
 	myParamBlock.fileParam.ioFRefNum = mRefNum;
 	OSErr theErr = ::PBFlushFileSync( &myParamBlock );
 	
-	// Si j'ai trouvé une erreur, je lance une exception
+	// Si j'ai trouv√© une erreur, je lance une exception
 	
 	/*
 		noErr		0	No error
@@ -640,7 +640,7 @@ TDCLMacOS7File::FlushOutput( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetVRefNum( void ) const
+//  *¬†GetVRefNum( void ) const
 // ------------------------------------------------------------------------- //
 short
 TDCLMacOS7File::GetVRefNum( void ) const
@@ -649,7 +649,7 @@ TDCLMacOS7File::GetVRefNum( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * IsOnDesktop( void ) const
+//  *¬†IsOnDesktop( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacOS7File::IsOnDesktop( void ) const
@@ -659,7 +659,7 @@ TDCLMacOS7File::IsOnDesktop( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetStringPath( void ) const
+//  *¬†GetStringPath( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacOS7File::GetStringPath( void ) const
@@ -669,7 +669,7 @@ TDCLMacOS7File::GetStringPath( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetIcon( void ) const
+//  *¬†GetIcon( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacOS7File::GetIcon( void ) const
@@ -679,7 +679,7 @@ TDCLMacOS7File::GetIcon( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetCreationDate( void ) const
+//  *¬†GetCreationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLMacOS7File::GetCreationDate( void ) const
@@ -689,7 +689,7 @@ TDCLMacOS7File::GetCreationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetModificationDate( void ) const
+//  *¬†GetModificationDate( void ) const
 // ------------------------------------------------------------------------- //
 KUInt32
 TDCLMacOS7File::GetModificationDate( void ) const
@@ -699,7 +699,7 @@ TDCLMacOS7File::GetModificationDate( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetKind( void ) const
+//  *¬†GetKind( void ) const
 // ------------------------------------------------------------------------- //
 TDCLNSRef
 TDCLMacOS7File::GetKind( void ) const

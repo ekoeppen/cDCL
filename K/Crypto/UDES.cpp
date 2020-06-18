@@ -2,7 +2,7 @@
 // Fichier:			UDES.cp
 // Projet:			K
 // 
-// Créé le:			26/8/2001
+// Cr√©√© le:			26/8/2001
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -44,7 +44,7 @@
 #include <stdlib.h>
 
 // -------------------------------------------------------------------------- //
-//  * Macros de déverminage
+//  * Macros de d√©verminage
 // -------------------------------------------------------------------------- //
 
 #undef KERROR_ENABLED
@@ -77,19 +77,19 @@ void
 UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 {
 	// Transforme une clef (dans inKey) en 16 sous-clefs (dans outSubKeys).
-	// La parité de la clef n'est pas vérifiée.
-	// L'opération se fait en deux étapes.
-	// 1. Permuted Choice 1: génère C0 & D0
+	// La parit√© de la clef n'est pas v√©rifi√©e.
+	// L'op√©ration se fait en deux √©tapes.
+	// 1. Permuted Choice 1: g√©n√®re C0 & D0
 	// 2. Boucle sur les sous-clefs
-	// 2.1. Génération de Ci & Di à partir de Ci-1 & Di-1
-	// 2.2. Génération de la sous-clef i à partir de Ci & Di avec
+	// 2.1. G√©n√©ration de Ci & Di √† partir de Ci-1 & Di-1
+	// 2.2. G√©n√©ration de la sous-clef i √† partir de Ci & Di avec
 	//			la table Permuted Choice 2.
 
 	// Permuted choice 1.
 	// Input: my 64 bits key.
 	// Output: two halves of 28 bits (C0 & D0)
 	
-	// Représentation de la clef
+	// Repr√©sentation de la clef
 	KUInt32 inKeyHigh = UTInt64::GetHi( inKey );
 	KUInt32 inKeyLow = UTInt64::GetLo( inKey );
 
@@ -97,9 +97,9 @@ UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 					// En pratique, on n'a besoin que d'une seule variable.
 					// C0 = 0
 	
-	int index_i;	// Curseur pour compter jusqu'à 56, utilisé ensuite dans d'autres boucles.
+	int index_i;	// Curseur pour compter jusqu'√† 56, utilis√© ensuite dans d'autres boucles.
 	
-	// Première passe les Ci
+	// Premi√®re passe les Ci
 	for (index_i = 0; index_i < 28; index_i++)
 	{
 		Ci <<= 1;	// No effect for first run because C0 is 0.
@@ -117,7 +117,7 @@ UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 	KUInt32 Di = 0;	// Tous les Di dans l'algorithme.
 					// Tout comme les Ci, une seule variable suffit.
 					// D0 = 0
-					// Autre remarque: les Di considérés sont D[index_i - 28]
+					// Autre remarque: les Di consid√©r√©s sont D[index_i - 28]
 	
 	for ( /* index_i = 28 */; index_i < 56; index_i++)
 	{
@@ -137,7 +137,7 @@ UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
   printf ("Perm. key = %06.6x %06.6x\n", Ci, Di);
 #endif
 
-	int index_j;	// De 0 à 15: boucle sur les sous-clefs.
+	int index_j;	// De 0 √† 15: boucle sur les sous-clefs.
 	
 	// J'utilise un mot de 16 bits pour savoir combien de rotations il faut faire.
 	// 1 2 3 4  5 6 7 8  9 A B C  D E F G
@@ -179,7 +179,7 @@ UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 			}
 		}
 		
-		outSubKeys[index_j].fHigh = theSubKeyWord;	// On met le résultat dans outSubKeys.
+		outSubKeys[index_j].fHigh = theSubKeyWord;	// On met le r√©sultat dans outSubKeys.
 		
 		// Mot de poids faible (i.e. les 24 derniers bits avec les Di)
 		
@@ -207,7 +207,7 @@ UDES::KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 void
 UDES::NewtonKeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] )
 {
-	// Décalage de chaque moitié de la clé vers la gauche.
+	// D√©calage de chaque moiti√© de la cl√© vers la gauche.
 	KUInt32 theKeyHigh = UTInt64::GetHi( inKey );
 	KUInt32 theKeyLow = UTInt64::GetLo( inKey );
 	KUInt64 theDESKey;
@@ -224,18 +224,18 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 {
 	// Encode un bloc de 64 bits.
 	// 1. Permutation initiale.
-	// 2. Boucle sur les 16 clefs de 1 à 16
+	// 2. Boucle sur les 16 clefs de 1 √† 16
 	// 3. Permutation initiale inverse.
 
-	// Les données, séparées en gauche et droite.
+	// Les donn√©es, s√©par√©es en gauche et droite.
 	// (cf l'algorithme).
 	KUInt32 ioDataLeft = UTInt64::GetHi( *ioData );
 	KUInt32 ioDataRight = UTInt64::GetLo( *ioData );
 
 	// 1. Permutation initiale.
-	KUInt32 permutedDataLeft = 0;	// Les données permutées, à gauche.
+	KUInt32 permutedDataLeft = 0;	// Les donn√©es permut√©es, √† gauche.
 
-	int index_i;	// Index sur les bits des données, utilisé dans d'autres boucles.
+	int index_i;	// Index sur les bits des donn√©es, utilis√© dans d'autres boucles.
 	for (index_i = 0; index_i < 32; index_i++)
 	{
 		permutedDataLeft <<= 1;	// No effect for first run because permutedDataLeft is 0.
@@ -250,7 +250,7 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		}
 	}
 
-	KUInt32 permutedDataRight = 0;	// Les données de droite permutées.
+	KUInt32 permutedDataRight = 0;	// Les donn√©es de droite permut√©es.
 	for ( /* index_i = 32 */; index_i < 64; index_i++)
 	{
 		permutedDataRight <<= 1;	// No effect for first run because permutedDataRight is 0.
@@ -311,10 +311,10 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 
 		// Division de Expanded en 8 blocks de 6 bits.
 
-		KUInt32 theBBlocksMerged = 0;	// Les 8 BBlocks dans un mot de 32 bits (après CTS)
+		KUInt32 theBBlocksMerged = 0;	// Les 8 BBlocks dans un mot de 32 bits (apr√®s CTS)
 		
 		{
-			KUInt8 BBlocks[8];	// E découpés en 8 blocs de 6 bits.
+			KUInt8 BBlocks[8];	// E d√©coup√©s en 8 blocs de 6 bits.
 			BBlocks[0] = (KUInt8) (ExpandedHigh >> 18);
 			BBlocks[1] = (KUInt8) ((ExpandedHigh >> 12) & 0x3F);
 			BBlocks[2] = (KUInt8) ((ExpandedHigh >> 6) & 0x3F);
@@ -328,13 +328,13 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 #ifdef LOGGING
       printf ("s_sub = ");
 #endif      
-			// Itération sur les 8 blocs de 6 bits.
+			// It√©ration sur les 8 blocs de 6 bits.
 			for (index_j = 0; index_j < 8; index_j++)
 			{
 				theBBlocksMerged <<= 4;	// No effect on first iteration, blah blah.
 			
-				int temp = BBlocks[index_j];	// Variable temporaire pour éviter de
-												// déréférencer BBlocks[index_j] 5 fois
+				int temp = BBlocks[index_j];	// Variable temporaire pour √©viter de
+												// d√©r√©f√©rencer BBlocks[index_j] 5 fois
 				int index_m = temp & 0x01;		// Index m dans les tables CTS
 				if (temp & 0x20)	// 6th bit
 				{
@@ -412,7 +412,7 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		}
 	}
 	
-	// Résultat dans le tableau.
+	// R√©sultat dans le tableau.
 	UTInt64::Set( ioData, ioDataLeft, ioDataRight );
 }
 
@@ -422,20 +422,20 @@ UDES::EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 void
 UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 {
-	// Décode un bloc de 64 bits.
+	// D√©code un bloc de 64 bits.
 	// 1. Permutation initiale.
-	// 2. Boucle sur les 16 clefs de 16 à 1
+	// 2. Boucle sur les 16 clefs de 16 √† 1
 	// 3. Permutation initiale inverse.
 
-	// Les données, séparées en gauche et droite.
+	// Les donn√©es, s√©par√©es en gauche et droite.
 	// (cf l'algorithme).
 	KUInt32 ioDataLeft = UTInt64::GetHi( *ioData );
 	KUInt32 ioDataRight = UTInt64::GetLo( *ioData );
 
 	// 1. Permutation initiale de LR
-	KUInt32 permutedDataLeft = 0;	// Les données permutées, mot de gauche
+	KUInt32 permutedDataLeft = 0;	// Les donn√©es permut√©es, mot de gauche
 
-	int index_i;	// Curseur pour compter jusqu'à 64, puis dans d'autres boucles.
+	int index_i;	// Curseur pour compter jusqu'√† 64, puis dans d'autres boucles.
 	for (index_i = 0; index_i < 32; index_i++)
 	{
 		permutedDataLeft <<= 1;	// No effect for first run because permutedDataLeft is 0.
@@ -450,7 +450,7 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		}
 	}
 
-	KUInt32 permutedDataRight = 0;	// Les données permutées, mot de droite
+	KUInt32 permutedDataRight = 0;	// Les donn√©es permut√©es, mot de droite
 	for ( /* index_i = 32 */; index_i < 64; index_i++)
 	{
 		permutedDataRight <<= 1;	// No effect for first run because permutedDataLeft is 0.
@@ -492,7 +492,7 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		
 		// Division de Expanded en 8 blocs de 6 bits.
 
-		KUInt32 theBBlocksMerged = 0;	// Les BB après CTS
+		KUInt32 theBBlocksMerged = 0;	// Les BB apr√®s CTS
 		
 		{
 			KUInt8 BBlocks[8];			// E en 8 blocs de 6 bits
@@ -509,8 +509,8 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 			{
 				theBBlocksMerged <<= 4;	// No effect on first iteration, blah blah.
 			
-				int temp = BBlocks[index_j];	// Variable temporaire pour éviter de
-												// déréférencer BBlocks[index_j] 5 fois
+				int temp = BBlocks[index_j];	// Variable temporaire pour √©viter de
+												// d√©r√©f√©rencer BBlocks[index_j] 5 fois
 				int index_m = temp & 0x01;		// Index m dans les tables CTS
 				if (temp & 0x20)	// 6th bit
 				{
@@ -524,7 +524,7 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		
 		// Permute theBBlocksMerged with kPermMask.
 		
-		KUInt32 thePermutedBBlocksMerged = 0;	// BB permutés.
+		KUInt32 thePermutedBBlocksMerged = 0;	// BB permut√©s.
 		
 		for (index_j = 0; index_j < 32; index_j++)
 		{
@@ -548,7 +548,7 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 
 	// 3. Permutation initiale inverse de RL
 	
-	ioDataLeft = 0;	// Réinitialisation pour le résultat.
+	ioDataLeft = 0;	// R√©initialisation pour le r√©sultat.
 
 	for (index_i = 0; index_i < 32; index_i++)
 	{
@@ -579,7 +579,7 @@ UDES::DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData )
 		}
 	}
 	
-	// On met le résultat dans le tableau.
+	// On met le r√©sultat dans le tableau.
 	UTInt64::Set( ioData, ioDataLeft, ioDataRight );
 }
 
@@ -594,7 +594,7 @@ UDES::EncodeECB(
 			KUInt8* outData )
 {
 	// Cryptage dans le mode ECB (Electronic Code Book).
-	// C'est tout simplement les mots les uns à la suite des autres.
+	// C'est tout simplement les mots les uns √† la suite des autres.
 	KUInt64 theWord = 0;
 	size_t theIndex = 0;
 	while (theIndex < inSize)
@@ -606,7 +606,7 @@ UDES::EncodeECB(
 
 		if ((theIndex % 4) == 0)
 		{
-			// Un mot de 64 bits est terminé.
+			// Un mot de 64 bits est termin√©.
 			EncodeBlock( inSubKeys, &theWord );
 			
 			// On stocke les 8 octets.
@@ -627,7 +627,7 @@ UDES::EncodeECB(
 	
 	if ((theIndex % 4) != 0)
 	{
-		// Il faut remplir ce qui manque avec des valeurs aléatoires.
+		// Il faut remplir ce qui manque avec des valeurs al√©atoires.
 		// theIndex % 4 == 1 -> il manque 3 octets
 		// theIndex % 4 == 2 -> il manque 2 octets
 		// theIndex % 4 == 3 -> il manque 1 octets
@@ -669,23 +669,23 @@ UDES::CreateKey(
 			const KUInt64& inCreationKey,
 			Boolean inNewtonCompat )
 {
-	// Crée une clef à partir d'une chaîne de caractère unicode.
-	// La chaîne doit avoir un caractère nul comme terminateur.
+	// Cr√©e une clef √† partir d'une cha√Æne de caract√®re unicode.
+	// La cha√Æne doit avoir un caract√®re nul comme terminateur.
 
-	// J'ai besoin de deux clés.
+	// J'ai besoin de deux cl√©s.
 	
-	// Clef pour la création.
-	// Doit normalement avoir une certaine parité.
+	// Clef pour la cr√©ation.
+	// Doit normalement avoir une certaine parit√©.
 	KUInt64 theKey = inCreationKey;
 	
-	// Si on a encore des caractères.
+	// Si on a encore des caract√®res.
 	bool charsLeft = true;
 	
-	// Indice sur la chaîne.
+	// Indice sur la cha√Æne.
 	int indexStr = 0;
 	do
 	{
-		SSubKey theSubKey[16];					// Sous clefs dérivées de theKey.
+		SSubKey theSubKey[16];					// Sous clefs d√©riv√©es de theKey.
 		if (inNewtonCompat)
 		{
 			NewtonKeySchedule( theKey, theSubKey );
@@ -694,9 +694,9 @@ UDES::CreateKey(
 			KeySchedule( theKey, theSubKey );	// Calcul des sous clefs.
 		}
 
-		// Lecture de 4 caractères de la chaîne dans la clef theKey2.
+		// Lecture de 4 caract√®res de la cha√Æne dans la clef theKey2.
 		
-		KUInt16 theUniChar;	// Variable pour les caractères unicode.
+		KUInt16 theUniChar;	// Variable pour les caract√®res unicode.
 		KUInt32 tmpKeyHi;
 		KUInt32 tmpKeyLo;
 		
@@ -768,7 +768,7 @@ UDES::CreateKey(
 			tmpKeyLo = 0;
 		}
 		
-		// Cryptage de tmpKey avec la clé précédente.
+		// Cryptage de tmpKey avec la cl√© pr√©c√©dente.
 		KUInt64 tmpKey;
 		UTInt64::SetHi( &tmpKey, tmpKeyHi );
 		UTInt64::SetLo( &tmpKey, tmpKeyLo );
@@ -795,7 +795,7 @@ UDES::CreateKey(
 					(unsigned int) tmpKeyHi,
 					(unsigned int) tmpKeyLo );
 
-		// On mets theKey2 dans theKey en vérifiant la parité.
+		// On mets theKey2 dans theKey en v√©rifiant la parit√©.
 		UTInt64::Set( &theKey, 
 				(KUInt32) (kOddBitNumber[tmpKeyHi & 0xFF])
 			|	(KUInt32) (kOddBitNumber[(tmpKeyHi >> 8) & 0xFF] << 8)
@@ -827,7 +827,7 @@ UDES::CreateKey(
 		}
 	} while (charsLeft);
 
-	// On met le résultat dans outKey
+	// On met le r√©sultat dans outKey
 	*outKey = theKey;
 }
 

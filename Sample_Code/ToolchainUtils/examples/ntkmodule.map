@@ -1,0 +1,12 @@
+ntkmodule_1.0 {
+  global:
+    GetConstString;
+    GetArrayElement;
+    BreakInMonitor;
+    ProtocolGetConstString;
+    ProtocolGetArrayElement;
+    ProtocolBreakInMonitor;
+
+  local:
+    *;
+};

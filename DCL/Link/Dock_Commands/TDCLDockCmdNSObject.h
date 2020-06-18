@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdNSObject.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			17/01/2002
+// Cr√©√© le:			17/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdNSObject.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,12 +44,12 @@
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
 ///
-/// Classe pour une commande du Dock dont les données sont un objet NewtonScript.
+/// Classe pour une commande du Dock dont les donn√©es sont un objet NewtonScript.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdNSObject
 	:
@@ -57,27 +57,27 @@ class TDCLDockCmdNSObject
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLDockCmdNSObject( void );
 
 	///
-	/// Constructeur pour l'envoi d'un objet NewtonScript à partir
-	/// d'une référence.
+	/// Constructeur pour l'envoi d'un objet NewtonScript √† partir
+	/// d'une r√©f√©rence.
 	///
-	/// \param inCommand	code définissant la commande
-	/// \param inObject		référence sur l'objet
+	/// \param inCommand	code d√©finissant la commande
+	/// \param inObject		r√©f√©rence sur l'objet
 	///
 	TDCLDockCmdNSObject(
 				KUInt32 inCommand,
 				const TDCLNSRef& inObject );
 
 	///
-	/// Constructeur pour la réception d'un objet NewtonScript.
+	/// Constructeur pour la r√©ception d'un objet NewtonScript.
 	///
-	/// \param inCommand	code définissant la commande
-	/// \param inLength		longueur des données
-	/// \param inData		données
+	/// \param inCommand	code d√©finissant la commande
+	/// \param inLength		longueur des donn√©es
+	/// \param inData		donn√©es
 	///
 	TDCLDockCmdNSObject(
 				KUInt32 inCommand,
@@ -87,37 +87,37 @@ public:
 	///
 	/// Destructeur.
 	///
-	/// Libère la mémoire tampon.
+	/// Lib√®re la m√©moire tampon.
 	///
 	virtual		~TDCLDockCmdNSObject( void );
 
 	///
-	/// Retourne un nouvel objet créé à partir de la mémoire tampon.
-	/// Retourne NILREF si la mémoire tampon n'a pas été allouée.
+	/// Retourne un nouvel objet cr√©√© √† partir de la m√©moire tampon.
+	/// Retourne NILREF si la m√©moire tampon n'a pas √©t√© allou√©e.
 	///
-	/// \return une référence vers un nouvel objet ou NILREF.
+	/// \return une r√©f√©rence vers un nouvel objet ou NILREF.
 	///
 	TDCLNSRef				GetObject( void ) const;
 
 	///
-	/// Remplace l'objet dans la mémoire tampon.
+	/// Remplace l'objet dans la m√©moire tampon.
 	///
-	/// \param inObject		référence sur l'objet
+	/// \param inObject		r√©f√©rence sur l'objet
 	///
 	void					SetObject( const TDCLNSRef& inObject );
 
 protected:
 	///
-	/// Récupère le pointeur sur les données.
+	/// R√©cup√®re le pointeur sur les donn√©es.
 	///
-	/// \return le pointeur sur la mémoire tampon.
+	/// \return le pointeur sur la m√©moire tampon.
 	///
 	virtual const void*		GetData( void );
 	
 	///
-	/// Récupère la taille des données.
+	/// R√©cup√®re la taille des donn√©es.
 	///
-	/// \return la taille de la mémoire tampon
+	/// \return la taille de la m√©moire tampon
 	///
 	virtual	KUInt32			GetLength( void ) const;
 
@@ -125,20 +125,20 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdNSObject( const TDCLDockCmdNSObject& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdNSObject& operator = ( const TDCLDockCmdNSObject& inCopy );
 
 	/// \name Variables
-	void*		mBuffer;		///< Mémoire tampon
-	KUInt32		mBufferSize;	///< Taille allouée de la mémoire tampon
+	void*		mBuffer;		///< M√©moire tampon
+	KUInt32		mBufferSize;	///< Taille allou√©e de la m√©moire tampon
 };
 
 #endif

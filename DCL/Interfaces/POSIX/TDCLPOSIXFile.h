@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXFile.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			22/6/2003
+// Cr√©√© le:			22/6/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXFile.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -51,7 +51,7 @@ class TDCLPOSIXFiles;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.9 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLPOSIXFile
 	:
@@ -59,8 +59,8 @@ class TDCLPOSIXFile
 {
 public:
 	///
-	/// Constructeur à partir de l'interface POSIXFiles et d'un chemin complet.
-	/// Le dossier parent sera créé.
+	/// Constructeur √† partir de l'interface POSIXFiles et d'un chemin complet.
+	/// Le dossier parent sera cr√©√©.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
 	/// \param inPath			chemin complet vers le fichier.
@@ -78,22 +78,22 @@ public:
 	///
 	/// Ouvre le fichier.
 	///
-	/// \param inReadOnly	si le fichier doit être ouvert en lecture seule
-	/// \throws TDCLIOException si l'ouverture a échoué.
+	/// \param inReadOnly	si le fichier doit √™tre ouvert en lecture seule
+	/// \throws TDCLIOException si l'ouverture a √©chou√©.
 	///
 	virtual void		Open( Boolean inReadOnly );	
 
 	///
-	/// Crée le fichier.
+	/// Cr√©e le fichier.
 	///
-	/// \throws TDCLIOException si la création a échoué.
+	/// \throws TDCLIOException si la cr√©ation a √©chou√©.
 	///
 	virtual void		Create( void );	
 
 	///
 	/// Supprime le fichier.
 	///
-	/// \throws TDCLIOException si la suppression a échoué.
+	/// \throws TDCLIOException si la suppression a √©chou√©.
 	///
 	virtual void		Delete( void );	
 
@@ -108,25 +108,25 @@ public:
 	/// Determine si le fichier est ouvert en lecture seule.
 	///
 	/// \return \c true si le fichier est ouvert en lecture seule,
-	///			\c false sinon. Le résultat est indéterminé si le fichier
+	///			\c false sinon. Le r√©sultat est ind√©termin√© si le fichier
 	///			n'est pas ouvert.
 	///
 	virtual Boolean		IsReadOnly( void ) const;
 
 	///
-	/// Déplace le curseur dans le fichier. Peut lancer une exception
-	/// pour indiquer que la fin du fichier a été atteinte.
+	/// D√©place le curseur dans le fichier. Peut lancer une exception
+	/// pour indiquer que la fin du fichier a √©t√© atteinte.
 	///
 	/// \param inPos	nouvelle position du curseur
-	/// \param inMode	définit l'origine de inPos
-	/// \throws TDCLPositionException si la fin du fichier (ou le début) est
-	///			dépassée.
+	/// \param inMode	d√©finit l'origine de inPos
+	/// \throws TDCLPositionException si la fin du fichier (ou le d√©but) est
+	///			d√©pass√©e.
 	/// \throws TDCLBadStateError si le fichier n'est pas ouvert.
 	///
 	virtual void		SetCursor( KSInt64 inPos, ECursorMode inMode );
 	
 	///
-	/// Détermine la position du curseur dans le fichier.
+	/// D√©termine la position du curseur dans le fichier.
 	///
 	/// \return la position du curseur dans le fichier.
 	/// \throws TDCLBadStateError si le fichier n'est pas ouvert.
@@ -143,63 +143,63 @@ public:
 	///
 	/// Lit des octets.
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que 
-	///						l'exception ne soit lancée si un problème est
+	/// \param outBuffer	m√©moire tampon pour les octets lus.
+	/// \param ioCount		nombre d'octets √† lire en entr√©e, lus en sortie.
+	///						Cette valeur est mise √† jour avant que 
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLIOException	si un probl√®me est survenu (autre que EOF)
 	///
 	virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 
 	///
 	/// Ecrit des octets.
 	///
-	/// \param inBuffer		mémoire tampon pour les octets à écrire.
-	/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-	///						sortie. Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
+	/// \param inBuffer		m√©moire tampon pour les octets √† √©crire.
+	/// \param ioCount		nombre d'octets √† √©crire en entr√©e, √©cris en
+	///						sortie. Cette valeur est mise √† jour avant que
+	///						l'exception ne soit lanc√©e si un probl√®me est
 	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 
 	///
-	/// Vide la mémoire tampon de sortie.
+	/// Vide la m√©moire tampon de sortie.
 	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// \throws TDCLIOException	si un probl√®me est survenu.
 	///
 	virtual void		FlushOutput( void );
 
 	///
 	/// Ferme le fichier.
-	/// Vous souhaitez probablement appeler la méthode close dans votre
+	/// Vous souhaitez probablement appeler la m√©thode close dans votre
 	/// destructeur.
-	/// Ne fait rien si le fichier n'était pas ouvert.
+	/// Ne fait rien si le fichier n'√©tait pas ouvert.
 	///
 	virtual void		Close( void );
 
 	///
-	/// Récupère le type du fichier sous forme de chaîne NewtonScript.
-	/// C'est ce qui est retourné au Newton pour affichage dans
+	/// R√©cup√®re le type du fichier sous forme de cha√Æne NewtonScript.
+	/// C'est ce qui est retourn√© au Newton pour affichage dans
 	/// le butineur.
 	///
-	/// \return une chaîne NewtonScript avec le type du fichier.
+	/// \return une cha√Æne NewtonScript avec le type du fichier.
 	///
 	virtual TDCLNSRef	GetKind( void ) const;
 	
 	///
-	/// Récupère la date de création au format des dates Newton
+	/// R√©cup√®re la date de cr√©ation au format des dates Newton
 	/// (minutes depuis 1904).
-	/// Ce n'est pas vraiment la date de création pour les fichiers POSIX,
-	/// mais ça ira vu l'utilisation qu'on en fait.
+	/// Ce n'est pas vraiment la date de cr√©ation pour les fichiers POSIX,
+	/// mais √ßa ira vu l'utilisation qu'on en fait.
 	///
-	/// \return la date de création du fichier.
+	/// \return la date de cr√©ation du fichier.
 	///
 	virtual KUInt32		GetCreationDate( void ) const;
 
 	///
-	/// Récupère la date de modification au format des dates Newton
+	/// R√©cup√®re la date de modification au format des dates Newton
 	/// (minutes depuis 1904).
 	///
 	/// \return la date de modification du fichier.
@@ -207,28 +207,28 @@ public:
 	virtual KUInt32		GetModificationDate( void ) const;
 
 	///
-	/// Récupère le chemin du fichier dans une forme lisible par
+	/// R√©cup√®re le chemin du fichier dans une forme lisible par
 	/// l'utilisateur. Ce chemin n'a pas d'autre fonction que
-	/// d'être affiché sur le Newton.
+	/// d'√™tre affich√© sur le Newton.
 	///
-	/// \return le chemin du fichier dans une chaîne NewtonScript.
+	/// \return le chemin du fichier dans une cha√Æne NewtonScript.
 	///
 	virtual TDCLNSRef	GetStringPath( void ) const;
 
 private:
 	///
-	/// La classe TDCLPOSIXDirBase crée des objets de type TDCLPOSIXFile
+	/// La classe TDCLPOSIXDirBase cr√©e des objets de type TDCLPOSIXFile
 	///
 	friend class TDCLPOSIXDirBase;
 
 	///
-	/// Constructeur à partir de l'interface POSIXFiles, d'un dossier parent
+	/// Constructeur √† partir de l'interface POSIXFiles, d'un dossier parent
 	/// et d'un chemin complet.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
 	/// \param inParentFolder	dossier parent.
 	///							(\c nil signifie que MakeParentFolder sera
-	///							appelé plus tard).
+	///							appel√© plus tard).
 	/// \param inPath			chemin complet vers le fichier.
 	///
 	TDCLPOSIXFile(
@@ -237,7 +237,7 @@ private:
 				const char* inPath );
 
 	///
-	/// Crée l'objet représentant le dossier parent d'un objet donné.
+	/// Cr√©e l'objet repr√©sentant le dossier parent d'un objet donn√©.
 	///
 	/// \param	inFilesIntf	interface pour les fichiers.
 	/// \param	inPath chemin sur l'objet dont on veut le dossier parent.
@@ -248,28 +248,28 @@ private:
 								const char* inPath );
 
 	///
-	/// Construit le nom de l'objet. C'est une chaîne unicode UTF-16 qui est allouée
-	/// avec malloc. Cette méthode n'est appelée que si nécessaire (au plus une fois).
+	/// Construit le nom de l'objet. C'est une cha√Æne unicode UTF-16 qui est allou√©e
+	/// avec malloc. Cette m√©thode n'est appel√©e que si n√©cessaire (au plus une fois).
 	///
-	/// \return le nom alloué avec malloc.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return le nom allou√© avec malloc.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual KUInt16*	MakeName( void ) const;
 
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est
-	/// appelée que si l'objet parent qui a été fourni est \c nil.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est
+	/// appel√©e que si l'objet parent qui a √©t√© fourni est \c nil.
 	///
 	/// \return le parent de \c this.
 	///
 	virtual TDCLFSItemRef	MakeParentFolder( void ) const;
 
 	/// \name Variables
-	FILE*				mFile;		///< Référence sur le fichier (C 89),
-									///< \c nil si le fichier n'a pas été
+	FILE*				mFile;		///< R√©f√©rence sur le fichier (C 89),
+									///< \c nil si le fichier n'a pas √©t√©
 									///< ouvert.
 	const char*			mPath;		///< Chemin du fichier.
-	Boolean				mReadOnly;	///< Si le fichier a été ouvert en lecture seule.
+	Boolean				mReadOnly;	///< Si le fichier a √©t√© ouvert en lecture seule.
 };
 
 #endif

@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacOS7Folder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/1/2003
+// Cr√©√© le:			10/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacOS7Folder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -69,7 +69,7 @@ TDCLMacOS7Folder::TDCLMacOS7Folder(
 		mVRefNum( inVRefNum ),
 		mDirID( inDirID )
 {
-	// Peinture fraîche.
+	// Peinture fra√Æche.
 }
 
 // -------------------------------------------------------------------------- //
@@ -83,7 +83,7 @@ TDCLMacOS7Folder::TDCLMacOS7Folder(
 		TDCLMacFolder( inFilesIntf, inParentFolder ),
 		mDirID( inDirID )
 {
-	// Récupération de la référence sur le volume.
+	// R√©cup√©ration de la r√©f√©rence sur le volume.
 	mVRefNum = ((TDCLMacOS7Folder*) ((TDCLFolder*) inParentFolder))->mVRefNum;
 }
 
@@ -97,15 +97,15 @@ TDCLMacOS7Folder::GetItemByName(
 {
 	TDCLFSItemRef theResult;
 #warning incomplete
-	// Création du FSSpec pour le fichier.
+	// Cr√©ation du FSSpec pour le fichier.
 	FSSpec theFSSpec;
 	if (MakeFSSpecForItem( inName, &theFSSpec ))
 	{
 		// Est-ce un dossier ou un fichier?
-		
+
 		throw DCLNotImplementedError;
-	} // else l'élément n'existe pas.
-	
+	} // else l'√©l√©ment n'existe pas.
+
 	return theResult;
 }
 
@@ -117,23 +117,23 @@ TDCLMacOS7Folder::CreateFile(
 					const KUInt16* inName,
 					OSType inCreator /* = TDCLMacFiles::kCreator */,
 					OSType inFileType /* = TDCLMacFiles::kFileType */ )
-{	
-	// Création du FSSpec pour le fichier.
+{
+	// Cr√©ation du FSSpec pour le fichier.
 	FSSpec theFSSpec;
 	if (MakeFSSpecForItem( inName, &theFSSpec ))
 	{
 		throw DCLExistsAlready;
 	}
-	
+
 	TDCLMacOS7File* theFileResult =
 		new TDCLMacOS7File(
 				(TDCLMacFiles*) GetFilesIntf(),
 				TDCLFSItemRef( this ),
 				&theFSSpec );
 	TDCLFSItemRef theResult( theFileResult );
-	
+
 	theFileResult->Create( inCreator, inFileType );
-	
+
 	return theResult;
 }
 
@@ -143,20 +143,20 @@ TDCLMacOS7Folder::CreateFile(
 TDCLFSItemRef
 TDCLMacOS7Folder::CreateFolder( const KUInt16* inName )
 {
-	// Création du FSSpec pour le dossier.
+	// Cr√©ation du FSSpec pour le dossier.
 	FSSpec theFSSpec;
 	if (MakeFSSpecForItem( inName, &theFSSpec ))
 	{
 		throw DCLExistsAlready;
 	}
-	
+
 	KSInt32 theDirID;
 	OSErr theErr = FSpDirCreate( &theFSSpec, smSystemScript, &theDirID );
 	if (theErr != noErr)
 	{
 		throw DCLPlatformUnknownError( theErr );
 	}
-	
+
 	return TDCLFSItemRef(
 		new TDCLMacOS7Folder(
 				(TDCLMacFiles*) GetFilesIntf(),
@@ -190,10 +190,10 @@ TDCLMacOS7Folder::GetItems( void )
 KUInt16*
 TDCLMacOS7Folder::MakeName( void ) const
 {
-	// Récupération du nom.
-	Str255 theFolderName;		// Mémoire tampon pour le nom.
+	// R√©cup√©ration du nom.
+	Str255 theFolderName;		// M√©moire tampon pour le nom.
 	CInfoPBRec theParamBlock;	// Structure pour PBGetCatInfo
-	
+
 	/*	http://developer.apple.com/techpubs/mac/Files/Files-238.html
 		If the value of ioFDirIndex is negative, PBGetCatInfo ignores
 		ioNamePtr and returns information about the directory specified
@@ -203,9 +203,9 @@ TDCLMacOS7Folder::MakeName( void ) const
 	theParamBlock.dirInfo.ioVRefNum = mVRefNum;
 	theParamBlock.dirInfo.ioFDirIndex = -1;
 	theParamBlock.dirInfo.ioDrDirID = mDirID;
-	
+
 	OSErr theErr = PBGetCatInfoSync( &theParamBlock );
-	
+
 	/*
 		noErr				0		No error
 		nsvErr				-35		No such volume
@@ -217,34 +217,34 @@ TDCLMacOS7Folder::MakeName( void ) const
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	Directory not found or incomplete pathname
 	*/
-	
+
 	switch ( theErr )
 	{
 		case noErr:
 			break;
-		
+
 		case fnfErr:
 		case dirNFErr:
 		case afpObjectTypeErr:
 			throw DCLPlatformDoesntExist( theErr );
 			break;
-		
+
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	} /* switch (theErr) */
 
-	// Allocation de l'espace nécessaire (avec malloc)
+	// Allocation de l'espace n√©cessaire (avec malloc)
 	unsigned int theSize = (unsigned int) theFolderName[0];
 	KUInt16* theResult = (KUInt16*)
 		::malloc( theSize * sizeof( KUInt16 ) );
-	
+
 	// Conversion depuis MacRoman
 	UUTF16Conv::FromMacRoman(
 		(KUInt8*) &theFolderName[1], theResult, theSize );
-	
+
 	// Ajout du terminateur.
 	theResult[theSize] = 0;
-	
+
 	return theResult;
 }
 
@@ -254,7 +254,7 @@ TDCLMacOS7Folder::MakeName( void ) const
 TDCLFSItemRef
 TDCLMacOS7Folder::MakeParentFolder( void ) const
 {
-	// Création d'un nouveau TDCLMacOS7Folder
+	// Cr√©ation d'un nouveau TDCLMacOS7Folder
 	return TDCLFSItemRef(
 			new TDCLMacOS7Folder(
 					(TDCLMacFiles*) GetFilesIntf(),
@@ -268,7 +268,7 @@ TDCLMacOS7Folder::MakeParentFolder( void ) const
 long
 TDCLMacOS7Folder::GetParentID( void ) const
 {
-	// Récupération de l'ID du dossier parent.
+	// R√©cup√©ration de l'ID du dossier parent.
 	CInfoPBRec theParamBlock;
 
 	/*	http://developer.apple.com/techpubs/mac/Files/Files-238.html
@@ -280,9 +280,9 @@ TDCLMacOS7Folder::GetParentID( void ) const
 	theParamBlock.dirInfo.ioVRefNum = mVRefNum;
 	theParamBlock.dirInfo.ioFDirIndex = -1;
 	theParamBlock.dirInfo.ioDrDirID = mDirID;
-	
+
 	OSErr theErr = PBGetCatInfoSync( &theParamBlock );
-	
+
 	/*
 		noErr				0		No error
 		nsvErr				-35		No such volume
@@ -294,18 +294,18 @@ TDCLMacOS7Folder::GetParentID( void ) const
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	Directory not found or incomplete pathname
 	*/
-	
+
 	switch ( theErr )
 	{
 		case noErr:
 			break;
-		
+
 		case fnfErr:
 		case dirNFErr:
 		case afpObjectTypeErr:
 			throw DCLPlatformDoesntExist( theErr );
 			break;
-		
+
 		default:
 			throw DCLPlatformUnknownError( theErr );
 	} /* switch (theErr) */
@@ -321,11 +321,11 @@ TDCLMacOS7Folder::MakeFSSpecForItem(
 					const KUInt16* inName,
 					FSSpec* outFSSpec ) const
 {
-	Boolean theResult = true;	// Si l'élément existe.
-	
+	Boolean theResult = true;	// Si l'√©l√©ment existe.
+
 	// Traduction du nom en StrFileName.
 	size_t theNameLen = UUTF16CStr::StrLen( inName );
-	
+
 	StrFileName theFileName;
 	size_t theOutputLen = sizeof(theFileName) - 1;
 	if (UUTF16Conv::ToMacRoman(
@@ -337,7 +337,7 @@ TDCLMacOS7Folder::MakeFSSpecForItem(
 	{
 		throw DCLBadParamError;
 	}
-	
+
 	theFileName[0] = (unsigned char) theOutputLen;
 
 	OSErr theErr = FSMakeFSSpec( mVRefNum, mDirID, theFileName, outFSSpec );
@@ -345,7 +345,7 @@ TDCLMacOS7Folder::MakeFSSpecForItem(
 	{
 		if (theErr == fnfErr)
 		{
-			theResult = false;	// L'élément n'existe pas.
+			theResult = false;	// L'√©l√©ment n'existe pas.
 		} else {
 			throw DCLPlatformUnknownError( theErr );
 		}
@@ -355,7 +355,7 @@ TDCLMacOS7Folder::MakeFSSpecForItem(
 }
 
 // ------------------------------------------------------------------------- //
-//  * IsVolume( void ) const
+//  *¬†IsVolume( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacOS7Folder::IsVolume( void ) const
@@ -365,7 +365,7 @@ TDCLMacOS7Folder::IsVolume( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * IsOnDesktop( void ) const
+//  *¬†IsOnDesktop( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLMacOS7Folder::IsOnDesktop( void ) const
@@ -375,7 +375,7 @@ TDCLMacOS7Folder::IsOnDesktop( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetVRefNum( void ) const
+//  *¬†GetVRefNum( void ) const
 // ------------------------------------------------------------------------- //
 short
 TDCLMacOS7Folder::GetVRefNum( void ) const

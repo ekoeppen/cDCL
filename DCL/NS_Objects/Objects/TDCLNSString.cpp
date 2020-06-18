@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSString.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			21/10/2002
+// Cr√©√© le:			21/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSString.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,7 +68,7 @@ TDCLNSString::TDCLNSString( const char* inString )
 	size_t theStrLen = ::strlen( inString );
 	SetLength( 2 * (theStrLen + 1) );
 	
-	// Conversion de la chaîne.
+	// Conversion de la cha√Æne.
 	UUTF16CStr::FromISO88591(
 						(const KUInt8*) inString, (KUInt16*) GetPointer() );
 }
@@ -84,7 +84,7 @@ TDCLNSString::TDCLNSString( const KUInt16* inString )
 									* (UUTF16CStr::StrLen( inString ) + 1);
 	SetLength( theTotalLen );
 	
-	// Copie de la chaîne.
+	// Copie de la cha√Æne.
 	(void) ::memcpy( (KUInt16*) GetPointer(), inString, theTotalLen );
 }
 
@@ -98,7 +98,7 @@ TDCLNSString::TDCLNSString( const KUInt16* inString, KUInt32 inSize )
 	size_t theTotalLen = sizeof(KUInt16) * (inSize + 1);
 	SetLength( theTotalLen );
 	
-	// Copie de la chaîne.
+	// Copie de la cha√Æne.
 	(void) ::memcpy(
 				(KUInt16*) GetPointer(),
 				inString,
@@ -125,7 +125,7 @@ TDCLNSString::TDCLNSString( KUInt16* inString, KUInt32 inLength )
 	:
 		TDCLNSBinary( (void*) inString, inLength, KDCLSYM::kSYMstring )
 {
-	// Les données ne sont pas copiées.
+	// Les donn√©es ne sont pas copi√©es.
 }
 
 // ------------------------------------------------------------------------- //
@@ -138,10 +138,10 @@ TDCLNSString::FromNSOF( TDCLNSOFDecoder* inDecoder )
 	
 	KUInt32 nbBytes = theStream->GetXLong();
 	
-	// Création de l'objet.
+	// Cr√©ation de l'objet.
 	TDCLNSString* theResult = new TDCLNSString( theStream, nbBytes );
 
-	// Ajout de l'objet dans la liste des objets référencés.
+	// Ajout de l'objet dans la liste des objets r√©f√©renc√©s.
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ) );
 
 	return theResult;
@@ -153,18 +153,18 @@ TDCLNSString::FromNSOF( TDCLNSOFDecoder* inDecoder )
 Boolean
 TDCLNSString::StrEqual( const char* inAlter ) const
 {
-	// Conversion de la chaîne ISO 8859-1 en unicode.
+	// Conversion de la cha√Æne ISO 8859-1 en unicode.
 	size_t theStrLen = ::strlen( inAlter );
 	KUInt16* theStringInUCS2 =
 			(KUInt16*) ::malloc( sizeof(KUInt16) * (theStrLen + 1) );
 	
-	// Conversion de la chaîne.
+	// Conversion de la cha√Æne.
 	UUTF16CStr::FromISO88591(
 			(const KUInt8*) inAlter, theStringInUCS2 );
 	
 	Boolean theResult = StrEqual( theStringInUCS2 );
 	
-	// Libération.
+	// Lib√©ration.
 	::free( theStringInUCS2 );
 	
 	return theResult;
@@ -178,7 +178,7 @@ TDCLNSString::StrEqual( const KUInt16* inAlter ) const
 {
 	Boolean theResult = false;
 	
-	// Comparaison (puisque les deux chaînes sont terminées par des nuls).
+	// Comparaison (puisque les deux cha√Ænes sont termin√©es par des nuls).
 	KUInt32 indexStr;
 	KUInt32 theMax = GetLength() / 2;
 	const KUInt16* thisString = GetString();
@@ -227,10 +227,10 @@ TDCLNSString::Catenate( const char* inAlter ) const
 		throw DCLMemError;
 	}
 	
-	// Copie des données pour la première chaîne.
+	// Copie des donn√©es pour la premi√®re cha√Æne.
 	(void) ::memcpy( theNewString, GetString(), thisStrLen * sizeof(KUInt16) );
 	
-	// Conversion de la seconde chaîne.
+	// Conversion de la seconde cha√Æne.
 	UUTF16CStr::FromISO88591(
 			(const KUInt8*) inAlter, &theNewString[thisStrLen] );
 	
@@ -256,10 +256,10 @@ TDCLNSString::Catenate( const KUInt16* inAlter ) const
 		throw DCLMemError;
 	}
 	
-	// Copie des données pour la première chaîne.
+	// Copie des donn√©es pour la premi√®re cha√Æne.
 	(void) ::memcpy( theNewString, GetString(), thisStrLen * sizeof(KUInt16) );
 	
-	// Copie des données pour la deuxième chaîne avec le terminateur.
+	// Copie des donn√©es pour la deuxi√®me cha√Æne avec le terminateur.
 	(void) ::memcpy( &theNewString[thisStrLen], inAlter, alterSize );
 	
 	return new TDCLNSString( (KUInt16*) theNewString, theNewSize );
@@ -282,13 +282,13 @@ TDCLNSString::CatenateWithSpace( const char* inAlter ) const
 		throw DCLMemError;
 	}
 	
-	// Copie des données pour la première chaîne.
+	// Copie des donn√©es pour la premi√®re cha√Æne.
 	(void) ::memcpy( theNewString, GetString(), thisStrLen * sizeof(KUInt16) );
 	
 	// Espace.
 	theNewString[thisStrLen] = kSpaceChar;
 	
-	// Conversion de la seconde chaîne.
+	// Conversion de la seconde cha√Æne.
 	UUTF16CStr::FromISO88591(
 			(const KUInt8*) inAlter, &theNewString[thisStrLen + 1] );
 	
@@ -313,13 +313,13 @@ TDCLNSString::CatenateWithSpace( const KUInt16* inAlter ) const
 		throw DCLMemError;
 	}
 	
-	// Copie des données pour la première chaîne.
+	// Copie des donn√©es pour la premi√®re cha√Æne.
 	(void) ::memcpy( theNewString, GetString(), thisStrLen * sizeof(KUInt16) );
 	
 	// Espace.
 	theNewString[thisStrLen] = kSpaceChar;
 	
-	// Copie des données pour la deuxième chaîne avec le terminateur.
+	// Copie des donn√©es pour la deuxi√®me cha√Æne avec le terminateur.
 	(void) ::memcpy( &theNewString[thisStrLen + 1], inAlter, alterSize );
 	
 	return new TDCLNSString( (KUInt16*) theNewString, theNewSize );

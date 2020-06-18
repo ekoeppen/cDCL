@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSFrame.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSFrame.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -54,7 +54,7 @@ class TDCLPkgEncoder;
 
 ///
 /// Classe pour une Frame. Une Frame est un dictionnaire d'objets NewtonScript,
-/// les clés sont des symboles.
+/// les cl√©s sont des symboles.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.9 $
@@ -68,16 +68,16 @@ class TDCLNSFrame
 {
 public:
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLNSFrame( void );
 
 	///
 	/// Constructeur par copie.
-	/// Equivalent à Clone.
-	/// Duplique les clés et les valeurs (les références seront incrémentées)
+	/// Equivalent √† Clone.
+	/// Duplique les cl√©s et les valeurs (les r√©f√©rences seront incr√©ment√©es)
 	///
-	/// \param inCopy	objet à copier.
+	/// \param inCopy	objet √† copier.
 	///
 	explicit TDCLNSFrame( const TDCLNSFrame& inCopy );
 
@@ -87,39 +87,39 @@ public:
 	virtual ~TDCLNSFrame( void );
 
 	///
-	/// Opérateur d'assignation.
+	/// Op√©rateur d'assignation.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLNSFrame& operator = ( const TDCLNSFrame& inCopy );
 
 	///
-	/// Détermine si cet objet est une structure.
+	/// D√©termine si cet objet est une structure.
 	///
 	/// \return \c true
 	///
 	virtual Boolean 	IsFrame( void ) const;
 
 	///
-	/// Détermine si cet objet est une fonction.
+	/// D√©termine si cet objet est une fonction.
 	///
 	/// \return \c mIsFunction
 	///
 	virtual Boolean 	IsFunction( void ) const;
 
 	///
-	/// Détermine si une clé existe dans le dictionnaire.
+	/// D√©termine si une cl√© existe dans le dictionnaire.
 	///
-	/// \param inSymbol	clé à tester.
-	/// \return \c true si la clé existe, \c false sinon.
+	/// \param inSymbol	cl√© √† tester.
+	/// \return \c true si la cl√© existe, \c false sinon.
 	///
 	Boolean				HasSlot( const TDCLNSSymbol& inSymbol ) const;
 
 	///
-	/// Détermine si une clé existe dans le dictionnaire.
+	/// D√©termine si une cl√© existe dans le dictionnaire.
 	///
-	/// \param inSymbol	clé à tester, sous forme de chaîne ISO-8859-1.
-	/// \return \c true si la clé existe, \c false sinon.
+	/// \param inSymbol	cl√© √† tester, sous forme de cha√Æne ISO-8859-1.
+	/// \return \c true si la cl√© existe, \c false sinon.
 	///
 	inline Boolean		HasSlot( const char* inSymbol ) const
 		{
@@ -127,18 +127,18 @@ public:
 		}
 
 	///
-	/// Supprime une clé du dictionnaire.
+	/// Supprime une cl√© du dictionnaire.
 	///
-	/// \param inSymbol	clé à supprimer.
-	/// \return \c true si la clé existait, \c false sinon.
+	/// \param inSymbol	cl√© √† supprimer.
+	/// \return \c true si la cl√© existait, \c false sinon.
 	///
 	Boolean				RemoveSlot( const TDCLNSSymbol& inSymbol );
 
 	///
-	/// Supprime une clé du dictionnaire.
+	/// Supprime une cl√© du dictionnaire.
 	///
-	/// \param inSymbol	clé à supprimer, sous forme de chaîne ISO-8859-1.
-	/// \return \c true si la clé existait, \c false sinon.
+	/// \param inSymbol	cl√© √† supprimer, sous forme de cha√Æne ISO-8859-1.
+	/// \return \c true si la cl√© existait, \c false sinon.
 	///
 	inline Boolean		RemoveSlot( const char* inSymbol )
 		{
@@ -146,20 +146,20 @@ public:
 		}
 
 	///
-	/// Accesseur sur un élément.
+	/// Accesseur sur un √©l√©ment.
 	///
-	/// \param inSymbol	clé pour accéder à l'élément.
-	/// \return la référence de l'objet référencé par la clé ou
+	/// \param inSymbol	cl√© pour acc√©der √† l'√©l√©ment.
+	/// \return la r√©f√©rence de l'objet r√©f√©renc√© par la cl√© ou
 	///			NIL s'il n'y en a pas.
 	///
 	TDCLNSRef			Get( const TDCLNSSymbol& inSymbol ) const;
 
 	///
-	/// Accesseur sur un élément.
+	/// Accesseur sur un √©l√©ment.
 	///
-	/// \param inSymbol		clé pour accéder à l'élément, sous forme de chaîne
+	/// \param inSymbol		cl√© pour acc√©der √† l'√©l√©ment, sous forme de cha√Æne
 	///						ISO 8859-1
-	/// \return la référence de l'objet référencé par la clé ou
+	/// \return la r√©f√©rence de l'objet r√©f√©renc√© par la cl√© ou
 	///			NIL s'il n'y en a pas.
 	///
 	inline TDCLNSRef	Get( const char* inSymbol ) const
@@ -168,40 +168,40 @@ public:
 		}		
 
 	///
-	/// Accesseur sur une clé à partir d'un indice.
-	/// Utilisé pour itérer sur les éléments de la structure.
+	/// Accesseur sur une cl√© √† partir d'un indice.
+	/// Utilis√© pour it√©rer sur les √©l√©ments de la structure.
 	///
-	/// \param inIndex	indice de la clé à récupérer.
-	/// \return la référence de la inIndex-ième clé
-	/// \throws TDCLException si la structure est plus petite que ça
+	/// \param inIndex	indice de la cl√© √† r√©cup√©rer.
+	/// \return la r√©f√©rence de la inIndex-i√®me cl√©
+	/// \throws TDCLException si la structure est plus petite que √ßa
 	///
 	TDCLNSRef			GetKey( KUInt32 inIndex ) const;
 
 	///
-	/// Accesseur sur un élément à partir d'un indice.
-	/// Utilisé pour itérer sur les éléments de la structure.
+	/// Accesseur sur un √©l√©ment √† partir d'un indice.
+	/// Utilis√© pour it√©rer sur les √©l√©ments de la structure.
 	///
-	/// \param inIndex	indice de l'élément à récupérer.
-	/// \return la référence du inIndex-ième objet
-	/// \throws TDCLException si la structure est plus petite que ça
+	/// \param inIndex	indice de l'√©l√©ment √† r√©cup√©rer.
+	/// \return la r√©f√©rence du inIndex-i√®me objet
+	/// \throws TDCLException si la structure est plus petite que √ßa
 	///
 	TDCLNSRef			GetValue( KUInt32 inIndex ) const;
 
 	///
-	/// Sélecteur sur un élément.
+	/// S√©lecteur sur un √©l√©ment.
 	///
-	/// \param inSymbol		clé pour accéder à l'élément.
-	/// \param inNewValue	nouvelle valeur pour cette clé.
+	/// \param inSymbol		cl√© pour acc√©der √† l'√©l√©ment.
+	/// \param inNewValue	nouvelle valeur pour cette cl√©.
 	///
 	void				Set(
 							const TDCLNSRef& inSymbol,
 							const TDCLNSRef& inNewValue );
 
 	///
-	/// Sélecteur sur un élément.
+	/// S√©lecteur sur un √©l√©ment.
 	///
-	/// \param inSymbol		clé pour accéder à l'élément.
-	/// \param inNewValue	nouvelle valeur pour cette clé.
+	/// \param inSymbol		cl√© pour acc√©der √† l'√©l√©ment.
+	/// \param inNewValue	nouvelle valeur pour cette cl√©.
 	///
 	inline void			Set(
 							const TDCLNSSymbol& inSymbol,
@@ -211,11 +211,11 @@ public:
 		}
 
 	///
-	/// Sélecteur sur un élément.
+	/// S√©lecteur sur un √©l√©ment.
 	///
-	/// \param inSymbol		clé pour accéder à l'élément, sous forme de chaîne
+	/// \param inSymbol		cl√© pour acc√©der √† l'√©l√©ment, sous forme de cha√Æne
 	///						ISO 8859-1
-	/// \param inNewValue	nouvelle valeur pour cette clé.
+	/// \param inNewValue	nouvelle valeur pour cette cl√©.
 	///
 	inline void		Set( const char* inSymbol, const TDCLNSRef& inNewValue )
 		{
@@ -223,7 +223,7 @@ public:
 		}
 
 	///
-	/// Crée une copie de surface de la structure.
+	/// Cr√©e une copie de surface de la structure.
 	/// Appelle le constructeur par copie.
 	///
 	/// \return une copie de surface de this.
@@ -231,52 +231,52 @@ public:
 	virtual TDCLNSObject*	Clone( void ) const;
 
 	///
-	/// Crée un objet à partir d'un flux NSOF
+	/// Cr√©e un objet √† partir d'un flux NSOF
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSFrame*	FromNSOF( TDCLNSOFDecoder* inDecoder );
 		
 	///
-	/// Crée un objet rectangle à partir d'un flux NSOF.
-	/// Ça n'est pas clair dans Newton Formats, mais les 4 coordonnées
-	/// doivent être entre 0 et 255 (ce sont des octets non signés).
+	/// Cr√©e un objet rectangle √† partir d'un flux NSOF.
+	/// √áa n'est pas clair dans Newton Formats, mais les 4 coordonn√©es
+	/// doivent √™tre entre 0 et 255 (ce sont des octets non sign√©s).
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSFrame*	FromNSOFAsRect( TDCLNSOFDecoder* inDecoder );
 		
 	///
-	/// Crée un objet à partir d'un paquet.
+	/// Cr√©e un objet √† partir d'un paquet.
 	///
-	/// \param inDecoder	décodeur Pkg associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur Pkg associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSFrame*	FromPkg( TDCLPkgDecoder* inDecoder );
 
 	///
-	/// Détermine la classe de cette structure.
-	/// Ce n'est pas forcément un symbole.
+	/// D√©termine la classe de cette structure.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \return une référence vers la classe de cette structure.
+	/// \return une r√©f√©rence vers la classe de cette structure.
 	///
 	virtual TDCLNSRef ClassOf( void ) const;
 
 	///
-	/// Détermine la classe primaire de cette structure.
-	/// Il s'agit forcément d'un symbole.
+	/// D√©termine la classe primaire de cette structure.
+	/// Il s'agit forc√©ment d'un symbole.
 	///
-	/// \return une référence vers la classe primaire de cette structure.
+	/// \return une r√©f√©rence vers la classe primaire de cette structure.
 	///
 	virtual TDCLNSRef PrimClassOf( void ) const;
 
 	///
 	/// Change la classe de cette structure.
-	/// Ce n'est pas forcément un symbole.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \param	inClass un objet qui sert de nouvelle classe à cette structure.
+	/// \param	inClass un objet qui sert de nouvelle classe √† cette structure.
 	/// \throws TDCLNSException si une erreur est survenue.
 	///
 	virtual void SetClass( const TDCLNSRef& inClass );
@@ -293,9 +293,9 @@ public:
 
 protected:
 	///
-	/// Sélecteur sur mKeysAreSorted
+	/// S√©lecteur sur mKeysAreSorted
 	///
-	/// \param inKeysAreSorted	si les clés sont triées.
+	/// \param inKeysAreSorted	si les cl√©s sont tri√©es.
 	///
 	inline void		SetKeysAreSorted( Boolean inKeysAreSorted )
 		{
@@ -303,7 +303,7 @@ protected:
 		}
 
 	///
-	/// Sélecteur sur mIsFunction
+	/// S√©lecteur sur mIsFunction
 	///
 	/// \param inIsFunction		si la structure est une fonction.
 	///
@@ -317,38 +317,38 @@ private:
 	/// Constantes pour cette classe.
 	///
 	enum {
-		kListChunkSize	= 10,	///< Incrément des listes lorsqu'elles sont pleines.
-		kSortThreshold	= 20	///< Seuil à partir duquel il vaut mieux trier la liste.
+		kListChunkSize	= 10,	///< Incr√©ment des listes lorsqu'elles sont pleines.
+		kSortThreshold	= 20	///< Seuil √† partir duquel il vaut mieux trier la liste.
 	};
 
 	///
-	/// Constructeur à partir d'une capacité.
+	/// Constructeur √† partir d'une capacit√©.
 	///
-	/// \param inCapacity	nombre de paire à allouer.
+	/// \param inCapacity	nombre de paire √† allouer.
 	///
 	TDCLNSFrame( KUInt32 inCapacity );
 
 	///
-	/// Détermine l'index d'une clé, si elle est présente (ou l'index ou insérer
-	/// la clé si elle n'est pas dans la liste).
+	/// D√©termine l'index d'une cl√©, si elle est pr√©sente (ou l'index ou ins√©rer
+	/// la cl√© si elle n'est pas dans la liste).
 	///
-	/// \param inSymbol		clé à chercher
-	/// \param outIndex		index de la clé ou index où mettre la clé si elle
-	///						n'est pas présente (taille de la structure si elle n'est
-	///						pas triée).
-	/// \return \c true si la clé a été trouvée, \c false sinon.
+	/// \param inSymbol		cl√© √† chercher
+	/// \param outIndex		index de la cl√© ou index o√π mettre la cl√© si elle
+	///						n'est pas pr√©sente (taille de la structure si elle n'est
+	///						pas tri√©e).
+	/// \return \c true si la cl√© a √©t√© trouv√©e, \c false sinon.
 	///
 	Boolean		GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) const;
 
 	/// \name Interface IStreamable
 	// @{
 	///
-	/// Crée une représentation XML de la structure.
-	/// Comprend la balise de début, les données et la balise de fin.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation XML de la structure.
+	/// Comprend la balise de d√©but, les donn√©es et la balise de fin.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	/// \param inObjectID		ID de l'objet dans ce flux.
 	///
 	virtual void ToXML(
@@ -356,44 +356,44 @@ private:
 				KUInt32			inObjectID ) const;
 
 	///
-	/// Crée une représentation NSOF de la structure.
-	/// Comprend le type et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation NSOF de la structure.
+	/// Comprend le type et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToNSOF( TDCLNSOFEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation sous forme de texte de la structure.
-	/// Comprend les accolades et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation sous forme de texte de la structure.
+	/// Comprend les accolades et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToText( TDCLTextEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation de la structure pour mettre dans un
+	/// Cr√©e une repr√©sentation de la structure pour mettre dans un
 	/// paquet.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
 	/// \param inEncoder	encodeur pour le paquet.
-	/// \param ioOffset		en entrée et en sortie, décalage par rapport
+	/// \param ioOffset		en entr√©e et en sortie, d√©calage par rapport
 	///						au paquet.
 	///
 	virtual void ToPkg( TDCLPkgEncoder* inEncoder, KUInt32* ioOffset ) const;
 	// @}
 
-	// Même format que sur le Newton, sauf pour le coup des cartes.
-	// taille, clés, valeurs.
-	KUInt32					mLength;		///< Nombre d'éléments.
-	KUInt32					mCapacity;		///< Capacité des listes.
-	TDCLNSRef*				mKeys;			///< Liste des clés
+	// M√™me format que sur le Newton, sauf pour le coup des cartes.
+	// taille, cl√©s, valeurs.
+	KUInt32					mLength;		///< Nombre d'√©l√©ments.
+	KUInt32					mCapacity;		///< Capacit√© des listes.
+	TDCLNSRef*				mKeys;			///< Liste des cl√©s
 	TDCLNSRef*				mValues;		///< Liste des valeurs.
-	Boolean					mKeysAreSorted;	///< Indique que les clés sont triées.
+	Boolean					mKeysAreSorted;	///< Indique que les cl√©s sont tri√©es.
 	Boolean					mIsFunction;	///< Si la structure est une fonction.
 };
 

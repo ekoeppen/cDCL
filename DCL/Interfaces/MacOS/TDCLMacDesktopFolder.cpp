@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacDesktopFolder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/1/2003
+// Cr√©√© le:			11/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacDesktopFolder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -74,12 +74,12 @@ TDCLMacDesktopFolder::MakeName( void ) const
 {
 	// On retourne "Desktop"
 	size_t theSize = ::strlen( kDesktopStr ) + 1;
-	
+
 	KUInt16* theResult = (KUInt16*) ::malloc( theSize * sizeof( KUInt16 ) );
-	
+
 	UUTF16CStr::FromMacRoman(
 					(const KUInt8*) kDesktopStr, theResult, theSize );
-	
+
 	return theResult;
 }
 
@@ -91,10 +91,10 @@ TDCLMacDesktopFolder::ToFrame( void )
 {
 	TDCLNSRef theSegment = TDCLNSRef::MakeFrame();
 	TDCLNSFrame& theSegmentAsFrame = theSegment.ToFrame();
-	
+
 	// Ajout du nom
 	theSegmentAsFrame.Set( "name", TDCLNSRef::MakeString( GetName() ) );
-	
+
 	// Puis le type.
 	theSegmentAsFrame.Set( "type",
 		TDCLNSRef::MakeInt( TDCLDockCommand::kDesktop_FSType ) );

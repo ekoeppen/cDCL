@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacCarbonFolder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			13/1/2003
+// Cr√©√© le:			13/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacCarbonFolder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,7 +56,7 @@
 /// \author Nicolas Zinovieff <krugazor@free.fr>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacCarbonFolder
 	:
@@ -64,40 +64,40 @@ class TDCLMacCarbonFolder
 {
 public:
 	///
-	/// Constructeur à partir d'un FSRef.
+	/// Constructeur √† partir d'un FSRef.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
-	/// \param inRef			référence sur le fichier.
+	/// \param inRef			r√©f√©rence sur le fichier.
 	///
 	TDCLMacCarbonFolder( TDCLMacFiles* inFilesIntf, const FSRef* inRef );
 
 	///
-	/// Récupère une référence sur un élément dans ce dossier.
-	/// Retourne nil si l'élément n'existe pas.
+	/// R√©cup√®re une r√©f√©rence sur un √©l√©ment dans ce dossier.
+	/// Retourne nil si l'√©l√©ment n'existe pas.
 	///
-	/// \param inName		nom de l'élément.
-	/// \param inVolRefNum	référence du volume (utilisé pour le bureau).
-	///						Ce paramètre est ignoré.
-	/// \return un objet TDCLFSItem représentant cet élément ou \c nil si aucun
-	///			élément de ce nom n'existe. Cet élément est la propriété de l'appelant
+	/// \param inName		nom de l'√©l√©ment.
+	/// \param inVolRefNum	r√©f√©rence du volume (utilis√© pour le bureau).
+	///						Ce param√®tre est ignor√©.
+	/// \return un objet TDCLFSItem repr√©sentant cet √©l√©ment ou \c nil si aucun
+	///			√©l√©ment de ce nom n'existe. Cet √©l√©ment est la propri√©t√© de l'appelant
 	///			qui doit le supprimer.
-	/// \throw TDCLException si un problème est survenu.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual	TDCLFSItemRef		GetItemByName(
 									const KUInt16* inName,
 									KSInt32 inVolRefNum = 0 );
 
 	///
-	/// Crée un fichier d'un nom, d'un code créateur et d'un type donnés dans
+	/// Cr√©e un fichier d'un nom, d'un code cr√©ateur et d'un type donn√©s dans
 	/// ce dossier.
 	///
-	/// \param inName		nom du fichier à créer.
-	/// \param inCreator	code créateur du fichier à créer.
-	/// \param inFileType	type du fichier à créer.
-	/// \return un objet TDCLFile représentant ce nouveau fichier. Ce fichier
-	///			est la propriété de l'appelant qui doit le supprimer.
-	/// \throw TDCLException si un problème est survenu, y compris si le fichier
-	///			existe déjà.
+	/// \param inName		nom du fichier √† cr√©er.
+	/// \param inCreator	code cr√©ateur du fichier √† cr√©er.
+	/// \param inFileType	type du fichier √† cr√©er.
+	/// \return un objet TDCLFile repr√©sentant ce nouveau fichier. Ce fichier
+	///			est la propri√©t√© de l'appelant qui doit le supprimer.
+	/// \throw TDCLException si un probl√®me est survenu, y compris si le fichier
+	///			existe d√©j√†.
 	///
 	virtual	TDCLFSItemRef		CreateFile(
 									const KUInt16* inName,
@@ -105,46 +105,46 @@ public:
 									OSType inFileType = TDCLMacFiles::kFileType );
 
 	///
-	/// Crée un dossier d'un nom donné dans ce dossier.
+	/// Cr√©e un dossier d'un nom donn√© dans ce dossier.
 	///
-	/// \param inName		nom du dossier à créer.
-	/// \return un objet TDCLFolder représentant ce nouveau dossier. Ce dossier
-	///			est la propriété de l'appelant qui doit le supprimer.
-	/// \throw TDCLException si un problème est survenu, y compris si le dossier
-	///			existe déjà.
+	/// \param inName		nom du dossier √† cr√©er.
+	/// \return un objet TDCLFolder repr√©sentant ce nouveau dossier. Ce dossier
+	///			est la propri√©t√© de l'appelant qui doit le supprimer.
+	/// \throw TDCLException si un probl√®me est survenu, y compris si le dossier
+	///			existe d√©j√†.
 	///
 	virtual	TDCLFSItemRef		CreateFolder( const KUInt16* inName );
 
 	///
-	/// Compte les éléments dans ce dossier.
-	/// Notez que ce nombre peut changer juste après l'appel à cette fonction.
+	/// Compte les √©l√©ments dans ce dossier.
+	/// Notez que ce nombre peut changer juste apr√®s l'appel √† cette fonction.
 	///
-	/// \return le nombre d'élément dans le dossier.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return le nombre d'√©l√©ment dans le dossier.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual KUInt32			CountElements( void );
 
 	///
-	/// Retourne un tableau avec tous les éléments du dossier.
-	/// Notez que ces éléments peuvent disparaître juste après l'appel à cette fonction
-	/// et d'autres éléments peuvent apparaître.
+	/// Retourne un tableau avec tous les √©l√©ments du dossier.
+	/// Notez que ces √©l√©ments peuvent dispara√Ætre juste apr√®s l'appel √† cette fonction
+	/// et d'autres √©l√©ments peuvent appara√Ætre.
 	///
-	/// \return un tableau de n+1 TDCLFSItemRef. Le dernier élément est une référence
-	///			sur \c nil. Le tableau est alloué avec malloc.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return un tableau de n+1 TDCLFSItemRef. Le dernier √©l√©ment est une r√©f√©rence
+	///			sur \c nil. Le tableau est allou√© avec malloc.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual TDCLFSItemRef*	GetItems( void );
 
 	///
-	/// Retourne un tableau avec tous les éléments d'un dossier.
+	/// Retourne un tableau avec tous les √©l√©ments d'un dossier.
 	///
 	/// \param inFilesIntf	interface pour les fichiers.
-	/// \param inRef		référence sur le dossier dont on veut les éléments.
-	/// \param outCount		en sortie, si ce n'est pas \c nil, le nombre 
-	///						d'éléments (n)
-	/// \return un tableau de n+1 TDCLFSItemRef. Le dernier élément est une référence
-	///			sur \c nil. Le tableau est alloué avec malloc.
-	/// \throw TDCLException si un problème est survenu.
+	/// \param inRef		r√©f√©rence sur le dossier dont on veut les √©l√©ments.
+	/// \param outCount		en sortie, si ce n'est pas \c nil, le nombre
+	///						d'√©l√©ments (n)
+	/// \return un tableau de n+1 TDCLFSItemRef. Le dernier √©l√©ment est une r√©f√©rence
+	///			sur \c nil. Le tableau est allou√© avec malloc.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	static TDCLFSItemRef*		GetFolderItems(
 								TDCLMacFiles* inFilesIntf,
@@ -156,17 +156,17 @@ private:
 	friend class TDCLMacCarbonFile;
 
 	///
-	/// La classe TDCLMacCarbonDesktopFolder crée des objets de type TDCLMacCarbonFile.
+	/// La classe TDCLMacCarbonDesktopFolder cr√©e des objets de type TDCLMacCarbonFile.
 	///
 	friend class TDCLMacCarbonDesktopFolder;
-	
+
 	///
-	/// Constructeur à partir d'un dossier parent et d'un FSRef.
-	/// La référence doit correspondre au dossier.
+	/// Constructeur √† partir d'un dossier parent et d'un FSRef.
+	/// La r√©f√©rence doit correspondre au dossier.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
 	/// \param inParentFolder	dossier parent.
-	/// \param inRef			référence sur le fichier.
+	/// \param inRef			r√©f√©rence sur le fichier.
 	///
 	TDCLMacCarbonFolder(
 						TDCLMacFiles* inFilesIntf,
@@ -176,19 +176,19 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacCarbonFolder( const TDCLMacCarbonFolder& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLMacCarbonFolder& operator = ( const TDCLMacCarbonFolder& inCopy );
 
 	///
-	/// Récupère le FSRef sur le dossier.
+	/// R√©cup√®re le FSRef sur le dossier.
 	///
 	/// \return mRef
 	///
@@ -196,58 +196,58 @@ private:
 		{
 			return &mRef;
 		};
-	
+
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est appelée
-	/// que si nécessaire.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est appel√©e
+	/// que si n√©cessaire.
 	///
-	/// \return une référence sur un objet représentant le dossier parent ou sur \c nil.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return une r√©f√©rence sur un objet repr√©sentant le dossier parent ou sur \c nil.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual TDCLFSItemRef	MakeParentFolder( void ) const;
 
 	///
-	/// Construit le nom de l'objet. C'est une chaîne unicode UTF-16 qui est allouée
-	/// avec malloc. Cette méthode n'est appelée que si nécessaire (au plus une fois).
+	/// Construit le nom de l'objet. C'est une cha√Æne unicode UTF-16 qui est allou√©e
+	/// avec malloc. Cette m√©thode n'est appel√©e que si n√©cessaire (au plus une fois).
 	///
-	/// \return le nom alloué avec malloc.
-	/// \throw TDCLException si un problème est survenu.
+	/// \return le nom allou√© avec malloc.
+	/// \throw TDCLException si un probl√®me est survenu.
 	///
 	virtual KUInt16*	MakeName( void ) const;
 
 	///
-	/// Détermine si le dossier est un disque.
+	/// D√©termine si le dossier est un disque.
 	///
 	/// \return \c true si le dossier est le dossier racine d'un disque.
 	///
 	virtual Boolean		IsVolume( void ) const;
 
 	///
-	/// Détermine si le dossier est sur le bureau.
+	/// D√©termine si le dossier est sur le bureau.
 	///
 	/// \return \c true si le dossier est sur le bureau, \c false sinon.
 	///
 	virtual Boolean		IsOnDesktop( void ) const;
 
 	///
-	/// Récupère la référence sur le volume où se trouve le fichier.
+	/// R√©cup√®re la r√©f√©rence sur le volume o√π se trouve le fichier.
 	///
-	/// \return le volume où se trouve le fichier.
+	/// \return le volume o√π se trouve le fichier.
 	///
 	virtual short		GetVRefNum( void ) const;
 
 	///
 	/// Initialise mVRefNum, mIsVolume, mParentRef et mIsOnDesktop.
 	///
-	/// \throws TDCLException si un problème est survenu.
+	///¬†\throws TDCLException si un probl√®me est survenu.
 	///
 	void				Init( void );
 
-	/// \name Variables	
+	/// \name Variables
 	FSRef 				mRef;			///< the FSRef
-	FSVolumeRefNum		mVRefNum;		///< Référence du volume.
+	FSVolumeRefNum		mVRefNum;		///< R√©f√©rence du volume.
 	Boolean				mIsVolume;		///< Si on est un volume.
-	FSRef				mParentRef;		///< Référence sur le parent (invalide
+	FSRef				mParentRef;		///< R√©f√©rence sur le parent (invalide
 										///< si on a mIsVolume)
 	Boolean				mIsOnDesktop;	///< Si on est sur le bureau.
 };

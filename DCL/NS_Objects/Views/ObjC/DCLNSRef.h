@@ -2,7 +2,7 @@
 // Fichier:			DCLNSRef.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			31/12/2003
+// Cr√©√© le:			31/12/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is DCLNSRef.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -58,140 +58,140 @@
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
 ///
-/// Interface ObjC (avec Foundation) pour les références NewtonScript.
+/// Interface ObjC (avec Foundation) pour les r√©f√©rences NewtonScript.
 /// Il s'agit d'une vue construite autour de TDCLNSRef.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 @interface DCLNSRef : NSObject
 {
 @private
-	// D'après
+	// D'apr√®s
 	// http://developer.apple.com/documentation/ReleaseNotes/Cocoa/Objective-C++.html
-	// cet objet C++ ne sera ni construit avec le constructeur par défaut ni
-	// détruit par la colle ObjC.
-	// (c'est bien ce que CW compile et gcc génère un avertissement)
-	// Le constructeur est appelé dans allocWithZone et le destructeur
+	// cet objet C++ ne sera ni construit avec le constructeur par d√©faut ni
+	// d√©truit par la colle ObjC.
+	// (c'est bien ce que CW compile et gcc g√©n√®re un avertissement)
+	// Le constructeur est appel√© dans allocWithZone et le destructeur
 	// dans dealloc.
-	TDCLNSRef			mRef;	///< Référence C++
+	TDCLNSRef			mRef;	///< R√©f√©rence C++
 }
 
 ///
 /// Allocation de l'objet dans une zone.
-/// Appelle la méthode de NSObject.
-/// Appelle aussi le constructeur par défaut de TDCLNSRef.
+/// Appelle la m√©thode de NSObject.
+/// Appelle aussi le constructeur par d√©faut de TDCLNSRef.
 ///
 + (id) allocWithZone: (NSZone*) zone;
 
 ///
-/// Initialise l'objet comme référence sur un entier.
+/// Initialise l'objet comme r√©f√©rence sur un entier.
 ///
 - (id) initAsRefToInt: (long) inInt;
 
 ///
-/// Initialise l'objet comme référence sur un caractère (unicode).
+/// Initialise l'objet comme r√©f√©rence sur un caract√®re (unicode).
 ///
 - (id) initAsRefToChar: (unsigned short) inChar;
 
 ///
-/// Initialise l'objet comme référence sur un booléen.
+/// Initialise l'objet comme r√©f√©rence sur un bool√©en.
 ///
 - (id) initAsRefToBool: (BOOL) inBool;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau tableau.
+/// Initialise l'objet comme r√©f√©rence sur un nouveau tableau.
 ///
 - (id) initAsRefToNewArray;
 
 ///
-/// Initialise l'objet comme une référence sur un nouveau tableau
-/// d'une taille donnée.
+/// Initialise l'objet comme une r√©f√©rence sur un nouveau tableau
+/// d'une taille donn√©e.
 ///
 - (id) initAsRefToNewArrayOfSize: (unsigned long) inSize;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau tableau
-/// d'une taille donnée rempli avec une certaine valeur.
+/// Initialise l'objet comme r√©f√©rence sur un nouveau tableau
+/// d'une taille donn√©e rempli avec une certaine valeur.
 ///
 - (id) initAsRefToNewArrayOfSize: (unsigned long) inSize
 			filledWith: (DCLNSRef*) inRef;
 
 ///
-/// Initialise l'objet comme référence sur une nouvelle structure
+/// Initialise l'objet comme r√©f√©rence sur une nouvelle structure
 /// NewtonScript.
 ///
 - (id) initAsRefToNewFrame;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau symbole.
+/// Initialise l'objet comme r√©f√©rence sur un nouveau symbole.
 ///
 - (id) initAsRefToNewSymbol: (NSString*) inSymbolString;
 
 ///
-/// Initialise l'objet comme référence sur une nouvelle chaîne.
+/// Initialise l'objet comme r√©f√©rence sur une nouvelle cha√Æne.
 ///
 - (id) initAsRefToNewString: (NSString*) inString;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau binaire.
+/// Initialise l'objet comme r√©f√©rence sur un nouveau binaire.
 ///
 - (id) initAsRefToNewBinary: (NSData*) inData;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau binaire
-/// d'une classe donnée (sous forme de référence).
+/// Initialise l'objet comme r√©f√©rence sur un nouveau binaire
+/// d'une classe donn√©e (sous forme de r√©f√©rence).
 ///
 - (id) initAsRefToNewBinary: (NSData*) inData
 			ofClass: (DCLNSRef*) inClass;
 
 ///
-/// Initialise l'objet comme référence sur un nouveau binaire
-/// d'une classe donnée (sous forme de chaîne).
+/// Initialise l'objet comme r√©f√©rence sur un nouveau binaire
+/// d'une classe donn√©e (sous forme de cha√Æne).
 ///
 - (id) initAsRefToNewBinary: (NSData*) inData
 			ofClassAsString: (NSString*) inClass;
 
 ///
-/// Méthode appelée lorsque l'objet est supprimé.
+/// M√©thode appel√©e lorsque l'objet est supprim√©.
 /// Appelle le destructeur de TDCLNSRef.
 ///
 - (void) dealloc;
 
 ///
-/// Crée une référence sur un entier.
+/// Cr√©e une r√©f√©rence sur un entier.
 /// Appelle autorelease.
 ///
 + (id) refToInt: (long) inInt;
 
 ///
-/// Crée une référence sur un caractère (unicode).
+/// Cr√©e une r√©f√©rence sur un caract√®re (unicode).
 /// Appelle autorelease.
 ///
 + (id) refToChar: (unsigned short) inChar;
 
 ///
-/// Crée une référence sur un booléen.
+/// Cr√©e une r√©f√©rence sur un bool√©en.
 /// Appelle autorelease.
 ///
 + (id) refToBool: (BOOL) inBool;
 
 ///
-/// Crée une référence sur un nouveau tableau.
+/// Cr√©e une r√©f√©rence sur un nouveau tableau.
 /// Appelle autorelease.
 ///
 + (id) refToNewArray;
 
 ///
-/// Crée une référence sur un nouveau tableau d'une taille donnée.
+/// Cr√©e une r√©f√©rence sur un nouveau tableau d'une taille donn√©e.
 /// Appelle autorelease.
 ///
 + (id) refToNewArrayOfSize: (unsigned long) inSize;
 
 ///
-/// Crée une référence sur un nouveau tableau d'une taille donnée rempli
+/// Cr√©e une r√©f√©rence sur un nouveau tableau d'une taille donn√©e rempli
 /// avec une certaine valeur.
 /// Appelle autorelease.
 ///
@@ -199,37 +199,37 @@
 			filledWith: (DCLNSRef*) inRef;
 
 ///
-/// Crée une référence sur une nouvelle structure NewtonScript.
+/// Cr√©e une r√©f√©rence sur une nouvelle structure NewtonScript.
 /// Appelle autorelease.
 ///
 + (id) refToNewFrame;
 
 ///
-/// Crée une référence sur un nouveau symbole.
+/// Cr√©e une r√©f√©rence sur un nouveau symbole.
 /// Appelle autorelease.
 ///
 + (id) refToNewSymbol: (NSString*) inSymbolString;
 
 ///
-/// Crée une référence sur une nouvelle chaîne.
+/// Cr√©e une r√©f√©rence sur une nouvelle cha√Æne.
 /// Appelle autorelease.
 ///
 + (id) refToNewString: (NSString*) inString;
 
 ///
-/// Crée une référence sur un nouveau binaire.
+/// Cr√©e une r√©f√©rence sur un nouveau binaire.
 /// Appelle autorelease.
 ///
 + (id) refToNewBinary: (NSData*) inData;
 
 ///
-/// Crée une référence sur un nouveau binaire d'une classe donnée.
+/// Cr√©e une r√©f√©rence sur un nouveau binaire d'une classe donn√©e.
 /// Appelle autorelease.
 ///
 + (id) refToNewBinary: (NSData*) inData ofClass: (DCLNSRef*) inClass;
 
 ///
-/// Crée une référence sur un nouveau binaire d'une classe donnée (chaîne).
+/// Cr√©e une r√©f√©rence sur un nouveau binaire d'une classe donn√©e (cha√Æne).
 /// Appelle autorelease.
 ///
 + (id) refToNewBinary: (NSData*) inData

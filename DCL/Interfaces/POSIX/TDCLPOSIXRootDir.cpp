@@ -2,7 +2,7 @@
 // Fichier:			TDCLPOSIXRootDir.cp
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			22/6/2003
+// Cr√©√© le:			22/6/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPOSIXRootDir.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -61,11 +61,11 @@ TDCLPOSIXRootDir::TDCLPOSIXRootDir( TDCLPOSIXFiles* inFilesIntf )
 KUInt16*
 TDCLPOSIXRootDir::MakeName( void ) const
 {
-	// Le répertoire racine est c:\ parce qu'on fait croire au Newton qu'on est
-	// un système sous Windows.
+	// Le r√©pertoire racine est c:\ parce qu'on fait croire au Newton qu'on est
+	// un syst√®me sous Windows.
 
 	const char* theName = "c:\\";
-	// Création de la chaîne UTF-16.
+	// Cr√©ation de la cha√Æne UTF-16.
 	size_t theLength = ::strlen( theName ) + 1;
 	KUInt16* theResult =
 		(KUInt16*) ::malloc( theLength * sizeof( KUInt16 ) );

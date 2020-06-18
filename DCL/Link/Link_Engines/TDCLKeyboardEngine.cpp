@@ -2,7 +2,7 @@
 // Fichier:			TDCLKeyboardEngine.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/4/2003
+// Cr√©√© le:			10/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLKeyboardEngine.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -72,7 +72,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 	{
 		case TDCLAppCommand::kEndUsingKeyboard:
 			{
-				// Envoi de la commande pour arrêter
+				// Envoi de la commande pour arr√™ter
 				TDCLDockCmdNoData theCancelCmd(
 									TDCLDockCommand::kDOperationCanceled );
 				theCancelCmd.SendCommand( GetLink()->GetPipe() );
@@ -82,8 +82,8 @@ TDCLKeyboardEngine::ProcessAppCommand(
 
 		case TDCLAppCommand::kSendCharacter:
 			{
-				// Les données pointent sur deux mots de 16 bits.
-				// Le premier est le caractère, le second des drapeaux.
+				// Les donn√©es pointent sur deux mots de 16 bits.
+				// Le premier est le caract√®re, le second des drapeaux.
 				KUInt16* theChar = (KUInt16*) inCommand->GetEventData();
 
 				// Envoi de la commande au Newton
@@ -97,7 +97,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 
 		case TDCLAppCommand::kSendString:
 			{
-				// Récupération de la chaîne.
+				// R√©cup√©ration de la cha√Æne.
 				KUInt16* theString = (KUInt16*) inCommand->GetEventData();
 				size_t theSize =
 						(UUTF16CStr::StrLen( theString ) + 1) * sizeof( KUInt16 );
@@ -116,7 +116,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 }
 
 // --------------------------------------------------------------------------------	//
-//  * GetAppCommandMask( void )
+//  *¬†GetAppCommandMask( void )
 // --------------------------------------------------------------------------------	//
 KUInt32
 TDCLKeyboardEngine::GetAppCommandMask( void )

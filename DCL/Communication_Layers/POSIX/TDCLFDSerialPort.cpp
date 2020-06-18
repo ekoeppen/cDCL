@@ -2,7 +2,7 @@
 // Fichier:			TDCLFDSerialPort.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			4/4/2003
+// Cr√©√© le:			4/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLFDSerialPort.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k,
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //   Simon Stapleton <simon@tufty.co.uk>
 //
@@ -201,7 +201,7 @@ TDCLFDSerialPort::DoStopListening( void )
 	
 	if ((!mIsConnected) && (mSerialFD != -1))
 	{
-		// Rétablissement des options.
+		// R√©tablissement des options.
 		int theErr = ::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions);
 		if (theErr < 0)
 		{
@@ -227,7 +227,7 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 {
 	if (mRequestPresent)
 	{
-		// On attend d'être déconnecté.
+		// On attend d'√™tre d√©connect√©.
 		mWaitRequestMutex->Acquire();
 		mWaitRequestMutex->Release();
 	}
@@ -249,12 +249,12 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 Boolean
 TDCLFDSerialPort::Select( void )
 {
-	// On fait juste un appel à select en attendant des données (de la
+	// On fait juste un appel √† select en attendant des donn√©es (de la
 	// part du Newton).
 	int readyPorts;
 	
 	do {
-		// On tente de bloquer la méthode ici.
+		// On tente de bloquer la m√©thode ici.
 		mResetMutex->Acquire();
 		mResetMutex->Release();
 
@@ -284,7 +284,7 @@ TDCLFDSerialPort::DoAccept( void )
 {
 	TDCLPipe* theResult = nil;
 	
-	// Si une requête est présente, on l'accepte.
+	// Si une requ√™te est pr√©sente, on l'accepte.
 	if (mRequestPresent)
 	{
 		mIsConnected = true;
@@ -341,7 +341,7 @@ TDCLFDSerialPort::Disconnected( TDCLPipe* /* inPipe */ )
 {
 	mIsConnected = false;
 
-	// Select fera la réinitialisation au temps voulu.
+	// Select fera la r√©initialisation au temps voulu.
 	Reset();
 }
 
@@ -427,7 +427,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::Read( void* outBuffer, KUInt32* ioCount )
 		throw DCLPlatformUnknownError( theErr );
 	}
 
-	// On met à jour avant de lancer l'exception.
+	// On met √† jour avant de lancer l'exception.
 	*ioCount = (KUInt32) readBytes;
 	if ((KUInt32) readBytes != wantedBytes)
 	{
@@ -452,7 +452,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::Write(
 		throw DCLPlatformUnknownError( errno );
 	}
 
-	// On met à jour avant de lancer l'exception.
+	// On met √† jour avant de lancer l'exception.
 	*ioCount = (KUInt32) sentBytes;
 	if ((KUInt32) sentBytes != wantedBytes)
 	{
@@ -476,7 +476,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void )
 	timeout.tv_sec = 0;		// secondes
 	timeout.tv_usec = 0;	// microsecondes
 
-	// Délai de temporisation à 0 pour savoir si on peut lire maintenant.
+	// D√©lai de temporisation √† 0 pour savoir si on peut lire maintenant.
 	int readyPorts = ::select( mSerialFD + 1, &portSet, NULL, NULL, &timeout );
 
 	if (readyPorts < 0)
@@ -496,7 +496,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::WaitForIncomingData( void )
 	Boolean theResult = false;
 	if (!mDisconnected)
 	{
-		// On attend des données.
+		// On attend des donn√©es.
 		theResult = ((TDCLFDSerialPort*) GetCommLayer())->Select();
 	}
 	
@@ -520,8 +520,8 @@ TDCLFDSerialPort::TFDSerialPortPipe::DoDisconnect( void )
 		}
 	}
 
-	// On déconnecte au niveau de la couche de communication (qui fermera
-	// derrière nous).
+	// On d√©connecte au niveau de la couche de communication (qui fermera
+	// derri√®re nous).
 	((TDCLFDSerialPort*) GetCommLayer())->Disconnected(this);
 }
 
@@ -549,7 +549,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::SetTimeout( long inTimeout )
 void
 TDCLFDSerialPort::OpenAndConfigure( void )
 {
-	// Ouverture (non bloquant, lecture et écriture).
+	// Ouverture (non bloquant, lecture et √©criture).
 	int theFD = ::open( mDevPath, O_RDWR | O_NOCTTY | O_NONBLOCK );
 	
 	if (theFD == -1)
@@ -560,7 +560,7 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 #if	TARGET_OS_CYGWIN
 	//hli: TIOEXCL not known under cygwin
 #else
-	// On empêche d'autres appels à open avec TIOCEXCL (cf tty(4))
+	// On emp√™che d'autres appels √† open avec TIOCEXCL (cf tty(4))
 	if (::ioctl(theFD, TIOCEXCL) == -1)
 	{
 		// Fermeture.
@@ -588,7 +588,7 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 		throw DCLPlatformUnknownError( errno );
 	}
 	
-	// Enregistrement des options courantes pour pouvoir les remettre après.
+	// Enregistrement des options courantes pour pouvoir les remettre apr√®s.
 	if (::tcgetattr(theFD, &mOriginalOptions) == -1)
 	{
 		// Fermeture.
@@ -599,10 +599,10 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 	// Nouvelles options.
 	struct termios theOptions = mOriginalOptions;
 
-	// 8 bits, pas de parité, un bit d'arrêt, pas de CTS/RTS (?)
+	// 8 bits, pas de parit√©, un bit d'arr√™t, pas de CTS/RTS (?)
 	theOptions.c_iflag = IGNBRK | INPCK;
 	theOptions.c_oflag = 0;
-	theOptions.c_cflag = CS8 | CREAD | HUPCL | CLOCAL & ~PARENB & ~PARODD & ~CSTOPB;
+	theOptions.c_cflag = ((((CS8 | CREAD | HUPCL | CLOCAL) & ~PARENB) & ~PARODD) & ~CSTOPB);
 	theOptions.c_lflag = 0;
 	
 	// Vitesse.
@@ -666,12 +666,12 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 		throw DCLPlatformUnknownError( errno );
 	}
 	
-	// Accès bloquant jusqu'à ce qu'un caractère soit lu ou qu'une temporisation
-	// d'une seconde soit arrivée.
+	// Acc√®s bloquant jusqu'√† ce qu'un caract√®re soit lu ou qu'une temporisation
+	// d'une seconde soit arriv√©e.
 	theOptions.c_cc[VMIN] = 1;
 	theOptions.c_cc[VTIME] = 10;
 
-	// On règle les options.
+	// On r√®gle les options.
 	theErr = ::tcsetattr( theFD, TCSANOW, &theOptions );
 	if (theErr < 0)
     {
@@ -691,10 +691,10 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 void
 TDCLFDSerialPort::Reset( void )
 {
-	// Bloquons la méthode Select.
+	// Bloquons la m√©thode Select.
 	mResetMutex->Acquire();
 	
-	// On marque qu'on est en train de réinitialiser.
+	// On marque qu'on est en train de r√©initialiser.
 	mReset = true;
 	
 	// On ferme le port en ignorant les erreurs.
@@ -703,14 +703,14 @@ TDCLFDSerialPort::Reset( void )
 	// On le rouvre.
 	OpenAndConfigure();
 	
-	// On n'est plus en train de réinitialiser.
+	// On n'est plus en train de r√©initialiser.
 	mReset = false;
 		
-	// On n'a plus de requête présente.
+	// On n'a plus de requ√™te pr√©sente.
 	mRequestPresent = false;
 	mWaitRequestMutex->Release();
 
-	// Débloquage de la méthode Select.
+	// D√©bloquage de la m√©thode Select.
 	mResetMutex->Release();
 }
 

@@ -1,0 +1,7 @@
+ntkmodule
+GetConstString:0
+GetArrayElement:1
+BreakInMonitor:0
+ProtocolGetConstString:0
+ProtocolGetArrayElement:1
+ProtocolBreakInMonitor:0

@@ -2,7 +2,7 @@
 // Fichier:			TDCLAppCmdString.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			11/4/2003
+// Cr√©√© le:			11/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLAppCmdString.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,13 +41,13 @@
 #include <DCL/Link/App_Commands/TDCLAppCommand.h>
 
 ///
-/// Classe pour une commande contenant une chaîne. La chaîne est copiée
-/// et la copie est libérée avec cette commande.
+/// Classe pour une commande contenant une cha√Æne. La cha√Æne est copi√©e
+/// et la copie est lib√©r√©e avec cette commande.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLAppCmdString
 	:
@@ -55,11 +55,11 @@ class TDCLAppCmdString
 {
 public:
 	///
-	/// Constructeur à partir d'une chaîne.
+	/// Constructeur √† partir d'une cha√Æne.
 	///
 	/// \param inCommandKind	Type de la commande.
 	/// \param inCommandID		Identifiant de la commande
-	/// \param inString			chaîne (copiée)
+	/// \param inString			cha√Æne (copi√©e)
 	///
 	TDCLAppCmdString(
 				EEventKind inCommandKind,
@@ -68,7 +68,7 @@ public:
 
 	///
 	/// Destructeur.
-	/// Libère la chaîne.
+	/// Lib√®re la cha√Æne.
 	///
 	virtual ~TDCLAppCmdString( void );
 };

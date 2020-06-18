@@ -2,7 +2,7 @@
 // Fichier:			IStreamable.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			16/10/2002
+// Cr√©√© le:			16/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is IStreamable.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -50,13 +50,13 @@ class TDCLStream;
 class TDCLTextEncoder;
 
 ///
-/// Classe pour les objets qui peuvent être écrits et lus
-/// dans/à partir d'un flux avec un encodeur/décodeur.
+/// Classe pour les objets qui peuvent √™tre √©crits et lus
+/// dans/√† partir d'un flux avec un encodeur/d√©codeur.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class IStreamable
 {
@@ -73,12 +73,12 @@ public:
 
 private:
 	///
-	/// Crée une représentation XML de l'objet.
-	/// Comprend la balise de début, les données et la balise de fin.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation XML de l'objet.
+	/// Comprend la balise de d√©but, les donn√©es et la balise de fin.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	/// \param inObjectID		ID de l'objet dans ce flux.
 	///
 	virtual void ToXML(
@@ -86,32 +86,32 @@ private:
 				KUInt32			inObjectID ) const = 0;
 
 	///
-	/// Crée une représentation NSOF de l'objet.
-	/// Comprend le type et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation NSOF de l'objet.
+	/// Comprend le type et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToNSOF( TDCLNSOFEncoder* inEncoder ) const = 0;
 
 	///
-	/// Crée une représentation sous forme de texte de l'objet.
-	/// Comprend les séparateurs et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation sous forme de texte de l'objet.
+	/// Comprend les s√©parateurs et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToText( TDCLTextEncoder* inEncoder ) const = 0;
 
 	///
-	/// Crée une représentation de l'objet pour mettre dans un
+	/// Cr√©e une repr√©sentation de l'objet pour mettre dans un
 	/// paquet.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
 	/// \param inEncoder	encodeur pour le paquet.
-	/// \param ioOffset		en entrée et en sortie, décalage par rapport
+	/// \param ioOffset		en entr√©e et en sortie, d√©calage par rapport
 	///						au paquet.
 	///
 	virtual void ToPkg( TDCLPkgEncoder* inEncoder, KUInt32* ioOffset ) const = 0;

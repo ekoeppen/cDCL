@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdDesktopInfo.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			02/02/2001
+// Cr√©√© le:			02/02/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdDesktopInfo.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2001-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,7 +68,7 @@ TDCLDockCmdDesktopInfo::TDCLDockCmdDesktopInfo(
 	mDesktopInfo.fSessionType = inSessionType;
 	mDesktopInfo.fAllowSelectiveSync = inSelectiveBackup;
 	
-	// Conversion du tableau en données NSOF.
+	// Conversion du tableau en donn√©es NSOF.
 	TDCLMemStream theMemStream;
 	TDCLNSOFEncoder theEncoder( &theMemStream );
 	theEncoder.AddObject( TDCLNSRef( inDesktopAppArray ) );
@@ -78,7 +78,7 @@ TDCLDockCmdDesktopInfo::TDCLDockCmdDesktopInfo(
 	
 	(void) ::memcpy( theArrayPtr, theMemStream.GetBuffer(), theArraySize );
 	
-	// Calcul de la taille totale des données.
+	// Calcul de la taille totale des donn√©es.
 	mLength = sizeof(SDesktopInfo) + theArraySize;
 }
 
@@ -116,7 +116,7 @@ TDCLDockCmdDesktopInfo::SendBody(
 	KUInt32 theLength = sizeof( mDesktopInfo );
 	inStream->Write( &mDesktopInfo, &theLength );
 	
-	// Si inProgressFuncPtr n'est pas nil, on prévient ici.
+	// Si inProgressFuncPtr n'est pas nil, on pr√©vient ici.
 	if (inProgressFuncPtr)
 	{
 		inStream->FlushOutput();

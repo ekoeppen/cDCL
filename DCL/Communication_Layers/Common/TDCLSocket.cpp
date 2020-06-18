@@ -2,7 +2,7 @@
 // Fichier:			TDCLSocket.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			29/3/2003
+// Cr√©√© le:			29/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLSocket.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -77,7 +77,7 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
 
 // ------------------------------------------------------------------------- //
-//  * Déverminage
+//  * D√©verminage
 // ------------------------------------------------------------------------- //
 
 #undef KERROR_ENABLED
@@ -101,7 +101,7 @@
 #define KDEBUG_ENABLED 0
 #endif
 
-// Pour l'instant on dévermine ce truc.
+// Pour l'instant on d√©vermine ce truc.
 #ifndef NDEBUG
 #undef KDEBUG_ENABLED
 #define KDEBUG_ENABLED 1
@@ -212,7 +212,7 @@ TDCLSocket::DoStartListening( void )
 			}
         }
 
-		// Création de la paire de socket.	
+		// Cr√©ation de la paire de socket.	
 		int theSocketPair[2];
 		if (::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, theSocketPair ) != 0)
 		{
@@ -222,7 +222,7 @@ TDCLSocket::DoStartListening( void )
 		mPublicPairMember = theSocketPair[0];
 		mPrivatePairMember = theSocketPair[1];
 
-		// La partie privée doit être non bloquante.
+		// La partie priv√©e doit √™tre non bloquante.
 		int flags = ::fcntl(mPrivatePairMember, F_GETFL, 0 /* ignored */);
 		flags |= O_NONBLOCK;
 		if (::fcntl(mPrivatePairMember, F_SETFL, flags) != 0)
@@ -242,7 +242,7 @@ TDCLSocket::DoStopListening( void )
 {
 	if (mPublicPairMember >= 0)
 	{
-		// On écrit dans la paire pour sortir.
+		// On √©crit dans la paire pour sortir.
 		char someByte = 0;
 		(void) ::send(
 					mPublicPairMember,
@@ -372,7 +372,7 @@ TDCLSocket::DoAccept( void )
 							theSocket,
 							mTimeout ), GetBufferedPipeBufferSize() );
 
-			// Incrément du compteur
+			// Incr√©ment du compteur
 			mCurrentPipeCount++;			
 		} else {
 			if (DoClose( theCookie, theSocket ) < 0)
@@ -475,7 +475,7 @@ TDCLSocket::TSocketPipe::TSocketPipe(
 {
 	SetTimeout( inTimeout );
 
-	// Création de la paire de socket.	
+	// Cr√©ation de la paire de socket.	
 	int theSocketPair[2];
 	if (::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, theSocketPair ) != 0)
 	{
@@ -485,7 +485,7 @@ TDCLSocket::TSocketPipe::TSocketPipe(
 	mPublicPairMember = theSocketPair[0];
 	mPrivatePairMember = theSocketPair[1];
 
-	// La partie privée doit être non bloquante.
+	// La partie priv√©e doit √™tre non bloquante.
 	int flags = ::fcntl(mPrivatePairMember, F_GETFL, 0 /* ignored */);
 	flags |= O_NONBLOCK;
 	if (::fcntl(mPrivatePairMember, F_SETFL, flags) != 0)
@@ -527,7 +527,7 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 	// Nombre d'octets voulus.
 	size_t toRead = (size_t) *ioCount;
 
-	// Curseur sur les données.
+	// Curseur sur les donn√©es.
 	char* theBuffer = (char*) outBuffer;	
 	
 	// Temporisation		
@@ -551,7 +551,7 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 		if (readBytes < 0)
 		{
 			// Erreur.
-			// Mise à jour du nombre d'octets lus.
+			// Mise √† jour du nombre d'octets lus.
 			*ioCount -= toRead;
 
 			int theErr = errno;
@@ -598,11 +598,11 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 					throw DCLPlatformUnknownError( theErr );
 			}
 		} else {
-			// On vérifie que le délai n'est pas dépassé.
+			// On v√©rifie que le d√©lai n'est pas d√©pass√©.
 			if ((timeoutInSecs != kNoTimeout) && 
 				(((long)(::time(NULL) - lastOperation)) > timeoutInSecs))
 			{
-				// Mise à jour du nombre d'octets lus.
+				// Mise √† jour du nombre d'octets lus.
 				*ioCount -= toRead;
 				throw DCLTimeout;
 			}
@@ -636,7 +636,7 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 	// Nombre d'octets voulus.
 	size_t toWrite = (size_t) *ioCount;
 		
-	// Curseur sur les données.
+	// Curseur sur les donn√©es.
 	const char* theBuffer = (const char*) inBuffer;	
 
 	// Temporisation		
@@ -658,7 +658,7 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 		if (sentBytes < 0)
 		{
 			// Erreur.
-			// Mise à jour du nombre d'octets écrits.
+			// Mise √† jour du nombre d'octets √©crits.
 			*ioCount -= toWrite;
 
 			int theErr = errno;
@@ -711,11 +711,11 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 					throw DCLPlatformUnknownError( theErr );
 			}
 		} else {
-			// On vérifie que le délai n'est pas dépassé.
+			// On v√©rifie que le d√©lai n'est pas d√©pass√©.
 			if ((timeoutInSecs != kNoTimeout) && 
 				(((long)(::time(NULL) - lastOperation)) > timeoutInSecs))
 			{
-				// Mise à jour du nombre d'octets écrits.
+				// Mise √† jour du nombre d'octets √©crits.
 				*ioCount -= toWrite;
 
 				throw DCLTimeout;
@@ -723,7 +723,7 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			
 			if (sentBytes == 0)
 			{
-				// Déconnexion.
+				// D√©connexion.
 				*ioCount -= toWrite;
 				throw DCLEOF;
 			}
@@ -827,7 +827,7 @@ TDCLSocket::TSocketPipe::BytesAvailable( void )
 	timeout.tv_sec = 0;		// secondes
 	timeout.tv_usec = 0;	// microsecondes
 
-	// Délai de temporisation à 0 pour savoir si on peut lire maintenant.
+	// D√©lai de temporisation √† 0 pour savoir si on peut lire maintenant.
 	int readySockets =
 		::select( mClientSocket + 1, &socketSet, NULL, NULL, &timeout );
 
@@ -865,7 +865,7 @@ TDCLSocket::TSocketPipe::BytesAvailable( void )
 void
 TDCLSocket::TSocketPipe::DoDisconnect( void ) 
 {
-	// On écrit dans la paire pour sortir.
+	// On √©crit dans la paire pour sortir.
 	if(mPublicPairMember >= 0)
 	{
 		char someByte = 0;
@@ -878,7 +878,7 @@ TDCLSocket::TSocketPipe::DoDisconnect( void )
 
 	(void) ((TDCLSocket*) GetCommLayer())->DoClose(
 											mClientCookie, mClientSocket );
-			// Ceci fera échouer select dans le futur.
+			// Ceci fera √©chouer select dans le futur.
 
 	mClientSocketIsClosed = true;
 }
@@ -906,7 +906,7 @@ TDCLSocket::TSocketPipe::SetTimeout( long inTimeout )
 		timeoutInSecs = kSocketDefaultTimeout;
 	}
 	
-	// Ensuite, on règle la temporisation sur l'interface.
+	// Ensuite, on r√®gle la temporisation sur l'interface.
 	int theErr =
 		((TDCLSocket*) GetCommLayer())->
 					SetClientSocketTimeout(

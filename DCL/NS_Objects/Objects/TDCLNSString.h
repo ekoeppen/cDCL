@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSString.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			21/10/2002
+// Cr√©√© le:			21/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSString.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,13 +46,13 @@
 class TDCLStream;
 
 ///
-/// Classe pour les chaînes NewtonScript.
-/// Ces chaînes sont stockées au format UCS-2.
+/// Classe pour les cha√Ænes NewtonScript.
+/// Ces cha√Ænes sont stock√©es au format UCS-2.
 ///
-/// Cette classe est un peu particulière. Elle n'a aucun destructeur
+/// Cette classe est un peu particuli√®re. Elle n'a aucun destructeur
 /// virtuel ou membre parce qu'en fait, les objets de cette classe doivent
-/// correspondre exactement à ceux de \c TDCLNSBinary qui sont des chaînes, vu
-/// que seule la classe différencient les chaînes parmi les binaires.
+/// correspondre exactement √† ceux de \c TDCLNSBinary qui sont des cha√Ænes, vu
+/// que seule la classe diff√©rencient les cha√Ænes parmi les binaires.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
@@ -65,71 +65,71 @@ class TDCLNSString
 {
 public:
 	///
-	/// Constructeur à partir d'une chaîne ISO 8859-1.
+	/// Constructeur √† partir d'une cha√Æne ISO 8859-1.
 	///
-	/// \param inString		chaîne de caractères considérée.
+	/// \param inString		cha√Æne de caract√®res consid√©r√©e.
 	///
 	TDCLNSString( const char* inString );
 
 	///
-	/// Constructeur à partir d'une chaîne UCS-2.
+	/// Constructeur √† partir d'une cha√Æne UCS-2.
 	///
-	/// \param inString		chaîne de caractères considérée.
+	/// \param inString		cha√Æne de caract√®res consid√©r√©e.
 	///
 	TDCLNSString( const KUInt16* inString );
 
 	///
-	/// Créateur pour une chaîne à partir d'une suite de caractères UCS-2.
-	/// \param inString		suite de caractères considérée.
-	/// \param inSize		nombre de caractères.
+	/// Cr√©ateur pour une cha√Æne √† partir d'une suite de caract√®res UCS-2.
+	/// \param inString		suite de caract√®res consid√©r√©e.
+	/// \param inSize		nombre de caract√®res.
 	///
 	TDCLNSString( const KUInt16* inString, KUInt32 inSize );
 
 	///
-	/// Constructeur à partir d'un flux et d'une taille.
+	/// Constructeur √† partir d'un flux et d'une taille.
 	///
-	/// \param inStream		flux où lire les données.
-	/// \param inLength		nombre d'octets à lire
-	///						(2 * taille de la chaîne avec terminateur)
+	/// \param inStream		flux o√π lire les donn√©es.
+	/// \param inLength		nombre d'octets √† lire
+	///						(2 * taille de la cha√Æne avec terminateur)
 	///
 	TDCLNSString(
 			TDCLStream* inStream,
 			KUInt32 inLength );
 
 	///
-	/// Crée un objet à partir d'un flux NSOF
+	/// Cr√©e un objet √† partir d'un flux NSOF
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSString*	FromNSOF( TDCLNSOFDecoder* inDecoder );
 
 	///
-	/// Compare cette chaîne avec une autre chaîne ISO 8859-1.
+	/// Compare cette cha√Æne avec une autre cha√Æne ISO 8859-1.
 	///
-	/// \return \c true si les deux chaînes sont égales à la casse près.
+	/// \return \c true si les deux cha√Ænes sont √©gales √† la casse pr√®s.
 	///
 	Boolean StrEqual( const char* inAlter ) const;
 
 	///
-	/// Compare cette chaîne avec une autre chaîne unicode.
+	/// Compare cette cha√Æne avec une autre cha√Æne unicode.
 	///
-	/// \return \c true si les deux chaînes sont égales à la casse près.
+	/// \return \c true si les deux cha√Ænes sont √©gales √† la casse pr√®s.
 	///
 	Boolean StrEqual( const KUInt16* inAlter ) const;
 
 	///
-	/// Compare cette chaîne avec une autre chaîne.
+	/// Compare cette cha√Æne avec une autre cha√Æne.
 	///
-	/// \return \c true si les deux chaînes sont égales à la casse près.
+	/// \return \c true si les deux cha√Ænes sont √©gales √† la casse pr√®s.
 	///
 	Boolean StrEqual( const TDCLNSString& inAlter ) const;
 
 	///
-	/// Accesseur sur la chaîne.
-	/// Valide tant que la chaîne n'est pas redimensionnée.
+	/// Accesseur sur la cha√Æne.
+	/// Valide tant que la cha√Æne n'est pas redimensionn√©e.
 	///
-	/// \return la chaîne en unicode.
+	/// \return la cha√Æne en unicode.
 	///
 	inline KUInt16* GetString( void )
 		{
@@ -137,10 +137,10 @@ public:
 		}
 
 	///
-	/// Accesseur sur la chaîne.
-	/// Comme le précédent mais en lecture seule.
+	/// Accesseur sur la cha√Æne.
+	/// Comme le pr√©c√©dent mais en lecture seule.
 	///
-	/// \return la chaîne en unicode.
+	/// \return la cha√Æne en unicode.
 	///
 	inline const KUInt16* GetString( void ) const
 		{
@@ -148,10 +148,10 @@ public:
 		}
 
 	///
-	/// Accesseur sur la taille de la chaîne.
+	/// Accesseur sur la taille de la cha√Æne.
 	/// Comme StrLen sur Newton.
 	///
-	/// \return la taille de la chaîne.
+	/// \return la taille de la cha√Æne.
 	///
 	inline size_t GetStrLen( void ) const
 		{
@@ -159,10 +159,10 @@ public:
 		}
 
 	///
-	/// Concaténation.
+	/// Concat√©nation.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
 	///			inAlter.
 	///
 	inline TDCLNSString* Catenate( const TDCLNSString& inAlter ) const
@@ -171,29 +171,29 @@ public:
 		}
 
 	///
-	/// Concaténation.
+	/// Concat√©nation.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
 	///			inAlter.
 	///
 	TDCLNSString* Catenate( const char* inAlter ) const;
 
 	///
-	/// Concaténation.
+	/// Concat√©nation.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
 	///			inAlter.
 	///
 	TDCLNSString* Catenate( const KUInt16* inAlter ) const;
 
 	///
-	/// Concaténation avec espace.
+	/// Concat√©nation avec espace.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
-	///			inAlter, les deux chaînes étant séparées par une espace.
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
+	///			inAlter, les deux cha√Ænes √©tant s√©par√©es par une espace.
 	///
 	inline TDCLNSString* CatenateWithSpace( const TDCLNSString& inAlter ) const
 		{
@@ -201,32 +201,32 @@ public:
 		}
 
 	///
-	/// Concaténation avec espace.
+	/// Concat√©nation avec espace.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
-	///			inAlter, les deux chaînes étant séparées par une espace.
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
+	///			inAlter, les deux cha√Ænes √©tant s√©par√©es par une espace.
 	///
 	TDCLNSString* CatenateWithSpace( const char* inAlter ) const;
 
 	///
-	/// Concaténation avec espace.
+	/// Concat√©nation avec espace.
 	///
-	/// \param inAlter	chaîne avec laquelle concaténer cette chaîne.
-	/// \return	une nouvelle chaîne composée de cette chaîne et de la chaîne
-	///			inAlter, les deux chaînes étant séparées par une espace.
+	/// \param inAlter	cha√Æne avec laquelle concat√©ner cette cha√Æne.
+	/// \return	une nouvelle cha√Æne compos√©e de cette cha√Æne et de la cha√Æne
+	///			inAlter, les deux cha√Ænes √©tant s√©par√©es par une espace.
 	///
 	TDCLNSString* CatenateWithSpace( const KUInt16* inAlter ) const;
 
 private:
 	///
-	/// Constructeur à partir d'une chaîne UCS-2 et d'une taille.
-	/// Ce constructeur ne sert que pour la concaténation.
+	/// Constructeur √† partir d'une cha√Æne UCS-2 et d'une taille.
+	/// Ce constructeur ne sert que pour la concat√©nation.
 	///
 	TDCLNSString( KUInt16* inBuffer, KUInt32 inData );
 
 	///
-	/// Constructeur par défaut volontairement indisponible.
+	/// Constructeur par d√©faut volontairement indisponible.
 	///
 	TDCLNSString( void );
 	

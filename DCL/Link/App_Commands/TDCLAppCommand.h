@@ -2,7 +2,7 @@
 // Fichier:			TDCLAppCommand.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			2/2/2003
+// Cr√©√© le:			2/2/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLAppCommand.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,14 +42,14 @@
 
 ///
 /// Classe de base pour une commande venant de l'application.
-/// Cette classe ne sert désormais plus qu'à distinguer les
-/// commandes venant de l'application. Elle ne diffère pas vraiment
+/// Cette classe ne sert d√©sormais plus qu'√† distinguer les
+/// commandes venant de l'application. Elle ne diff√®re pas vraiment
 /// de la classe TDCLEvent.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLAppCommand
 	:
@@ -57,13 +57,13 @@ class TDCLAppCommand
 {
 public:
 	///
-	/// Constructeur à partir d'un type, d'un ID et d'une donnée.
-	/// La donnée n'est pas supprimée lorsque cet objet est supprimé (sauf
+	/// Constructeur √† partir d'un type, d'un ID et d'une donn√©e.
+	/// La donn√©e n'est pas supprim√©e lorsque cet objet est supprim√© (sauf
 	/// si la sous-classe s'en occupe).
 	///
 	/// \param inCommandKind	Type de la commande.
 	/// \param inCommandID		Identifiant de la commande
-	/// \param inData			donnée associée à l'événement.
+	/// \param inData			donn√©e associ√©e √† l'√©v√©nement.
 	///
 	TDCLAppCommand(
 				EEventKind inCommandKind,

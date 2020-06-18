@@ -2,7 +2,7 @@
 // Fichier:			TDCLXADSPSocket.cp
 // Projet:			Desktop Connection Library
 // 
-// CrŽŽ le:			25/4/2004
+// CrÃ©Ã© le:			25/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLXADSPSocket.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -68,7 +68,7 @@
 #include <netat/adsp.h>
 
 // AppleTalk dans AppleTalk.Framework
-// (n'est pas dans le systme mais dans Darwin)
+// (n'est pas dans le systÃ¨me mais dans Darwin)
 extern "C" {
 #include "at_proto.h"
 }
@@ -92,7 +92,7 @@ TDCLXADSPSocket::TDCLXADSPSocket( IDCLThreads* inThreadsIntf, int inADSPSocket )
 		mException( nil ),
 		mHadException( false )
 {
-	// CrŽation de la paire de socket.	
+	// CrÃ©ation de la paire de socket.	
 	int theSocketPair[2];
 	if (::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, theSocketPair ) != 0)
 	{
@@ -102,7 +102,7 @@ TDCLXADSPSocket::TDCLXADSPSocket( IDCLThreads* inThreadsIntf, int inADSPSocket )
 	mPublicPairMember = theSocketPair[0];
 	mPrivatePairMember = theSocketPair[1];
 
-	// La partie privŽe doit tre non bloquante.
+	// La partie privÃ©e doit Ãªtre non bloquante.
 	int flags = ::fcntl(mPrivatePairMember, F_GETFL, 0 /* ignored */);
 	flags |= O_NONBLOCK;
 	if (::fcntl(mPrivatePairMember, F_SETFL, flags) != 0)
@@ -150,7 +150,7 @@ TDCLXADSPSocket::Close( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊRun( void )
+//  *Â Run( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLXADSPSocket::Run( void )
@@ -168,7 +168,7 @@ TDCLXADSPSocket::Run( void )
 			someSocketWasClosed = HandleError();
 		} else if (nbRead > 0) {
 			// On a lu des octets.
-			// On Žcrit tout sur la paire.
+			// On Ã©crit tout sur la paire.
 			if (::send(
 					mPrivatePairMember,
 					adspBuffer,
@@ -213,7 +213,7 @@ TDCLXADSPSocket::Run( void )
 							someSocketWasClosed = HandleError();
 						} else if (nbRead > 0) {
 							// On a lu quelques octets.
-							// On les Žcrit sur la paire.
+							// On les Ã©crit sur la paire.
 							if (::send(
 									mPrivatePairMember,
 									adspBuffer,
@@ -273,7 +273,7 @@ TDCLXADSPSocket::Run( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊHandleError( void ) const
+//  *Â HandleError( void ) const
 // ------------------------------------------------------------------------- //
 Boolean
 TDCLXADSPSocket::HandleError( void ) const
@@ -311,7 +311,7 @@ TDCLXADSPSocket::HandleError( void ) const
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊHandleException( TDCLException* )
+//  *Â HandleException( TDCLException* )
 // ------------------------------------------------------------------------- //
 void
 TDCLXADSPSocket::HandleException( TDCLException* inException )

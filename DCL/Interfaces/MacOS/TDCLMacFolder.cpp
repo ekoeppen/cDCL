@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacFolder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/1/2003
+// Cr√©√© le:			10/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacFolder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -52,7 +52,7 @@ TDCLMacFolder::TDCLMacFolder(
 	:
 		TDCLFolder( inFilesIntf, inParentFolder )
 {
-	// Défense d'afficher.
+	// D√©fense d'afficher.
 }
 
 // ------------------------------------------------------------------------- //
@@ -64,7 +64,7 @@ TDCLMacFolder::ToFrame( void )
 	TDCLNSRef theSegment = TDCLFolder::ToFrame();
 	TDCLNSFrame& theSegmentAsFrame = theSegment.ToFrame();
 	
-	Boolean needVolRef = false;	// S'il faut ajouter la référence du volume
+	Boolean needVolRef = false;	// S'il faut ajouter la r√©f√©rence du volume
 	
 	if (IsVolume())
 	{
@@ -78,8 +78,8 @@ TDCLMacFolder::ToFrame( void )
 		needVolRef = true;
 	}
 	
-	// Remarque: ce n'est pas tout à fait ce que dit le protocole.
-	// Normalement, on a un nombre négatif pour les éléments sur le bureau
+	// Remarque: ce n'est pas tout √† fait ce que dit le protocole.
+	// Normalement, on a un nombre n√©gatif pour les √©l√©ments sur le bureau
 	// et 0 pour les disques, sauf qu'il nous faut bien distinguer les volumes
 	// homonymes sur le bureau.
 	if (needVolRef)

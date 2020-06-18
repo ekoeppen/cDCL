@@ -2,7 +2,7 @@
 // Fichier:			TDCLRootFolder.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			10/1/2003
+// Cr√©√© le:			10/1/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLRootFolder.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -42,12 +42,12 @@
 
 ///
 /// Classe de base pour la racine d'exploration.
-/// Cette classe doit être dérivée pour chaque TDCLFiles.
+/// Cette classe doit √™tre d√©riv√©e pour chaque TDCLFiles.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLRootFolder
 	:
@@ -55,24 +55,24 @@ class TDCLRootFolder
 {
 public:
 	///
-	/// Récupère le chemin de l'élément.
-	/// Cette méthode retourne un tableau avec un seul élément.
+	/// R√©cup√®re le chemin de l'√©l√©ment.
+	/// Cette m√©thode retourne un tableau avec un seul √©l√©ment.
 	///
 	/// \return le chemin de l'objet pour le butinage.
 	///
 	virtual TDCLNSRef	GetPath( void );
 
 	///
-	/// Récupère le dossier parent de l'élément.
+	/// R√©cup√®re le dossier parent de l'√©l√©ment.
 	/// Retourne \c nil.
 	///
-	/// \return une référence sur \c nil.
+	/// \return une r√©f√©rence sur \c nil.
 	///
 	virtual TDCLFSItemRef	GetParentFolder( void );
 
 protected:
 	///
-	/// Constructeur à partir de l'interface sur les fichiers.
+	/// Constructeur √† partir de l'interface sur les fichiers.
 	///
 	/// \param inFilesIntf		interface pour les fichiers.
 	///
@@ -80,10 +80,10 @@ protected:
 
 private:
 	///
-	/// Construit l'objet TDCLFolder parent. Cette méthode n'est
-	/// jamais appelée.
+	/// Construit l'objet TDCLFolder parent. Cette m√©thode n'est
+	/// jamais appel√©e.
 	///
-	/// \return une référence sur \c nil.
+	/// \return une r√©f√©rence sur \c nil.
 	///
 	virtual TDCLFSItemRef	MakeParentFolder( void ) const;
 };

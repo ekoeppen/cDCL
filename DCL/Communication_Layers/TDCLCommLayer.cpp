@@ -2,7 +2,7 @@
 // Fichier:			TDCLCommLayer.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			23/08/2000
+// Cr√©√© le:			23/08/2000
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLCommLayer.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,7 +44,7 @@
 #include <DCL/Server/TDCLServer.h>
 
 // ------------------------------------------------------------------------- //
-//  * TDCLCommLayer( Boolean, KUInt32 )
+//  *¬†TDCLCommLayer( Boolean, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLCommLayer::TDCLCommLayer(
 					Boolean	inFlushAvailable /* = false */,
@@ -55,64 +55,64 @@ TDCLCommLayer::TDCLCommLayer(
 		mMaxPipeCount( inMaxPipeCount ),
 		mServer( nil )
 {
-	// Défense de stationner.
+	// D√©fense de stationner.
 }
 
 // ------------------------------------------------------------------------- //
-//  * Idle( void )
+//  *¬†Idle( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLCommLayer::Idle( void )
 {
-	// Sortie de véhicules.
+	// Sortie de v√©hicules.
 }
 
 // ------------------------------------------------------------------------- //
-//  * StartListening( TDCLServer* )
+//  *¬†StartListening( TDCLServer* )
 // ------------------------------------------------------------------------- //
 void
 TDCLCommLayer::StartListening( TDCLServer* inServer )
 {
-	// Exception si on est déjà en train d'écouter.
+	// Exception si on est d√©j√† en train d'√©couter.
 	if (mServer)
 	{
 		throw DCLBadStateError;
 	}
-	
+
 	// On note le serveur.
 	mServer = inServer;
-	
-	// Ensuite, on appelle la méthode qui fait vraiment le travail.
+
+	// Ensuite, on appelle la m√©thode qui fait vraiment le travail.
 	DoStartListening();
-	
-	// Ayé, on écoute.
+
+	// Ay√©, on √©coute.
 	inServer->WaitingConnection( this );
 }
 
 // ------------------------------------------------------------------------- //
-//  * StopListening( void )
+//  *¬†StopListening( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLCommLayer::StopListening( void )
 {
-	// On ne fait rien si on n'est pas en train d'écouter.
+	// On ne fait rien si on n'est pas en train d'√©couter.
 	if (mServer)
 	{
 		try {
-			// On appelle la méthode qui fait vraiment le travail.
+			// On appelle la m√©thode qui fait vraiment le travail.
 			DoStopListening();
 		} catch ( ... ) {
 			// Silence!
 		}
 
-		// On n'a plus besoin de référence sur le serveur.
-		mServer = nil;	
+		// On n'a plus besoin de r√©f√©rence sur le serveur.
+		mServer = nil;
 	}
 }
 
 // ======================================================================== //
-// > X..., c'est un millefeuille avec une couche de crème patissière, une   //
-// > de sauce tomate et une de crème d'anchois... Mais c'est vrai que       //
-// > c'est un système ouvert: tu peux y rajouter des pépites de chocolat... //
+// > X..., c'est un millefeuille avec une couche de cr√®me patissi√®re, une   //
+// > de sauce tomate et une de cr√®me d'anchois... Mais c'est vrai que       //
+// > c'est un syst√®me ouvert: tu peux y rajouter des p√©pites de chocolat... //
 // -+- Ol in Guide du linuxien pervers - "Remettez m'en une couche !" -+-   //
 // ======================================================================== //

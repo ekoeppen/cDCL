@@ -2,7 +2,7 @@
 // Fichier:			TDCLExistsAlreadyException.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			31/7/2003
+// Cr√©√© le:			31/7/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLExistsAlreadyException.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,12 +56,12 @@
 //@}
 
 ///
-/// Classe pour une exception signifiant qu'un fichier (ou un dossier) existe à cet endroit.
+/// Classe pour une exception signifiant qu'un fichier (ou un dossier) existe √† cet endroit.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLExistsAlreadyException
 	:
@@ -70,11 +70,11 @@ class TDCLExistsAlreadyException
 public:
 #if kDCLDebugFILEandLINE
 	///
-	/// Constructeur à partir du code de l'erreur, du nom de fichier
-	/// et du numéro de ligne.
+	/// Constructeur √† partir du code de l'erreur, du nom de fichier
+	/// et du num√©ro de ligne.
 	///
-	/// \param inFileName	nom du fichier. N'est pas copié.
-	/// \param inLine		numéro de ligne.
+	/// \param inFileName	nom du fichier. N'est pas copi√©.
+	/// \param inLine		num√©ro de ligne.
 	/// \param inError		code d'erreur
 	///
 	TDCLExistsAlreadyException(
@@ -83,7 +83,7 @@ public:
 			KSInt32 inError = 0 );
 #else
 	///
-	/// Constructeur à partir du code de l'erreur seul.
+	/// Constructeur √† partir du code de l'erreur seul.
 	///
 	/// \param inError		code d'erreur
 	///

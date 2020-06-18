@@ -2,7 +2,7 @@
 // Fichier:			TString.cp
 // Projet:			K
 // 
-// Créé le:			3/8/2003
+// Cr√©√© le:			3/8/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -74,14 +74,14 @@ TString::TString( const char* inCString )
 		mHashCodeIsValid( false ),
 		mStringSizeIsValid( false )
 {
-	// Détermination de la taille et calcul, dans la foulée, de la somme de contrôle.
+	// D√©termination de la taille et calcul, dans la foul√©e, de la somme de contr√¥le.
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
 	register char theCharacter;
 	register Boolean fitsOn7Bits = true;
 	register const char* theInputString = inCString;
 	do {
-		theCharacter = *theInputString++;	// Caractère courant.
+		theCharacter = *theInputString++;	// Caract√®re courant.
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
 		{
 			fitsOn7Bits = false;
@@ -99,13 +99,13 @@ TString::TString( const char* inCString )
 	mHashCode = theHashCode * kHashMagic;
 	mHashCodeIsValid = true;
 
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = ::malloc( (theSize) );
 	mBufferSize = theSize;
 	mStringSize = theSize - 1;
 	mStringSizeIsValid = true;
 	
-	// Copie des caractères
+	// Copie des caract√®res
 	(void) ::memcpy( mString, inCString, theSize );
 }
 
@@ -122,14 +122,14 @@ TString::TString( const char* inCString, EEncoding inEncoding )
 		mHashCodeIsValid( false ),
 		mStringSizeIsValid( false )
 {
-	// Détermination de la taille.
+	// D√©termination de la taille.
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
 	register char theCharacter;
 	register Boolean fitsOn7Bits = true;
 	register const char* theInputString = inCString;
 	do {
-		theCharacter = *theInputString++;	// Caractère courant.
+		theCharacter = *theInputString++;	// Caract√®re courant.
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
 		{
 			fitsOn7Bits = false;
@@ -146,13 +146,13 @@ TString::TString( const char* inCString, EEncoding inEncoding )
 		mHashCodeIsValid = true;
 	}
 	
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = ::malloc( (theSize) );
 	mBufferSize = theSize;
 	mStringSize = theSize - 1;
 	mStringSizeIsValid = true;
 	
-	// Copie des caractères
+	// Copie des caract√®res
 	(void) ::memcpy( mString, inCString, theSize );
 }
 
@@ -169,8 +169,8 @@ TString::TString( const KUInt16* inCString )
 		mHashCodeIsValid( false ),
 		mStringSizeIsValid( false )
 {
-	// Détermination de la taille et calcul de la somme de contrôle dans la
-	// foulée.
+	// D√©termination de la taille et calcul de la somme de contr√¥le dans la
+	// foul√©e.
 	KUInt32 theBufferSize = 0;
 	KUInt32 theStringSize = 0;
 	KUInt32 theHashCode = 0;
@@ -178,7 +178,7 @@ TString::TString( const KUInt16* inCString )
 	register Boolean justHadDoubleChar = false;
 	register const KUInt16* theInputString = inCString;
 	do {
-		theCharacter = *theInputString++;	// Caractère courant.
+		theCharacter = *theInputString++;	// Caract√®re courant.
 		theHashCode += theCharacter;
 		if (!justHadDoubleChar) {
 			theStringSize++;
@@ -194,7 +194,7 @@ TString::TString( const KUInt16* inCString )
 	
 	mHashCode = theHashCode * kHashMagic;
 
-	// Copie des données.
+	// Copie des donn√©es.
 	theBufferSize *= sizeof(KUInt16);
 	mString = ::malloc( theBufferSize );
 	mBufferSize = theBufferSize;
@@ -217,10 +217,10 @@ TString::TString( const char* inChars, KUInt32 inSize )
 		mHashCodeIsValid( false ),
 		mStringSizeIsValid( true )
 {
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = ::malloc( (inSize + 1) );
 	
-	// Copie des caractères et calcul, dans la foulée, de la somme de contrôle.
+	// Copie des caract√®res et calcul, dans la foul√©e, de la somme de contr√¥le.
 	KUInt32 theHashCode = 0;
 	register Boolean fitsOn7Bits = true;
 	register const char* theInputString = inChars;
@@ -228,7 +228,7 @@ TString::TString( const char* inChars, KUInt32 inSize )
 	register KUInt32 index = inSize;
 	while (index-- > 0)
 	{
-		register char theCharacter = *theInputString++;	// Caractère courant.
+		register char theCharacter = *theInputString++;	// Caract√®re courant.
 
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
 		{
@@ -261,10 +261,10 @@ TString::TString( const KUInt16* inChars, KUInt32 inSize )
 		mHashCodeIsValid( false ),
 		mStringSizeIsValid( true )
 {
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = (KUInt16*) ::malloc( mBufferSize );
 	
-	// Copie des caractères.
+	// Copie des caract√®res.
 	(void) ::memcpy( mString, inChars, inSize * sizeof(KUInt16) );
 	
 	// Terminateur.
@@ -285,10 +285,10 @@ TString::TString( const TString& inCopy )
 		mHashCodeIsValid( inCopy.mHashCodeIsValid ),
 		mStringSizeIsValid( inCopy.mStringSizeIsValid )
 {
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = ::malloc( mBufferSize );
 	
-	// Tant qu'à faire à copier les données, autant calculer la taille
+	// Tant qu'√† faire √† copier les donn√©es, autant calculer la taille
 	// et la valeur de hachage.
 	Boolean hasHashableEncoding = false;
 	if (!mHashCodeIsValid)
@@ -300,7 +300,7 @@ TString::TString( const TString& inCopy )
 	
 	if (!mStringSizeIsValid || hasHashableEncoding)
 	{
-		// Copie des données à la mimine avec calcul de la taille
+		// Copie des donn√©es √† la mimine avec calcul de la taille
 		// et/ou de la valeur de hachage.
 		if (hasHashableEncoding)
 		{
@@ -309,7 +309,7 @@ TString::TString( const TString& inCopy )
 		
 		(void) ::memcpy( mString, inCopy.mString, mBufferSize );
 	} else {
-		// Copie des données avec memcpy.
+		// Copie des donn√©es avec memcpy.
 		(void) ::memcpy( mString, inCopy.mString, mBufferSize );
 	}
 }
@@ -343,10 +343,10 @@ TString::operator = ( const TString& inCopy )
 	mHashCodeIsValid = inCopy.mHashCodeIsValid;
 	mStringSizeIsValid = inCopy.mStringSizeIsValid;
 	
-	// Création de la mémoire tampon.
+	// Cr√©ation de la m√©moire tampon.
 	mString = (KUInt16*) ::malloc( mBufferSize );
 	
-	// Copie des données.
+	// Copie des donn√©es.
 	(void) ::memcpy( mString, inCopy.mString, mBufferSize );
 	
 	return *this;
@@ -363,18 +363,18 @@ TString::operator == ( const TString& inAlter ) const
 		if ((mStringSizeIsValid && inAlter.mStringSizeIsValid)
 			&& (mStringSize != inAlter.mStringSize))
 		{
-			// Les chaînes sont différentes.
+			// Les cha√Ænes sont diff√©rentes.
 			break;
 		}
 
 		if ((mHashCodeIsValid && inAlter.mHashCodeIsValid)
 			&& (mHashCode != inAlter.mHashCode))
 		{
-			// Les chaînes sont différentes.
+			// Les cha√Ænes sont diff√©rentes.
 			break;
 		}
 		
-		// Sinon, on compare les mémoires tampon.
+		// Sinon, on compare les m√©moires tampon.
 		if ((mEncoding == inAlter.mEncoding)
 			&& (mEncoding == kUTF16))
 		{
@@ -425,18 +425,18 @@ TString::operator == ( TString& inAlter ) const
 		if ((mStringSizeIsValid && inAlter.mStringSizeIsValid)
 			&& (mStringSize != inAlter.mStringSize))
 		{
-			// Les chaînes sont différentes.
+			// Les cha√Ænes sont diff√©rentes.
 			break;
 		}
 
 		if ((mHashCodeIsValid && inAlter.mHashCodeIsValid)
 			&& (mHashCode != inAlter.mHashCode))
 		{
-			// Les chaînes sont différentes.
+			// Les cha√Ænes sont diff√©rentes.
 			break;
 		}
 		
-		// Sinon, on compare les mémoires tampon.
+		// Sinon, on compare les m√©moires tampon.
 		if ((mEncoding == inAlter.mEncoding)
 			&& (mEncoding == kUTF16))
 		{
@@ -484,7 +484,7 @@ TString::operator < ( TString& inAlter ) const
 {
 	int theResult = 0;
 	do {
-		// On compare les mémoires tampon.
+		// On compare les m√©moires tampon.
 		if ((mEncoding == inAlter.mEncoding)
 			&& (mEncoding == kUTF16))
 		{
@@ -706,7 +706,7 @@ TString::CompareUTF16Strings( const TString& inAlter ) const
 void
 TString::PrintToStream( ostream& inStream ) const
 {
-	// On détermine l'encodage.
+	// On d√©termine l'encodage.
 	
 	// Puis on affiche.
 	
@@ -804,7 +804,7 @@ TString::Convert(
 		// Conversion, via UTF-16.
 		if (mEncoding != kUTF16)
 		{
-			// Passage à l'UTF-16.
+			// Passage √† l'UTF-16.
 			KUInt32 newBufferSize;
 			if (mStringSizeIsValid)
 			{

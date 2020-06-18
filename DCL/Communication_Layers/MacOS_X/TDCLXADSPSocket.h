@@ -2,7 +2,7 @@
 // Fichier:			TDCLXADSPSocket.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			25/4/2004
+// Cr√©√© le:			25/4/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLXADSPSocket.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,18 +44,18 @@
 #include <DCL/Interfaces/IDCLThreads.h>
 
 ///
-/// Classe pour l'émulation socket BSD des sockets ADSP.
+/// Classe pour l'√©mulation socket BSD des sockets ADSP.
 /// Les sockets ADSP sous MacOS X:
 /// - n'utilisent pas send/recv
-/// - gèrent très mal select
-/// Cette classe gère l'émulation des sockets ADSP connectées (uniquement).
-/// Elle fonctionne avec un processus léger qui lit tout ce qui se présente
+/// - g√®rent tr√®s mal select
+/// Cette classe g√®re l'√©mulation des sockets ADSP connect√©es (uniquement).
+/// Elle fonctionne avec un processus l√©ger qui lit tout ce qui se pr√©sente
 /// et l'envoie sur une socket pair.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLXADSPSocket
 	:
@@ -63,9 +63,9 @@ class TDCLXADSPSocket
 {
 public:
 	///
-	/// Constructeur à partir d'une socket ADSP
+	/// Constructeur √† partir d'une socket ADSP
 	///
-	/// \param inThreadsIntf	interface pour les processus légers
+	/// \param inThreadsIntf	interface pour les processus l√©gers
 	/// \param inADSPSocket		interface de communication ADSP.
 	///
 	TDCLXADSPSocket(
@@ -89,13 +89,13 @@ public:
 
 	///
 	/// Ferme la paire et l'interface ADSP.
-	/// Ceci a aussi pour conséquence de sortir de la boucle du processus
-	/// léger.
+	/// Ceci a aussi pour cons√©quence de sortir de la boucle du processus
+	/// l√©ger.
 	///
 	void			Close( void );
 
 	///
-	/// Détermine si une exception est survenue.
+	/// D√©termine si une exception est survenue.
 	///
 	/// \return \c true si une exception est survenue.
 	///
@@ -105,7 +105,7 @@ public:
 		}
 
 	///
-	/// Détermine l'exception qui est survenue.
+	/// D√©termine l'exception qui est survenue.
 	///
 	/// \return l'exception survenue ou \c nil si ce n'est pas une
 	///			TDCLException.
@@ -117,15 +117,15 @@ public:
 
 private:
 	///
-	/// Méthode exécutée dans le processus.
-	/// Boucle tant que WaitForIncomingRequest retourne \c true. À chaque fois que
-	/// cette dernière méthode retourne \c true, envoie un événement au serveur.
+	/// M√©thode ex√©cut√©e dans le processus.
+	/// Boucle tant que WaitForIncomingRequest retourne \c true. √Ä chaque fois que
+	/// cette derni√®re m√©thode retourne \c true, envoie un √©v√©nement au serveur.
 	///
 	virtual void Run( void );
 
 	///
-	/// Méthode appelée lorsqu'une exception n'est pas interceptée.
-	/// Lorsque cette méthode retourne, le processus est terminé.
+	/// M√©thode appel√©e lorsqu'une exception n'est pas intercept√©e.
+	/// Lorsque cette m√©thode retourne, le processus est termin√©.
 	///
 	/// \param inException	l'exception si c'est une TDCLException,
 	///			\c nil sinon.
@@ -133,34 +133,34 @@ private:
 	virtual void HandleException( TDCLException* inException );
 
 	///
-	/// Méthode appelée lorsqu'une erreur est survenue.
-	/// Lance une exception si nécessaire.
+	/// M√©thode appel√©e lorsqu'une erreur est survenue.
+	/// Lance une exception si n√©cessaire.
 	///
-	/// \return \c true si l'erreur est EBADF (socket fermée)
+	/// \return \c true si l'erreur est EBADF (socket ferm√©e)
 	///
 	Boolean 	HandleError( void ) const;
 
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLXADSPSocket( const TDCLXADSPSocket& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLXADSPSocket& operator = ( const TDCLXADSPSocket& inCopy );
 
 	/// \name Variables
 	int				mADSPSocket;			///< Interface ADSP.
-	int				mPublicPairMember;		///< Élément public de la
+	int				mPublicPairMember;		///< √âl√©ment public de la
 											///< "socket pair"
-	int				mPrivatePairMember;		///< Élément privé (= thread) de la
+	int				mPrivatePairMember;		///< √âl√©ment priv√© (= thread) de la
 											///< "socket pair"
-	Boolean			mSocketsAreClosed;		///< Si les sockets sont fermées.
+	Boolean			mSocketsAreClosed;		///< Si les sockets sont ferm√©es.
 	TDCLException*	mException;				///< Exception
 	Boolean			mHadException;			///< Si une exception est survenue.
 };

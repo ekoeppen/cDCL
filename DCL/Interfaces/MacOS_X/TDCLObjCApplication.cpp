@@ -2,7 +2,7 @@
 // Fichier:			TDCLObjCApplication.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/3/2003
+// Cr√©√© le:			30/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLObjCApplication.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -82,7 +82,7 @@ TDCLObjCApplication::ConnectedToNewtonDevice(
 						const KUInt16* inName )
 {
 	// Traduction du nom.
-	// On suppose que le nom fait moins de 32768 caractères (généralement,
+	// On suppose que le nom fait moins de 32768 caract√®res (g√©n√©ralement,
 	// c'est le cas ;)
 	// [Sinon, la fonction NewtonScript StrLen ne fonctionnerait pas.]
 	CFStringRef theStringRef = ::CFStringCreateWithCharacters(
@@ -92,7 +92,7 @@ TDCLObjCApplication::ConnectedToNewtonDevice(
 	
 	TDCLObjCAppl_ConnectedToNewtonDevice( mCocoaObject, inLink, theStringRef );
 
-	// Libération du nom.
+	// Lib√©ration du nom.
 	::CFRelease( theStringRef );
 }
 

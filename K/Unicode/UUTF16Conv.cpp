@@ -2,7 +2,7 @@
 // Fichier:			UUTF16Conv.cp
 // Projet:			K
 //
-// Créé le:			01/09/2001
+// Cr√©√© le:			01/09/2001
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -698,7 +698,7 @@ UUTF16Conv::ToUCS4(
 				outputCount--;
 				inputCount -= 2;
 			} else {
-				// Pas assez de caractères dans la mémoire d'entrée.
+				// Pas assez de caract√®res dans la m√©moire d'entr√©e.
 				theResult = kMiddleOfMultiChar;
 				break;
 			}
@@ -730,18 +730,18 @@ UUTF16Conv::FromUCS4(
 	size_t*			ioOutputCount
 	)
 {
-	// Résultat (par défaut, on a terminé).
+	// R√©sultat (par d√©faut, on a termin√©).
 	EResult theResult = kInputExhausted;
 	
-	// Nombre de mots de 32 bits en entrée.
+	// Nombre de mots de 32 bits en entr√©e.
 	size_t inputCount = *ioInputCount;
-	// Nombre de mots de 16 bits en entrée.
+	// Nombre de mots de 16 bits en entr√©e.
 	size_t outputCount = *ioOutputCount;
 	
 	// Tant qu'il en reste.
 	while ((inputCount > 0) && (outputCount > 0))
 	{
-		// Le caractère UCS-4 en entrée.
+		// Le caract√®re UCS-4 en entr√©e.
 		KUInt32 theChar = UByteSex_FromBigEndian( *inInputBuffer );
 		inInputBuffer++;
 		
@@ -763,14 +763,14 @@ UUTF16Conv::FromUCS4(
 				outputCount -= 2;
 				inputCount--;
 			} else {
-				// Pas assez de caractères dans la mémoire de sortie.
+				// Pas assez de caract√®res dans la m√©moire de sortie.
 				theResult = kMiddleOfMultiChar;
 				break;
 			}
 		}
 	}
 	
-	// Mise à jour des valeurs de sortie.
+	// Mise √† jour des valeurs de sortie.
 	*ioInputCount -= inputCount;
 	*ioOutputCount -= outputCount;
 	
@@ -836,10 +836,10 @@ UUTF16Conv::ToUTF8(
 	size_t*			ioOutputCount
 	)
 {
-	// Résultat (par défaut, on a terminé).
+	// R√©sultat (par d√©faut, on a termin√©).
 	EResult theResult = kInputExhausted;
 
-	// Nombre de mots en entrée.
+	// Nombre de mots en entr√©e.
 	size_t inputCount = *ioInputCount;
 	// Nombre d'octets en sortie.	
 	size_t outputCount = *ioOutputCount;
@@ -847,18 +847,18 @@ UUTF16Conv::ToUTF8(
 	KUInt8* theOutputBuffer = (KUInt8*) outOutputBuffer;
 	
 	// Si tout va bien, nouvelle valeur du nombre de mots
-	// disponibles en entrée.
+	// disponibles en entr√©e.
 	size_t newInputCount;
 	
 	while ((inputCount > 0) && (outputCount > 0))
 	{
-		// Le caractère UTF-16 à convertir.
+		// Le caract√®re UTF-16 √† convertir.
 		KUInt16 theChar = UByteSex_FromBigEndian( *inInputBuffer );
-		// Le même en UCS-4
+		// Le m√™me en UCS-4
 		KUInt32 theUCS4Char;
 		inInputBuffer++;
 		
-		// Extraction du caractère UCS4
+		// Extraction du caract√®re UCS4
 		if ((theChar < 0xD800) || (theChar >= 0xE000))
 		{
 			theUCS4Char = (KUInt32) theChar;
@@ -873,15 +873,15 @@ UUTF16Conv::ToUTF8(
 				inInputBuffer++;
 				newInputCount = inputCount - 2;
 			} else {
-				// Pas assez de caractères dans la mémoire d'entrée.
+				// Pas assez de caract√®res dans la m√©moire d'entr√©e.
 				theResult = kMiddleOfMultiChar;
 				break;
 			}
 		}
 
 		// Conversion en UTF-8
-		// En vérifiant qu'il y a assez de place.
-		size_t theCharSize;	// Taille du caractère en UTF-8
+		// En v√©rifiant qu'il y a assez de place.
+		size_t theCharSize;	// Taille du caract√®re en UTF-8
 		if (theUCS4Char <= 0x0000007F)
 		{
 			theCharSize = 1;
@@ -905,12 +905,12 @@ UUTF16Conv::ToUTF8(
 		} else {
 			if (outputCount < theCharSize)
 			{
-				// Pas assez de caractères dans la mémoire de sortie.
+				// Pas assez de caract√®res dans la m√©moire de sortie.
 				theResult = kMiddleOfMultiChar;
 				break;
 			}
 		
-			// Ensuite, on écrit les octets
+			// Ensuite, on √©crit les octets
 			// en partant de la droite (c'est plus simple).
 			// Je commence par les n-1 octets.
 			int indexUTF8Char;
@@ -923,20 +923,20 @@ UUTF16Conv::ToUTF8(
 			// Puis le dernier.
 			*theOutputBuffer = (KUInt8) (theUCS4Char | (0xFF00 >> theCharSize));
 			
-			// Mise à jour des pointeurs.
+			// Mise √† jour des pointeurs.
 			theOutputBuffer += theCharSize;
 			outputCount -= theCharSize;
 		}
 
-		// Tout c'est bien passé, on note la nouvelle valeur de inputCount.
+		// Tout c'est bien pass√©, on note la nouvelle valeur de inputCount.
 		inputCount = newInputCount;
 	}
 
-	// Fini. On écrit les valeurs de sortie.	
+	// Fini. On √©crit les valeurs de sortie.	
 	*ioInputCount -= inputCount;
 	*ioOutputCount -= outputCount;
 	
-	// Reste-t-il des données?
+	// Reste-t-il des donn√©es?
 	if (theResult == kInputExhausted)
 	{
 		if ((inputCount > 0) && (outputCount == 0))
@@ -959,28 +959,28 @@ UUTF16Conv::FromUTF8(
 	size_t*			ioOutputCount
 	)
 {
-	// Résultat (par défaut, on a terminé).
+	// R√©sultat (par d√©faut, on a termin√©).
 	EResult theResult = kInputExhausted;
 	
-	// Nombre d'octets en entrée.
+	// Nombre d'octets en entr√©e.
 	size_t inputCount = *ioInputCount;
 	// Nombre de mots de 16 bits en sortie.
 	size_t outputCount = *ioOutputCount;
-	// Curseur sur l'entrée
+	// Curseur sur l'entr√©e
 	const KUInt8* theInputBuffer = (const KUInt8*) inInputBuffer;
 	
 	// Si tout va bien, nouvelle valeur du nombre d'octets
-	// disponibles en entrée.
+	// disponibles en entr√©e.
 	size_t newInputCount;
 
 	while ((inputCount > 0) && (outputCount > 0))
 	{
-		// Extraction du caractère UCS-4.
+		// Extraction du caract√®re UCS-4.
 		KUInt32 theUCS4Char;
 		
-		// Premier caractère UTF-8.
+		// Premier caract√®re UTF-8.
 		KUInt8 theFirstChar = *theInputBuffer;
-		size_t theCharSize;	// Taille du caractère en UTF-8
+		size_t theCharSize;	// Taille du caract√®re en UTF-8
 		theInputBuffer++;
 		if ((theFirstChar & 0x80) == 0)
 		{
@@ -1005,7 +1005,7 @@ UUTF16Conv::FromUTF8(
 		
 		if (inputCount < theCharSize)
 		{
-			// Pas assez de caractères dans la mémoire d'entrée.
+			// Pas assez de caract√®res dans la m√©moire d'entr√©e.
 			theResult = kMiddleOfMultiChar;
 			break;
 		}
@@ -1034,13 +1034,13 @@ UUTF16Conv::FromUTF8(
 				
 				outputCount -= 2;
 			} else {
-				// Pas assez de caractères dans la mémoire de sortie.
+				// Pas assez de caract√®res dans la m√©moire de sortie.
 				theResult = kMiddleOfMultiChar;
 				break;
 			}
 		}
 
-		// Tout c'est bien passé, on note la nouvelle valeur de inputCount.
+		// Tout c'est bien pass√©, on note la nouvelle valeur de inputCount.
 		inputCount = newInputCount;
 	}
 	

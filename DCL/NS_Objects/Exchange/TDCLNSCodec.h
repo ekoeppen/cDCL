@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSCodec.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			22/10/2002
+// Cr√©√© le:			22/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSCodec.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@ class TDCLNSObject;
 class TDCLStream;
 
 ///
-/// Classe de base pour les encodeurs/décodeurs d'objets NS sur un flux.
+/// Classe de base pour les encodeurs/d√©codeurs d'objets NS sur un flux.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
@@ -62,9 +62,9 @@ public:
 	virtual ~TDCLNSCodec( void );
 
 	///
-	/// Accesseur sur le flux associé.
+	/// Accesseur sur le flux associ√©.
 	///
-	/// \return le flux où on écrit/lit les données.
+	/// \return le flux o√π on √©crit/lit les donn√©es.
 	///
 	inline TDCLStream* GetStream( void ) const
 		{
@@ -73,16 +73,16 @@ public:
 
 protected:
 	///
-	/// Constructeur à partir d'un flux.
+	/// Constructeur √† partir d'un flux.
 	///
-	/// \param inStream		flux où lire/écrire les données.
+	/// \param inStream		flux o√π lire/√©crire les donn√©es.
 	///
 	TDCLNSCodec( TDCLStream* inStream );
 
 	///
-	/// Accesseur sur le nombre d'éléments.
+	/// Accesseur sur le nombre d'√©l√©ments.
 	///
-	/// \return le nombre d'éléments dans la liste.
+	/// \return le nombre d'√©l√©ments dans la liste.
 	///
 	inline KUInt32	GetListSize( void )
 		{
@@ -90,10 +90,10 @@ protected:
 		}
 
 	///
-	/// Accesseur sur un élément donné.
+	/// Accesseur sur un √©l√©ment donn√©.
 	///
-	/// \param inIndex	index de l'élément à retourner.
-	/// \return le n-ième élément de la liste.
+	/// \param inIndex	index de l'√©l√©ment √† retourner.
+	/// \return le n-i√®me √©l√©ment de la liste.
 	///
 	inline TDCLNSRef	GetListItemObject( KUInt32 inIndex )
 		{
@@ -103,8 +103,8 @@ protected:
 	///
 	/// Accesseur sur le pointeur sur le biscuit.
 	///
-	/// \param inIndex	index du biscuit à retourner.
-	/// \return un pointeur sur le n-ième biscuit de la liste.
+	/// \param inIndex	index du biscuit √† retourner.
+	/// \return un pointeur sur le n-i√®me biscuit de la liste.
 	///
 	inline KUIntPtr*	GetListItemCookie( KUInt32 inIndex )
 		{
@@ -115,8 +115,8 @@ protected:
 	/// Ajoute un objet dans la liste des objets.
 	/// Retourne son ID.
 	///
-	/// \param inObject		objet à ajouter. Ceci doit être un pointeur.
-	/// \param inCookie		biscuit à stocker avec l'objet.
+	/// \param inObject		objet √† ajouter. Ceci doit √™tre un pointeur.
+	/// \param inCookie		biscuit √† stocker avec l'objet.
 	/// \return ID de cet objet.
 	///
 	KUInt32				AddObjectToList(
@@ -125,21 +125,21 @@ protected:
 
 private:
 	///
-	/// Constructeur par défaut non disponible.
+	/// Constructeur par d√©faut non disponible.
 	///
 	TDCLNSCodec( void );
 
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLNSCodec( const TDCLNSCodec& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLNSCodec& operator = ( const TDCLNSCodec& inCopy );
 
@@ -147,7 +147,7 @@ private:
 	/// Constantes pour cette classe.
 	///
 	enum {
-		kListChunkSize	= 10	///< Incrément de la liste lorsqu'elle est pleine.
+		kListChunkSize	= 10	///< Incr√©ment de la liste lorsqu'elle est pleine.
 	};
 
 	///
@@ -158,15 +158,15 @@ private:
 		KUIntPtr	fCookie;	///< Biscuit.
 	};
 
-	/// \name Variables Privées
+	/// \name Variables Priv√©es
 
 	SListItem*		mList;				///< Liste des objets. L'indice dans
 										///< cette liste est l'ID.
-	KUInt32			mListAllocatedSize;	///< Nombre d'éléments que la liste
+	KUInt32			mListAllocatedSize;	///< Nombre d'√©l√©ments que la liste
 										///< peut contenir.
-	KUInt32			mListSize;			///< Nombre d'éléments que la liste
+	KUInt32			mListSize;			///< Nombre d'√©l√©ments que la liste
 										///< contient.
-	TDCLStream*		mStream;			///< Flux utilisé par ce codec.
+	TDCLStream*		mStream;			///< Flux utilis√© par ce codec.
 };
 
 #endif

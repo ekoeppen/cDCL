@@ -2,7 +2,7 @@
 // Fichier:			UDES.h
 // Projet:			K
 // 
-// Créé le:			26/8/2001
+// Cr√©√© le:			26/8/2001
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -43,7 +43,7 @@
 ///
 /// Classe pour le cryptage DES.
 ///
-/// Cette classe suit les spécifications FIPS PUB 46 & FIPS PUB 81.
+/// Cette classe suit les sp√©cifications FIPS PUB 46 & FIPS PUB 81.
 /// Cf:	http://www.itl.nist.gov/fipspubs/fip46-2.htm
 /// and	http://www.itl.nist.gov/fipspubs/fip81.htm
 ///
@@ -58,9 +58,9 @@ public:
 	///
 	/// Crypte un bloc de 64 bits.
 	///
-	/// \param inKey		clé pour le cryptage.
-	/// \param ioData		données (en entrée, données à crypter, en sortie,
-	///						données cryptées)
+	/// \param inKey		cl√© pour le cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† crypter, en sortie,
+	///						donn√©es crypt√©es)
 	///
 	static inline void EncodeBlock( const KUInt64& inKey, KUInt64* ioData )
 		{
@@ -70,11 +70,11 @@ public:
 		}
 	
 	///
-	/// Décrypte un bloc de 64 bits.
+	/// D√©crypte un bloc de 64 bits.
 	///
-	/// \param inKey		clé pour le décryptage.
-	/// \param ioData		données (en entrée, données à décrypter, en sortie,
-	///						données décryptées)
+	/// \param inKey		cl√© pour le d√©cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† d√©crypter, en sortie,
+	///						donn√©es d√©crypt√©es)
 	///
 	static inline void	DecodeBlock( const KUInt64& inKey, KUInt64* ioData )
 		{
@@ -86,9 +86,9 @@ public:
 	///
 	/// Crypte un bloc de 64 bits, version compatible Newton.
 	///
-	/// \param inKey		clé pour le cryptage.
-	/// \param ioData		données (en entrée, données à crypter, en sortie,
-	///						données cryptées)
+	/// \param inKey		cl√© pour le cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† crypter, en sortie,
+	///						donn√©es crypt√©es)
 	///
 	static inline void NewtonEncodeBlock( const KUInt64& inKey, KUInt64* ioData )
 		{
@@ -98,11 +98,11 @@ public:
 		}
 	
 	///
-	/// Décrypte un bloc de 64 bits.
+	/// D√©crypte un bloc de 64 bits.
 	///
-	/// \param inKey		clé pour le décryptage.
-	/// \param ioData		données (en entrée, données à décrypter, en sortie,
-	///						données décryptées)
+	/// \param inKey		cl√© pour le d√©cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† d√©crypter, en sortie,
+	///						donn√©es d√©crypt√©es)
 	///
 	static void	NewtonDecodeBlock( const KUInt64& inKey, KUInt64* ioData )
 		{
@@ -112,11 +112,11 @@ public:
 		}
 
 	///
-	/// Crée une clé à partir d'une chaîne unicode terminée par un caractère
-	/// nul. Utilise la clé de création par défaut.
+	/// Cr√©e une cl√© √† partir d'une cha√Æne unicode termin√©e par un caract√®re
+	/// nul. Utilise la cl√© de cr√©ation par d√©faut.
 	///
-	/// \param inString			chaîne unicode considérée.
-	/// \param outKey			en sortie, clé correspondant à la chaîne.
+	/// \param inString			cha√Æne unicode consid√©r√©e.
+	/// \param outKey			en sortie, cl√© correspondant √† la cha√Æne.
 	///
 	static inline void CreateKey(
 					const KUInt16* inString,
@@ -126,12 +126,12 @@ public:
 		}
 
 	///
-	/// Crée une clé à partir d'une chaîne unicode terminée par un caractère
+	/// Cr√©e une cl√© √† partir d'une cha√Æne unicode termin√©e par un caract√®re
 	/// nul.
 	///
-	/// \param inString			chaîne unicode considérée.
-	/// \param outKey			en sortie, clé correspondant à la chaîne.
-	/// \param inCreationKey	clé pour la création (doit avoir une parité
+	/// \param inString			cha√Æne unicode consid√©r√©e.
+	/// \param outKey			en sortie, cl√© correspondant √† la cha√Æne.
+	/// \param inCreationKey	cl√© pour la cr√©ation (doit avoir une parit√©
 	///							correcte)
 	///
 	static inline void CreateKey(
@@ -143,12 +143,12 @@ public:
 		}
 
 	///
-	/// Crée une clé à partir d'une chaîne unicode terminée par un caractère
+	/// Cr√©e une cl√© √† partir d'une cha√Æne unicode termin√©e par un caract√®re
 	/// nul. Ceci est une version compatible avec le pseudo DES du newton.
-	/// (et donc avec la méthode NewtonScript DESCreatePasswordKey).
+	/// (et donc avec la m√©thode NewtonScript DESCreatePasswordKey).
 	///
-	/// \param inString	chaîne unicode considérée.
-	/// \param outKey	en sortie, clé correspondant à la chaîne.
+	/// \param inString	cha√Æne unicode consid√©r√©e.
+	/// \param outKey	en sortie, cl√© correspondant √† la cha√Æne.
 	///
 	static inline void CreateNewtonKey( const KUInt16* inString, KUInt64* outKey )
 		{
@@ -158,15 +158,15 @@ public:
 
 	///
 	/// Crypte avec le mode ECB.
-	/// Si les données ne sont pas dans un multiple de 64 bits, alors le reste
-	/// est complété de manière aléatoire. La mémoire tampon de sortie doit
-	/// avoir comme taille celle des données en entrée arrondie aux 64 bits
-	/// supérieurs.
+	/// Si les donn√©es ne sont pas dans un multiple de 64 bits, alors le reste
+	/// est compl√©t√© de mani√®re al√©atoire. La m√©moire tampon de sortie doit
+	/// avoir comme taille celle des donn√©es en entr√©e arrondie aux 64 bits
+	/// sup√©rieurs.
 	///
-	/// \param inKey		clé pour le cryptage.
-	/// \param inData		données à crypter
-	/// \param inSize		taille des données à crypter
-	/// \param outBuffer	mémoire tampon pour la sortie.
+	/// \param inKey		cl√© pour le cryptage.
+	/// \param inData		donn√©es √† crypter
+	/// \param inSize		taille des donn√©es √† crypter
+	/// \param outBuffer	m√©moire tampon pour la sortie.
 	///
 	static inline void EncodeECB(
 							const KUInt64& inKey,
@@ -183,7 +183,7 @@ protected:
 	friend class UDESTest;
 
 	///
-	/// Structure pour les sous-clés de 48 bits.
+	/// Structure pour les sous-cl√©s de 48 bits.
 	///
 	struct SSubKey
 	{
@@ -192,51 +192,51 @@ protected:
 	};
 
 	///
-	/// Calcule les sous-clés à partir d'une clé donnée.
+	/// Calcule les sous-cl√©s √† partir d'une cl√© donn√©e.
 	///
-	/// \param inKey		clé
-	/// \param outSubKeys	en sortie, sous-clés
+	/// \param inKey		cl√©
+	/// \param outSubKeys	en sortie, sous-cl√©s
 	///
 	static void	KeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] );
 	
 	///
-	/// La même chose, mais avec un décalage des clés au début. Ceci
-	/// est conçu pour être compatible avec le pseudo-DES dans NewtonOS.
+	/// La m√™me chose, mais avec un d√©calage des cl√©s au d√©but. Ceci
+	/// est con√ßu pour √™tre compatible avec le pseudo-DES dans NewtonOS.
 	///
-	/// \param inKey		clé
-	/// \param outSubKeys	en sortie, sous-clés
+	/// \param inKey		cl√©
+	/// \param outSubKeys	en sortie, sous-cl√©s
 	///
 	static void	NewtonKeySchedule( const KUInt64& inKey, SSubKey outSubKeys[16] );
 	
 	///
 	/// Crypte un bloc de 64 bits.
 	///
-	/// \param inSubKeys	sous-clés pour le cryptage.
-	/// \param ioData		données (en entrée, données à crypter, en sortie,
-	///						données cryptées)
+	/// \param inSubKeys	sous-cl√©s pour le cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† crypter, en sortie,
+	///						donn√©es crypt√©es)
 	///
 	static void EncodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData );
 	
 	///
-	/// Décrypte un bloc de 64 bits.
+	/// D√©crypte un bloc de 64 bits.
 	///
-	/// \param inSubKeys	sous-clés pour le décryptage.
-	/// \param ioData		données (en entrée, données à décrypter, en sortie,
-	///						données décryptées)
+	/// \param inSubKeys	sous-cl√©s pour le d√©cryptage.
+	/// \param ioData		donn√©es (en entr√©e, donn√©es √† d√©crypter, en sortie,
+	///						donn√©es d√©crypt√©es)
 	///
 	static void	DecodeBlock( const SSubKey inSubKeys[16], KUInt64* ioData );
 
 	///
 	/// Crypte avec le mode ECB.
-	/// Si les données ne sont pas dans un multiple de 64 bits, alors le reste
-	/// est complété de manière aléatoire. La mémoire tampon de sortie doit
-	/// avoir comme taille celle des données en entrée arrondie aux 64 bits
-	/// supérieurs.
+	/// Si les donn√©es ne sont pas dans un multiple de 64 bits, alors le reste
+	/// est compl√©t√© de mani√®re al√©atoire. La m√©moire tampon de sortie doit
+	/// avoir comme taille celle des donn√©es en entr√©e arrondie aux 64 bits
+	/// sup√©rieurs.
 	///
-	/// \param inSubKeys	sous-clés pour le cryptage.
-	/// \param inData		données à crypter
-	/// \param inSize		taille des données à crypter
-	/// \param outBuffer	mémoire tampon pour la sortie.
+	/// \param inSubKeys	sous-cl√©s pour le cryptage.
+	/// \param inData		donn√©es √† crypter
+	/// \param inSize		taille des donn√©es √† crypter
+	/// \param outBuffer	m√©moire tampon pour la sortie.
 	///
 	static void EncodeECB(
 							const SSubKey inSubKeys[16],
@@ -246,18 +246,18 @@ protected:
 
 private:
 	///
-	/// Constructeur par défaut volontairement privé.
+	/// Constructeur par d√©faut volontairement priv√©.
 	/// Cette classe est statique.
 	///
 	UDES( void );
 
 	///
-	/// Crée une clé à partir d'une chaîne unicode terminée par un caractère
-	/// nul. La table pour la parité est un paramètre.
+	/// Cr√©e une cl√© √† partir d'une cha√Æne unicode termin√©e par un caract√®re
+	/// nul. La table pour la parit√© est un param√®tre.
 	///
-	/// \param inString	chaîne unicode considérée.
-	/// \param outKey	en sortie, clé correspondant à la chaîne.
-	/// \param inCreationKey	clé pour la création (doit avoir une parité
+	/// \param inString	cha√Æne unicode consid√©r√©e.
+	/// \param outKey	en sortie, cl√© correspondant √† la cha√Æne.
+	/// \param inCreationKey	cl√© pour la cr√©ation (doit avoir une parit√©
 	///							correcte)
 	/// \param inNewtonCompat	si on veut faire du compatible Newton
 	///							(vs standard DES)
@@ -323,17 +323,17 @@ private:
 	static const KUInt32 kPermMask[32];
 
 	///
-	/// Clé par défaut pour la création d'une clé à partir d'une chaîne.
+	/// Cl√© par d√©faut pour la cr√©ation d'une cl√© √† partir d'une cha√Æne.
 	///
 	static const KUInt64 kDefaultCreationKey;
 	
 	///
-	/// Clé compatible Newton pour la création d'une clé à partir d'une chaîne.
+	/// Cl√© compatible Newton pour la cr√©ation d'une cl√© √† partir d'une cha√Æne.
 	///
 	static const KUInt64 kNewtonCreationKey;
 	
 	///
-	/// Table pour calculer la parité des octets.
+	/// Table pour calculer la parit√© des octets.
 	///
 	static const KUInt8 kOddBitNumber[256];
 };

@@ -2,7 +2,7 @@
 // Fichier:			TDCLIOKitSerialPort.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			4/4/2003
+// Cr√©√© le:			4/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLIOKitSerialPort.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -52,14 +52,14 @@
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
 
 ///
-/// Classe pour des ports série sous MacOS X dont on obtient le nom
-/// avec l'IOKit. Cette classe ne fait en fait pas grand chose sinon itérer sur les ports
-/// série disponibles.
+/// Classe pour des ports s√©rie sous MacOS X dont on obtient le nom
+/// avec l'IOKit. Cette classe ne fait en fait pas grand chose sinon it√©rer sur les ports
+/// s√©rie disponibles.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLIOKitSerialPort
 	:
@@ -67,9 +67,9 @@ class TDCLIOKitSerialPort
 {
 public:
 	///
-	/// Constructeur à partir d'un indice.
+	/// Constructeur √† partir d'un indice.
 	///
-	/// \param inThreadsIntf	interface pour les processus légers.
+	/// \param inThreadsIntf	interface pour les processus l√©gers.
 	/// \param inIndex			indice du port
 	/// \param inBaud			vitesse du port
 	///
@@ -79,10 +79,10 @@ public:
 				long inBaud = 38400 );
 
 	///
-	/// Constructeur à partir d'un chemin BSD sous forme de chaîne CFStringRef.
-	/// C'est le constructeur préféré (stocker l'indice du port n'est pas tip top).
+	/// Constructeur √† partir d'un chemin BSD sous forme de cha√Æne CFStringRef.
+	/// C'est le constructeur pr√©f√©r√© (stocker l'indice du port n'est pas tip top).
 	///
-	/// \param inThreadsIntf	interface pour les processus légers.
+	/// \param inThreadsIntf	interface pour les processus l√©gers.
 	/// \param inDevPath		chemin du port
 	/// \param inBaud			vitesse du port
 	///
@@ -97,64 +97,64 @@ public:
 	virtual ~TDCLIOKitSerialPort( void );
 
 	///
-	/// Détermine le nom d'un port série. Utile pour être sympa avec l'utilisateur.
+	/// D√©termine le nom d'un port s√©rie. Utile pour √™tre sympa avec l'utilisateur.
 	///
-	/// \param inIndex			index du port série (base 0)
+	/// \param inIndex			index du port s√©rie (base 0)
 	/// \return le nom du port ou \c nil si le port n'existe pas.
 	///
 	static	CFStringRef	GetSerialPortName( KUInt32 inIndex );
 
 	///
-	/// Détermine le nom d'un port série avec son nom. Utile pour être sympa avec
-	/// l'utilisateur. Cette méthode retourne \c nil si le port n'existe pas.
-	/// Remarque: cette méthode compare avec la base I/O Kit.
+	/// D√©termine le nom d'un port s√©rie avec son nom. Utile pour √™tre sympa avec
+	/// l'utilisateur. Cette m√©thode retourne \c nil si le port n'existe pas.
+	/// Remarque: cette m√©thode compare avec la base I/O Kit.
 	///
-	/// \param inDevPath		chemin BSD du port série.
+	/// \param inDevPath		chemin BSD du port s√©rie.
 	/// \return le nom du port ou \c nil si le port n'existe pas.
 	///
 	static	CFStringRef	GetSerialPortName( CFStringRef inDevPath );
 
 	///
-	/// Détermine si un port série existe à partir de son chemin.
-	/// Remarque: cette méthode compare avec la base I/O Kit.
+	/// D√©termine si un port s√©rie existe √† partir de son chemin.
+	/// Remarque: cette m√©thode compare avec la base I/O Kit.
 	///
-	/// \param inDevPath		chemin BSD du port série.
+	/// \param inDevPath		chemin BSD du port s√©rie.
 	/// \return \c true si le port existe, \c false sinon.
 	///
 	static	Boolean		IsAvailable( CFStringRef inDevPath );
 
 	///
-	/// Détermine le chemin BSD d'un port série.
+	/// D√©termine le chemin BSD d'un port s√©rie.
 	///
-	/// \param inIndex			index du port série (base 0)
+	/// \param inIndex			index du port s√©rie (base 0)
 	/// \return le chemin BSD du port ou \c nil si le port n'existe pas.
 	///
 	static	CFStringRef	GetSerialPortPath( KUInt32 inIndex );
 
 	///
-	/// Détermine le nombre de ports série disponibles.
+	/// D√©termine le nombre de ports s√©rie disponibles.
 	///
-	/// \return le nombre de ports série (n) sur cette machine. L'index du port
-	///			pour les autres méthodes doit être entre 0 et n - 1.
+	/// \return le nombre de ports s√©rie (n) sur cette machine. L'index du port
+	///			pour les autres m√©thodes doit √™tre entre 0 et n - 1.
 	///
 	static	KUInt32	CountSerialPorts( void );
 
 private:
 	///
-	/// Récupère un itérateur sur les ports série.
+	/// R√©cup√®re un it√©rateur sur les ports s√©rie.
 	///
-	/// \param outIterator	en sortie, itérateur sur les ports série. L'itérateur
-	///						doit être libéré par l'appelant. Il n'est
-	///						pas alloué si une exception est lancée.
-	/// \throws TDCLNotAvailableException s'il n'y a pas de port série.
+	/// \param outIterator	en sortie, it√©rateur sur les ports s√©rie. L'it√©rateur
+	///						doit √™tre lib√©r√© par l'appelant. Il n'est
+	///						pas allou√© si une exception est lanc√©e.
+	/// \throws TDCLNotAvailableException s'il n'y a pas de port s√©rie.
 	///
 	static void GetSerialPortsIterator( io_iterator_t* outIterator );
 
 	///
-	/// Transforme une chaîne CFStringRef en chaîne US-ASCII allouée avec malloc.
+	/// Transforme une cha√Æne CFStringRef en cha√Æne US-ASCII allou√©e avec malloc.
 	///
-	/// \param inStringRef	chaîne CFStringRef.
-	/// \return la chaîne en US-ASCII allouée avec malloc
+	/// \param inStringRef	cha√Æne CFStringRef.
+	/// \return la cha√Æne en US-ASCII allou√©e avec malloc
 	///
 	static	char*	CFStringRefToCStr( CFStringRef inStringRef );
 };

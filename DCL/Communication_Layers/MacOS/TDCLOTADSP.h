@@ -2,7 +2,7 @@
 // Fichier:			TDCLOTADSP.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			25/01/2002
+// Cr√©√© le:			25/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOTADSP.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,7 +46,7 @@
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 /// \remark	sous MacOS X, OpenTransport ne permet pas l'ADSP.
 ///
 class TDCLOTADSP
@@ -58,17 +58,17 @@ public:
 	/// Constantes pour la classe TDCLOTADSP
 	///
 	enum {
-		kMaxADSPPipeCount	=	1024	///< nombre maximal de connexions par défaut.
+		kMaxADSPPipeCount	=	1024	///< nombre maximal de connexions par d√©faut.
 										///< En ADSP/OT, c'est 1024.
 	};
 	
 	///
 	/// Constructeur.
 	///
-	/// \param inThreadsIntf	interface pour les threads (utilisée pour Yield).
-	/// \param inMachineName	nom de la machine (si nil, on demande au système)
-	/// \param inMaxPipeCount	nombre maximum de connexion en même temps.
-	/// \param inTimeout		délai de temporisation, format CommLayer.
+	/// \param inThreadsIntf	interface pour les threads (utilis√©e pour Yield).
+	/// \param inMachineName	nom de la machine (si nil, on demande au syst√®me)
+	/// \param inMaxPipeCount	nombre maximum de connexion en m√™me temps.
+	/// \param inTimeout		d√©lai de temporisation, format CommLayer.
 	///
 	TDCLOTADSP(
 			IDCLThreads*	inThreadsIntf,
@@ -78,7 +78,7 @@ public:
 		);
 	
 	///
-	/// Vérifie que le service est disponible.
+	/// V√©rifie que le service est disponible.
 	///
 	/// \return \c true si le service est disponible, \c false sinon.
 	///

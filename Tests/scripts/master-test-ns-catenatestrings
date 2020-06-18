@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame PUBLIC "-//DCL Group//Canonical DTD 1.0//EN" "http://www.kallisys.com/DTDs/newtonscript.dtd">
+<array id="n0">
+	<string id="n1">
+		<value>HelloWorld</value>
+	</string>
+	<string id="n2">
+		<value>HelloWorld!</value>
+	</string>
+	<string id="n3">
+		<value>HelloWorld!</value>
+	</string>
+	<string id="n4">
+		<value>HelloWorld !</value>
+	</string>
+	<string id="n5">
+		<value>HelloWorld !</value>
+	</string>
+	<string id="n6">
+		<value>HelloWorld</value>
+	</string>
+	<string id="n7">
+		<value>HelloWorld!</value>
+	</string>
+	<string id="n8">
+		<value>HelloWorld!</value>
+	</string>
+	<string id="n9">
+		<value>HelloWorld !</value>
+	</string>
+	<string id="n10">
+		<value>HelloWorld !</value>
+	</string>
+	<string id="n11">
+		<value>Hello World</value>
+	</string>
+	<string id="n12">
+		<value>Hello World!</value>
+	</string>
+	<string id="n13">
+		<value>Hello World!</value>
+	</string>
+	<string id="n14">
+		<value>Hello World !</value>
+	</string>
+	<string id="n15">
+		<value>Hello World !</value>
+	</string>
+	<string id="n16">
+		<value>Hello World</value>
+	</string>
+	<string id="n17">
+		<value>Hello World!</value>
+	</string>
+	<string id="n18">
+		<value>Hello World!</value>
+	</string>
+	<string id="n19">
+		<value>Hello World !</value>
+	</string>
+	<string id="n20">
+		<value>Hello World !</value>
+	</string>
+</array>

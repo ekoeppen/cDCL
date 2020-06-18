@@ -2,7 +2,7 @@
 // Fichier:			TDCLDockCmdBackupIDs.h
 // Projet:			Desktop Connection Library
 // 
-// Créé le:			23/9/2003
+// Cr√©√© le:			23/9/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLDockCmdBackupIDs.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -47,7 +47,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLDockCmdBackupIDs
 	:
@@ -55,9 +55,9 @@ class TDCLDockCmdBackupIDs
 {
 public:
 	///
-	/// Constructeur unique à partir des ID.
+	/// Constructeur unique √† partir des ID.
 	/// TDCLDockCommand::ReceiveCommand a
-	/// Les ID sont déjà dans l'indien local.
+	/// Les ID sont d√©j√† dans l'indien local.
 	///
 	/// \param inNbShorts	nombre d'ID.
 	/// \param inShorts		liste des identifiants.
@@ -75,14 +75,14 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdBackupIDs( const TDCLDockCmdBackupIDs& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLDockCmdBackupIDs& operator = ( const TDCLDockCmdBackupIDs& inCopy );
 

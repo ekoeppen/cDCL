@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSSymbol.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSSymbol.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -52,32 +52,32 @@ class TDCLPkgDecoder;
 /// Le point sur les symboles 8 bits.
 /// ---------------------------------
 ///
-/// Les symboles ne contiennent normalement que des caractères entre 32 et 127.
-/// Cependant, NTK et WinNTK peuvent, dans certaines circonstances, créer des
-/// symboles 8 bits. Chacun calcule la valeur de hachage en mettant la chaîne
-/// en majuscule, mais chacun le fait dans l'encodage du système
+/// Les symboles ne contiennent normalement que des caract√®res entre 32 et 127.
+/// Cependant, NTK et WinNTK peuvent, dans certaines circonstances, cr√©er des
+/// symboles 8 bits. Chacun calcule la valeur de hachage en mettant la cha√Æne
+/// en majuscule, mais chacun le fait dans l'encodage du syst√®me
 /// (Windows, MacRoman). Le Newton en revanche supprime froidement les accents
-/// lorsqu'on tente de créer des symboles 8 bits.
+/// lorsqu'on tente de cr√©er des symboles 8 bits.
 ///
-/// Je suppose qu'un symbole 8 bits ne pourra être déclaré comme égal à un autre
-/// symbole 8 bits que si ce symbole est construit à la main ou a été créé par
-/// le même programme (WinNTK ou NTK) afin que la chaîne soit la même et que la
-/// valeur de hachage soit aussi la même.
+/// Je suppose qu'un symbole 8 bits ne pourra √™tre d√©clar√© comme √©gal √† un autre
+/// symbole 8 bits que si ce symbole est construit √† la main ou a √©t√© cr√©√© par
+/// le m√™me programme (WinNTK ou NTK) afin que la cha√Æne soit la m√™me et que la
+/// valeur de hachage soit aussi la m√™me.
 ///
 /// Pour la DCL, les choses se passent ainsi:
-/// - comme sur Newton et NTK/WinNTK, les tests d'ordre et d'égalité commencent
+/// - comme sur Newton et NTK/WinNTK, les tests d'ordre et d'√©galit√© commencent
 ///   par la valeur de hachage.
-/// - les constructeurs normaux traduisent les chaînes avec des séquences \\u.
-/// - il y a un constructeur avec une chaîne 8 bits et une valeur de hachage.
+/// - les constructeurs normaux traduisent les cha√Ænes avec des s√©quences \\u.
+/// - il y a un constructeur avec une cha√Æne 8 bits et une valeur de hachage.
 /// - les symboles dans les paquets sont lus avec la valeur de hachage du
 ///   paquet.
-/// - la chaîne est considérée comme théoriquement sur 7 bits mais pour
-///   l'export XML, elle est traitée comme une chaîne Latin1.
+/// - la cha√Æne est consid√©r√©e comme th√©oriquement sur 7 bits mais pour
+///   l'export XML, elle est trait√©e comme une cha√Æne Latin1.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.7 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLNSSymbol
 	:
@@ -85,44 +85,44 @@ class TDCLNSSymbol
 {
 public:
 	///
-	/// Constructeur à partir d'une chaîne de caractère ISO-8859-1
+	/// Constructeur √† partir d'une cha√Æne de caract√®re ISO-8859-1
 	///
-	/// La chaîne est convertie en ASCII 32/127 (avec des slash-u-code-slash-u).
+	/// La cha√Æne est convertie en ASCII 32/127 (avec des slash-u-code-slash-u).
 	///
-	/// \param inString		chaîne de caractère pour ce symbole.
+	/// \param inString		cha√Æne de caract√®re pour ce symbole.
 	///
 	TDCLNSSymbol( const char* inString );
 
 	///
-	/// Constructeur à partir d'une chaîne ASCII et d'une valeur de hachage.
+	/// Constructeur √† partir d'une cha√Æne ASCII et d'une valeur de hachage.
 	///
-	/// \param inString		chaîne de caractère pour ce symbole.
-	/// \param inHashCode	valeur de hachage pour la chaîne.
+	/// \param inString		cha√Æne de caract√®re pour ce symbole.
+	/// \param inHashCode	valeur de hachage pour la cha√Æne.
 	///
 	TDCLNSSymbol( const char* inString, KUInt32 inHashCode );
 
 	///
-	/// Constructeur à partir d'une chaîne de caractère UCS-2.
+	/// Constructeur √† partir d'une cha√Æne de caract√®re UCS-2.
 	///
-	/// La chaîne est convertie en ASCII 32/127 (avec des slash-u-code-slash-u).
+	/// La cha√Æne est convertie en ASCII 32/127 (avec des slash-u-code-slash-u).
 	///
-	/// \param inString 	chaîne de caractère pour ce symbole.
+	/// \param inString 	cha√Æne de caract√®re pour ce symbole.
 	///
 	TDCLNSSymbol( const KUInt16* inString );
 
 	///
 	/// Constructeur par copie.
-	/// La chaîne est copiée.
+	/// La cha√Æne est copi√©e.
 	///
-	/// \param inCopy 		objet à copier
+	/// \param inCopy 		objet √† copier
 	///
 	TDCLNSSymbol( const TDCLNSSymbol& inCopy );
 
 	///
-	/// Opérateur d'assignation.
-	/// La chaîne est copiée.
+	/// Op√©rateur d'assignation.
+	/// La cha√Æne est copi√©e.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLNSSymbol& operator = ( const TDCLNSSymbol& inCopy );
 
@@ -132,7 +132,7 @@ public:
 	virtual ~TDCLNSSymbol( void );
 
 	///
-	/// Détermine si cet objet est un symbole.
+	/// D√©termine si cet objet est un symbole.
 	///
 	/// \return \c false
 	///
@@ -149,9 +149,9 @@ public:
 		}
 
 	///
-	/// Accesseur sur la chaîne
+	/// Accesseur sur la cha√Æne
 	///
-	/// \return 	la chaîne (encodée en ASCII 32/127), terminée par un nul.
+	/// \return 	la cha√Æne (encod√©e en ASCII 32/127), termin√©e par un nul.
 	///
 	inline const char* GetString( void ) const
 		{
@@ -159,9 +159,9 @@ public:
 		}
 	
 	///
-	/// Opérateur pour faire de même.
+	/// Op√©rateur pour faire de m√™me.
 	///
-	/// \return		la chaîne (encodée en ASCII 32/127), terminée par un nul.
+	/// \return		la cha√Æne (encod√©e en ASCII 32/127), termin√©e par un nul.
 	///
 	inline operator const char*() const
 		{
@@ -169,22 +169,22 @@ public:
 		}
 
 	///
-	/// Compare \c this à un autre symbole.
+	/// Compare \c this √† un autre symbole.
 	///
 	/// La comparaison fonctionne ainsi:
-	/// - d'abord les valeurs de hachage sont comparées.
-	/// - ensuite, si elles sont égales, les chaînes sont comparées selon
+	/// - d'abord les valeurs de hachage sont compar√©es.
+	/// - ensuite, si elles sont √©gales, les cha√Ænes sont compar√©es selon
 	///   l'ordre lexicographique.
 	///
 	/// \param	inAlter		symbole avec lequel se comparer
 	/// \return	un entier:
-	///			- 0 si les deux symboles sont égaux.
-	///			- un entier négatif si \c this est plus petit que \p inAlter
+	///			- 0 si les deux symboles sont √©gaux.
+	///			- un entier n√©gatif si \c this est plus petit que \p inAlter
 	///			- un entier positif si \c this est plus grand que \p inAlter
 	int Compare( const TDCLNSSymbol& inAlter ) const;
 
 	///
-	/// Crée une copie de surface du symbole.
+	/// Cr√©e une copie de surface du symbole.
 	/// Appelle le constructeur par copie.
 	///
 	/// \return une copie de surface de this.
@@ -192,65 +192,65 @@ public:
 	virtual TDCLNSObject*	Clone( void ) const;
 
 	///
-	/// Crée un objet à partir d'un flux NSOF
+	/// Cr√©e un objet √† partir d'un flux NSOF
 	///
-	/// \param inDecoder	décodeur NSOF associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur NSOF associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSSymbol*	FromNSOF( TDCLNSOFDecoder* inDecoder );
 
 	///
-	/// Crée un objet à partir d'un paquet.
+	/// Cr√©e un objet √† partir d'un paquet.
 	///
-	/// \param inDecoder	décodeur Pkg associé à un flux donné.
-	/// \return un nouvel objet à partir de ce flux
+	/// \param inDecoder	d√©codeur Pkg associ√© √† un flux donn√©.
+	/// \return un nouvel objet √† partir de ce flux
 	///
 	static	TDCLNSSymbol*	FromPkg( TDCLPkgDecoder* inDecoder );
 
 	///
-	/// Détermine la classe de ce symbole.
-	/// Ce n'est pas forcément un symbole.
+	/// D√©termine la classe de ce symbole.
+	/// Ce n'est pas forc√©ment un symbole.
 	///
-	/// \return une référence vers la classe de ce symbole.
+	/// \return une r√©f√©rence vers la classe de ce symbole.
 	///
 	virtual TDCLNSRef ClassOf( void ) const;
 
 	///
-	/// Détermine la classe primaire de ce symbole.
-	/// Il s'agit forcément d'un symbole.
+	/// D√©termine la classe primaire de ce symbole.
+	/// Il s'agit forc√©ment d'un symbole.
 	///
-	/// \return une référence vers la classe primaire de ce symbole.
+	/// \return une r√©f√©rence vers la classe primaire de ce symbole.
 	///
 	virtual TDCLNSRef PrimClassOf( void ) const;
 
 	///
-	/// Détermine si le symbole this est une sous-classe d'un symbole donné.
+	/// D√©termine si le symbole this est une sous-classe d'un symbole donn√©.
 	/// I.e. s'il est de la forme super.foo.
-	/// Remarque: si le paramètre est égal à this, on retourne aussi \c true.
+	/// Remarque: si le param√®tre est √©gal √† this, on retourne aussi \c true.
 	///
-	/// \return une référence vers la classe primaire de ce symbole.
+	/// \return une r√©f√©rence vers la classe primaire de ce symbole.
 	///
 	Boolean IsSubClass( const TDCLNSSymbol& inSuper ) const;
 
 	///
 	/// Change la classe de ce symbole.
-	/// Ceci n'est pas possible avec la DCL (mais ça l'est avec NewtonOS).
+	/// Ceci n'est pas possible avec la DCL (mais √ßa l'est avec NewtonOS).
 	/// Si on change la classe d'un symbole sous NewtonOS, l'objet est
-	/// transformé en un binaire.
+	/// transform√© en un binaire.
 	/// Les symboles dans la DCL sont en lecture seule.
 	///
-	/// \param	inClass un objet qui sert de nouvelle classe à ce binaire.
+	/// \param	inClass un objet qui sert de nouvelle classe √† ce binaire.
 	/// \throws TDCLNSException pour indiquer que l'objet est en lecture
 	///			seule.
 	///
 	virtual void SetClass( const TDCLNSRef& inClass );
 
 	///
-	/// Calcule la valeur de hachage d'une chaîne.
-	/// La chaîne doit être composée de caractères entre 32 et 127.
+	/// Calcule la valeur de hachage d'une cha√Æne.
+	/// La cha√Æne doit √™tre compos√©e de caract√®res entre 32 et 127.
 	///
-	/// \param	inString	chaîne à hacher.
-	/// \return	valeur de hachage comme spécifiée dans Newton Formats.
+	/// \param	inString	cha√Æne √† hacher.
+	/// \return	valeur de hachage comme sp√©cifi√©e dans Newton Formats.
 	///
 	static KUInt32	HashFunction( const char* inString );
 
@@ -263,21 +263,21 @@ private:
 	};
 
 	///
-	/// Constructeur à partir d'un flux et d'un nombre d'octets.
-	/// La chaîne est lue telle quelle.
+	/// Constructeur √† partir d'un flux et d'un nombre d'octets.
+	/// La cha√Æne est lue telle quelle.
 	///
 	/// \param inStream		flux
-	/// \param inNbChars	nombre d'octets à lire (sans le zéro final)
+	/// \param inNbChars	nombre d'octets √† lire (sans le z√©ro final)
 	///
 	TDCLNSSymbol( TDCLStream* inStream, KUInt32 inNbChars );
 
 	///
-	/// Constructeur à partir d'un flux et d'un nombre d'octets et d'une valeur
+	/// Constructeur √† partir d'un flux et d'un nombre d'octets et d'une valeur
 	/// de hachage.
-	/// La chaîne est lue telle quelle.
+	/// La cha√Æne est lue telle quelle.
 	///
 	/// \param inStream		flux
-	/// \param inNbChars	nombre d'octets à lire (sans le zéro final)
+	/// \param inNbChars	nombre d'octets √† lire (sans le z√©ro final)
 	/// \param inHashCode	valeur de hachage.
 	///
 	TDCLNSSymbol(
@@ -286,30 +286,30 @@ private:
 			KUInt32 inHashCode );
 
 	///
-	/// Convertit une chaîne ISO-8859-1 en ASCII 32/127
+	/// Convertit une cha√Æne ISO-8859-1 en ASCII 32/127
 	///
-	/// \param	inString	chaîne à convertir.
-	/// \return la nouvelle chaîne, allouée avec malloc.
+	/// \param	inString	cha√Æne √† convertir.
+	/// \return la nouvelle cha√Æne, allou√©e avec malloc.
 	///
 	static char*	ToASCII32_127( const char* inString );
 
 	///
-	/// Convertit une chaîne UCS-2 en ASCII 32/127
+	/// Convertit une cha√Æne UCS-2 en ASCII 32/127
 	///
-	/// \param	inString	chaîne à convertir.
-	/// \return la nouvelle chaîne, allouée avec malloc.
+	/// \param	inString	cha√Æne √† convertir.
+	/// \return la nouvelle cha√Æne, allou√©e avec malloc.
 	///
 	static char*	ToASCII32_127( const KUInt16* inString );
 
 	/// \name Interface IStreamable
 	
 	///
-	/// Crée une représentation XML du symbole.
-	/// Comprend la balise de début, les données et la balise de fin.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation XML du symbole.
+	/// Comprend la balise de d√©but, les donn√©es et la balise de fin.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	/// \param inObjectID		ID de l'objet dans ce flux.
 	///
 	virtual void ToXML(
@@ -317,43 +317,43 @@ private:
 				KUInt32			inObjectID ) const;
 
 	///
-	/// Crée une représentation NSOF du symbole.
-	/// Comprend le type et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation NSOF du symbole.
+	/// Comprend le type et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToNSOF(
 				TDCLNSOFEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation sous forme de texte du symbole.
-	/// Comprend les crochets et les données.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Cr√©e une repr√©sentation sous forme de texte du symbole.
+	/// Comprend les crochets et les donn√©es.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
-	/// \param inEncoder		encodeur avec la liste des objets déjà
-	///							encodés pour les IDs.
+	/// \param inEncoder		encodeur avec la liste des objets d√©j√†
+	///							encod√©s pour les IDs.
 	///
 	virtual void ToText(
 				TDCLTextEncoder* inEncoder ) const;
 
 	///
-	/// Crée une représentation du symbole à mettre dans un
+	/// Cr√©e une repr√©sentation du symbole √† mettre dans un
 	/// paquet.
-	/// Appelle récursivement les méthodes de l'encodeur.
+	/// Appelle r√©cursivement les m√©thodes de l'encodeur.
 	///
 	/// \param inEncoder	encodeur pour le paquet.
-	/// \param ioOffset		en entrée et en sortie, décalage par rapport
+	/// \param ioOffset		en entr√©e et en sortie, d√©calage par rapport
 	///						au paquet.
 	///
 	virtual void ToPkg( TDCLPkgEncoder* inEncoder, KUInt32* ioOffset ) const;
 
-	/// \name Variables Privées
+	/// \name Variables Priv√©es
 		
-	const char*				mString;	///< Chaîne de caractère pour ce symbole.
-	const KUInt32			mHashCode;	///< Valeur de hachage (doit être
-										///< après!)
+	const char*				mString;	///< Cha√Æne de caract√®re pour ce symbole.
+	const KUInt32			mHashCode;	///< Valeur de hachage (doit √™tre
+										///< apr√®s!)
 };
 
 #endif

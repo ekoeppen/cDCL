@@ -2,7 +2,7 @@
 // Fichier:			TDCLXADSP.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			29/07/2002
+// Cr√©√© le:			29/07/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLXADSP.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -54,7 +54,7 @@
 #include <netat/adsp.h>
 
 // AppleTalk dans AppleTalk.Framework
-// (n'est pas dans le système mais dans Darwin)
+// (n'est pas dans le syst√®me mais dans Darwin)
 extern "C" {
 #include "at_proto.h"
 }
@@ -98,10 +98,10 @@ TDCLXADSP::TDCLXADSP(
 	{
 		SetMaxPipeCount( kMaxADSPPipeCount );
 	}
-	
+
 	const char* theMachineName;
-	
-	// Récupération du nom de la machine si nécessaire.
+
+	// R√©cup√©ration du nom de la machine si n√©cessaire.
 	if (inMachineName == nil)
 	{
 		theMachineName = UDCLMacMachineName::GetMachineName();
@@ -109,20 +109,20 @@ TDCLXADSP::TDCLXADSP(
 		theMachineName = inMachineName;
 	}
 
-	// Ensuite, on l'associe à l'adresse NBP kivabien.
+	// Ensuite, on l'associe √† l'adresse NBP kivabien.
 	const char *theType = "Docker";
 	const char *theZone = "*";
 
 	int theErr = ::nbp_make_entity(
 						&mMachineEntity, (char*) theMachineName,
 						(char*) theType, (char*) theZone);
-	
+
 	// Nettoyage
 	if (inMachineName == nil)
 	{
 		::free( (void*) theMachineName );
 	}
-	
+
 	if (theErr < 0)
 	{
 		// On lance une exception.
@@ -137,7 +137,7 @@ TDCLXADSP::TDCLXADSP(
 TDCLXADSP::~TDCLXADSP( void )
 {
 	StopListening();
-	
+
 	if (!mSocketsAreClosed)
 	{
 		if(mServerSocket >= 0)
@@ -203,13 +203,13 @@ TDCLXADSP::DoStartListening( void )
 				case ENAMETOOLONG:
 					throw DCLPlatformBadParamError( theErr );
 
-				case EISCONN:				
+				case EISCONN:
 					throw DCLPlatformBadStateError( theErr );
 
 				case EPROTONOSUPPORT:
 				case EPROTOTYPE:
 					throw DCLPlatformNotAvailable( theErr );
-				
+
 				case EMFILE:
 				case ENFILE:
 				case ENOBUFS:
@@ -218,7 +218,7 @@ TDCLXADSP::DoStartListening( void )
 				case ENOSR:
 #endif
 					throw DCLPlatformLimitReachedError( theErr );
-				
+
 				case EADDRINUSE:
 #warning handle EADDRINUSE properly
 					KDEBUG( "Address is in use" );
@@ -229,31 +229,31 @@ TDCLXADSP::DoStartListening( void )
 			}
         }
 
-		// Création de la paire de socket.	
+		// Cr√©ation de la paire de socket.
 		int theSocketPair[2];
 		if (::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, theSocketPair ) != 0)
 		{
 			throw DCLPlatformUnknownError( errno );
 		}
-		
+
 		mPublicPairMember = theSocketPair[0];
 		mPrivatePairMember = theSocketPair[1];
 
-		// La partie privée doit être non bloquante.
+		// La partie priv√©e doit √™tre non bloquante.
 		int flags = ::fcntl(mPrivatePairMember, F_GETFL, 0 /* ignored */);
 		flags |= O_NONBLOCK;
 		if (::fcntl(mPrivatePairMember, F_SETFL, flags) != 0)
 		{
 			throw DCLPlatformUnknownError( errno );
 		}
-		
+
 		mSocketsAreClosed = false;
 
 		theErr = ::nbp_register(
 							&mMachineEntity,
 							mServerSocket,
 							NULL );
-		
+
 		if (theErr < 0)
 		{
 			theErr = errno;
@@ -271,15 +271,15 @@ TDCLXADSP::DoStopListening( void )
 	if ( mServerSocket >= 0 )
 	{
 		// Nicolas nous raconte: fd is not currently used
-		// Je suppose que ça veut dire qu'on s'en fout de mServerSocket
-		
+		// Je suppose que √ßa veut dire qu'on s'en fout de mServerSocket
+
 		// Ici, l'erreur n'a pas tellement d'importance.
 		(void) ::nbp_remove( &mMachineEntity, mServerSocket );
 	}
 
 	if (mPublicPairMember >= 0)
 	{
-		// On écrit dans la paire pour sortir.
+		// On √©crit dans la paire pour sortir.
 		char someByte = 0;
 		(void) ::send(
 					mPublicPairMember,
@@ -314,19 +314,19 @@ TDCLXADSP::SocketBindAndListen( void )
 			theSocket = theResult;
 			break;
         }
-		
+
 		// The argument backlog specifies the maximum length of the queue of
 		// pending connections. With the current implementation of the ADSP
 		// protocol module, this queue length is always 1 so the backlog
 		// value has no effect.
-		
-		// (on met quand même inBacklogSize, au cas où la doc serait en
+
+		// (on met quand m√™me inBacklogSize, au cas o√π la doc serait en
 		// retard).
 		theResult = ::ADSPlisten( theSocket, (int) mBackLogSize );
 		if (theResult < 0)
         {
 			// Fermeture de l'interface de communication.
-			(void) ::ADSPclose(theSocket);	
+			(void) ::ADSPclose(theSocket);
 			theSocket = theResult;
 			break;
         }
@@ -342,7 +342,7 @@ Boolean
 TDCLXADSP::WaitForIncomingRequest( void )
 {
 	Boolean theResult = false;
-	
+
 	// Petit select pour attendre.
 	fd_set socketSet;
 	FD_ZERO( &socketSet );
@@ -363,11 +363,11 @@ TDCLXADSP::WaitForIncomingRequest( void )
 		{
 			case EINVAL:
 				throw DCLPlatformBadParamError( theErr );
-			
+
 			case EBADF:
 			case EINTR:
 				break;
-			
+
 			default:
 				throw DCLPlatformUnknownError( theErr );
  		}
@@ -400,13 +400,13 @@ TDCLXADSP::WaitForIncomingRequest( void )
 			{
 				(void) ::close( mPrivatePairMember );
 			}
-			
+
 			mSocketsAreClosed = true;
 		} else {
 			theResult = true;
 		}
 	}
-	
+
 	return theResult;
 }
 
@@ -417,7 +417,7 @@ TDCLPipe*
 TDCLXADSP::DoAccept( void )
 {
 	TDCLPipe* thePipe = nil;
-	
+
 	int nameSize = sizeof(at_inet_t);
 	at_inet_t clientAddress;
 
@@ -425,7 +425,7 @@ TDCLXADSP::DoAccept( void )
 				mServerSocket,
 				(struct sockaddr*) &clientAddress,
 				&nameSize );
-		
+
 	if (theADSPSocket < 0)
 	{
 		int theErr = errno;
@@ -440,8 +440,8 @@ TDCLXADSP::DoAccept( void )
 							theADSPSocket,
 							mTimeout ) );
 
-			// Incrément du compteur
-			mCurrentPipeCount++;			
+			// Incr√©ment du compteur
+			mCurrentPipeCount++;
 		} else {
 			if (::ADSPclose( theADSPSocket ) < 0)
 			{
@@ -467,7 +467,7 @@ TDCLXADSP::DoRefuse( void )
 				mServerSocket,
 				(struct sockaddr*) &clientAddress,
 				&nameSize );
-	
+
 	if (theADSPSocket < 0)
 	{
 		int theErr = errno;
@@ -493,7 +493,7 @@ TDCLXADSP::SetTimeout( long inTimeout )
 // ------------------------------------------------------------------------- //
 //  * GetTimeout( void )
 // ------------------------------------------------------------------------- //
-long 
+long
 TDCLXADSP::GetTimeout( void )
 {
 	return mTimeout;
@@ -526,17 +526,17 @@ TDCLXADSP::TXADSPPipe::TXADSPPipe(
 {
 	SetTimeout( inTimeout );
 
-	// Création de la paire de socket.	
+	// Cr√©ation de la paire de socket.
 	int theSocketPair[2];
 	if (::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, theSocketPair ) != 0)
 	{
 		throw DCLPlatformUnknownError( errno );
 	}
-	
+
 	mPublicPairMember = theSocketPair[0];
 	mPrivatePairMember = theSocketPair[1];
 
-	// La partie privée doit être non bloquante.
+	// La partie priv√©e doit √™tre non bloquante.
 	int flags = ::fcntl(mPrivatePairMember, F_GETFL, 0 /* ignored */);
 	flags |= O_NONBLOCK;
 	if (::fcntl(mPrivatePairMember, F_SETFL, flags) != 0)
@@ -548,7 +548,7 @@ TDCLXADSP::TXADSPPipe::TXADSPPipe(
 // ------------------------------------------------------------------------- //
 //  * ~TXADSPPipe( void )
 // ------------------------------------------------------------------------- //
-TDCLXADSP::TXADSPPipe::~TXADSPPipe( void ) 
+TDCLXADSP::TXADSPPipe::~TXADSPPipe( void )
 {
 	if (!mClientSocketIsClosed)
 	{
@@ -578,23 +578,23 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 	// Nombre d'octets voulus.
 	size_t toRead = (size_t) *ioCount;
 
-	// Curseur sur les données.
-	char* theBuffer = (char*) outBuffer;	
-	
-	// Temporisation		
+	// Curseur sur les donn√©es.
+	char* theBuffer = (char*) outBuffer;
+
+	// Temporisation
 	long timeoutInSecs = mTimeout;
 	if (timeoutInSecs == kDefaultTimeout)
 	{
 		timeoutInSecs = kXADSPDefaultTimeout;
 	}
-		
+
 	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time(NULL);
-	
+
 	// Premier octet.
 	if (mHasNextByte)
 	{
-		
+
 	}
 
 	// Lecture tant qu'on n'attend pas plus de timeout entre deux lectures.
@@ -606,7 +606,7 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 		if (readBytes < 0)
 		{
 			// Erreur.
-			// Mise à jour du nombre d'octets lus.
+			// Mise √† jour du nombre d'octets lus.
 			*ioCount -= toRead;
 
 			int theErr = errno;
@@ -646,32 +646,32 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 				case ENOSR:
 #endif
 					throw DCLPlatformLimitReachedError( theErr );
-				
+
 				case EFAULT:
 				case EIO:
 				default:
 					throw DCLPlatformUnknownError( theErr );
 			}
 		} else {
-			// On vérifie que le délai n'est pas dépassé.
-			if ((timeoutInSecs != kNoTimeout) && 
+			// On v√©rifie que le d√©lai n'est pas d√©pass√©.
+			if ((timeoutInSecs != kNoTimeout) &&
 				(((long)(::time(NULL) - lastOperation)) > timeoutInSecs))
 			{
-				// Mise à jour du nombre d'octets lus.
+				// Mise √† jour du nombre d'octets lus.
 				*ioCount -= toRead;
 				throw DCLTimeout;
 			}
-			
+
 			if (readBytes == 0)
 			{
 				// EOF.
 				*ioCount -= toRead;
 				break;
 			}
-			
+
 			// On a eu quelques octets.
 			lastOperation = ::time(NULL);
-			
+
 			// Octets suivants.
 			toRead -= readBytes;
 			theBuffer += readBytes;
@@ -685,25 +685,25 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 // ------------------------------------------------------------------------- //
 //  * Write( const void*, KUInt32* )
 // ------------------------------------------------------------------------- //
-void 
+void
 TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 {
 	// Nombre d'octets voulus.
 	size_t toWrite = (size_t) *ioCount;
-		
-	// Curseur sur les données.
-	const char* theBuffer = (const char*) inBuffer;	
 
-	// Temporisation		
+	// Curseur sur les donn√©es.
+	const char* theBuffer = (const char*) inBuffer;
+
+	// Temporisation
 	long timeoutInSecs = mTimeout;
 	if (timeoutInSecs == kDefaultTimeout)
 	{
 		timeoutInSecs = kXADSPDefaultTimeout;
 	}
-		
+
 	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time(NULL);
-		
+
 	while( toWrite > 0 )
 	{
 		int sentBytes = ::ADSPsend( mClientSocket, (char*) theBuffer, (int) toWrite, 0 );
@@ -711,7 +711,7 @@ TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 		if (sentBytes < 0)
 		{
 			// Erreur.
-			// Mise à jour du nombre d'octets écrits.
+			// Mise √† jour du nombre d'octets √©crits.
 			*ioCount -= toWrite;
 
 			int theErr = errno;
@@ -754,7 +754,7 @@ TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 				case ENOSR:
 #endif
 					throw DCLPlatformLimitReachedError( theErr );
-				
+
 				case EACCES:
 				case EFAULT:
 				case EIO:
@@ -764,26 +764,26 @@ TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 					throw DCLPlatformUnknownError( theErr );
 			}
 		} else {
-			// On vérifie que le délai n'est pas dépassé.
-			if ((timeoutInSecs != kNoTimeout) && 
+			// On v√©rifie que le d√©lai n'est pas d√©pass√©.
+			if ((timeoutInSecs != kNoTimeout) &&
 				(((long)(::time(NULL) - lastOperation)) > timeoutInSecs))
 			{
-				// Mise à jour du nombre d'octets écrits.
+				// Mise √† jour du nombre d'octets √©crits.
 				*ioCount -= toWrite;
 
 				throw DCLTimeout;
 			}
-			
+
 			if (sentBytes == 0)
 			{
-				// Déconnexion.
+				// D√©connexion.
 				*ioCount -= toWrite;
 				throw DCLEOF;
 			}
-			
+
 			// On a eu quelques octets.
 			lastOperation = ::time(NULL);
-			
+
 			// Octets suivants.
 			toWrite -= sentBytes;
 			theBuffer += sentBytes;
@@ -801,7 +801,7 @@ Boolean
 TDCLXADSP::TXADSPPipe::WaitForIncomingData( void )
 {
 	Boolean theResult = false;
-	
+
 	// Petit select pour attendre.
 	fd_set socketSet;
 	FD_ZERO( &socketSet );
@@ -828,7 +828,7 @@ TDCLXADSP::TXADSPPipe::WaitForIncomingData( void )
 		{
 			case EINVAL:
 				throw DCLPlatformBadParamError( theErr );
-			
+
 			case EBADF:
 				KDEBUG( "WaitForIncomingData: EBADF" );
 				break;
@@ -836,7 +836,7 @@ TDCLXADSP::TXADSPPipe::WaitForIncomingData( void )
 			case EINTR:
 				KDEBUG( "WaitForIncomingData: EINTR" );
 				break;
-						
+
 			default:
 				throw DCLPlatformUnknownError( theErr );
  		}
@@ -860,7 +860,7 @@ TDCLXADSP::TXADSPPipe::WaitForIncomingData( void )
 			theResult = true;
 		}
 	}
-	
+
 	KDEBUG1( "...WaitForIncomingData: theResult = %c", theResult );
 
 	return theResult;
@@ -881,7 +881,7 @@ TDCLXADSP::TXADSPPipe::BytesAvailable( void )
 	timeout.tv_sec = 0;		// secondes
 	timeout.tv_usec = 0;	// microsecondes
 
-	// Délai de temporisation à 0 pour savoir si on peut lire maintenant.
+	// D√©lai de temporisation √† 0 pour savoir si on peut lire maintenant.
 	int readySockets =
 		::select( mClientSocket + 1, &socketSet, NULL, NULL, &timeout );
 
@@ -894,7 +894,7 @@ TDCLXADSP::TXADSPPipe::BytesAvailable( void )
 		{
 			case EINVAL:
 				throw DCLPlatformBadParamError( theErr );
-			
+
 			case EBADF:
 				KDEBUG( "BytesAvailable: EBADF" );
 				break;
@@ -902,7 +902,7 @@ TDCLXADSP::TXADSPPipe::BytesAvailable( void )
 			case EINTR:
 				KDEBUG( "BytesAvailable: EINTR" );
 				break;
-			
+
 			default:
 				throw DCLPlatformUnknownError( theErr );
  		}
@@ -917,9 +917,9 @@ TDCLXADSP::TXADSPPipe::BytesAvailable( void )
 //  * DoDisconnect( void )
 // ------------------------------------------------------------------------- //
 void
-TDCLXADSP::TXADSPPipe::DoDisconnect( void ) 
+TDCLXADSP::TXADSPPipe::DoDisconnect( void )
 {
-	// On écrit dans la paire pour sortir.
+	// On √©crit dans la paire pour sortir.
 	if(mPublicPairMember >= 0)
 	{
 		char someByte = 0;
@@ -931,7 +931,7 @@ TDCLXADSP::TXADSPPipe::DoDisconnect( void )
 	}
 
 	(void) ::ADSPclose( mClientSocket );
-	// Ceci fera échouer select dans le futur.
+	// Ceci fera √©chouer select dans le futur.
 
 	mClientSocketIsClosed = true;
 }

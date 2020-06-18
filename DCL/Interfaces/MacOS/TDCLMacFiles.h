@@ -2,7 +2,7 @@
 // Fichier:			TDCLMacFiles.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMacFiles.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -56,7 +56,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLMacFiles
 	:
@@ -64,15 +64,15 @@ class TDCLMacFiles
 {
 public:
 	///
-	/// Constantes pour les valeurs par défaut.
+	/// Constantes pour les valeurs par d√©faut.
 	///
 	enum {
-		kCreator		= '****',	///< Créateur par défaut.
-		kFileType		= 'BINA'	///< Type de fichier par défaut.
+		kCreator		= '****',	///< Cr√©ateur par d√©faut.
+		kFileType		= 'BINA'	///< Type de fichier par d√©faut.
 	};
 	
 	///
-	/// Constructeur par défaut.
+	/// Constructeur par d√©faut.
 	///
 	TDCLMacFiles( void );
 
@@ -89,15 +89,15 @@ public:
 	virtual KUInt32	GetKind( void );
 
 	///
-	/// Détermine le dossier racine.
+	/// D√©termine le dossier racine.
 	///
-	/// Cette méthode retourne le dossier racine. Ce dossier appartient à l'objet
+	/// Cette m√©thode retourne le dossier racine. Ce dossier appartient √† l'objet
 	/// TDCLMacFiles.
 	///
 	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
 
 	///
-	/// Détermine le nombre de dossiers racine.
+	/// D√©termine le nombre de dossiers racine.
 	///
 	/// \return rien du tout
 	/// \throws DCLNotImplementedError dans tous les cas.
@@ -105,8 +105,8 @@ public:
 	virtual KUInt32			CountRootFolders( void ) const;
 
 	///
-	/// Récupère le nom du n-ième dossier racine.
-	/// Le nom appartient à l'objet IDCLFiles.
+	/// R√©cup√®re le nom du n-i√®me dossier racine.
+	/// Le nom appartient √† l'objet IDCLFiles.
 	///
 	/// \param inFolderIndex	un indice de dossier racine, entre 0 et
 	///							CountRootFolders() - 1.
@@ -116,7 +116,7 @@ public:
 	virtual const KUInt16*	GetRootFolderName( KUInt32 inFolderIndex ) const;
 
 private:
-	/// \name variables privées
+	/// \name variables priv√©es
 	
 	TDCLFSItemRef	mRootFolder;			///< Dossier racine
 };

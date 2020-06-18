@@ -2,7 +2,7 @@
 // Fichier:			TDCLNSEncoder.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			06/08/2002
+// Cr√©√© le:			06/08/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLNSEncoder.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -96,22 +96,22 @@ TDCLNSEncoder::WasObjectEncoded(
 void
 TDCLNSEncoder::AddObject( const TDCLNSRef& inObject )
 {
-	// Cet objet est-il un immédiat?
+	// Cet objet est-il un imm√©diat?
 	if (inObject.IsRealPtr())
 	{
 		TDCLNSObject* theObject = inObject.GetPointer();
 	
-		// Cet objet peut-il être représenté par un ID?
+		// Cet objet peut-il √™tre repr√©sent√© par un ID?
 		if (CanHavePrecedentID( theObject ))
 		{
-			// D'abord, on commence par regarder si cet objet n'a pas déjà
-			// été encodé.
+			// D'abord, on commence par regarder si cet objet n'a pas d√©j√†
+			// √©t√© encod√©.
 			
 			KUInt32 theID;
 			KUIntPtr theCookie;
 			if (WasObjectEncoded( theObject, &theID, &theCookie ))
 			{
-				// L'objet a déjà été encodé. Ajout d'une référence.
+				// L'objet a d√©j√† √©t√© encod√©. Ajout d'une r√©f√©rence.
 				PutPrecedent( theID, theCookie );
 			} else {
 				// Ajout de l'objet.

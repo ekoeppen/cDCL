@@ -2,7 +2,7 @@
 // Fichier:			TDCLMemStream.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			19/10/2002
+// Cr√©√© le:			19/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLMemStream.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -86,7 +86,7 @@ TDCLMemStream::TDCLMemStream( const void* inBuffer, KUInt32 inLength )
 			throw DCLMemError;
 		}
 		
-		// Copie des données.
+		// Copie des donn√©es.
 		(void) ::memcpy( mBuffer, inBuffer, inLength );
 	}
 	
@@ -111,16 +111,16 @@ void
 TDCLMemStream::Read( void* outBuffer, KUInt32* ioCount )
 {
 	KUInt32 theCount = *ioCount;
-	// Vérification qu'on ne dépasse pas.
+	// V√©rification qu'on ne d√©passe pas.
 	if (theCount > (mBufferSize - mCursor))
 	{
 		theCount = mBufferSize - mCursor;
 	}
 	
-	// Copie des données.
+	// Copie des donn√©es.
 	(void) ::memcpy( outBuffer, &((const KUInt8*) mBuffer)[mCursor], theCount );
 	
-	// Incrémentation du curseur.
+	// Incr√©mentation du curseur.
 	mCursor += theCount;
 	
 	// Nombre d'octets lus.
@@ -133,7 +133,7 @@ TDCLMemStream::Read( void* outBuffer, KUInt32* ioCount )
 void
 TDCLMemStream::Write( const void* inBuffer, KUInt32* ioCount )
 {
-	// Redimmensionnement de la mémoire tampon si nécessaire.
+	// Redimmensionnement de la m√©moire tampon si n√©cessaire.
 	KUInt32 count = *ioCount;
 	if ((mCursor + count) > mAllocatedSize)
 	{
@@ -174,7 +174,7 @@ TDCLMemStream::FlushOutput( void )
 KUInt8
 TDCLMemStream::PeekByte( void )
 {
-	// Vérification qu'on ne dépasse pas.
+	// V√©rification qu'on ne d√©passe pas.
 	if ((mCursor + 1) >= mBufferSize)
 	{
 		throw DCLEOF;
@@ -240,7 +240,7 @@ TDCLMemStream::SetCursor( KSInt64 inPos, ECursorMode inMode )
 }
 
 // ------------------------------------------------------------------------- //
-//  * GetCursor( void )
+//  *¬†GetCursor( void )
 // ------------------------------------------------------------------------- //
 KSInt64
 TDCLMemStream::GetCursor( void )

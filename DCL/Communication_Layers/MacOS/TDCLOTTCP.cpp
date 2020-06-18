@@ -2,7 +2,7 @@
 // Fichier:			TDCLOTTCP.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			25/01/2002
+// Cr√©√© le:			25/01/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOTTCP.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -46,13 +46,13 @@
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 
 // =================================================== //
-//   ••••• Implementation for class TDCLOTTCP •••••    //
+//   ‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢ Implementation for class TDCLOTTCP ‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢    //
 // =================================================== //
 
 #define kOTTCPConfigStr		"tilisten,tcp"
 
 // ------------------------------------------------------------------------------------	//
-//	• TDCLOTTCP( TDCLInterface*, long, long )
+//	‚Ä¢ TDCLOTTCP( TDCLInterface*, long, long )
 // ------------------------------------------------------------------------------------	//
 // Public constructor.
 
@@ -99,7 +99,7 @@ TDCLOTTCP::TDCLOTTCP(
 }
 
 // ------------------------------------------------------------------------------------	//
-//	• IsAvailable( void )
+//	‚Ä¢ IsAvailable( void )
 // ------------------------------------------------------------------------------------	//
 // Checks if the service is available.
 

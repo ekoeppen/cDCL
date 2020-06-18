@@ -2,7 +2,7 @@
 // Fichier:			IDCLObjCApplication.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			30/3/2003
+// Cr√©√© le:			30/3/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is IDCLObjCApplication.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -49,7 +49,7 @@
 	#pragma	warn_extracomma		reset
 #endif
 
-// Pré-déclarations
+// Pr√©-d√©clarations
 class IDCLFiles;
 class IDCLThreads;
 class IDCLMisc;
@@ -67,7 +67,7 @@ class TDCLLinkEngine;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 /// \see	DCLCocoaApplication
 ///
 @protocol IDCLObjCApplication

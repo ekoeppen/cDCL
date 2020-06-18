@@ -2,7 +2,7 @@
 // Fichier:			TDCLPipe.cp
 // Projet:			Desktop Connection Library
 //
-// CrŽŽ le:			26/10/2002
+// CrÃ©Ã© le:			26/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLPipe.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vac’k
+// The Initial Developers of the Original Code are Paul Guyot, Michael VacÃ­k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vac’k <mici@metastasis.net> (original author)
+//   Michael VacÃ­k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -41,7 +41,7 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLPositionException.h>
 
 // ------------------------------------------------------------------------- //
-//  *ÊTDCLPipe( TDCLCommLayer*, long )
+//  *Â TDCLPipe( TDCLCommLayer*, long )
 // ------------------------------------------------------------------------- //
 TDCLPipe::TDCLPipe(
 		TDCLCommLayer*	inCommLayer )
@@ -50,11 +50,11 @@ TDCLPipe::TDCLPipe(
 			mCommLayer( inCommLayer ),
 			mLink( nil )
 {
-	// DŽfense d'afficher.
+	// DÃ©fense d'afficher.
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊFlushOutput( void )
+//  *Â FlushOutput( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLPipe::FlushOutput( void )
@@ -63,18 +63,18 @@ TDCLPipe::FlushOutput( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊDisconnect( void )
+//  *Â Disconnect( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLPipe::Disconnect( void )
 {
 	mCommLayer->Disconnected( this );
-	
+
 	mLink = nil;
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊIdle( void )
+//  *Â Idle( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLPipe::Idle( void )
@@ -92,13 +92,13 @@ TDCLPipe::PeekByte( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  *ÊConnected( TDCLLink* )
+//  *Â Connected( TDCLLink* )
 // ------------------------------------------------------------------------- //
 TDCLCommLayer*
 TDCLPipe::Connected( TDCLLink* inLink )
 {
 	mLink = inLink;
-	
+
 	return mCommLayer;
 }
 

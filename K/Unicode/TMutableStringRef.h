@@ -2,7 +2,7 @@
 // Fichier:			TMutableStringRef.h
 // Projet:			K
 // 
-// Créé le:			1/10/2003
+// Cr√©√© le:			1/10/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -41,20 +41,20 @@
 #include <K/Unicode/TString.h>
 
 ///
-/// Classe pour une référence sur une chaîne modifiable.
-/// En fait, c'est exactement comme une référence sur une chaîne constante
-/// sauf que les accesseurs retournent une référence modifiable.
+/// Classe pour une r√©f√©rence sur une cha√Æne modifiable.
+/// En fait, c'est exactement comme une r√©f√©rence sur une cha√Æne constante
+/// sauf que les accesseurs retournent une r√©f√©rence modifiable.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.2 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TMutableStringRef
 {
 public:
 	///
-	/// Constructeur à partir d'un objet TString.
+	/// Constructeur √† partir d'un objet TString.
 	///
 	/// \param inString	objet TString
 	///
@@ -67,24 +67,24 @@ public:
 
 	///
 	/// Constructeur par copie.
-	/// Incrémente la référence.
+	/// Incr√©mente la r√©f√©rence.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TMutableStringRef( const TMutableStringRef& inCopy );
 
 	///
-	/// Opérateur d'assignation.
+	/// Op√©rateur d'assignation.
 	/// Idem.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TMutableStringRef& operator = ( const TMutableStringRef& inCopy );
 
 	///
-	/// Opérateur de déréférencement
+	/// Op√©rateur de d√©r√©f√©rencement
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline TString& operator * ( void ) const
 		{
@@ -92,9 +92,9 @@ public:
 		}
 
 	///
-	/// Opérateur de déréférencement
+	/// Op√©rateur de d√©r√©f√©rencement
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline TString* operator -> ( void ) const
 		{
@@ -104,7 +104,7 @@ public:
 	///
 	/// Accesseur sur l'objet TString
 	///
-	/// \return une référence sur l'objet TString
+	/// \return une r√©f√©rence sur l'objet TString
 	///
 	inline TString* GetString( void ) const
 		{
@@ -113,7 +113,7 @@ public:
 
 private:
 	/// \name Variables
-	TString*		mString;	///< Objet référencé.
+	TString*		mString;	///< Objet r√©f√©renc√©.
 };
 
 #endif

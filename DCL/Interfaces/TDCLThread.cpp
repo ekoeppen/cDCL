@@ -2,7 +2,7 @@
 // Fichier:			TDCLThread.cp
 // Projet:			Desktop Connection Library
 //
-// Créé le:			27/10/2002
+// Cr√©√© le:			27/10/2002
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLThread.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -70,7 +70,7 @@ TDCLThread::~TDCLThread( void )
 		delete mQueueSemaphore;
 	}
 	
-	// Libération des événements.
+	// Lib√©ration des √©v√©nements.
 	TDCLEvent* theEvent = mNextEvent;
 	while (theEvent)
 	{
@@ -92,7 +92,7 @@ TDCLThread::WaitNextEvent(
 	TDCLEvent* theResult = nil;
 	
 	do {
-		// On regarde si un événement n'est pas déjà présent
+		// On regarde si un √©v√©nement n'est pas d√©j√† pr√©sent
 		// et cadre avec le masque.
 
 		// Acquisistion du mutex.
@@ -112,27 +112,27 @@ TDCLThread::WaitNextEvent(
 	
 		if (theResult)
 		{
-			// Trouvé.
+			// Trouv√©.
 			TDCLEvent* theNextEvent = theResult->GetNextEvent();
 			
 			// On le retire de la liste.
 			if (thePreviousEvent)
 			{
-				// Notre événement n'est pas le premier.
+				// Notre √©v√©nement n'est pas le premier.
 				thePreviousEvent->SetNextEvent( theNextEvent );
 			} else {
-				// C'était le premier.
+				// C'√©tait le premier.
 				mNextEvent = theNextEvent;
 			}
 			
 			if (theNextEvent == nil)
 			{
-				// Notre événement était le dernier.
+				// Notre √©v√©nement √©tait le dernier.
 				mLastEvent = thePreviousEvent;
 			}
 		}
 
-		// Libération du mutex.
+		// Lib√©ration du mutex.
 		mQueueSemaphore->Release();
 
 		if (theResult)
@@ -140,16 +140,16 @@ TDCLThread::WaitNextEvent(
 			break;
 		}
 		
-		// Sinon, on dort tout le temps indiqué.
+		// Sinon, on dort tout le temps indiqu√©.
 		if (mThread->Sleep( inMilliseconds ))
 		{
-			// On a dormi tout le temps demandé.
+			// On a dormi tout le temps demand√©.
 			// On sort.
 			break;
 		}
 		
-		// On n'a pas dormi tout le temps demandé: un événement
-		// est sans doute présent. On le traite en haut de la boucle.
+		// On n'a pas dormi tout le temps demand√©: un √©v√©nement
+		// est sans doute pr√©sent. On le traite en haut de la boucle.
 	} while ( true );
 	
 	return theResult;
@@ -174,10 +174,10 @@ TDCLThread::PostEvent( TDCLEvent* inEvent )
 	}
 	inEvent->SetNextEvent( nil );
 		
-	// Libération du mutex.
+	// Lib√©ration du mutex.
 	mQueueSemaphore->Release();	
 	
-	// Réveil du processus.
+	// R√©veil du processus.
 	mThread->WakeUp();
 }
 
@@ -199,7 +199,7 @@ TDCLThread::DoRun( void )
 		try {
 			HandleException( nil );
 		} catch ( ... ) {
-			// Pareil. C'est bon d'être oisif.
+			// Pareil. C'est bon d'√™tre oisif.
 		}
 	}
 }

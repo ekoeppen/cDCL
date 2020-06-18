@@ -1,0 +1,18 @@
+include(CheckFunctionExists)
+add_definitions(-DINSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
+
+add_executable (ELFtoNTK
+ELFtoNTK.cpp
+TELFFile.cpp
+)
+
+target_link_libraries (ELFtoNTK LINK_PUBLIC DCL)
+install(TARGETS ELFtoNTK RUNTIME DESTINATION bin)
+
+add_executable (ELFtoPKG
+ELFtoPKG.cpp
+TELFFile.cpp
+)
+
+target_link_libraries (ELFtoPKG LINK_PUBLIC DCL)
+install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)

@@ -2,7 +2,7 @@
 // Fichier:			TMutableStringRef.cp
 // Projet:			K
 // 
-// Créé le:			1/10/2003
+// Cr√©√© le:			1/10/2003
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****

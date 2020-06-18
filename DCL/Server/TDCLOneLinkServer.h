@@ -2,7 +2,7 @@
 // Fichier:			TDCLOneLinkServer.h
 // Projet:			Desktop Connection Library
 //
-// Créé le:			3/4/2003
+// Cr√©√© le:			3/4/2003
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -20,13 +20,13 @@
 //
 // The Original Code is TDCLOneLinkServer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vac√≠k
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vac√≠k <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //
 // ***** END LICENSE BLOCK *****
@@ -44,13 +44,13 @@
 /// Classe pour un serveur avec un seul lien et plusieurs couches de
 /// communication. C'est un serveur de type NCU.
 ///
-/// Il faut d'abord créer le lien (parce que le lien suppose que le
-/// serveur pré-existe).
+/// Il faut d'abord cr√©er le lien (parce que le lien suppose que le
+/// serveur pr√©-existe).
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TDCLOneLinkServer
 	:
@@ -58,16 +58,16 @@ class TDCLOneLinkServer
 {
 public:
 	///
-	/// Créateur à partir d'une application.
+	/// Cr√©ateur √† partir d'une application.
 	///
-	/// \param inApplication	application prévenue de l'activité du serveur.
+	/// \param inApplication	application pr√©venue de l'activit√© du serveur.
 	///
 	TDCLOneLinkServer( TDCLApplication* inApplication );
 	
 	///
 	/// Fixe le lien.
 	///
-	/// \param inLink		lien à utiliser lorsqu'une connexion est établie.
+	/// \param inLink		lien √† utiliser lorsqu'une connexion est √©tablie.
 	///
 	inline void			SetLink( TDCLLink* inLink )
 		{
@@ -81,40 +81,40 @@ public:
 
 	///
 	/// Ajoute une couche de communication.
-	/// Cette méthode peut être appelée même si le serveur tourne.
-	/// La couche de communication devra être supprimée par l'application.
+	/// Cette m√©thode peut √™tre appel√©e m√™me si le serveur tourne.
+	/// La couche de communication devra √™tre supprim√©e par l'application.
 	///
-	/// \param inLayer	la couche à ajouter au serveur.
+	/// \param inLayer	la couche √† ajouter au serveur.
 	///
 	void		AddCommLayer( TDCLCommLayer* inLayer );
 	
 	///
-	/// Enlève une couche de communication.
-	/// Cette méthode peut être appelée même si le serveur tourne.
-	/// La couche de communication devra être supprimée par l'application.
+	/// Enl√®ve une couche de communication.
+	/// Cette m√©thode peut √™tre appel√©e m√™me si le serveur tourne.
+	/// La couche de communication devra √™tre supprim√©e par l'application.
 	/// Ne fait rien si la couche n'est pas dans la liste.
 	///
-	/// \param inLayer	la couche à supprimer du serveur.
+	/// \param inLayer	la couche √† supprimer du serveur.
 	///
 	void		RemoveCommLayer( TDCLCommLayer* inLayer );
 	
 	///
-	/// Fonction utilisée pour déterminer si le serveur est "actif" ou non.
+	/// Fonction utilis√©e pour d√©terminer si le serveur est "actif" ou non.
 	///
-	/// \return true si le serveur est déjà connecté, false sinon.
+	/// \return true si le serveur est d√©j√† connect√©, false sinon.
 	///
 	TDCLLink*			GetConnectionLink( void );
 
 protected:
 	///
-	/// Commence à écouter.
-	/// Cette méthode est appelée lorsque le serveur est démarré (depuis
-	/// le processus léger du serveur).
+	/// Commence √† √©couter.
+	/// Cette m√©thode est appel√©e lorsque le serveur est d√©marr√© (depuis
+	/// le processus l√©ger du serveur).
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête le serveur.
+	/// Arr√™te le serveur.
 	///
 	virtual	void		DoStop( void );
 	
@@ -124,27 +124,27 @@ protected:
 	virtual	void		DoKill( void );
 
 	///
-	/// Gère l'arrivée d'une nouvelle connexion.
+	/// G√®re l'arriv√©e d'une nouvelle connexion.
 	///
-	/// \param inCommLayer	interface de communication qui a reçu la requête.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inCommLayer	interface de communication qui a re√ßu la requ√™te.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual EState		HandleIncomingConnection(
 								TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée dans le processus léger du serveur pour indiquer
-	/// qu'un lien a été déconnecté et qu'il faut fermer l'interface de
+	/// M√©thode appel√©e dans le processus l√©ger du serveur pour indiquer
+	/// qu'un lien a √©t√© d√©connect√© et qu'il faut fermer l'interface de
 	/// communication.
 	///
-	/// \param inLink	le lien qui a été déconnecté.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inLink	le lien qui a √©t√© d√©connect√©.
+	/// \return le nouvel √©tat du serveur.
+	/// \throws TDCLException si un probl√®me est survenu.
 	///
 	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée par le serveur lorsque rien ne se passe.
+	/// M√©thode appel√©e par le serveur lorsque rien ne se passe.
 	/// Elle permet d'appeler Idle sur les interfaces de communication qui en
 	/// ont besoin.
 	///
@@ -153,7 +153,7 @@ protected:
 	///
 	/// Accesseur sur le lien.
 	///
-	/// \return le lien à utiliser lorsqu'une connexion est établie.
+	/// \return le lien √† utiliser lorsqu'une connexion est √©tablie.
 	///
 	inline TDCLLink*		GetLink( void )
 		{
@@ -163,30 +163,30 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLOneLinkServer( const TDCLOneLinkServer& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TDCLOneLinkServer& operator = ( const TDCLOneLinkServer& inCopy );
 
 	/// \name Variables
 	
-	TDCLLink*					mLink;			///< Référence sur l'unique
+	TDCLLink*					mLink;			///< R√©f√©rence sur l'unique
 												///< lien.
-	TDCLPipe*					mPipe;			///< Référence sur la
+	TDCLPipe*					mPipe;			///< R√©f√©rence sur la
 												///< connexion, \c nil si on
-												///< n'est pas connecté.
+												///< n'est pas connect√©.
 	TDCLCommLayer**				mCommLayers;	///< Liste des couches de
 												///< communication.
-	KUInt32						mNbCommLayers;	///< Nombre d'éléments dans la
-												///< liste précédente.
+	KUInt32						mNbCommLayers;	///< Nombre d'√©l√©ments dans la
+												///< liste pr√©c√©dente.
 	IDCLThreads::ISemaphore*	mListMutex;		///< Mutex sur la liste
-												///< précédente.
+												///< pr√©c√©dente.
 };
 
 #endif
