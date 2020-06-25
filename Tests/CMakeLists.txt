@@ -17,7 +17,7 @@ Tests/UTestTime.cpp
 Tests/UTestXML.cpp
 )
 
-target_link_libraries (DCLTests LINK_PUBLIC DCL)
+target_link_libraries (DCLTests PUBLIC DCL PRIVATE Threads::Threads)
 
 file(GLOB TEST_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-*.sh)
 foreach(TEST_SCRIPT ${TEST_SCRIPTS})

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.1)
 project (dcl)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -402,6 +402,9 @@ K/Unicode/UUTF16Conv.h
 K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 add_subdirectory (Sample_Code/ToolchainUtils)
 add_subdirectory (Sample_Code/NSOFtoXML)
