@@ -24,6 +24,6 @@ foreach(TEST_SCRIPT ${TEST_SCRIPTS})
     add_test(NAME ${TEST_SCRIPT}
              CONFIGURATIONS Debug
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-             COMMAND sh ${TEST_SCRIPT} $<TARGET_FILE:DCLTests>)
+             COMMAND bash ${TEST_SCRIPT} $<TARGET_FILE:DCLTests>)
 endforeach(TEST_SCRIPT ${TEST_SCRIPTS})
 
