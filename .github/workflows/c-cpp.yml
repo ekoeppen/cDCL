@@ -16,9 +16,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        which apt-get && sudo apt-get install perl
     - name: configure
-      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Debug
     - name: build
-      run: cd build && cmake --build .
+      run: |
+        cd build
+        cmake --build .
     - name: run tests
-      run: cd build && ctest . -C Debug
+      run: |
+        cd build
+        ctest . -C Debug
