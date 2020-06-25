@@ -28,12 +28,12 @@
 // DCL
 #include <DCL/Package/UDCLPaperback.h>
 #include <DCL/Exceptions/TDCLException.h>
-#include <DCL/Exceptions/IO Exceptions/TDCLDoesntExistException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLDoesntExistException.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
-#include <DCL/NS Objects/Exchange/TDCLNSOFDecoder.h>
-#include <DCL/NS Objects/Objects/TDCLNSFrame.h>
-#include <DCL/NS Objects/Objects/TDCLNSRef.h>
+#include <DCL/NS_Objects/Exchange/TDCLNSOFDecoder.h>
+#include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
+#include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 #include <DCL/Package/TDCLPackage.h>
 #include <DCL/Package/TDCLPkgNOSPart.h>
 #include <DCL/Streams/TDCLStdStream.h>
