@@ -61,6 +61,7 @@ public:
 		kMaxSize		= 0xFFFFFF,	///< Taille maximale des objets (entête compris).
 		kSymbolClass	= 0x55552,	///< Classe spéciale des symboles.
 		kMapSorted		= 1,		///< Si les clés de la carte sont triées.
+		kMapShared		= 2,		///< Si la carte est partagée entre plusieurs frames.
 		kMapProto		= 4,		///< Si la carte ou une super carte comprend _proto
 		kTagMask		= 0x03,		///< 0b11
 		kPointerTag		= 0x01,		///< 0b01
