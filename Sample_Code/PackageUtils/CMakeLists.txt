@@ -4,6 +4,9 @@ add_definitions(-DINSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
 add_executable (nespackager
 NESPackager.cpp
 )
+add_executable (pbbookmaker
+PBBookMaker.cpp
+)
 add_executable (DumpPkgDir
 DumpPkgDir.cpp
 )
@@ -14,6 +17,10 @@ DumpPkgPart.cpp
 target_link_libraries (nespackager PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS nespackager RUNTIME DESTINATION bin)
 install(FILES NESPackager_Template/nespkgtemplate.nsof DESTINATION share/DCL/)
+
+target_link_libraries (pbbookmaker PUBLIC DCL PRIVATE Threads::Threads)
+install(TARGETS pbbookmaker RUNTIME DESTINATION bin)
+install(DIRECTORY PBBookMaker_Templates/ DESTINATION share/DCL/ FILES_MATCHING PATTERN *.nsof)
 
 target_link_libraries (DumpPkgDir PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS DumpPkgDir RUNTIME DESTINATION bin)
