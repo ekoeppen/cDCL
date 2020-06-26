@@ -207,7 +207,7 @@ private:
 		kStackChunkSize		= 10,	///< Incrément de la pile lorsqu'elle est pleine.
 		kStackDecrThreshold	= 50	///< Décrément de la pile lorsqu'elle se vide.
 	};
-	
+
 	///
 	/// Structure pour les objets dans la pile.
 	///
@@ -215,7 +215,7 @@ private:
 		TDCLNSObject*		fObjectPtr;	///< Pointeur sur l'objet.
 		KSInt64				fPtrOffset;	///< Décalage vers le pointeur dans le flux.
 	};
-	
+
 	///
 	/// Pousse un objet dans la pile.
 	///
