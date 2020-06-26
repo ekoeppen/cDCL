@@ -41,6 +41,9 @@
 #include <DCL/NS_Objects/Exchange/TDCLNSEncoder.h>
 #include <DCL/NS_Objects/Exchange/KDCLPkg.h>
 
+#include <list>
+#include <utility>
+
 class TDCLRandomAccessStream;
 
 ///
@@ -149,6 +152,16 @@ public:
 			return mFourBytesPadding;
 		}
 
+	///
+	/// Get the best supermap during encoding for a given frame.
+	///
+	Boolean GetBestSupermap(const TDCLNSFrame*, KUInt32* outSharedKeysCount, KUInt32* outSupermapRef);
+
+	///
+	/// Add a map to be used as supermap.
+	///
+	void AddMap(const TDCLNSFrame*, KUInt32 mapRef);
+
 protected:
 	///
 	/// Met dans le flux la référence d'un objet déjà encodé.
@@ -223,6 +236,7 @@ private:
 	KUInt32			mStackSize;				///< Nombre d'éléments que la pile
 											///< contient.
 	Boolean			mInSlottedObject;		///< Si le flux est dans un objet.
+	std::list<std::pair<const TDCLNSFrame*, KUInt32>> mEncodedMaps;
 };
 
 #endif

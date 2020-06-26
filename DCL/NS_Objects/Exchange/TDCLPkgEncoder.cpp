@@ -47,6 +47,7 @@
 // DCL
 #include <DCL/NS_Objects/Objects/TDCLNSObject.h>
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
+#include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
 #include <DCL/Streams/TDCLRandomAccessStream.h>
 
 // -------------------------------------------------------------------------- //
@@ -365,6 +366,48 @@ TDCLPkgEncoder::AlignOffset( KUInt32* ioOffset ) const
 			*ioOffset += nbBytes;
 		}
 	}
+}
+
+// ------------------------------------------------------------------------- //
+//  * AddMap( const TDCLNSFrame*, KUInt32 )
+// ------------------------------------------------------------------------- //
+void
+TDCLPkgEncoder::AddMap( const TDCLNSFrame* frame, KUInt32 mapRef )
+{
+    mEncodedMaps.push_back(std::make_pair(frame, mapRef));
+}
+
+// ------------------------------------------------------------------------- //
+//  * GetBestSupermap(const TDCLNSFrame*, KUInt32*, KUInt32*)
+// ------------------------------------------------------------------------- //
+Boolean
+TDCLPkgEncoder::GetBestSupermap(const TDCLNSFrame* frame, KUInt32* outSharedKeysCount, KUInt32* outSupermapRef)
+{
+    KUInt32 thisSize = frame->GetLength();
+    KUInt32 bestCandidateRef = 0;
+    KUInt32 bestCandidateSize = 0;
+    for (auto p : mEncodedMaps) {
+        KUInt32 candidateSize = p.first->GetLength();
+        bool mismatch = false;
+        if (candidateSize > thisSize) continue;
+        for (int i = 0; i < candidateSize; i++) {
+            if (p.first->GetKey(i).ToSymbol().Compare(frame->GetKey(i).ToSymbol()) != 0) {
+                mismatch = true;
+                break;
+            }
+        }
+        if (mismatch) continue;
+        if (candidateSize > bestCandidateSize) {
+            bestCandidateRef = p.second;
+            bestCandidateSize = candidateSize;
+        }
+    }
+    if (bestCandidateSize > 0) {
+        *outSharedKeysCount = bestCandidateSize;
+        *outSupermapRef = bestCandidateRef;
+        return true;
+    }
+    return false;
 }
 
 // ==================================================================== //

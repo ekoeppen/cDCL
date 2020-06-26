@@ -924,22 +924,31 @@ TDCLNSFrame::ToPkg(
 				KUInt32* ioOffset ) const
 {
 	// Récupération du flux de sortie.
-	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
+	TDCLRandomAccessStream* theOutputStream = inEncoder->GetOutputStream();
 	
 	// Les valeurs d'abord.
 	// Ecriture du nombre d'éléments.
 	KUInt32 nbItems = mLength;
 	KUInt32 theSize = (nbItems * 4) + 12;
 
-	KUInt32 mapOffset = *ioOffset + theSize;
-
-	inEncoder->AlignOffset( &mapOffset );
-	
 	if (theSize > TDCLPkgEncoder::kMaxSize)
 	{
 		throw DCLLimitReachedError;
 	}
-	
+
+	KUInt32 endValueOffset = *ioOffset + theSize;
+	inEncoder->AlignOffset( &endValueOffset );
+
+    // Look for suitable shared map or supermap
+    KUInt32 sharedKeysCount = 0;
+    KUInt32 superMapRef = 2; // TDCLNSRef::kNILREF;
+    KUInt32 mapRef = endValueOffset + 1;
+    if (inEncoder->GetBestSupermap(this, &sharedKeysCount, &superMapRef)) {
+        if (sharedKeysCount == nbItems) {
+            mapRef = superMapRef;
+        }
+    }
+
 	// Écriture de l'entête.
 	theOutputStream->PutLong(
 		(theSize << TDCLPkgEncoder::kSizeShift)
@@ -950,7 +959,7 @@ TDCLNSFrame::ToPkg(
 	theOutputStream->PutLong( 0 );
 	
 	// Pointeur sur la carte.
-	theOutputStream->PutLong( mapOffset + 1 );
+	theOutputStream->PutLong( mapRef );
 	
 	// Mise à jour du décalage.
 	*ioOffset += 12;
@@ -964,43 +973,61 @@ TDCLNSFrame::ToPkg(
 
 	// Alignement.
 	inEncoder->AlignStream( ioOffset );
-	
-	KASSERT( *ioOffset == mapOffset );
-	
-	// Ensuite, les clés.
-	KSInt32 theMapClass = 0;
-	if (mKeysAreSorted)
-	{
-		theMapClass = TDCLPkgEncoder::kMapSorted;
-	}
-	if (HasSlot( KDCLSYM::kSYM_proto ))
-	{
-		theMapClass |= TDCLPkgEncoder::kMapProto;
-	}
-		
-	theSize = (nbItems * 4) + 16;
 
-	theOutputStream->PutLong(
-		(theSize << TDCLPkgEncoder::kSizeShift)
-		| TDCLPkgEncoder::kObjFlagHeader
-		| TDCLPkgEncoder::kObjSlotted );
-	
-	theOutputStream->PutLong( 0 );
+	KASSERT( *ioOffset == endValueOffset );
 
-	// Mise à jour du décalage.
-	*ioOffset += 8;
+	// Ensuite, les clés, si nécessaire.
+    if (sharedKeysCount < nbItems) {
+        KSInt32 theMapClass = 0;
+        if (mKeysAreSorted)
+        {
+            theMapClass = TDCLPkgEncoder::kMapSorted;
+        }
+        if (HasSlot( KDCLSYM::kSYM_proto ))
+        {
+            theMapClass |= TDCLPkgEncoder::kMapProto;
+        }
 
-	// Classe.
-	inEncoder->AddObject( TDCLNSRef::MakeInt( theMapClass ) );
+        theSize = ((nbItems - sharedKeysCount) * 4) + 16;
 
-	// On n'a pas de super-map.
-	inEncoder->AddObject( TDCLNSRef::kNILREF );
+        theOutputStream->PutLong(
+            (theSize << TDCLPkgEncoder::kSizeShift)
+            | TDCLPkgEncoder::kObjFlagHeader
+            | TDCLPkgEncoder::kObjSlotted );
 
-	// Ajout des symboles.
-	for ( indexItems = 0; indexItems < nbItems; indexItems++ )
-	{
-		inEncoder->AddObject( mKeys[ indexItems ] );
-	}
+        theOutputStream->PutLong( 0 );
+
+        // Mise à jour du décalage.
+        *ioOffset += 8;
+
+        // Classe.
+        inEncoder->AddObject( TDCLNSRef::MakeInt( theMapClass ) );
+
+        theOutputStream->PutLong( superMapRef );
+        *ioOffset += 4;
+
+        // Ajout des symboles.
+        for ( indexItems = sharedKeysCount; indexItems < nbItems; indexItems++ )
+        {
+            inEncoder->AddObject( mKeys[ indexItems ] );
+        }
+        inEncoder->AddMap(this, mapRef);
+    }
+
+    // Note that supermap is shared.
+    if (sharedKeysCount > 0) {
+        KUInt64 pos = theOutputStream->GetCursor();
+        KUInt64 superMapPos = pos - *ioOffset + superMapRef - 1;
+        theOutputStream->SetCursor(superMapPos + 8, TDCLRandomAccessStream::kFromStart);
+	    KUInt32 classRef = theOutputStream->GetLong();
+	    KASSERT((classRef & 0x3) == 0);
+	    KUInt32 newClassRef = classRef | (TDCLPkgEncoder::kMapShared << 2);
+	    if (newClassRef != classRef) {
+            theOutputStream->SetCursor(superMapPos + 8, TDCLRandomAccessStream::kFromStart);
+            theOutputStream->PutLong(newClassRef);
+	    }
+	    theOutputStream->SetCursor(pos, TDCLRandomAccessStream::kFromStart);
+    }
 }
 
 // ====================================================================== //
