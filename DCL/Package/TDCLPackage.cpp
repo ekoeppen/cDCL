@@ -52,6 +52,7 @@
 #include <DCL/Interfaces/TDCLFile.h>
 #include <DCL/Interfaces/UDCLTime.h>
 #include <DCL/Package/TDCLPkgNOSPart.h>
+#include <DCL/Package/TDCLPkgRelocatablePart.h>
 #include <DCL/Package/TDCLPkgPart.h>
 #include <DCL/Streams/TDCLStream.h>
 #include <DCL/Streams/TDCLRandomAccessStream.h>
@@ -108,7 +109,8 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset )
 		mNameStr( nil ),
 		mExtraInfo( nil ),
 		mNumParts( 0 ),
-		mParts( nil )
+		mParts( nil ),
+		mRelocationData( nil )
 {
 	Boolean wasOpen = false;
 	KSInt64 theOldPosition = 0;
@@ -159,7 +161,8 @@ TDCLPackage::TDCLPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 		mExtraInfo( nil ),
 		mNameStr( nil ),
 		mNumParts( 0 ),
-		mParts( nil )
+		mParts( nil ),
+		mRelocationData( nil )
 {
 	// Lecture.
 	ReadPackage( inStream, inPackageOffset );
@@ -204,6 +207,9 @@ TDCLPackage::~TDCLPackage( void )
 			}
 		}
 		::free( mParts );
+	}
+	if (mRelocationData) {
+	    ::free( mRelocationData );
 	}
 }
 
@@ -422,13 +428,13 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream, KUInt32 loadAdd
 
 	// Enfin, les parties.
 	// For parts, we apply the load address
-	theOffset = theDirectorySize + theRelocationSize + loadAddr;
+	theOffset = theDirectorySize + theRelocationSize;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		// Données.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
-		writeCount = thePart->GetSize( theOffset );
-		const void* theData = thePart->GetBuffer( theOffset );
+		writeCount = thePart->GetSize( theOffset + loadAddr );
+		const void* theData = thePart->GetBuffer( theOffset + loadAddr );
 		KUInt32 thePartRelocationCount = thePart->GetRelocationCount();
 		if (thePartRelocationCount > 0)
 		{
@@ -862,12 +868,33 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
         {
             (void) inStream->GetByte();
         }
+	} else {
+	    mRelocationData = NULL;
 	}
 
 	// Finalement, lecture des parties.
 	KUInt32 thePartDataSize = thePackageSize - theDirectorySize - theRelocationSize;
 	KUInt32 thePartDataOffset = theDirectorySize + theRelocationSize;
 	KUInt8* thePartData = (KUInt8*) ::malloc( thePartDataSize );
+
+    // Convert all relocations
+    KUInt32* allRelocations = NULL;
+    KUInt32 allRelocationsCount = 0;
+    if (mRelocationData) {
+        allRelocations = (KUInt32*) ::malloc(0);
+        KUInt32 numEntries = mRelocationData->fNumEntries;
+        for (KUInt32 entriesIx = 0; entriesIx < numEntries; entriesIx++) {
+            KUInt32 pageNumber = mRelocationData->fRelocationSets[entriesIx].fPageNumber;
+            KUInt32 offsetCount = mRelocationData->fRelocationSets[entriesIx].fOffsetCount;
+            allRelocations = (KUInt32*) ::realloc(allRelocations, sizeof(KUInt32) * (offsetCount + allRelocationsCount));
+            for (KUInt32 offsetIx = 0; offsetIx < offsetCount; offsetIx++) {
+                KUInt32 offset = mRelocationData->fRelocationSets[entriesIx].fOffsets[offsetIx];
+                KUInt32 addr = (pageNumber << 10) | (offset << 2);
+                allRelocations[allRelocationsCount + offsetIx] = addr;
+            }
+            allRelocationsCount += offsetCount;
+        }
+    }
 
 	// Lecture.
 	try {
@@ -890,6 +917,21 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 				throw DCLPackage( kPkgErrWeirdPartSize );
 			}
 
+			// Offset and count of relocations for this part.
+			KUInt32* partRelocations = NULL;
+			KUInt32 partRelocationsCount = 0;
+			if (allRelocations) {
+			    for (int relocationsIx = 0; relocationsIx < allRelocationsCount; relocationsIx++) {
+			        KUInt32 address = allRelocations[relocationsIx];
+			        if (partRelocations == NULL && address >= thePartDataOffset + theOffset) {
+			            partRelocations = allRelocations + relocationsIx;
+			        }
+			        if (address >= thePartDataOffset + theOffset && address < thePartDataOffset + theOffset + theSize) {
+			            partRelocationsCount++;
+			        }
+			    }
+			}
+
 			// Création des données.
 			if ((mParts[indexParts].fFlags & kPartTypeMask)
 					== kPartNOSPart)
@@ -900,17 +942,32 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 						(const void*) &thePartData[theOffset],
 						theSize );
 			} else {
-				mParts[indexParts].fPart =
-					new TDCLPkgPart(
+			    TDCLPkgPart* part;
+			    if (partRelocationsCount) {
+			        part = new TDCLPkgRelocatablePart(
 						thePartDataOffset + theOffset + inPackageOffset,
 						(const void*) &thePartData[theOffset],
 						theSize );
+				} else {
+			        part = new TDCLPkgPart(
+						thePartDataOffset + theOffset + inPackageOffset,
+						(const void*) &thePartData[theOffset],
+						theSize );
+				}
+				mParts[indexParts].fPart = part;
 			}
+            if (partRelocationsCount) {
+                ((TDCLPkgRelocatablePart*) mParts[indexParts].fPart)->SetRelocations(
+                        partRelocationsCount, partRelocations, mRelocationData->fBaseAddress, theOffset + thePartDataOffset);
+            }
 		}
 	} catch (...) {
 		// Ménage.
 		::free( thePartsLocations );
 		::free( thePartData );
+		if (allRelocations) {
+		    ::free(allRelocations);
+		}
 
 		// Relance.
 		throw;
@@ -918,6 +975,9 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 
 	::free( thePartsLocations );
 	::free( thePartData );
+	if (allRelocations) {
+	    ::free(allRelocations);
+	}
 }
 
 // -------------------------------------------------------------------------- //

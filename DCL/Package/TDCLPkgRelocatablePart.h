@@ -82,8 +82,9 @@ public:
     /// \param inRelocations    relocations par rapport à l'origine.
     /// \param inBaseAddress    adresse de base du début des données de la
     ///                         partie.
+    /// \param inOffset         offset of relocations, typically offset of part in package
     ///
-    void SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress );
+    void SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress, KUInt32 inOffset = 0 );
 
     ///
     /// Accesseur sur les relocations.

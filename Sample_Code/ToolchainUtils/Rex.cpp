@@ -344,10 +344,6 @@ int main( int argc, char** argv )
                     entries[entriesIndex].offset = UByteSex_ToBigEndian((KUInt32) offset);
                     size_t totalPackageSize = 0;
                     for (TDCLPackage* package : packageList) {
-                        // For now, we don't support relocation
-                        if (package->GetRelocation()) {
-                            (void) ::fprintf(stderr, "Warning: relocation not supported for package\n");
-                        }
                         TDCLMemStream memStream;
                         package->WriteToStream(&memStream, offset + startAddr);
                         size_t packageSize = memStream.GetCursor();
