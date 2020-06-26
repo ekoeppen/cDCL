@@ -123,6 +123,7 @@ help( const char* inToolName )
     (void) ::fprintf( stderr, "   -o -        extraire la/les parties sur stdout.\n" );
     (void) ::fprintf( stderr, "   -o prefixe  extraire la/les parties dans prefixe.n\n" );
     (void) ::fprintf( stderr, "               (ou juste prefixe si utilisé avec -n)\n" );
+    (void) ::fprintf( stderr, "   -V addr     adresse virtuelle (paquets en ROM/chargés)\n" );
 }
 
 // -------------------------------------------------------------------------- //
@@ -215,9 +216,10 @@ main( int inArgc, char** inArgv )
     char* theOutputPrefix = nil;
     Boolean wantXML = false;
     Boolean wantNSOF = false;
+    KUInt32 theVAddr = 0;
 
     int theOptionChar;
-    while ((theOptionChar = getopt( inArgc, inArgv, "hn:o:xs")) != -1)
+    while ((theOptionChar = getopt( inArgc, inArgv, "hn:o:xsV:")) != -1)
         switch (theOptionChar) {
             case 'h':
             case '?':
@@ -254,6 +256,12 @@ main( int inArgc, char** inArgv )
             case 's':
             {
                 wantNSOF = true;
+            }
+            break;
+
+            case 'V':
+            {
+                theVAddr = strtoul(optarg, NULL, 0);
             }
             break;
 
@@ -308,7 +316,7 @@ main( int inArgc, char** inArgv )
 
     try {
         // Lecture du paquet.
-        TDCLPackage thePackage( theStream );
+        TDCLPackage thePackage( theStream, theVAddr );
 
         // Itération sur les parties.
         KUInt32 nbParts = thePackage.GetNumParts();

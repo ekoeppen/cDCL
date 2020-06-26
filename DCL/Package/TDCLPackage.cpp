@@ -79,6 +79,7 @@ TDCLPackage::TDCLPackage( void )
 		mCreationDate( UDCLTime::TimeInSecondsSince1904() ),
 		mCopyrightStr( nil ),
 		mNameStr( nil ),
+		mExtraInfo( nil ),
 		mNumParts( 0 ),
 		mParts( nil )
 {
@@ -94,9 +95,9 @@ TDCLPackage::TDCLPackage( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * TDCLPackage( TDCLFile* )
+//  * TDCLPackage( TDCLFile*, KUInt32 )
 // -------------------------------------------------------------------------- //
-TDCLPackage::TDCLPackage( TDCLFile* inFile )
+TDCLPackage::TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset )
 	:
 		mNOS1Compatible( true ),
 		mPackageID( kDefaultID ),
@@ -105,6 +106,7 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile )
 		mCreationDate( 0 ),
 		mCopyrightStr( nil ),
 		mNameStr( nil ),
+		mExtraInfo( nil ),
 		mNumParts( 0 ),
 		mParts( nil )
 {
@@ -121,7 +123,7 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile )
 
 	try {
 		// Lecture.
-		ReadPackage( inFile );
+		ReadPackage( inFile, inPackageOffset );
 	} catch (...) {
 		// Fermeture ou restauration.
 		if (wasOpen)
@@ -144,9 +146,9 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile )
 }
 
 // -------------------------------------------------------------------------- //
-//  * TDCLPackage( TDCLStream* )
+//  * TDCLPackage( TDCLStream*, KUInt32 )
 // -------------------------------------------------------------------------- //
-TDCLPackage::TDCLPackage( TDCLStream* inStream )
+TDCLPackage::TDCLPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 	:
 		mNOS1Compatible( true ),
 		mPackageID( kDefaultID ),
@@ -154,12 +156,13 @@ TDCLPackage::TDCLPackage( TDCLStream* inStream )
 		mVersion( 0 ),
 		mCreationDate( 0 ),
 		mCopyrightStr( nil ),
+		mExtraInfo( nil ),
 		mNameStr( nil ),
 		mNumParts( 0 ),
 		mParts( nil )
 {
 	// Lecture.
-	ReadPackage( inStream );
+	ReadPackage( inStream, inPackageOffset );
 }
 
 // -------------------------------------------------------------------------- //
@@ -175,6 +178,10 @@ TDCLPackage::~TDCLPackage( void )
 	{
 		::free( mNameStr );
 	}
+	if (mExtraInfo)
+	{
+		::free( mExtraInfo );
+	}
 
 	if (mParts)
 	{
@@ -187,6 +194,10 @@ TDCLPackage::~TDCLPackage( void )
 			{
 				::free( mParts[indexParts].fInfoData );
 			}
+			if (mParts[indexParts].fExtraInfoData)
+			{
+				::free( mParts[indexParts].fExtraInfoData );
+			}
 			if (mParts[indexParts].fPart)
 			{
 				delete mParts[indexParts].fPart;
@@ -197,10 +208,10 @@ TDCLPackage::~TDCLPackage( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * WriteToStream( TDCLRandomAccessStream* ) const
+//  * WriteToStream( TDCLRandomAccessStream*, KUInt32 ) const
 // -------------------------------------------------------------------------- //
 void
-TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
+TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream, KUInt32 loadAddr ) const
 {
 	// On écrit les informations suivantes:
 	// - le catalogue (partie fixe) (SPackageDirectory)
@@ -219,13 +230,15 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 				sizeof(SPackageDirectory)
 				+ theCopyrightStrLen
 				+ theNameStrLen
-				+ (sizeof(SPartEntry) * mNumParts);
+				+ (sizeof(SPartEntry) * mNumParts)
+				+ mExtraInfoLen;
 	// Ajout des tailles des informations et des parties.
 	KUInt32 indexParts;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		// Informations.
 		theDirectorySize += mParts[indexParts].fInfoSize;
+		theDirectorySize += mParts[indexParts].fExtraInfoSize;
 	}
 
 	KUInt32 directoryAlignment = 4 - (theDirectorySize % 4);
@@ -248,19 +261,21 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 		KASSERT( thePart != nil );
 		relocationPageCount += thePart->GetRelocationPageCountEstimate();
 		allRelocationCount += thePart->GetRelocationCount();
-	    KUInt32 relocationSetMaxSize = sizeof(KUInt16) * 2;
-	    if (allRelocationCount < 256) {
-	        relocationSetMaxSize += allRelocationCount;
-	        if (relocationSetMaxSize & 0x3)
-	        {
-	            relocationSetMaxSize += 4 - (relocationSetMaxSize & 0x3);
-	        }
-	    } else {
-	        relocationSetMaxSize += 256;
-	    }
-	    KUInt32 relocationHeaderSize = 5 * sizeof(KUInt32);
-	    theRelocationSize = relocationHeaderSize + relocationPageCount * relocationSetMaxSize;
-    }
+	}
+	KUInt32 relocationSetMaxSize = sizeof(KUInt16) * 2;
+	if (allRelocationCount < 256) {
+		relocationSetMaxSize += allRelocationCount;
+		if (relocationSetMaxSize & 0x3)
+		{
+			relocationSetMaxSize += 4 - (relocationSetMaxSize & 0x3);
+		}
+	} else {
+		relocationSetMaxSize += 256;
+	}
+	if (relocationPageCount > 0) {
+		KUInt32 relocationHeaderSize = 5 * sizeof(KUInt32);
+		theRelocationSize = relocationHeaderSize + relocationPageCount * relocationSetMaxSize;
+	}
 
     theGlobalSize += theRelocationSize;
 
@@ -269,7 +284,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 		// Données.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
 		KASSERT( thePart != nil );
-		theGlobalSize += thePart->GetSize( theGlobalSize );
+		theGlobalSize += thePart->GetSize( theGlobalSize + loadAddr );
 		KUInt32 remain = 4 - (theGlobalSize % 4);
 		if (remain != 4)
 		{
@@ -312,6 +327,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	// Ensuite, les parties.
 	KUInt32 theInfoOffset = theCopyrightStrLen + theNameStrLen;
 
+	// For directory, do not apply the load address
 	KUInt32 theOffset = 0;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
@@ -319,7 +335,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 
 		// Données.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
-		KUInt32 theSize = thePart->GetSize( theOffset + theDirectorySize + theRelocationSize );
+		KUInt32 theSize = thePart->GetSize( theOffset + theDirectorySize + theRelocationSize + loadAddr );
 		theOffset += theSize;
 		KUInt32 remain = 4 - (theOffset % 4);
 		if (remain != 4)
@@ -346,12 +362,23 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	}
 	writeCount = theNameStrLen;
 	inOutStream->Write( mNameStr, &writeCount );
+	if (mExtraInfoLen)
+	{
+		writeCount = mExtraInfoLen;
+		inOutStream->Write( mExtraInfo, &writeCount );
+	}
 
 	// Données des parties.
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		writeCount = mParts[indexParts].fInfoSize;
-		inOutStream->Write( mParts[indexParts].fInfoData, &writeCount );
+		if (mParts[indexParts].fInfoData) {
+			inOutStream->Write( mParts[indexParts].fInfoData, &writeCount );
+		}
+		writeCount = mParts[indexParts].fExtraInfoSize;
+		if (mParts[indexParts].fExtraInfoData) {
+			inOutStream->Write( mParts[indexParts].fExtraInfoData, &writeCount );
+		}
 	}
 
 	// Alignement.
@@ -394,7 +421,8 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 	}
 
 	// Enfin, les parties.
-	theOffset = theDirectorySize + theRelocationSize;
+	// For parts, we apply the load address
+	theOffset = theDirectorySize + theRelocationSize + loadAddr;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		// Données.
@@ -488,13 +516,13 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * WriteToStream( TDCLStream* ) const
+//  * WriteToStream( TDCLStream*, KUInt32 ) const
 // -------------------------------------------------------------------------- //
 void
-TDCLPackage::WriteToStream( TDCLStream* inOutStream ) const
+TDCLPackage::WriteToStream( TDCLStream* inOutStream, KUInt32 loadAddr ) const
 {
     TDCLMemStream memStream;
-    WriteToStream(&memStream);
+    WriteToStream(&memStream, loadAddr);
     KUInt32 size = (KUInt32) memStream.GetCursor();
     inOutStream->Write(memStream.GetBuffer(), &size);
 }
@@ -561,14 +589,15 @@ TDCLPackage::IsPackage( TDCLFile* inFile )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ReadPackage( TDCLStream* )
+//  * ReadPackage( TDCLStream*, KUInt32 )
 // -------------------------------------------------------------------------- //
 void
-TDCLPackage::ReadPackage( TDCLStream* inStream )
+TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 {
 	KASSERT(mParts == nil);
 	KASSERT(mCopyrightStr == nil);
 	KASSERT(mNameStr == nil);
+	KASSERT(mExtraInfo == nil);
 
 	// Lecture de la signature.
 	KUInt8 theSignature[8];
@@ -626,6 +655,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
 		mParts[indexParts].fInfoData = nil;
+		mParts[indexParts].fExtraInfoData = nil;
 		mParts[indexParts].fPart = nil;
 	}
 
@@ -713,6 +743,21 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			throw DCLPackage( kPkgStringsDontSeemUniCStr );
 		}
 
+		KUInt32 firstPartInfo = theDirectoryDataSize;
+		if (mNumParts > 0)
+		{
+			firstPartInfo = thePartsLocations[0].fInfoOffset - theDirectoryInfoSize;
+		}
+		if (((KUInt32) (nameLength + nameOffset)) < firstPartInfo)
+		{
+			mExtraInfoLen = firstPartInfo - nameLength - nameOffset;
+			mExtraInfo = (char*) ::malloc(mExtraInfoLen);
+			(void) ::memcpy(mExtraInfo, (const void*) &theDirectoryData[nameOffset + nameLength], mExtraInfoLen);
+		} else {
+			mExtraInfoLen = 0;
+			mExtraInfo = NULL;
+		}
+
 		// Puis les informations pour les gestionnaires de parties.
 		for (indexParts = 0; indexParts < mNumParts; indexParts++)
 		{
@@ -735,6 +780,26 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 					thePointer,
 					(const void*) &theDirectoryData[theOffset],
 					theSize );
+
+			KUInt32 nextPartInfo = theDirectoryDataSize;
+			if (indexParts < mNumParts - 1)
+			{
+				nextPartInfo = thePartsLocations[indexParts + 1].fInfoOffset - theDirectoryInfoSize;
+			}
+			if (theOffset + theSize < nextPartInfo)
+			{
+				mParts[indexParts].fExtraInfoSize = nextPartInfo - theOffset - theSize;
+				thePointer = (KUInt8*) ::malloc( mParts[indexParts].fExtraInfoSize );
+				mParts[indexParts].fExtraInfoData = thePointer;
+				// Copie.
+				(void) ::memcpy(
+						thePointer,
+						(const void*) &theDirectoryData[theOffset + theSize],
+						mParts[indexParts].fExtraInfoSize );
+			} else {
+				mParts[indexParts].fExtraInfoSize = 0;
+				mParts[indexParts].fExtraInfoData = NULL;
+			}
 		}
 	} catch (...) {
 		// Ménage.
@@ -831,13 +896,13 @@ TDCLPackage::ReadPackage( TDCLStream* inStream )
 			{
 				mParts[indexParts].fPart =
 					new TDCLPkgNOSPart(
-						thePartDataOffset + theOffset,
+						thePartDataOffset + theOffset + inPackageOffset,
 						(const void*) &thePartData[theOffset],
 						theSize );
 			} else {
 				mParts[indexParts].fPart =
 					new TDCLPkgPart(
-						thePartDataOffset + theOffset,
+						thePartDataOffset + theOffset + inPackageOffset,
 						(const void*) &thePartData[theOffset],
 						theSize );
 			}
@@ -899,6 +964,8 @@ TDCLPackage::AddPart(
 	KUInt8* theInfoData = (KUInt8*) ::malloc( inInfoSize );
 	(void) ::memcpy( theInfoData, inInfoData, inInfoSize );
 	mParts[indexPart].fInfoData = theInfoData;
+	mParts[indexPart].fExtraInfoData = NULL;
+	mParts[indexPart].fExtraInfoSize = 0;
 
 	return indexPart;
 }
@@ -913,8 +980,11 @@ TDCLPackage::RemovePart( KUInt32 inPartIndex )
 
 	// Suppression des données.
 
-	// Ajout des données.
 	::free( mParts[inPartIndex].fInfoData );
+	if ( mParts[inPartIndex].fExtraInfoData )
+	{
+		::free( mParts[inPartIndex].fExtraInfoData );
+	}
 	delete mParts[inPartIndex].fPart;
 
 	// Rétrécissement du tableau.
@@ -925,6 +995,27 @@ TDCLPackage::RemovePart( KUInt32 inPartIndex )
 
 	mNumParts--;
 	mParts = (SPartData*) ::realloc( mParts, sizeof(SPartData) * mNumParts );
+}
+
+// -------------------------------------------------------------------------- //
+//  * RemovePartHandlerInfo( KUInt32 )
+// -------------------------------------------------------------------------- //
+void
+TDCLPackage::RemovePartHandlerInfo( KUInt32 inPartIndex )
+{
+	KASSERT( inPartIndex < mNumParts );
+
+	// Suppression des données.
+	if (mParts[inPartIndex].fInfoData) {
+		::free(mParts[inPartIndex].fInfoData);
+		mParts[inPartIndex].fInfoData = NULL;
+		mParts[inPartIndex].fInfoSize = 0;
+	}
+	if (mParts[inPartIndex].fExtraInfoData) {
+		::free(mParts[inPartIndex].fExtraInfoData);
+		mParts[inPartIndex].fExtraInfoData = NULL;
+		mParts[inPartIndex].fExtraInfoSize = 0;
+	}
 }
 
 // -------------------------------------------------------------------------- //
