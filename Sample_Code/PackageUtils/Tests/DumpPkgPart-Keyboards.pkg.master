@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame PUBLIC "-//DCL Group//Canonical DTD 1.0//EN" "http://www.kallisys.com/DTDs/newtonscript.dtd">
+<frame id="n0">
+	<slot symbol="text">
+		<string id="n1">
+			<value>Keyboards</value>
+		</string>
+	</slot>
+	<slot symbol="TapAction">
+		<frame id="n2">
+			<slot symbol="class">
+				<weird_immediate>50</weird_immediate>
+			</slot>
+			<slot symbol="instructions">
+				<binary id="n3">
+					<class><symbol>instructions</symbol></class>
+					<value>
+						JwAMGBkaKBs7ABwdKQIC
+					</value>
+				</binary>
+			</slot>
+			<slot symbol="literals">
+				<array id="n4">
+					<class><symbol>literals</symbol></class>
+					<precedent idref="n1"/>
+					<string id="n5">
+						<value>More keyboards mappings.© 1998-2006 by Paul Guyot.All rights reserved worldwide.</value>
+					</string>
+					<symbol>GetRoot</symbol>
+					<symbol>Notify</symbol>
+					<symbol>ExtraAlwaysClose</symbol>
+					<symbol>GetUserConfig</symbol>
+				</array>
+			</slot>
+			<slot symbol="argFrame">
+				<nil/>
+			</slot>
+			<slot symbol="numArgs">
+				<int>0</int>
+			</slot>
+		</frame>
+	</slot>
+	<slot symbol="installScript">
+		<frame id="n6">
+			<slot symbol="class">
+				<weird_immediate>50</weird_immediate>
+			</slot>
+			<slot symbol="instructions">
+				<binary id="n7">
+					<class><symbol>instructions</symbol></class>
+					<value>
+						exiRGYEaKaR7fHsbOgB8Ag==
+					</value>
+				</binary>
+			</slot>
+			<slot symbol="literals">
+				<array id="n8">
+					<class><symbol>literals</symbol></class>
+					<symbol>devRemoveScript</symbol>
+					<array id="n9">
+						<class><int>2</int></class>
+						<nil/>
+						<symbol>removeScript</symbol>
+					</array>
+					<symbol>EnsureInternal</symbol>
+					<symbol>devInstallScript</symbol>
+				</array>
+			</slot>
+			<slot symbol="argFrame">
+				<nil/>
+			</slot>
+			<slot symbol="numArgs">
+				<int>65537</int>
+			</slot>
+		</frame>
+	</slot>
+	<slot symbol="devInstallScript">
+		<frame id="n10">
+			<slot symbol="class">
+				<weird_immediate>50</weird_immediate>
+			</slot>
+			<slot symbol="instructions">
+				<binary id="n11">
+					<class><symbol>instructions</symbol></class>
+					<value>
+						GBkpGhspGBkpGpHHABOYHCLHABGmXwBJ
+						fiTCpRgZKRqRfRspxwAVAB0eKW8AR30f
+						AAeRHR4pHwAIKm8ARxgZKR0bKX0bKZh+
+						BX4GbwAYIiKmAg==
+					</value>
+				</binary>
+			</slot>
+			<slot symbol="literals">
+				<array id="n12">
+					<class><symbol>literals</symbol></class>
+					<symbol>international</symbol>
+					<symbol>GetGlobalVar</symbol>
+					<symbol>keyboards</symbol>
+					<symbol>EnsureInternal</symbol>
+					<array id="n13">
+						<frame id="n14">
+							<slot symbol="title">
+								<string id="n15">
+									<value>French</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<binary id="n16">
+									<class><symbol>kchr</symbol></class>
+									<value>
+										AAAAAAEBAgIBAAMGBAQFBQQEBwcHBwcH
+										BwcHBwcHBwcHBwEAAQgBAAEABAQEBAQE
+										BAQHBwcHBwcHBwcHBwcHBwcHAwYEBAUF
+										BAQDBgQEBQUEBAcHBwcHBwcHBwcHBwcH
+										BwcEBAQEBAQEBAQEBAQEBAQEBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHAAhxc2Rm
+										aGd3eGN2QGJhemVyeXQmjiInpCgtjY8p
+										IYgkb3UAaXANbGqda20AOz1uLDoJIDwI
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eAFFTREZIR1dYQ1YjQkFaRVJZVDEy
+										MzQ2NV85N6E4MCpPVQBJUA1MSiVLTaMu
+										K04/LwkgPggDGwAAAAAAAAAAAAAALioq
+										ACsrGz0AAC8DLy0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AUVNERkhHV1hDVkBC
+										QVpFUllUJoMiJ6QoLY3pKSHLJE9VAElQ
+										DUxKnUtNADs9Tiw6CSA8CAMbAAAAAAAA
+										AAAAAAAsHSoAKxwbHwAALwMeLQAAPTAx
+										MjM0NTY3ADg5AAAAEBAQEBAQEBAQEBAQ
+										EBAQEBAQBQELfxAEEAwQHB0fHgDg8bbE
+										7d7cxanXpae+5ZCo8qDwkdLUpnvRgsd9
+										wb/iz7yZlLkNwuz06bVAya0AsNYJyrII
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eAL23xuHr393aosPZuq6B5tvZqgDj
+										09WMW9DnyF3zr7TOu++VuA186uTo7iOl
+										sfXAXAnKswgDGwAAAAAAAAAAAAAALioq
+										ACsrGz0AAC8DLy0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AvbfG4evf3dqiw6W6
+										roHm29mq8JHS1KZ70YLHfcG/4s67mZW4
+										DXzq9OjuQMmt9bDWCcqyCAMbAAAAAAAA
+										AAAAAAAsHSoAKxwbHwAALwMeLQAAPTAx
+										MjM0NTY3ADg5AAAAEBAQEBAQEBAQEBAQ
+										EBAQEBAQBQELfxAEEAwQHB0fHgDg8bbE
+										7d7cxanXpae+5ZCo8qDwkdLUpnvRgsd9
+										wb/iz7yZlLkNwuz06bVAya1+sNYJyrII
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eABETBAYIBxcYAxYwAgEaBRIZFDEy
+										MzQdNR8cNxs4AB0PFR4JEA0MCp0LDRw7
+										PQ4sOgkgPAgDGwAAAAAAAAAAAAAALB0q
+										ACscGx8AAC8DHi0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AAAcEEgALIKthh2WO
+										aZJvl3WcQedFg0nqT+5V8gCrACoACyBg
+										YYhlj2mTb5h1nUHLRelJ7U/xVfQAYAIq
+										AAsgYGGIZY9pk2+YdZ1By0XpSe1P8VX0
+										AGAAIQALIF5hiWWQaZRvmXWeQeVF5knr
+										T+9V8wBeASEADSCsYYplkWmVb5p1n3nY
+										QYBF6EnsT4VVhlnZAKwDLQAHIH5BzE/N
+										ToRhi26Wb5sAfgIhAAsgXmGJZZBplG+Z
+										dZ5B5UXmSetP71XzIF4=
+									</value>
+								</binary>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n17">
+							<slot symbol="title">
+								<string id="n18">
+									<value>German</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n19">
+							<slot symbol="title">
+								<string id="n20">
+									<value>Italy</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n21">
+							<slot symbol="title">
+								<string id="n22">
+									<value>Belgian</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n23">
+							<slot symbol="title">
+								<string id="n24">
+									<value>Swiss Pro</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n25">
+							<slot symbol="title">
+								<string id="n26">
+									<value>Spanish</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n27">
+							<slot symbol="title">
+								<string id="n28">
+									<value>Danish</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n29">
+							<slot symbol="title">
+								<string id="n30">
+									<value>Canadian Fr.</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n31">
+							<slot symbol="title">
+								<string id="n32">
+									<value>Norwegian</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n33">
+							<slot symbol="title">
+								<string id="n34">
+									<value>Australian</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n35">
+							<slot symbol="title">
+								<string id="n36">
+									<value>Finnish</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n37">
+							<slot symbol="title">
+								<string id="n38">
+									<value>Swiss Fr.</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n39">
+							<slot symbol="title">
+								<string id="n40">
+									<value>Swiss Ge.</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n41">
+							<slot symbol="title">
+								<string id="n42">
+									<value>Dutch</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n43">
+							<slot symbol="title">
+								<string id="n44">
+									<value>Canada ISO</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n45">
+							<slot symbol="title">
+								<string id="n46">
+									<value>Brazilian</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n47">
+							<slot symbol="title">
+								<string id="n48">
+									<value>Canadian</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n49">
+							<slot symbol="title">
+								<string id="n50">
+									<value>Spanish ISO</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n51">
+							<slot symbol="title">
+								<string id="n52">
+									<value>Italian Pro</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n53">
+							<slot symbol="title">
+								<string id="n54">
+									<value>French num.</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<binary id="n55">
+									<class><symbol>kchr</symbol></class>
+									<value>
+										AAAAAAEBCQIIAAMGBAQFBQQEBwcHBwcH
+										BwcHBwcHBwcHBwEAAQgBAAEABAQEBAQE
+										BAQHBwcHBwcHBwcHBwcHBwcHAwYEBAUF
+										BAQDBgQEBQUEBAcHBwcHBwcHBwcHBwcH
+										BwcEBAQEBAQEBAQEBAQEBAQEBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcH
+										BwcHBwcHBwcHBwcHBwcHBwcHAApxc2Rm
+										aGd3eGN2QGJhemVyeXQmjiInpCgtjY8p
+										IYgkb3UAaXANbGqda20AOz1uLDoJIDwI
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eAFFTREZIR1dYQ1YjQkFaRVJZVDEy
+										MzQ2NV85N6E4MCpPVQBJUA1MSiVLTaMu
+										K04/LwkgPggDGwAAAAAAAAAAAAAALioq
+										ACsrGz0AAC8DLy0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AUVNERkhHV1hDVkBC
+										QVpFUllUJo4iJ6QoLY2PKSGIJE9VAElQ
+										DUxKnUtNADs9Tiw6CSA8CAMbAAAAAAAA
+										AAAAAAAsHSoAKxwbHwAALwMeLQAAPTAx
+										MjM0NTY3ADg5AAAAEBAQEBAQEBAQEBAQ
+										EBAQEBAQBQELfxAEEAwQHB0fHgDg8bbE
+										7d7cxanXpae+5ZCo8qDwkdLUpnvRgsd9
+										wb/iz7yZlLkNwuz06bVAya0AsNYJyrII
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eAL23xuHr393aosPZuq6B5tvZqgDj
+										09WMW9DnyF3zr7TOu++VuA186uTo7iOl
+										sfXAXAnKswgDGwAAAAAAAAAAAAAALioq
+										ACsrGz0AAC8DLy0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AvbfG4evf3dqiw6W6
+										roHm29mq8JHS1KZ70YLHfcG/4s67mZW4
+										DXzq9OjuQMmt9bDWCcqyCAMbAAAAAAAA
+										AAAAAAAsHSoAKxwbHwAALwMeLQAAPTAx
+										MjM0NTY3ADg5AAAAEBAQEBAQEBAQEBAQ
+										EBAQEBAQBQELfxAEEAwQHB0fHgDg8bbE
+										7d7cxanXpae+5ZCo8qDwkdLUpnvRgsd9
+										wb/iz7yZlLkNwuz06bVAya1+sNYJyrII
+										AxsAAAAAAAAAAAAAACwdKgArHBsfAAAv
+										Ax4tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eABETBAYIBxcYAxYwAgEaBRIZFDEy
+										MzQ2NT05Nx84MB0PFRsJEA0MCiILDRw7
+										Lw4sLgkgYAgDGwAAAAAAAAAAAAAALh0q
+										ACscGx8AAC8DHi0AAD0wMTIzNDU2NwA4
+										OQAAABAQEBAQEBAQEBAQEBAQEBAQEAUB
+										C38QBBAMEBwdHx4AcXNkZmhnd3hjdkBi
+										YXplcnl0Jo4iJ6QoLY2PKSGIJG91AGlw
+										DWxqnWttADs9bj86CSA8CAMbAAAAAAAA
+										AAAAAAAsHSoAKxwbHwAALwMeLQAAPTAx
+										MjM0NTY3ADg5AAAAEBAQEBAQEBAQEBAQ
+										EBAQEBAQBQELfxAEEAwQHB0fHgBRU0RG
+										SEdXWENWI0JBWkVSWVQxMjM0NjVfOTeh
+										ODAqT1UASVANTEolS02jLitOLC8JID4I
+										AxsAAAAAAAAAAAAAAC4qKgArKxs9AAAv
+										Ay8tAAA9MDEyMzQ1NjcAODkAAAAQEBAQ
+										EBAQEBAQEBAQEBAQEBAFAQt/EAQQDBAc
+										HR8eAAAKBBIACyCrYYdljmmSb5d1nEHn
+										RYNJ6k/uVfIAqwAqAAsgYGGIZY9pk2+Y
+										dZ1By0XpSe1P8VX0AGACKgALIGBhiGWP
+										aZNvmHWdQctF6UntT/FV9ABgACEACyBe
+										YYllkGmUb5l1nkHlReZJ60/vVfMAXgEh
+										AA0grGGKZZFplW+adZ952EGARehJ7E+F
+										VYZZ2QCsAy0AByB+QcxPzU6EYYtulm+b
+										AH4CIQALIF5hiWWQaZRvmXWeQeVF5knr
+										T+9V8yBeCCEACyD2YYllkGmUb5l1nkHl
+										ReZJ60/vVfMgXggqAAsgYGGIZY9pk2+Y
+										dZ1By0XpSe1P8VX0IGAJIQANIKxhimWR
+										aZVvmnWfedhBgEXoSexPhVWGWdkgrA==
+									</value>
+								</binary>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n56">
+							<slot symbol="title">
+								<string id="n57">
+									<value>Dvorak</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+						<frame id="n58">
+							<slot symbol="title">
+								<string id="n59">
+									<value>Dvorak Q</value>
+								</string>
+							</slot>
+							<slot symbol="mapping">
+								<nil/>
+							</slot>
+							<slot symbol="owner">
+								<symbol>Keyboards:Kallisys</symbol>
+							</slot>
+						</frame>
+					</array>
+					<symbol>Keyboard</symbol>
+					<symbol>GetUserConfig</symbol>
+					<symbol>title</symbol>
+					<symbol>StrEqual</symbol>
+				</array>
+			</slot>
+			<slot symbol="argFrame">
+				<nil/>
+			</slot>
+			<slot symbol="numArgs">
+				<int>131074</int>
+			</slot>
+		</frame>
+	</slot>
+	<slot symbol="devRemoveScript">
+		<frame id="n60">
+			<slot symbol="class">
+				<weird_immediate>50</weird_immediate>
+			</slot>
+			<slot symbol="instructions">
+				<binary id="n61">
+					<class><symbol>instructions</symbol></class>
+					<value>
+						GBkpGpGlfccAEiTBpCCmJ//8pwAHfwAH
+						fF8AMH18whuRHMRvACx9fCQdKwB/AAe0
+						fr8AHCIAfccAEhgZKR6RxwASxG8ATxgZ
+						KRofAAcqABgZKR8ACJEcxG8AbBgZKR8A
+						CR8ACil9IMKZXwBtIgI=
+					</value>
+				</binary>
+			</slot>
+			<slot symbol="literals">
+				<array id="n62">
+					<class><symbol>literals</symbol></class>
+					<symbol>international</symbol>
+					<symbol>GetGlobalVar</symbol>
+					<symbol>keyboards</symbol>
+					<symbol>owner</symbol>
+					<symbol>Keyboards:Kallisys</symbol>
+					<symbol>ArrayRemoveCount</symbol>
+					<array id="n63">
+						<class><symbol>pathExpr</symbol></class>
+						<symbol>_proto</symbol>
+						<symbol>keyboards</symbol>
+					</array>
+					<symbol>RemoveSlot</symbol>
+					<array id="n64">
+						<class><symbol>pathExpr</symbol></class>
+						<symbol>Keyboard</symbol>
+						<symbol>owner</symbol>
+					</array>
+					<symbol>Keyboard</symbol>
+					<symbol>EnsureInternal</symbol>
+				</array>
+			</slot>
+			<slot symbol="argFrame">
+				<nil/>
+			</slot>
+			<slot symbol="numArgs">
+				<int>262145</int>
+			</slot>
+		</frame>
+	</slot>
+</frame>

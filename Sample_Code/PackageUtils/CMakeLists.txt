@@ -27,3 +27,15 @@ install(TARGETS DumpPkgDir RUNTIME DESTINATION bin)
 
 target_link_libraries (DumpPkgPart PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS DumpPkgPart RUNTIME DESTINATION bin)
+
+file(GLOB TEST_PKGS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/*.pkg)
+foreach(TEST_PKG ${TEST_PKGS})
+    add_test(NAME DumpPkgDir-${TEST_PKG}
+             CONFIGURATIONS Debug
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Tests
+             COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/Tests/test-DumpPkgDir.sh $<TARGET_FILE:DumpPkgDir> ${TEST_PKG})
+    add_test(NAME DumpPkgPart-${TEST_PKG}
+             CONFIGURATIONS Debug
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Tests
+             COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/Tests/test-DumpPkgPart.sh $<TARGET_FILE:DumpPkgPart> ${TEST_PKG})
+endforeach(TEST_PKG ${TEST_PKGS})
