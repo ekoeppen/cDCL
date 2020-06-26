@@ -1,0 +1,3 @@
+id 1
+start 0x00800000
+package "NTHelp10.PKG"
