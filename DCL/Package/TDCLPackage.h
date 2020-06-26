@@ -181,7 +181,7 @@ public:
 	enum {
 		// La taille maximale autorisée par NTK est 28 caractères.
 		// (apparemment, NewtonOS en autorise 31).
-		kPackageNameMaxLength	= 28,	///< Taille maximale, en caractères,
+		kPackageNameMaxLength	= 31,	///< Taille maximale, en caractères,
 										///< du nom.
 		kCopyrightMaxLength		= 63	///< Taille maximale, en caractères,
 										///< de la chaîne avec le copyright.
