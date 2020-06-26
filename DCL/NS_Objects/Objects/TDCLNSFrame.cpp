@@ -676,9 +676,13 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 	TDCLNSRef theMap = inDecoder->GetNextObject();
 	
 	TDCLNSArray& theMapAsArray = theMap.ToArray();
-	KSInt32 theMapFlags = theMapAsArray.ClassOf().ToInt();
-	
-	theResult->mKeysAreSorted = (theMapFlags & TDCLPkgDecoder::kMapSorted) != 0;
+	KSInt32 theMapFlags = 0;
+	if (theMapAsArray.ClassOf().IsInt()) {
+	    // BookMaker apparently generates packages with maps of class 'Array.
+	    // Just consider the flags are 0 in this case.
+        theMapFlags = theMapAsArray.ClassOf().ToInt();
+	}
+    theResult->mKeysAreSorted = (theMapFlags & TDCLPkgDecoder::kMapSorted) != 0;
 	
 	// Remplissage des clés à partir de la fin.
 	KUInt32 indexPairs = nbPairs - 1;
