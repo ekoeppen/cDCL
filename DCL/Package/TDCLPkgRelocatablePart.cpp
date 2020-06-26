@@ -144,13 +144,13 @@ TDCLPkgRelocatablePart::IsOffsetDependant( void ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * Encode( KUInt32, void**, KUInt32* ) const
+//  * Encode( KUInt32, void**, KUInt32* )
 // -------------------------------------------------------------------------- //
 void
 TDCLPkgRelocatablePart::Encode(
         KUInt32 inOffset,
         void** ioBuffer,
-        KUInt32* ioSize ) const
+        KUInt32* ioSize )
 {
     KSInt32 delta = inOffset - mBaseAddress;
     KUInt32* buffer = (KUInt32*) *ioBuffer;

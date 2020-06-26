@@ -93,7 +93,7 @@ public:
 	///
 	/// \return \c true.
 	///
-	virtual Boolean	IsNOSPart( void ) const;
+	Boolean	IsNOSPart( void ) const override;
 
 	///
 	/// Retourne l'objet de cette partie (la décode si nécessaire).
@@ -114,7 +114,7 @@ private:
 	///
 	/// \return \c true si les données dépendent du décalage dans le paquet.
 	///
-	virtual Boolean IsOffsetDependant( void ) const;
+	Boolean IsOffsetDependant( void ) const override;
 
 	///
 	/// Détermine si la partie a été modifiée et doit être ré-encodée.
@@ -123,7 +123,7 @@ private:
 	/// \return \c true si les données ont été modifiées et doivent être
 	///			ré-encodées.
 	///
-	virtual Boolean IsDirty( void ) const;
+	Boolean IsDirty( void ) const override;
 
 	///
 	/// Encode la partie pour un décalage donné (la décode si nécessaire).
@@ -134,10 +134,10 @@ private:
 	///								(alloué avec malloc)
 	/// \param ioSize				taille des données (en entrée et en sortie)
 	///
-	virtual void Encode(
+	void Encode(
 					KUInt32 inOffset,
 					void** ioBuffer,
-					KUInt32* ioSize ) const;
+					KUInt32* ioSize ) override;
 
 	/// \name Variables
 	TDCLNSRef				mObject;	///< Objet (ou nil s'il n'est pas encore

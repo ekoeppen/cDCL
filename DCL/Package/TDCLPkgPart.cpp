@@ -100,10 +100,10 @@ TDCLPkgPart::IsNOSPart( void ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * GetSize( KUInt32 ) const
+//  * GetSize( KUInt32 )
 // -------------------------------------------------------------------------- //
 KUInt32
-TDCLPkgPart::GetSize( KUInt32 inOffset ) const
+TDCLPkgPart::GetSize( KUInt32 inOffset )
 {
 	// Faut-il ré-encoder?
 	if (((inOffset != mOffset) && IsOffsetDependant())
@@ -119,10 +119,10 @@ TDCLPkgPart::GetSize( KUInt32 inOffset ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * GetBuffer( KUInt32 ) const
+//  * GetBuffer( KUInt32 )
 // -------------------------------------------------------------------------- //
 const void*
-TDCLPkgPart::GetBuffer( KUInt32 inOffset ) const
+TDCLPkgPart::GetBuffer( KUInt32 inOffset )
 {
 	// Faut-il ré-encoder?
 	if (((inOffset != mOffset) && IsOffsetDependant())
@@ -156,13 +156,13 @@ TDCLPkgPart::IsDirty( void ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * Encode( KUInt32, void**, KUInt32* ) const
+//  * Encode( KUInt32, void**, KUInt32* )
 // -------------------------------------------------------------------------- //
 void
 TDCLPkgPart::Encode(
 		KUInt32 /* inOffset */,
 		void** /* ioBuffer */,
-		KUInt32* /* ioSize */ ) const
+		KUInt32* /* ioSize */ )
 {
 }
 
