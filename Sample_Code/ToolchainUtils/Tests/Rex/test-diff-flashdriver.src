@@ -1,0 +1,6 @@
+id              1
+version         1
+start           0x00800000
+manufacturer    'Eins'
+block           'fdrv' <0000000100800048>
+block			'FDRV' "EinsteinFlashDriver.bin"
