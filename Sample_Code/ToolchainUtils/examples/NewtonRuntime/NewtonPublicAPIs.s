@@ -2089,7 +2089,7 @@ MPW-mangled: ConvertToHardwareTime__11TDelayTimerFUl
 C++: ConvertToUnicode(const void*, unsigned short*, long, long)
 MPW-mangled: ConvertToUnicode__FPCvPUslT3
 */
-    JT ConvertToUnicode__FPCvPUslT3, 01801a50
+    JT _Z16ConvertToUnicodePKvPtll, 01801a50
 
 /*
 C++: TTime::ConvertTo(TimeUnits)
@@ -5606,7 +5606,7 @@ MPW-mangled: Init__6TUPortFv
 C++: TUTask::Init(void (*)(void*, unsigned long, unsigned long), unsigned long, unsigned long, void*, unsigned long, unsigned long)
 MPW-mangled: Init__6TUTaskFPFPvUlT2_vUlT2PvN22
 */
-    JT Init__6TUTaskFPFPvUlT2_vUlT2PvN22, 01801190
+    JT _ZN6TUTask4InitEPFvPvmmEmmS0_mm, 01801190
 
 /*
 C++: TUTask::Init(void (*)(void*, unsigned long, unsigned long), unsigned long, unsigned long, void*, unsigned long, unsigned long, unsigned long)
@@ -8502,7 +8502,7 @@ MPW-mangled: Receive__6TUPortFP14TUAsyncMessageUlT2Uc
 C++: TUPort::Receive(unsigned long*, void*, unsigned long, TUMsgToken*, unsigned long*, unsigned long, unsigned long, unsigned char, unsigned char)
 MPW-mangled: Receive__6TUPortFPUlPvUlP10TUMsgTokenT1N23UcT8
 */
-    JT Receive__6TUPortFPUlPvUlP10TUMsgTokenT1N23UcT8, 01801304
+    JT _ZN6TUPort7ReceiveEPmPvmP10TUMsgTokenS0_mmhh, 01801304
 
 /*
 C++: TNSDebugAPI::Receiver(long)
@@ -8575,7 +8575,7 @@ MPW-mangled: RegisterForSystemEvent__12TSystemEventFUlN21
 C++: TUGestalt::RegisterGestalt(unsigned long, void*, unsigned long)
 MPW-mangled: RegisterGestalt__9TUGestaltFUlPvT1
 */
-    JT RegisterGestalt__9TUGestaltFUlPvT1, 01802548
+    JT _ZN9TUGestalt15RegisterGestaltEmPvm, 01802548
 
 /*
 C++: static MemObjManager::RegisterHeapRef(unsigned long, void*)
@@ -8593,7 +8593,7 @@ MPW-mangled: RegisterInterrupt__FPP15InterruptObjectUlPvPFPv_lT2
 C++: RegisterInterrupt(unsigned long, void*, long (*)(void*), unsigned long)
 MPW-mangled: RegisterInterrupt__FUlPvPFPv_lT1
 */
-    JT RegisterInterrupt__FUlPvPFPv_lT1, 01801338
+    JT _Z17RegisterInterruptmPvPFlS_Em, 01801338
 
 /*
 C++: RegisterL2Interrupt(InterruptObject**, unsigned long, void*, long (*)(void*), unsigned long, long (*)(void*))
@@ -9532,7 +9532,7 @@ MPW-mangled: SemOp__16TUSemaphoreGroupFUl8SemFlags
 C++: SendForInterrupt(unsigned long, unsigned long, unsigned long, void*, unsigned long, unsigned long, unsigned long, TTime*, unsigned char)
 MPW-mangled: SendForInterrupt__FUlN21PvN31P5TTimeUc
 */
-    JT SendForInterrupt__FUlN21PvN31P5TTimeUc, 01801410
+    JT _Z16SendForInterruptmmmPvmmmP5TTimeh, 01801410
 
 /*
 C++: TUPort::SendGoo(unsigned long, unsigned long, void*, unsigned long, unsigned long, unsigned long, unsigned char, unsigned long, TTime*)
@@ -11030,7 +11030,7 @@ MPW-mangled: Sync__5TViewFv
 C++: TBCInsertTabletSample(unsigned long, unsigned long)
 MPW-mangled: TBCInsertTabletSample__FUlT1
 */
-    JT TBCInsertTabletSample__FUlT1, 018027d0
+    JT _Z21TBCInsertTabletSamplemm, 018027d0
 
 /*
 C++: TBCWakeUpInkerFromInterrupt(unsigned long)
