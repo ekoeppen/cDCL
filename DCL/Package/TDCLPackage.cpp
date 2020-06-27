@@ -958,7 +958,7 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 			}
             if (partRelocationsCount) {
                 ((TDCLPkgRelocatablePart*) mParts[indexParts].fPart)->SetRelocations(
-                        partRelocationsCount, partRelocations, mRelocationData->fBaseAddress, theOffset + thePartDataOffset);
+                        partRelocationsCount, partRelocations, mRelocationData->fBaseAddress + thePartDataOffset, theOffset + thePartDataOffset);
             }
 		}
 	} catch (...) {
