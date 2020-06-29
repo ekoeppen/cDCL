@@ -141,16 +141,19 @@ TDCLPkgNOSPart::IsDirty( void ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * Encode( KUInt32, void**, KUInt32* ) const
+//  * Encode( KUInt32, void**, KUInt32* )
 // -------------------------------------------------------------------------- //
 void
 TDCLPkgNOSPart::Encode(
 		KUInt32 inOffset,
 		void** ioBuffer,
-		KUInt32* ioSize ) const
+		KUInt32* ioSize )
 {
 	// On encode avec un flux mémoire.
-	TDCLMemStream theBufferStream;
+	if (mObject.IsNIL()) {
+	    (void) GetObject();
+	}
+    TDCLMemStream theBufferStream;
 	TDCLPkgEncoder thePkgEncoder(
 			&theBufferStream,
 			inOffset,

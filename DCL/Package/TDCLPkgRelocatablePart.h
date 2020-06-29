@@ -82,15 +82,16 @@ public:
     /// \param inRelocations    relocations par rapport à l'origine.
     /// \param inBaseAddress    adresse de base du début des données de la
     ///                         partie.
+    /// \param inOffset         offset of relocations, typically offset of part in package
     ///
-    void SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress );
+    void SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress, KUInt32 inOffset = 0 );
 
     ///
     /// Accesseur sur les relocations.
     ///
     /// \return  le nombre de relocations
     ///
-    virtual KUInt32 GetRelocationCount( void ) const override
+    KUInt32 GetRelocationCount( void ) const override
         {
             return mRelocationCount;
         }
@@ -100,7 +101,7 @@ public:
     ///
     /// \return  les relocations.
     ///
-    virtual const KUInt32* GetRelocations( void ) const override
+    const KUInt32* GetRelocations( void ) const override
         {
             return mRelocations;
         }
@@ -125,7 +126,7 @@ private:
     ///
     /// \return \c true si \c mRelocationCount > 0.
     ///
-    virtual Boolean IsOffsetDependant( void ) const override;
+    Boolean IsOffsetDependant( void ) const override;
 
     ///
     /// Relocalise les données par rapport à l'offset dans le paquet.
@@ -136,10 +137,10 @@ private:
     ///                             (alloué avec malloc)
     /// \param ioSize               taille des données (en entrée et en sortie)
     ///
-    virtual void Encode(
+    void Encode(
                     KUInt32 inOffset,
                     void** ioBuffer,
-                    KUInt32* ioSize ) const override;
+                    KUInt32* ioSize ) override;
 
     KUInt32     mRelocationPageCountEstimate;
     KUInt32     mBaseAddress;

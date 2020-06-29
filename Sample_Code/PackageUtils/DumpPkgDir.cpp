@@ -67,6 +67,7 @@ help( char* inToolName )
     (void) ::fprintf( stderr, "%s - affiche le catalogue d'un paquet Newton (fichier ou stdin).\n", inToolName );
     (void) ::fprintf( stderr, "%s [options] [--] [chemin]\n", inToolName );
     (void) ::fprintf( stderr, "   --help      afficher cette aide.\n" );
+    (void) ::fprintf( stderr, "   --vaddr     adresse virtuelle du paquet (paquets en ROM/chargés).\n" );
 }
 
 // -------------------------------------------------------------------------- //
@@ -76,37 +77,47 @@ int
 main( int inArgc, char** inArgv )
 {
     int theResult = 0;
+    KUInt32 theVAddr = 0;
 
     char* theFilePath = nil;
-    if (inArgc >= 2)
+    int indexOpt = 1;
+    while (indexOpt < inArgc)
     {
         // Ou bien inArgv[1] est --help ou bien c'est le nom du fichier, ou bien
         // c'est --.
-        if (::strcmp( inArgv[1], "--help" ) == 0)
+        if (::strcmp( inArgv[indexOpt], "--help" ) == 0)
         {
             ::help( ::basename( inArgv[0] ) );
             ::exit( 0 );
         }
 
-        if (::strcmp( inArgv[1], "--" ) == 0)
+        if (::strcmp( inArgv[indexOpt], "--" ) == 0)
         {
-            if (inArgc == 3)
-            {
-                theFilePath = inArgv[2];
-            } else if (inArgc != 2) {
-                // Trop d'arguments.
-                (void) ::fprintf( stderr, "Trop d'arguments.\n" );
+            indexOpt++;
+            break;
+        }
+
+        if (::strcmp( inArgv[indexOpt], "--vaddr") == 0)
+        {
+            if (inArgc > indexOpt + 1) {
+                theVAddr = strtoul(inArgv[indexOpt + 1], NULL, 0);
+                indexOpt += 2;
+                continue;
+            } else {
+                (void) ::fprintf( stderr, "Erreur de syntaxe\n" );
                 ::usage( ::basename( inArgv[0] ) );
                 ::exit( 1 );
             }
-        } else if (inArgc == 2) {
-            theFilePath = inArgv[1];
-        } else {
-            // Trop d'arguments.
-            (void) ::fprintf( stderr, "Trop d'arguments.\n" );
-            ::usage( ::basename( inArgv[0] ) );
-            ::exit( 1 );
         }
+
+        break;
+    }
+    if (indexOpt + 1 == inArgc) {
+        theFilePath = inArgv[indexOpt];
+    } else if (indexOpt < inArgc) {
+        (void) ::fprintf( stderr, "Erreur de syntaxe\n" );
+        ::usage( ::basename( inArgv[0] ) );
+        ::exit( 1 );
     }
 
     TDCLPOSIXFiles theFilesIntf;
@@ -124,7 +135,7 @@ main( int inArgc, char** inArgv )
 
     try {
         // Lecture du paquet.
-        TDCLPackage thePackage( theStream );
+        TDCLPackage thePackage( theStream, theVAddr );
 
         // Affichage des informations.
         char someCString[512];

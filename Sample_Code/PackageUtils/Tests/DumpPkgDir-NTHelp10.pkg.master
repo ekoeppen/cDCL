@@ -1,0 +1,12 @@
+Name:           NTHelp
+Copyright:      drds
+ID:             78787878 (xxxx)
+Version:        1
+Flags:          00000000
+Creation date:  031EA40A
+  ---- part #1/1 ----
+  Type:           626F6F6B (book)
+  Size:           101056 (0x18AC0)
+  Offset:         256 (0x100)
+  Flags:          00000081 ( NOSPart + Notify )
+  Handler Info:   626F6F6B                         book

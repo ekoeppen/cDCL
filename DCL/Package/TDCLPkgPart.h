@@ -89,7 +89,7 @@ public:
 	/// \param inOffset		décalage par rapport au début du paquet.
 	/// \return la taille des données.
 	///
-	KUInt32				GetSize( KUInt32 inOffset ) const;
+	KUInt32				GetSize( KUInt32 inOffset );
 
 	///
 	/// Récupère un pointeur sur les données.
@@ -98,7 +98,7 @@ public:
 	/// \param inOffset		décalage par rapport au début du paquet.
 	/// \return un pointeur sur les données.
 	///
-	const void*			GetBuffer( KUInt32 inOffset ) const;
+	const void*			GetBuffer( KUInt32 inOffset );
 
 	///
 	/// Détermine la taille de la partie.
@@ -106,7 +106,7 @@ public:
 	///
 	/// \return la taille des données.
 	///
-	inline KUInt32		GetSize( void ) const
+	inline KUInt32		GetSize( void )
 		{
 			return GetSize( mOffset );
 		}
@@ -117,7 +117,7 @@ public:
 	///
 	/// \return un pointeur sur les données.
 	///
-	inline const void*	GetBuffer( void ) const
+	inline const void*	GetBuffer( void )
 		{
 			return GetBuffer( mOffset );
 		}
@@ -214,7 +214,7 @@ private:
 	virtual void Encode(
 					KUInt32 inOffset,
 					void** ioBuffer,
-					KUInt32* ioSize ) const;
+					KUInt32* ioSize );
 
 	///
 	/// Constructeur par copie volontairement indisponible.

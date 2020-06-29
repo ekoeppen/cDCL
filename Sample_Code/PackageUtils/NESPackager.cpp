@@ -415,7 +415,7 @@ BuildPackage(
 					TDCLPackage::kPartNOSPart | TDCLPackage::kPartNotifyFlag,
 					new TDCLPkgNOSPart( inPackageFrame ) );
 		
-		thePackage.WriteToStream( theOutputFile );
+		thePackage.WriteToStream( theOutputStream );
 	} catch ( ... ) {
 		// Ménage.
 		if (theOutputFile)

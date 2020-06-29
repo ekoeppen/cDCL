@@ -81,7 +81,7 @@ TDCLPkgRelocatablePart::~TDCLPkgRelocatablePart( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * SetRelocations( KUInt32, KUInt32*, KUInt32 )
+//  * compare_relocations(const void*, const void*)
 // -------------------------------------------------------------------------- //
 extern "C" int compare_relocations(const void* a, const void* b)
 {
@@ -98,8 +98,11 @@ extern "C" int compare_relocations(const void* a, const void* b)
     return 0;
 }
 
+// -------------------------------------------------------------------------- //
+//  * SetRelocations(KUInt32, const KUInt32*, KUInt32, KUInt32)
+// -------------------------------------------------------------------------- //
 void
-TDCLPkgRelocatablePart::SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress )
+TDCLPkgRelocatablePart::SetRelocations( KUInt32 inCount, const KUInt32* inRelocations, KUInt32 inBaseAddress, KUInt32 inOffset )
 {
     mBaseAddress = inBaseAddress;
     ssize_t size = inCount * sizeof(KUInt32);
@@ -110,6 +113,11 @@ TDCLPkgRelocatablePart::SetRelocations( KUInt32 inCount, const KUInt32* inReloca
         mRelocations = (KUInt32*) ::realloc( mRelocations, size );
     }
     ::memcpy( mRelocations, inRelocations, size );
+    if (inOffset != 0) {
+        for (int relIndex = 0; relIndex < inCount; relIndex++) {
+            mRelocations[relIndex] -= inOffset;
+        }
+    }
     ::qsort( mRelocations, inCount, sizeof(KUInt32), compare_relocations);
     mRelocationCount = inCount;
 }
@@ -144,13 +152,13 @@ TDCLPkgRelocatablePart::IsOffsetDependant( void ) const
 }
 
 // -------------------------------------------------------------------------- //
-//  * Encode( KUInt32, void**, KUInt32* ) const
+//  * Encode( KUInt32, void**, KUInt32* )
 // -------------------------------------------------------------------------- //
 void
 TDCLPkgRelocatablePart::Encode(
         KUInt32 inOffset,
         void** ioBuffer,
-        KUInt32* ioSize ) const
+        KUInt32* ioSize )
 {
     KSInt32 delta = inOffset - mBaseAddress;
     KUInt32* buffer = (KUInt32*) *ioBuffer;

@@ -329,7 +329,11 @@ TDCLPThreads::TThread::~TThread( void )
 {
 	if (mState != kStopped)
 	{
-		throw DCLThreadActive;
+		(void) ::pthread_join( mThread, NULL );
+		if (mState != kStopped)
+		{
+			throw DCLThreadActive;
+		}
 	}
 
 	// On nettoie.

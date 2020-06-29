@@ -101,6 +101,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestNSOF::WalterSmith();
 		} else if (::strcmp(inTestName, "pkg-waltersmith") == 0) {
 			UTestPkg::WalterSmith();
+		} else if (::strcmp(inTestName, "pkg-idempotent") == 0) {
+			UTestPkg::IdemPotent();
 		} else if (::strcmp(inTestName, "threads-posix") == 0) {
 			UTestThreads::Posix();
 		} else if (::strcmp(inTestName, "time-values") == 0) {

@@ -5,5 +5,5 @@ add_executable (NSOFtoXML
 NSOFtoXML.cpp
 )
 
-target_link_libraries (NSOFtoXML LINK_PUBLIC DCL pthread)
+target_link_libraries (NSOFtoXML PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS NSOFtoXML RUNTIME DESTINATION bin)

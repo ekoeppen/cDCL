@@ -1,3 +1,5 @@
+![C/C++ CI](https://github.com/pguyot/DCL/workflows/C/C++%20CI/badge.svg)
+
 The Desktop Connection Library (DCL) is a multi-platform library to
 connect to Newtons using the Dock protocol and to manipulate NewtonOS
 data.
@@ -5,6 +7,7 @@ data.
 ## Compilation and portability ##
 
 This release of the DCL should be compiled with cmake.
+The library and sample code programs run on macOS X and Linux.
 
     mkdir build
     cd build

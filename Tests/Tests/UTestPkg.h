@@ -33,6 +33,12 @@ public:
 	/// Encode l'exemple de Walter Smith.
 	///
 	static void WalterSmith( void );
+
+	///
+	/// IdemPotent test.
+	/// Ensure we can decode and recode a package identically.
+	///
+	static void IdemPotent( void );
 };
 
 #endif

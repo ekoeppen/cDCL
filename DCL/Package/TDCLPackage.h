@@ -181,7 +181,7 @@ public:
 	enum {
 		// La taille maximale autorisée par NTK est 28 caractères.
 		// (apparemment, NewtonOS en autorise 31).
-		kPackageNameMaxLength	= 28,	///< Taille maximale, en caractères,
+		kPackageNameMaxLength	= 31,	///< Taille maximale, en caractères,
 										///< du nom.
 		kCopyrightMaxLength		= 63	///< Taille maximale, en caractères,
 										///< de la chaîne avec le copyright.
@@ -288,7 +288,7 @@ public:
 	/// \param inFile	fichier considéré.
 	/// \throws DCLException si le fichier n'est pas un paquet.
 	///
-	TDCLPackage( TDCLFile* inFile );
+	TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset = 0 );
 
 	///
 	/// Constructeur à partir d'un flux. Lit le paquet entièrement.
@@ -296,7 +296,7 @@ public:
 	/// \param inStream	flux considéré.
 	/// \throws DCLException si le fichier n'est pas un paquet.
 	///
-	TDCLPackage( TDCLStream* inStream );
+	TDCLPackage( TDCLStream* inStream, KUInt32 inPackageOffset = 0 );
 
 	///
 	/// Constructeur à partir d'une mémoire tampon.
@@ -307,7 +307,7 @@ public:
 	/// \param inSize	taille de la mémoire tampon.
 	/// \throws DCLException si la mémoire tampon n'est pas un paquet.
 	///
-	TDCLPackage( const KUInt8* inBuffer, KUInt32 inSize );
+	TDCLPackage( const KUInt8* inBuffer, KUInt32 inSize, KUInt32 inPackageOffset = 0 );
 
 	///
 	/// Destructeur.
@@ -332,14 +332,14 @@ public:
 	///
 	/// \param inOutStream	flux de sortie.
 	///
-	void	WriteToStream( TDCLRandomAccessStream* inOutStream ) const;
+	void	WriteToStream( TDCLRandomAccessStream* inOutStream, KUInt32 loadAddr = 0 ) const;
 
 	///
 	/// Compile et écrit le paquet sur un flux.
 	///
 	/// \param inOutStream	flux de sortie.
 	///
-	void	WriteToStream( TDCLStream* inOutStream ) const;
+	void	WriteToStream( TDCLStream* inOutStream, KUInt32 loadAddr = 0 ) const;
 
 	///
 	/// Accesseur sur la compatibilité du paquet.
@@ -761,6 +761,13 @@ public:
 	///
 	void 				RemovePart( KUInt32 inPartIndex );
 
+	///
+	/// Supprime les données pour le gestionnaire d'une partie donnée.
+	///
+	/// \param inPartIndex	indice de la partie.
+	///
+	void 				RemovePartHandlerInfo( KUInt32 inPartIndex );
+
 private:
 	///
 	/// Données par défaut pour le gestionnaire (en fait, une chaîne qui
@@ -787,6 +794,8 @@ private:
 		KUInt32			fInfoSize;	///< Taille des données pour le
 									///< gestionnaire.
 		KUInt8*			fInfoData;	///< Données pour le gestionnaire.
+		KUInt32         fExtraInfoSize; ///< Additional data size
+		KUInt8*         fExtraInfoData; ///< Additional data ptr
 		TDCLPkgPart*	fPart;		///< Données de la partie.
 	};
 
@@ -810,7 +819,7 @@ private:
 	///
 	/// \param inStream		flux à lire.
 	///
-	void			ReadPackage( TDCLStream* inStream );
+	void			ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset = 0 );
 
 	/// \name Variables
 	Boolean			mNOS1Compatible;///< Si le paquet est compatible 1.x.
@@ -823,6 +832,8 @@ private:
 									///< le 1/01/1904
 	KUInt16*		mCopyrightStr;	///< Chaîne pour le copyright
 	KUInt16*		mNameStr;		///< Chaîne pour le nom.
+	char*           mExtraInfo;     ///< Additional info
+	KUInt32         mExtraInfoLen;  ///< Length of extra info.
 	KUInt32			mNumParts;		///< Nombre de parties dans le paquet.
 	SPartData*		mParts;			///< Parties.
 	/// Relocation data or NULL if there isn't any.

@@ -1,0 +1,16 @@
+Name:           Keyboards:Kallisys
+Copyright:      ©1997-2006 by Paul Guyot. All rights reserved worldwide.
+ID:             78787878 (xxxx)
+Version:        12
+Flags:          00000000
+Creation date:  C09CA5FE
+NewtonOS 2.x only
+  ---- part #1/1 ----
+  Type:           6175746F (auto)
+  Size:           6548 (0x1994)
+  Offset:         308 (0x134)
+  Flags:          00000081 ( NOSPart + Notify )
+  Handler Info:   4E6577746F6E20546F6F6C6B69742031 Newton Toolkit 1
+                  2E362E343B20706C6174666F726D2066 .6.4; platform f
+                  696C65204E6577746F6E20322E312076 ile Newton 2.1 v
+                  35                               5
