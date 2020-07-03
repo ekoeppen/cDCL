@@ -13,6 +13,9 @@ DumpPkgDir.cpp
 add_executable (DumpPkgPart
 DumpPkgPart.cpp
 )
+add_executable (WatsonEnabler
+WatsonEnabler.cpp
+)
 
 target_link_libraries (nespackager PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS nespackager RUNTIME DESTINATION bin)
@@ -27,6 +30,9 @@ install(TARGETS DumpPkgDir RUNTIME DESTINATION bin)
 
 target_link_libraries (DumpPkgPart PUBLIC DCL PRIVATE Threads::Threads)
 install(TARGETS DumpPkgPart RUNTIME DESTINATION bin)
+
+target_link_libraries (WatsonEnabler PUBLIC DCL PRIVATE Threads::Threads)
+install(TARGETS WatsonEnabler RUNTIME DESTINATION bin)
 
 file(GLOB TEST_PKGS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/*.pkg)
 foreach(TEST_PKG ${TEST_PKGS})
