@@ -27,6 +27,7 @@
 
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLExistsAlreadyException.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/Package/TDCLPackage.h>
@@ -125,10 +126,15 @@ main( int inArgc, char** inArgv )
     }
     if (outputFilePath)
     {
-        outputFile = new TDCLPOSIXFile( &theFilesIntf, outputFilePath );
-        outputFile->Create();
-        outputFile->Open(false);
-        outputStream = outputFile;
+        try {
+            outputFile = new TDCLPOSIXFile( &theFilesIntf, outputFilePath );
+            outputFile->Create();
+            outputFile->Open(false);
+            outputStream = outputFile;
+        } catch (TDCLExistsAlreadyException& anException) {
+            fprintf(stderr, "Le fichier %s existe déjà\n", outputFilePath);
+            return 1;
+        }
     } else {
         outputStream = new TDCLStdStream();
     }
@@ -136,6 +142,14 @@ main( int inArgc, char** inArgv )
     try {
         // Lecture du paquet.
         TDCLPackage thePackage( inputStream );
+        if (thePackage.GetPackageFlags() & TDCLPackage::kWatsonSignaturePresentFlag) {
+            fprintf(stderr, "Le paquet est déjà prévu pour Watson\n");
+            return 1;
+        }
+        if (thePackage.GetRelocation()) {
+            fprintf(stderr, "Le paquet contient des relocations, ce qui est incompatible avec le système de signature du Watson\n");
+            return 1;
+        }
         TDCLPkgPart* theSignature = new TDCLPkgPart(0, "xxxxSLB0Schlumberger Industries", 32);
         thePackage.AddPart(0, TDCLPackage::kPartRawPart, theSignature);
         thePackage.SetPackageFlags(thePackage.GetPackageFlags() | TDCLPackage::kWatsonSignaturePresentFlag);
