@@ -23,7 +23,7 @@ Rex.cpp
 )
 
 target_link_libraries (Rex PUBLIC DCL PRIVATE Threads::Threads)
-install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)
+install(TARGETS Rex RUNTIME DESTINATION bin)
 
 file(GLOB TEST_SRC_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff-*.src)
 foreach(TEST_SRC ${TEST_SRC_SCRIPTS})
