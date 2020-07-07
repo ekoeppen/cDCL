@@ -34,7 +34,6 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLExistsAlreadyException.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
-#include <DCL/NS_Objects/Exchange/TDCLPkgDecoder.h>
 #include <DCL/NS_Objects/Exchange/TDCLXMLEncoder.h>
 #include <DCL/NS_Objects/Exchange/TDCLNSOFEncoder.h>
 #include <DCL/Package/TDCLPackage.h>

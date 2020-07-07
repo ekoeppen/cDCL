@@ -32,3 +32,43 @@ jobs:
       run: |
         cd build
         ctest . -C Debug
+    - uses: actions/upload-artifact@v2
+      with:
+        name: libDCL ${{matrix.os}}
+        path: build/libDCL.*
+    - uses: actions/upload-artifact@v2
+      with:
+        name: NSOFtoXML ${{matrix.os}}
+        path: build/Sample_Code/NSOFtoXML/NSOFtoXML
+    - uses: actions/upload-artifact@v2
+      with:
+        name: DumpPkgPart ${{matrix.os}}
+        path: build/Sample_Code/PackageUtils/DumpPkgPart
+    - uses: actions/upload-artifact@v2
+      with:
+        name: DumpPkgDir ${{matrix.os}}
+        path: build/Sample_Code/PackageUtils/DumpPkgDir
+    - uses: actions/upload-artifact@v2
+      with:
+        name: WatsonEnabler ${{matrix.os}}
+        path: build/Sample_Code/PackageUtils/WatsonEnabler
+    - uses: actions/upload-artifact@v2
+      with:
+        name: nespackager ${{matrix.os}}
+        path: build/Sample_Code/PackageUtils/nespackager
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pbbookmaker ${{matrix.os}}
+        path: build/Sample_Code/PackageUtils/pbbookmaker
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ELFtoNTK ${{matrix.os}}
+        path: build/Sample_Code/ToolchainUtils/ELFtoNTK
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ELFtoPKG ${{matrix.os}}
+        path: build/Sample_Code/ToolchainUtils/ELFtoPKG
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Rex ${{matrix.os}}
+        path: build/Sample_Code/ToolchainUtils/Rex

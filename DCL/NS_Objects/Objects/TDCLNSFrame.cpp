@@ -47,6 +47,7 @@
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadParamError.h>
+#include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/Errors/TDCLLimitReachedError.h>
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 #include <DCL/NS_Objects/Exchange/TDCLNSEncoder.h>
@@ -673,41 +674,50 @@ TDCLNSFrame::FromPkg( TDCLPkgDecoder* inDecoder )
 	inDecoder->AddObjectToList( TDCLNSRef( theResult ), theObjectOffset );
 
 	// Récupération de la carte.
+	size_t pos = theStream->GetCursor();
+    KUInt32 mapRef = theStream->GetLong();
+	theStream->SetCursor(pos, TDCLRandomAccessStream::kFromStart);
 	TDCLNSRef theMap = inDecoder->GetNextObject();
-	
-	TDCLNSArray& theMapAsArray = theMap.ToArray();
-	KSInt32 theMapFlags = 0;
-	if (theMapAsArray.ClassOf().IsInt()) {
-	    // BookMaker apparently generates packages with maps of class 'Array.
-	    // Just consider the flags are 0 in this case.
-        theMapFlags = theMapAsArray.ClassOf().ToInt();
-	}
-    theResult->mKeysAreSorted = (theMapFlags & TDCLPkgDecoder::kMapSorted) != 0;
-	
+
 	// Remplissage des clés à partir de la fin.
 	KUInt32 indexPairs = nbPairs - 1;
-	try {
-		do {
-			KUInt32 indexKeys = theMapAsArray.GetLength() - 1;
-			for (; indexKeys > 0; indexKeys--)
-			{
-				new ( &theResult->mKeys[indexPairs--] )
-					TDCLNSRef( theMapAsArray.Get(indexKeys) );
-			}
-			
-			if (theMapAsArray.Get(0) == TDCLNSRef::kNILREF)
-			{
-				break;
-			} else {
-				theMapAsArray = theMapAsArray.Get(0).ToArray();
-			}
-		} while (true);
+
+    try {
+        do {
+            const TDCLNSArray& theMapAsArray = theMap.ToArray();
+            KSInt32 theMapFlags = 0;
+            if (theMapAsArray.ClassOf().IsInt()) {
+                // BookMaker apparently generates packages with maps of class 'Array.
+                // Just consider the flags are 0 in this case.
+                theMapFlags = theMapAsArray.ClassOf().ToInt();
+            }
+            if (theMapAsArray.GetLength() == nbPairs + 1) {
+                theResult->mKeysAreSorted = (theMapFlags & TDCLPkgDecoder::kMapSorted) != 0;
+            } else {
+                theResult->mKeysAreSorted = false;
+            }
+
+            KUInt32 indexKeys = theMapAsArray.GetLength() - 1;
+            for (; indexKeys > 0; indexKeys--)
+            {
+                new ( &theResult->mKeys[indexPairs--] )
+                    TDCLNSRef( theMapAsArray.Get(indexKeys) );
+            }
+
+            if (theMapAsArray.Get(0) == TDCLNSRef::kNILREF)
+            {
+                break;
+            } else {
+                theMap = theMapAsArray.Get(0);
+            }
+        } while (true);
+        if (indexPairs != (KUInt32) -1) {
+            throw DCLBadStateError;
+        }
 	} catch ( ... ) {
-		for (; indexPairs < nbPairs; indexPairs++)
-		{
+		for (; indexPairs < nbPairs; indexPairs++) {
 			theResult->mKeys[ indexPairs ].TDCLNSRef::~TDCLNSRef();
-		}		
-		
+		}
 		throw;	// rethrow
 	}
 	

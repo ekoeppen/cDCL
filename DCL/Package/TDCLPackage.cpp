@@ -81,6 +81,7 @@ TDCLPackage::TDCLPackage( void )
 		mCopyrightStr( nil ),
 		mNameStr( nil ),
 		mExtraInfo( nil ),
+		mExtraInfoLen( 0 ),
 		mNumParts( 0 ),
 		mParts( nil )
 {
@@ -108,6 +109,7 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset )
 		mCopyrightStr( nil ),
 		mNameStr( nil ),
 		mExtraInfo( nil ),
+		mExtraInfoLen( 0 ),
 		mNumParts( 0 ),
 		mParts( nil ),
 		mRelocationData( nil )
@@ -159,6 +161,7 @@ TDCLPackage::TDCLPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 		mCreationDate( 0 ),
 		mCopyrightStr( nil ),
 		mExtraInfo( nil ),
+		mExtraInfoLen( 0 ),
 		mNameStr( nil ),
 		mNumParts( 0 ),
 		mParts( nil ),
