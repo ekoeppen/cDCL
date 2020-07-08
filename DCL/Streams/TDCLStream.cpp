@@ -176,7 +176,7 @@ TDCLStream::GetLine( void )
 			{
 				// Increase the buffer size with realloc.
 				bufferLength += 10;
-				theResult = (KUInt8*)  ::realloc( theResult, bufferLength );
+				theResult = (KUInt8*)  ::realloc( theResult, bufferLength + 1 );
 			}
 
 			theResult[ strLength ] = theChar;
