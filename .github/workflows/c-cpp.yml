@@ -18,12 +18,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
-        which apt-get && sudo apt-get install perl || echo
+        which apt-get && sudo apt-get install perl lcov || echo
     - name: configure
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Debug
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
     - name: build
       run: |
         cd build
@@ -32,6 +32,14 @@ jobs:
       run: |
         cd build
         ctest . -C Debug
+    - name: process and upload coverage data
+      run: |
+        cd build
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --remove coverage.info '/Applications/Xcode.app/*' --output-file coverage.info
+        lcov --list coverage.info
+        bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
     - uses: actions/upload-artifact@v2
       with:
         name: libDCL ${{matrix.os}}
