@@ -254,8 +254,7 @@ ParseELF(TDCLNSFrame& frame, TELFFile& elfFile) {
     if (baseVAddr != 0) {
         // We probably could handle this by loading relocations first and
         // relocating to 0.
-        printf("Invalid base address, expected 0 got %x\n", baseVAddr);
-        throw std::runtime_error("Invalid base address");
+        printf("WARNING: base address not 0 (got %x)\n", baseVAddr);
     }
 
     KUInt8* data = (KUInt8*) ::malloc(imageSize);
