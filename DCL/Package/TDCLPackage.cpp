@@ -83,7 +83,8 @@ TDCLPackage::TDCLPackage( void )
 		mExtraInfo( nil ),
 		mExtraInfoLen( 0 ),
 		mNumParts( 0 ),
-		mParts( nil )
+		mParts( nil ),
+		mRelocationData( nil )
 {
 	mParts = (SPartData*) ::malloc( 0 );
 
