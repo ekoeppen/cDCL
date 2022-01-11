@@ -250,15 +250,9 @@ ParseELF(TDCLNSFrame& frame, TELFFile& elfFile) {
     KUInt32 baseVAddr;
     KUInt32 imageSize;
     elfFile.GetVirtualAddressRange(header, baseVAddr, imageSize);
-
-    if (baseVAddr != 0) {
-        // We probably could handle this by loading relocations first and
-        // relocating to 0.
-        printf("WARNING: base address not 0 (got %x)\n", baseVAddr);
-    }
-
     KUInt8* data = (KUInt8*) ::malloc(imageSize);
     elfFile.ReadWithVirtualAddress(header, data, imageSize, baseVAddr);
+    frame.Set("baseAddress", TDCLNSRef::MakeInt(baseVAddr));
     frame.Set("code", TDCLNSRef::MakeBinary(data, imageSize, TDCLNSRef::MakeSymbol("code")));
     ::free(data);
 
