@@ -43,7 +43,9 @@
 	#ifdef __MWERKS__
 		#pragma	warn_resultnotused	off
 	#endif
-	#include <OSUtils.h>
+  #if __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
+    #include <OSUtils.h>
+  #endif
 	#include <stdio.h>
 
 	#ifdef __MWERKS__

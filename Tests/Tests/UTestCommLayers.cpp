@@ -30,8 +30,8 @@
 #include <DCL/Interfaces/POSIX/TDCLPThreads.h>
 #endif
 
-#if TARGET_OS_OPENSTEP
-#include <DCL/Communication_Layers/MacOS X/TDCLXADSP.h>
+#if TARGET_OS_OPENSTEP && __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
+#include <DCL/Communication_Layers/MacOS_X/TDCLXADSP.h>
 #include <DCL/Interfaces/POSIX/TDCLPThreads.h>
 #endif
 
@@ -94,7 +94,7 @@ UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 void
 UTestCommLayers::ConnectAndDisconnectXADSP( void )
 {
-#if !TARGET_OS_OPENSTEP
+#if !TARGET_OS_OPENSTEP || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
 	(void) ::printf( "Test non disponible pour cette plateforme\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
@@ -169,7 +169,7 @@ UTestCommLayers::StartAndStopTwiceFDSerialPort( const char* inDevPath )
 void
 UTestCommLayers::StartAndStopTwiceXADSP( void )
 {
-#if !TARGET_OS_OPENSTEP
+#if !TARGET_OS_OPENSTEP || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
 	(void) ::printf( "Test non disponible pour cette plateforme\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)

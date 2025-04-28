@@ -123,6 +123,10 @@
 	#define	TARGET_OS_OPENSTEP 1
 #endif
 
+#ifdef __APPLE__
+    #define DARWIN 1
+#endif
+
 #if DARWIN
     #define TARGET_OS_OPENSTEP 1
 #endif
@@ -251,20 +255,28 @@
 			#define TARGET_OS_OPENSTEP_PPC 1
 			#define TARGET_OS_OPENSTEP_I386 0
 			#define TARGET_OS_OPENSTEP_AMD64 0
+      #define TARGET_OS_OPENSTEP_ARM64 0
 		#elif defined (__i386__)
 			#define TARGET_OS_OPENSTEP_PPC 0
 			#define TARGET_OS_OPENSTEP_I386 1
 			#define TARGET_OS_OPENSTEP_AMD64 0
+      #define TARGET_OS_OPENSTEP_ARM64 0
 		#elif defined (__amd64__)
 			#define TARGET_OS_OPENSTEP_PPC 0
 			#define TARGET_OS_OPENSTEP_I386 0
 			#define TARGET_OS_OPENSTEP_AMD64 1
+      #define TARGET_OS_OPENSTEP_ARM64 0
+    #elif defined (__arm64__)
+      #define TARGET_OS_OPENSTEP_PPC 0
+      #define TARGET_OS_OPENSTEP_I386 0
+      #define TARGET_OS_OPENSTEP_AMD64 0
+      #define TARGET_OS_OPENSTEP_ARM64 1
 		#else
 			#error "Unknown MacOS X architecture"
 		#endif
 
 		// The superior x86 is 32 bits.
-		#if defined(__ppc64__) || defined (__amd64__)
+		#if defined(__ppc64__) || defined (__amd64__) || defined (__arm64__)
 			#define KUIntPtr	KUInt64
 		#else
 			#define KUIntPtr	KUInt32
