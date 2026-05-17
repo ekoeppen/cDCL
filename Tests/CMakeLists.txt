@@ -50,3 +50,9 @@ foreach(TEST_SCRIPT ${TEST_SCRIPTS})
              COMMAND bash ${TEST_SCRIPT} $<TARGET_FILE:DCLTests>)
 endforeach(TEST_SCRIPT ${TEST_SCRIPTS})
 
+# Add 'optional' label to doxygen test to allow filtering in test execution
+set_tests_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-doxygen.sh
+    PROPERTIES LABELS "optional"
+)
+
