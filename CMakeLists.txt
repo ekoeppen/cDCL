@@ -15,7 +15,13 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 endif()
 
-add_definitions (-DTARGET_OS_POSIX -DHAS_C99_LONGLONG -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
+if(CYGWIN)
+    add_definitions(-DTARGET_OS_CYGWIN=1)
+elseif(NOT WIN32)
+    add_definitions(-DTARGET_OS_POSIX=1)
+endif()
+
+add_definitions (-DHAS_C99_LONGLONG=1 -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-DNDEBUG)
 endif()
@@ -411,4 +417,7 @@ foreach(HEADER ${DCL_HEADERS})
    install(FILES ${HEADER} DESTINATION include/${DIR})
 endforeach()
 
-install(TARGETS DCL LIBRARY DESTINATION lib)
+install(TARGETS DCL 
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

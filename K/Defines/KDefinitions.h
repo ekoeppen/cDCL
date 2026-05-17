@@ -368,8 +368,8 @@
 		#define TARGET_RT_BIG_ENDIAN 0
 	#endif
 
-	typedef	unsigned long			KUInt32;
-	typedef	signed long				KSInt32;
+	typedef	unsigned int			KUInt32;
+	typedef	signed int				KSInt32;
 	typedef	unsigned short			KUInt16;
 	typedef	signed short			KSInt16;
 	typedef	signed char				KSInt8;
@@ -380,6 +380,13 @@
 	// We probably have long long on Windows.
 	// We have it on Cygwin for sure.
 	#define HAS_C99_LONGLONG 1
+
+	// On 64-bit Windows/Cygwin, void* is 64 bits.
+	#if defined(_WIN64) || defined(__LP64__) || defined(__x86_64__)
+		#define KUIntPtr	KUInt64
+	#else
+		#define KUIntPtr	KUInt32
+	#endif
 #endif
 
 #if TARGET_OS_BEOS
