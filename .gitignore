@@ -6,3 +6,4 @@ GTAGS
 *.a
 .DS_Store
 build
+DoxyOutput

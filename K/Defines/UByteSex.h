@@ -93,6 +93,24 @@ public:
 #endif
 		}
 
+	///
+	/// Generic template to handle any integer type based on size.
+	/// Resolves ambiguity when typedefs differ from base types.
+	/// Newton data is always 16- or 32-bit; any other width is a compile-time error.
+	///
+	/// \param inWord	integer value to swap.
+	/// \return the byte-swapped value.
+	///
+	template<typename T>
+	static inline T Swap(T inWord)
+		{
+			static_assert(
+				sizeof(T) == 2 || sizeof(T) == 4,
+				"UByteSex::Swap<T>: unsupported type width (Newton data is 2 or 4 bytes only)");
+			if (sizeof(T) == 2) return (T)Swap((KUInt16)inWord);
+			return (T)Swap((KUInt32)inWord);
+		}
+
 #if TARGET_RT_LITTLE_ENDIAN
 	// Macros pour une plateforme en petit indien
 	#define	UByteSex_FromBigEndian( inWord )	( UByteSex::Swap( inWord ) )
