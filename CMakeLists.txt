@@ -197,7 +197,15 @@ K/Unicode/UUTF16Conv.cpp
 K/Unicode/UUTF16CStr.cpp
 )
 
-if (NOT WIN32)
+if (WIN32 AND NOT CYGWIN)
+    target_sources(DCL PRIVATE
+        DCL/Interfaces/Win32/TDCLWin32File.cpp
+        DCL/Interfaces/Win32/TDCLWin32Files.cpp
+        DCL/Interfaces/Win32/TDCLWin32Dir.cpp
+        DCL/Interfaces/Win32/TDCLWin32DirBase.cpp
+        DCL/Interfaces/Win32/TDCLWin32RootDir.cpp
+    )
+else()
     target_sources(DCL PRIVATE
         DCL/Communication_Layers/Common/TDCLSocket.cpp
         DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp

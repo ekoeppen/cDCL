@@ -46,6 +46,10 @@
 
 class TDCLFile;
 
+#ifdef CreateFile
+#undef CreateFile
+#endif
+
 ///
 /// Classe pour l'abstraction d'un dossier.
 /// Un dossier contient des fichiers. On peut parcourir la liste des éléments,
