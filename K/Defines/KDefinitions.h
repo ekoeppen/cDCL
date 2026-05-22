@@ -387,6 +387,15 @@
 	#else
 		#define KUIntPtr	KUInt32
 	#endif
+
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
+
+	#include <windows.h>
+
+	// Yield is defined in WinBase.h and conflicts with IDCLThreads::Yield
+	#undef Yield
 #endif
 
 #if TARGET_OS_BEOS

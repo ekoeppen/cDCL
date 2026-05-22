@@ -26,6 +26,7 @@
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -66,6 +67,11 @@
 	#ifdef __MWERKS__
 		#pragma	warn_resultnotused	on
 	#endif
+#endif
+
+#if TARGET_OS_WIN32
+	#include <stdio.h>
+	#include <stdarg.h>
 #endif
 
 #if TARGET_OS_COMPAT_POSIX
@@ -251,6 +257,21 @@
 							(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
 			#define KDPRINTF_SETUP
 		#endif
+	#elif TARGET_OS_WIN32
+		// KDPRINTF va sur stderr
+		#define KDPRINTF( str )								\
+						(void) ::fprintf( stderr, (str) )
+		#define KDPRINTF1( str, arg1 )						\
+						(void) ::fprintf( stderr, (str), (arg1) )
+		#define KDPRINTF2( str, arg1, arg2 )				\
+						(void) ::fprintf( stderr, (str), (arg1), (arg2) )
+		#define KDPRINTF3( str, arg1, arg2, arg3 )			\
+						(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3) )
+		#define KDPRINTF4( str, arg1, arg2, arg3, arg4 )	\
+						(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4) )
+		#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
+						(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
+		#define KDPRINTF_SETUP
 	#else
 		#if KDebugOn
 			#warning KDPRINTF n´est pas défini
@@ -278,6 +299,14 @@
 				Str255 theDebugStr;							\
 				UPStrings::C2PStrCopy( theDebugStr, cstr );	\
 				::DebugStr( theDebugStr );					\
+			}
+	#elif TARGET_OS_WIN32
+		// DebugStr n'existe pas. On utilise fprintf
+		#define KDEBUGSTR( cstr )							\
+			{												\
+				(void) ::fprintf( stderr, 					\
+						"DebugStr - %s (%s:%i)\n",			\
+						cstr, __FILE__, __LINE__ );			\
 			}
 	#else
 		#if KDebugOn
