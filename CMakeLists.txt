@@ -173,15 +173,6 @@ DCL/Server/TDCLSimpleServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
-DCL/Communication_Layers/Common/TDCLSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
-DCL/Interfaces/POSIX/TDCLPThreads.cpp
 K/Defines/KDefinitions.cpp
 K/Exceptions/TException.cpp
 K/Exceptions/Errors/TError.cpp
