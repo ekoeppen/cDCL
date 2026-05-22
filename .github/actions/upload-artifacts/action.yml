@@ -1,0 +1,57 @@
+name: Upload build artifacts
+description: Uploads all cDCL build artifacts for a given platform
+
+inputs:
+  label:
+    description: 'Artifact name label, e.g. "ubuntu-latest" or "windows-cygwin"'
+    required: true
+  suffix:
+    description: 'Binary file suffix, e.g. ".exe" or ""'
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/upload-artifact@v7
+      with:
+        name: libDCL ${{ inputs.label }}
+        path: |
+          build/libDCL.*
+          build/DCL.*
+    - uses: actions/upload-artifact@v7
+      with:
+        name: NSOFtoXML ${{ inputs.label }}
+        path: build/Sample_Code/NSOFtoXML/NSOFtoXML${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: DumpPkgPart ${{ inputs.label }}
+        path: build/Sample_Code/PackageUtils/DumpPkgPart${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: DumpPkgDir ${{ inputs.label }}
+        path: build/Sample_Code/PackageUtils/DumpPkgDir${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: WatsonEnabler ${{ inputs.label }}
+        path: build/Sample_Code/PackageUtils/WatsonEnabler${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: nespackager ${{ inputs.label }}
+        path: build/Sample_Code/PackageUtils/nespackager${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: pbbookmaker ${{ inputs.label }}
+        path: build/Sample_Code/PackageUtils/pbbookmaker${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ELFtoNTK ${{ inputs.label }}
+        path: build/Sample_Code/ToolchainUtils/ELFtoNTK${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ELFtoPKG ${{ inputs.label }}
+        path: build/Sample_Code/ToolchainUtils/ELFtoPKG${{ inputs.suffix }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: Rex ${{ inputs.label }}
+        path: build/Sample_Code/ToolchainUtils/Rex${{ inputs.suffix }}
