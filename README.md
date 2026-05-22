@@ -4,7 +4,8 @@ The Desktop Connection Library (DCL) is a multi-platform library to
 connect to Apple Newton Devices using the Dock protocol and to manipulate
 NewtonOS data.
 
-The library and sample code programs run on macOS X, Linux and Cygwin.
+The library and sample code programs run on macOS X, Linux and Cygwin,
+with limited native Win32 support via MinGW.
 
 ## Compilation and portability ##
 
@@ -12,6 +13,13 @@ This release of the DCL should be compiled with CMake:
 
 ```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+```
+
+MinGW requires usage of a toolchain file if cross compiled:
+
+```sh
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=cmake/mingw-toolchain.cmake
 cmake --build build
 ```
 

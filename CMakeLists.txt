@@ -17,7 +17,9 @@ endif()
 
 if(CYGWIN)
     add_definitions(-DTARGET_OS_CYGWIN=1)
-elseif(NOT WIN32)
+elseif(WIN32)
+    add_definitions(-DTARGET_OS_WIN32=1)
+else()
     add_definitions(-DTARGET_OS_POSIX=1)
 endif()
 
@@ -183,15 +185,6 @@ DCL/Server/TDCLSimpleServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
-DCL/Communication_Layers/Common/TDCLSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
-DCL/Interfaces/POSIX/TDCLPThreads.cpp
 K/Crypto/UDES.cpp
 K/Crypto/UDESTables.cpp
 K/Math/TInt64.cpp
@@ -205,6 +198,25 @@ K/Unicode/TStringRef.cpp
 K/Unicode/UUTF16Conv.cpp
 K/Unicode/UUTF16CStr.cpp
 )
+
+if (WIN32 AND NOT CYGWIN)
+    target_sources(DCL PRIVATE
+        DCL/Interfaces/Win32/TDCLWin32File.cpp
+        DCL/Interfaces/Win32/TDCLWin32Files.cpp
+    )
+else()
+    target_sources(DCL PRIVATE
+        DCL/Communication_Layers/Common/TDCLSocket.cpp
+        DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
+        DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
+        DCL/Interfaces/POSIX/TDCLPThreads.cpp
+    )
+endif()
 
 set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
@@ -422,13 +434,27 @@ K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+if (NOT WIN32 OR CYGWIN)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+else()
+    # On Windows/MinGW, we don't need the Threads package if we're not using pthreads
+    # but we define an empty target to satisfy dependencies in subdirectories
+    if (NOT TARGET Threads::Threads)
+        add_library(Threads::Threads INTERFACE IMPORTED)
+    endif()
+endif()
 
-add_subdirectory (Sample_Code/ToolchainUtils)
+if (TARGET Threads::Threads)
+    target_link_libraries(DCL PRIVATE Threads::Threads)
+endif()
+
+if (NOT WIN32)
+    add_subdirectory (Sample_Code/ToolchainUtils)
+    add_subdirectory (Sample_Code/PackageUtils)
+    add_subdirectory (Tests)
+endif()
 add_subdirectory (Sample_Code/NSOFtoXML)
-add_subdirectory (Sample_Code/PackageUtils)
-add_subdirectory (Tests)
 
 foreach(HEADER ${DCL_HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
