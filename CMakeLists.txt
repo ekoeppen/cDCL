@@ -15,9 +15,17 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 endif()
 
+# Default to building shared libraries unless specified otherwise
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
 if(CYGWIN)
+    message(STATUS "Platform: CYGWIN")
     add_definitions(-DTARGET_OS_CYGWIN=1)
-elseif(NOT WIN32)
+elseif(WIN32)
+    message(STATUS "Platform: WIN32")
+    add_definitions(-DTARGET_OS_WIN32=1)
+else()
+    message(STATUS "Platform: POSIX")
     add_definitions(-DTARGET_OS_POSIX=1)
 endif()
 
@@ -39,7 +47,7 @@ IF("${isSystemDir}" STREQUAL "-1")
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
-add_library (DCL SHARED
+add_library (DCL
 DCL/Communication_Layers/TDCLBufferedPipe.cpp
 DCL/Communication_Layers/TDCLCommLayer.cpp
 DCL/Communication_Layers/TDCLMNPPipe.cpp
@@ -165,15 +173,6 @@ DCL/Server/TDCLSimpleServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
-DCL/Communication_Layers/Common/TDCLSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
-DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
-DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
-DCL/Interfaces/POSIX/TDCLPThreads.cpp
 K/Crypto/UDES.cpp
 K/Crypto/UDESTables.cpp
 K/Math/TInt64.cpp
@@ -187,6 +186,20 @@ K/Unicode/TStringRef.cpp
 K/Unicode/UUTF16Conv.cpp
 K/Unicode/UUTF16CStr.cpp
 )
+
+if (NOT WIN32)
+    target_sources(DCL PRIVATE
+        DCL/Communication_Layers/Common/TDCLSocket.cpp
+        DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
+        DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
+        DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
+        DCL/Interfaces/POSIX/TDCLPThreads.cpp
+    )
+endif()
 
 set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
@@ -404,13 +417,18 @@ K/Unicode/UUTF16CStr.h
 K/XML/UExpatUtils.h
 )
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+if (NOT WIN32 OR CYGWIN)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    target_link_libraries(DCL PRIVATE Threads::Threads)
+endif()
 
-add_subdirectory (Sample_Code/ToolchainUtils)
+if (NOT WIN32)
+    add_subdirectory (Sample_Code/ToolchainUtils)
+    add_subdirectory (Sample_Code/PackageUtils)
+    add_subdirectory (Tests)
+endif()
 add_subdirectory (Sample_Code/NSOFtoXML)
-add_subdirectory (Sample_Code/PackageUtils)
-add_subdirectory (Tests)
 
 foreach(HEADER ${DCL_HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
