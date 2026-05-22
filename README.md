@@ -1,12 +1,15 @@
 ![C/C++ CI](https://github.com/pguyot/DCL/workflows/C/C++%20CI/badge.svg)
 
-The Desktop Connection Library (DCL) is a multi-platform library to
-connect to Apple Newton Devices using the Dock protocol and to manipulate
-NewtonOS data.
+# Apple Newton Desktop Connectivity Library
 
-The library and sample code programs run on macOS X, Linux and Cygwin.
+The Desktop Connection Library (DCL) is a multi-platform library to connect to
+Apple Newton Devices using the Dock protocol and to manipulate NewtonOS data.
 
-## Compilation and portability ##
+The library and sample code programs run on macOS X, Linux and Cygwin, with
+limited native Win32 support via MinGW (no file system, serial I/O, threading or
+networking support).
+
+## Compilation and portability
 
 This release of the DCL should be compiled with CMake:
 
@@ -15,7 +18,21 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ```
 
-## Testing ##
+MinGW requires usage of a toolchain file if cross compiled from e.g. macOS or
+Linux:
+
+```sh
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=cmake/mingw-toolchain.cmake
+cmake --build build
+```
+
+Note: When using MSYS2 as the MinGW distribution, CMake needs to be the MinGW
+version to ensure the host system is detected as Win32 and not Cygwin.
+
+Binaries can be statically linked against libDCL to simplify distribution by
+setting the `BUILD_SHARED_LIBS` CMake property to `OFF`.
+
+## Testing
 
 Tests are executed using `ctest` from the build directory:
 
@@ -23,25 +40,24 @@ Tests are executed using `ctest` from the build directory:
 ctest . -C Debug
 ```
 
-Note that the `doxygen` test is marked as optional since it fails due to
-some documentation gaps, it can be excluded from test execution:
+Note that the `doxygen` test is marked as optional since it fails due to some
+documentation gaps, it can be excluded from test execution:
 
 ```sh
 ctest . -C Debug -LE optional
 ```
 
-## License and authors ##
+## License and authors
 
-The DCL is released under the Mozilla Public License 1.1. The original
-authors are:
+The DCL is released under the Mozilla Public License 1.1. The original authors
+are:
 
-  - Paul Guyot https://github.com/pguyot
-  - Nicolas Zinovieff https://github.com/krugazor
-  - Michael Vacìk https://www.linkedin.com/in/mvacik
+- Paul Guyot https://github.com/pguyot
+- Nicolas Zinovieff https://github.com/krugazor
+- Michael Vacìk https://www.linkedin.com/in/mvacik
 
 This version also includes changes by:
 
-  - Eckhart Köppen https://github.com/ekoeppen
+- Eckhart Köppen https://github.com/ekoeppen
 
 This distribution also includes a subset of K Libs by the same authors.
-
