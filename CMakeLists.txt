@@ -29,6 +29,24 @@ endif()
 include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR})
 include(CTest)
 
+find_program(CLANG_FORMAT_EXE "clang-format")
+if(CLANG_FORMAT_EXE)
+    file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
+        DCL/*.cpp DCL/*.h DCL/*.mm
+        K/*.cpp K/*.h
+        Sample_Code/*.cpp Sample_Code/*.h
+        Tests/*.cpp Tests/*.h
+    )
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_CXX_SOURCE_FILES}
+        COMMENT "Formatting source files with clang-format"
+    )
+    add_custom_target(check-format
+        COMMAND ${CLANG_FORMAT_EXE} --dry-run --Werror ${ALL_CXX_SOURCE_FILES}
+        COMMENT "Checking source files formatting with clang-format"
+    )
+endif()
+
 SET(CMAKE_MACOSX_RPATH 1)
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
