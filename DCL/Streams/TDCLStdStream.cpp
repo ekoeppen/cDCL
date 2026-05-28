@@ -41,7 +41,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
+#if TARGET_OS_WIN32
 #include <io.h>
+#endif
 
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>

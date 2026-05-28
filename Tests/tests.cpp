@@ -104,7 +104,11 @@ test( const char* inTestName, const char* inArgument )
 		} else if (::strcmp(inTestName, "pkg-idempotent") == 0) {
 			UTestPkg::IdemPotent();
 		} else if (::strcmp(inTestName, "threads-posix") == 0) {
+#if TARGET_OS_WIN32
+			UTestThreads::Win32();
+#else
 			UTestThreads::Posix();
+#endif
 		} else if (::strcmp(inTestName, "time-values") == 0) {
 			UTestTime::CheckReturnValues();
 		} else if (::strcmp(inTestName, "xml-waltersmith") == 0) {

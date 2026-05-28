@@ -34,7 +34,7 @@ typedef TDCLWin32Files TDCLPlatformFiles;
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 typedef TDCLPOSIXFile TDCLPlatformFile;
-typedef TDCLPlatformFiles TDCLPlatformFiles;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
 #endif
 
 // ISO C++

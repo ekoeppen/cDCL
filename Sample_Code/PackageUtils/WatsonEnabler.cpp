@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:         WatsonEnabler.cp
+// Fichier:         WatsonEnabler.cpp
 // Projet:          DCL - PackageUtils
 // Ecrit par:       Paul Guyot (pguyot@kallisys.net)
 //
@@ -17,7 +17,21 @@
 // ANSI C
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#include <DCL/Interfaces/POSIX/Compat/libgen.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <libgen.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
 
 // ISO C++
 #include <stdexcept>
@@ -28,8 +42,6 @@
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLExistsAlreadyException.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/Package/TDCLPackage.h>
 #include <DCL/Package/TDCLPkgPart.h>
 #include <DCL/Streams/TDCLStdStream.h>
@@ -110,7 +122,7 @@ main( int inArgc, char** inArgv )
         }
     }
 
-    TDCLPOSIXFiles theFilesIntf;
+    TDCLPlatformFiles theFilesIntf;
     TDCLStream* inputStream = nil;
     TDCLStream* outputStream = nil;
     TDCLFile* inputFile = nil;
@@ -118,7 +130,7 @@ main( int inArgc, char** inArgv )
 
     if (inputFilePath)
     {
-        inputFile = new TDCLPOSIXFile( &theFilesIntf, inputFilePath );
+        inputFile = new TDCLPlatformFile( &theFilesIntf, inputFilePath );
         inputFile->Open( true );
         inputStream = inputFile;
     } else {
@@ -127,7 +139,7 @@ main( int inArgc, char** inArgv )
     if (outputFilePath)
     {
         try {
-            outputFile = new TDCLPOSIXFile( &theFilesIntf, outputFilePath );
+            outputFile = new TDCLPlatformFile( &theFilesIntf, outputFilePath );
             outputFile->Create();
             outputFile->Open(false);
             outputStream = outputFile;
@@ -150,7 +162,7 @@ main( int inArgc, char** inArgv )
             fprintf(stderr, "Le paquet contient des relocations, ce qui est incompatible avec le système de signature du Watson\n");
             return 1;
         }
-        TDCLPkgPart* theSignature = new TDCLPkgPart(0, "xxxxSLB0Schlumberger Industries", 32);
+        TDCLPkgPart* theSignature = new TDCLPkgPart(0, (const KUInt8*) "xxxxSLB0Schlumberger Industries", 32);
         thePackage.AddPart(0, TDCLPackage::kPartRawPart, theSignature);
         thePackage.SetPackageFlags(thePackage.GetPackageFlags() | TDCLPackage::kWatsonSignaturePresentFlag);
 		thePackage.WriteToStream( outputStream );

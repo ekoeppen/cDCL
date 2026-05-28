@@ -203,6 +203,7 @@ if (WIN32 AND NOT CYGWIN)
     target_sources(DCL PRIVATE
         DCL/Interfaces/Win32/TDCLWin32File.cpp
         DCL/Interfaces/Win32/TDCLWin32Files.cpp
+        DCL/Interfaces/Win32/TDCLWin32Threads.cpp
     )
 else()
     target_sources(DCL PRIVATE
@@ -449,11 +450,9 @@ if (TARGET Threads::Threads)
     target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
 
-if (TRUE)
-    add_subdirectory (Sample_Code/ToolchainUtils)
-    add_subdirectory (Sample_Code/PackageUtils)
-    add_subdirectory (Tests)
-endif()
+add_subdirectory (Sample_Code/ToolchainUtils)
+add_subdirectory (Sample_Code/PackageUtils)
+add_subdirectory (Tests)
 add_subdirectory (Sample_Code/NSOFtoXML)
 
 foreach(HEADER ${DCL_HEADERS})

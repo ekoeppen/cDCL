@@ -1,5 +1,5 @@
 //==============================
-// Fichier:			UTestThreads.cp
+// Fichier:			UTestThreads.cpp
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
@@ -21,14 +21,24 @@
 #include <stdio.h>
 #include <time.h>
 
-// POSIX
+// POSIX/Win32 compat
+#if TARGET_OS_WIN32
+#include <windows.h>
+#define sleep(x) Sleep((x)*1000)
+#else
 #include <unistd.h>
+#endif
 
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 #include <DCL/Interfaces/IDCLThreads.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32Threads.h>
+#else
 #include <DCL/Interfaces/POSIX/TDCLPThreads.h>
+#endif
 
 // -------------------------------------------------------------------------- //
 //  * Posix( void )
@@ -36,10 +46,25 @@
 void
 UTestThreads::Posix( void )
 {
+#if !TARGET_OS_WIN32
 	TDCLPThreads thePThreads;
 
 	TestThreads( &thePThreads );
+#endif
 }
+
+#if TARGET_OS_WIN32
+// -------------------------------------------------------------------------- //
+//  * Win32( void )
+// -------------------------------------------------------------------------- //
+void
+UTestThreads::Win32( void )
+{
+	TDCLWin32Threads theWin32Threads;
+
+	TestThreads( &theWin32Threads );
+}
+#endif
 
 // -------------------------------------------------------------------------- //
 //  * TestThreads( IDCLThreads* )
@@ -119,6 +144,7 @@ UTestThreads::TestThreads( IDCLThreads* inThreadsIntf )
 	
 	// Suppression du mutex.
 	delete theSemaphore;
+	delete theMutex;
 }
 
 // -------------------------------------------------------------------------- //

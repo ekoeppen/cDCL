@@ -52,7 +52,7 @@ class TDCLThreadException
 	:
 		public TDCLException
 {
-protected:
+public:
 #if kDCLDebugFILEandLINE
 	///
 	/// Constructeur à partir du code de l'exception, d'un code d'erreur, du
