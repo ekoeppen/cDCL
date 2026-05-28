@@ -1,0 +1,36 @@
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+AlwaysBreakAfterReturnType: AllDefinitions
+AllowShortFunctionsOnASingleLine: None
+SpacesInParentheses: true
+PointerAlignment: Left
+IndentPPDirectives: None
+ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakConstructorInitializers: BeforeComma
+SpaceBeforeParens: Always
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SortIncludes: false
+AlignConsecutiveMacros: false
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: Left
+
+---
+Language: ObjC
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+AlwaysBreakAfterReturnType: AllDefinitions
+AllowShortFunctionsOnASingleLine: None
+SpaceBeforeParens: Always
+SpacesInParentheses: true
+PointerAlignment: Left
+IndentPPDirectives: None

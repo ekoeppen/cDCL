@@ -40,6 +40,10 @@
 // ANSI C
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#if TARGET_OS_WIN32
+#include <io.h>
+#endif
 
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
@@ -49,6 +53,10 @@
 // ------------------------------------------------------------------------- //
 TDCLStdStream::TDCLStdStream( void )
 {
+#if TARGET_OS_WIN32
+	(void) _setmode( _fileno( stdin ), _O_BINARY );
+	(void) _setmode( _fileno( stdout ), _O_BINARY );
+#endif
 }
 
 // ------------------------------------------------------------------------- //

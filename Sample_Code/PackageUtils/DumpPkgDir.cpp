@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:         DumpPkgDir.cp
+// Fichier:         DumpPkgDir.cpp
 // Projet:          DCL - PackageUtils
 // Ecrit par:       Paul Guyot (pguyot@kallisys.net)
 //
@@ -19,7 +19,21 @@
 // ANSI C
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#include <DCL/Interfaces/POSIX/Compat/libgen.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <libgen.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
 
 // ISO C++
 #include <stdexcept>
@@ -29,8 +43,6 @@
 
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/Package/TDCLPackage.h>
 #include <DCL/Package/TDCLPkgPart.h>
 #include <DCL/Streams/TDCLStdStream.h>
@@ -120,13 +132,13 @@ main( int inArgc, char** inArgv )
         ::exit( 1 );
     }
 
-    TDCLPOSIXFiles theFilesIntf;
+    TDCLPlatformFiles theFilesIntf;
     TDCLStream* theStream = nil;
     TDCLFile* theFile = nil;
 
     if (theFilePath)
     {
-        theFile = new TDCLPOSIXFile( &theFilesIntf, theFilePath );
+        theFile = new TDCLPlatformFile( &theFilesIntf, theFilePath );
         theFile->Open( true );
         theStream = theFile;
     } else {

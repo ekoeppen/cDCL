@@ -14,8 +14,10 @@ ELFtoPKG.cpp
 TELFFile.cpp
 )
 
-target_link_libraries (ELFtoPKG LINK_PUBLIC DCL pthread)
 target_link_libraries (ELFtoPKG PUBLIC DCL PRIVATE Threads::Threads)
+if (NOT WIN32)
+    target_link_libraries (ELFtoPKG PRIVATE pthread)
+endif()
 install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)
 
 add_executable (Rex

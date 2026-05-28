@@ -10,8 +10,19 @@
 //                      All rights reserved worldwide.
 // ===========
 
+#include <DCL/Headers/DCLDefinitions.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
 
 #include "elf.h"
 
@@ -21,12 +32,12 @@
 ///
 /// Class for compatible ELF files containing code for NewtonOS.
 ///
-class TELFFile : public TDCLPOSIXFile {
+class TELFFile : public TDCLPlatformFile {
 public:
     ///
     /// Constructor.
     ///
-    TELFFile(TDCLPOSIXFiles* filesIntf, const char* name) : TDCLPOSIXFile(filesIntf, name) {};
+    TELFFile(TDCLPlatformFiles* filesIntf, const char* name) : TDCLPlatformFile(filesIntf, name) {};
 
     ///
     /// Read file header and check format.

@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:			PBBookMaker.cp
+// Fichier:			PBBookMaker.cpp
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
@@ -17,10 +17,26 @@
 #include <DCL/Headers/DCLDefinitions.h>
 
 // ANSI C & POSIX
-#include <libgen.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#include <DCL/Interfaces/POSIX/Compat/libgen.h>
+#include <DCL/Interfaces/POSIX/Compat/getopt.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
+#include <libgen.h>
+#include <getopt.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
 
 // ISO C++
 #include <stdexcept>
@@ -29,8 +45,6 @@
 #include <DCL/Package/UDCLPaperback.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLDoesntExistException.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/NS_Objects/Exchange/TDCLNSOFDecoder.h>
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
@@ -78,7 +92,7 @@ void help( const char* inToolName );
 /// \return le modèle pour le paquet.
 ///
 TDCLNSRef GetTemplate(
-			TDCLPOSIXFiles* inFilesIntf,
+			TDCLPlatformFiles* inFilesIntf,
 			const char* inTemplatePath,
 			char* inToolName );
 
@@ -116,7 +130,7 @@ void BuildPackageFrame(
 /// \param inNOS1Compatible	si le paquet est compatible NOS 1.x
 ///
 void BuildPackage(
-			TDCLPOSIXFiles* inFilesIntf,
+			TDCLPlatformFiles* inFilesIntf,
 			const TDCLNSRef& inPackageFrame,
 			const char* outPkgFilePath,
 			const TDCLNSRef& inPackageSym,
@@ -194,11 +208,11 @@ help( const char* inToolName )
 }
 
 // -------------------------------------------------------------------------- //
-//  * GetTemplate( TDCLPOSIXFiles*, const char*, const char* )
+//  * GetTemplate( TDCLPlatformFiles*, const char*, const char* )
 // -------------------------------------------------------------------------- //
 TDCLNSRef
 GetTemplate(
-		TDCLPOSIXFiles* inFilesIntf,
+		TDCLPlatformFiles* inFilesIntf,
 		const char* inTemplatePath,
 		char* inToolName )
 {
@@ -208,7 +222,7 @@ GetTemplate(
 	try {
 		if (inTemplatePath)
 		{
-			theTemplateFile = new TDCLPOSIXFile( inFilesIntf, inTemplatePath );
+			theTemplateFile = new TDCLPlatformFile( inFilesIntf, inTemplatePath );
 			theTemplateFile->Open( true );
 		} else {
 			// Recherche à côté de PBBookMaker.
@@ -229,7 +243,7 @@ GetTemplate(
 						theSuffix1Length + 1 );	// terminateur.
 			
 			try {
-				theTemplateFile = new TDCLPOSIXFile( inFilesIntf, theTemplatePath );
+				theTemplateFile = new TDCLPlatformFile( inFilesIntf, theTemplatePath );
 				theTemplateFile->Open( true );
 			} catch (TDCLDoesntExistException& anException) {
 				// Recherche en ../share/dcl/
@@ -237,7 +251,7 @@ GetTemplate(
 						(void*) &theTemplatePath[theBaseLength],
 						(const void*) bookTemplatePathSuffix2,
 						theSuffix2Length + 1 );	// terminateur.
-				theTemplateFile = new TDCLPOSIXFile( inFilesIntf, theTemplatePath );
+				theTemplateFile = new TDCLPlatformFile( inFilesIntf, theTemplatePath );
 				theTemplateFile->Open( true );
 			}
 			
@@ -357,22 +371,22 @@ BuildPackageFrame(
 }
 
 // -------------------------------------------------------------------------- //
-//  * BuildPackage( TDCLPOSIXFiles*, const TDCLNSRef&, const char*, ... )
+//  * BuildPackage( TDCLPlatformFiles*, const TDCLNSRef&, const char*, ... )
 // -------------------------------------------------------------------------- //
 void
 BuildPackage(
-		TDCLPOSIXFiles* inFilesIntf,
-		const TDCLNSRef& inPackageFrame,
-		const char* outPkgFilePath,
-		const TDCLNSRef& inPackageSym,
-		Boolean inNOS1Compatible )
+			TDCLPlatformFiles* inFilesIntf,
+			const TDCLNSRef& inPackageFrame,
+			const char* outPkgFilePath,
+			const TDCLNSRef& inPackageSym,
+			Boolean inNOS1Compatible )
 {
 	TDCLStream* theOutputStream = nil;
 	TDCLFile* theOutputFile = nil;
 	
 	if (outPkgFilePath)
 	{
-		theOutputFile = new TDCLPOSIXFile( inFilesIntf, outPkgFilePath );
+		theOutputFile = new TDCLPlatformFile( inFilesIntf, outPkgFilePath );
 		theOutputFile->Create();
 		theOutputFile->Open( false );
 		theOutputStream = theOutputFile;
@@ -639,7 +653,7 @@ main( int inArgc, char** inArgv )
 	}
 	
 	// Interface pour les fichiers.
-	TDCLPOSIXFiles theFilesIntf;
+	TDCLPlatformFiles theFilesIntf;
 	
 	// Flux d'entrée.
 	TDCLStream* theTextStream = nil;
@@ -649,7 +663,7 @@ main( int inArgc, char** inArgv )
 
 	if (theFilePath)
 	{
-		theFile = new TDCLPOSIXFile( &theFilesIntf, theFilePath );
+		theFile = new TDCLPlatformFile( &theFilesIntf, theFilePath );
 		theFile->Open( true );
 		theTextStream = theFile;
 	} else {
