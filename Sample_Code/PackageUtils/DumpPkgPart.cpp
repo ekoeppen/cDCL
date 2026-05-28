@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:         DumpPkgPart.cp
+// Fichier:         DumpPkgPart.cpp
 // Projet:          DCL - PackageUtils
 // Ecrit par:       Paul Guyot (pguyot@kallisys.net)
 //
@@ -19,8 +19,23 @@
 // ANSI C & POSIX
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#include <DCL/Interfaces/POSIX/Compat/libgen.h>
+#include <DCL/Interfaces/POSIX/Compat/getopt.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <getopt.h>
 #include <libgen.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPlatformFiles TDCLPlatformFiles;
+#endif
 
 // ISO C++
 #include <stdexcept>
@@ -32,8 +47,6 @@
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLDoesntExistException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLExistsAlreadyException.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/NS_Objects/Exchange/TDCLXMLEncoder.h>
 #include <DCL/NS_Objects/Exchange/TDCLNSOFEncoder.h>
 #include <DCL/Package/TDCLPackage.h>
@@ -74,7 +87,7 @@ void help( const char* inToolName );
 ///                         (lorsque c'est possible).
 ///
 void DumpPart(
-                TDCLPOSIXFiles* inFilesIntf,
+                TDCLPlatformFiles* inFilesIntf,
                 TDCLPackage* inPackage,
                 KUInt32 inPartIndex,
                 const char* outPartFilePath,
@@ -126,11 +139,11 @@ help( const char* inToolName )
 }
 
 // -------------------------------------------------------------------------- //
-//  * DumpPart( TDCLPOSIXFiles*, TDCLPackage*, KUInt32, const char*, ... )
+//  * DumpPart( TDCLPlatformFiles*, TDCLPackage*, KUInt32, const char*, ... )
 // -------------------------------------------------------------------------- //
 void
 DumpPart(
-        TDCLPOSIXFiles* inFilesIntf,
+        TDCLPlatformFiles* inFilesIntf,
         TDCLPackage* inPackage,
         KUInt32 inPartIndex,
         const char* outPartFilePath,
@@ -142,7 +155,7 @@ DumpPart(
 
     if (outPartFilePath)
     {
-        theOutputFile = new TDCLPOSIXFile( inFilesIntf, outPartFilePath );
+        theOutputFile = new TDCLPlatformFile( inFilesIntf, outPartFilePath );
         theOutputFile->Create();
         theOutputFile->Open( false );
         theOutputStream = theOutputFile;
@@ -298,13 +311,13 @@ main( int inArgc, char** inArgv )
         theOutputPrefix = theFilePath;
     }
 
-    TDCLPOSIXFiles theFilesIntf;
+    TDCLPlatformFiles theFilesIntf;
     TDCLStream* theStream = nil;
     TDCLFile* theFile = nil;
 
     if (theFilePath)
     {
-        theFile = new TDCLPOSIXFile( &theFilesIntf, theFilePath );
+        theFile = new TDCLPlatformFile( &theFilesIntf, theFilePath );
         theFile->Open( true );
         theStream = theFile;
     } else {

@@ -449,7 +449,7 @@ if (TARGET Threads::Threads)
     target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
 
-if (NOT WIN32)
+if (TRUE)
     add_subdirectory (Sample_Code/ToolchainUtils)
     add_subdirectory (Sample_Code/PackageUtils)
     add_subdirectory (Tests)
