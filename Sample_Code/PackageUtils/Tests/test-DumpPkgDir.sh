@@ -1,4 +1,5 @@
 #!/bin/sh
+export LC_ALL=C
 TMPDIR=/tmp
 PKGFILE=$2
 DIRNAME=`dirname $2`
@@ -7,7 +8,7 @@ MASTERFILE=$DIRNAME/DumpPkgDir-$BASENAME.master
 OUTFILE=$TMPDIR/DumpPkgDir-$$.out
 
 DUMPPKGDIR=$1
-if $DUMPPKGDIR $PKGFILE > $OUTFILE ; then
+if $DUMPPKGDIR $PKGFILE | tr -d '\r' > $OUTFILE ; then
     if diff -q $MASTERFILE $OUTFILE ; then
         STATUS=0
     else

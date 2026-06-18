@@ -95,7 +95,7 @@ test( const char* inTestName, const char* inArgument )
 #endif
 		} else if (::strcmp(inTestName, "ns-references-kill") == 0) {
 			// ... différent de celui qu'on a si on appelle kill avec SIGINT.
-#if !TARGET_OS_MAC || TARGET_OS_COMPAT_POSIX
+#if TARGET_OS_COMPAT_POSIX
 			UTestNS::References();
 #else
 	(void) ::printf( "Test not available for this platform\n" );
@@ -107,7 +107,11 @@ test( const char* inTestName, const char* inArgument )
 		} else if (::strcmp(inTestName, "pkg-idempotent") == 0) {
 			UTestPkg::IdemPotent();
 		} else if (::strcmp(inTestName, "threads-posix") == 0) {
+#if TARGET_OS_WIN32
+			UTestThreads::Win32();
+#else
 			UTestThreads::Posix();
+#endif
 		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
 			UTestKThreads::RunTests();
 		} else if (::strcmp(inTestName, "kmappedfile") == 0) {

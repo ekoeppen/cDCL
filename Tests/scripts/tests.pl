@@ -92,6 +92,28 @@ sub CheckAndParseArguments()
 }
 
 # --------------------------------------------------------------------------- #
+# FilterDebugLines( \@lines )
+# --------------------------------------------------------------------------- #
+sub FilterDebugLines(\@)
+{
+	my $lines = shift;
+	my @filtered;
+	for (my $i = 0; $i < scalar(@$lines); $i++)
+	{
+		if ($lines->[$i] =~ /^D\]/)
+		{
+			if ($i + 1 < scalar(@$lines) && $lines->[$i + 1] =~ /^\r?\n?$/)
+			{
+				$i++;
+			}
+			next;
+		}
+		push @filtered, $lines->[$i];
+	}
+	@$lines = @filtered;
+}
+
+# --------------------------------------------------------------------------- #
 # Test( $Test, $MasterFile )
 # --------------------------------------------------------------------------- #
 sub Test( $ $ )
@@ -108,10 +130,13 @@ sub Test( $ $ )
 	my @TestResult = <TEST_RESULT>;
 	close TEST_RESULT or $TestResult[$#TestResult + 1] = "Error closing DCLTests.";
 	
+	FilterDebugLines(@Master);
+	FilterDebugLines(@TestResult);
+	
 	# Comparaison.
 	my $lineCount = $#TestResult;
 	if (($lineCount == 0)
-		&& ($TestResult[0] eq "Test not available for this platform\n"))
+		&& ($TestResult[0] =~ /^Test not available for this platform\r?\n?$/))
 	{
 		print "Test $Test : NOT AVAILABLE\n";
 	} else {
@@ -146,7 +171,9 @@ sub Test( $ $ )
 			}
 			
 			chomp $TestLine;
+			$TestLine =~ s/\r$//;
 			chomp $MasterLine;
+			$MasterLine =~ s/\r$//;
 			if ($TestLine ne $MasterLine)
 			{
 				if (!($TestLine =~ m/^$MasterLine$/))

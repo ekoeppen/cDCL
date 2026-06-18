@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:         ELFtoNTK.cp
+// Fichier:         ELFtoNTK.cpp
 // Projet:          DCL - ELFtoNTK
 // Ecrit par:       Paul Guyot (pguyot@kallisys.net)
 //
@@ -31,8 +31,19 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Headers/DCLDefinitions.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
+
 #include <DCL/NS_Objects/Exchange/TDCLNSOFEncoder.h>
 #include <DCL/NS_Objects/Objects/TDCLNSArray.h>
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
@@ -86,7 +97,7 @@ ParseExpFile(TDCLNSFrame& frame, TDCLStream& expFile) {
                 }
                 TDCLNSFrame* entryPoint = new TDCLNSFrame();
                 entryPoint->Set("name", TDCLNSRef::MakeSymbol((const char*) str));
-                entryPoint->Set("numArgs", TDCLNSRef::MakeInt(atoi((const char*) crsr)));
+                entryPoint->Set("numArgs", TDCLNSRef::MakeInt(atoi((const char*) (const char*) crsr)));
                 entryPoints->Add(entryPoint);
             }
         }
@@ -170,7 +181,7 @@ void
 ProcessDynamicSegment(TDCLNSFrame& frame, TELFFile& elfFile, Elf32_Ehdr& header, KUInt32 minVAddr) {
     KUInt16 programHeaderCount = UByteSex_FromBigEndian(header.e_phnum);
     KUInt32 programHeadersOffset = UByteSex_FromBigEndian(header.e_phoff);
-    for (int n = 0; n < programHeaderCount; n++) {
+    for (int n = 0; n < (int) programHeaderCount; n++) {
         Elf32_Phdr programHeader;
         elfFile.PRead(&programHeader, sizeof(programHeader), programHeadersOffset + sizeof(Elf32_Phdr) * n);
         if (UByteSex_FromBigEndian(programHeader.p_type) == PT_DYNAMIC) {
@@ -189,7 +200,7 @@ ProcessDynamicSegment(TDCLNSFrame& frame, TELFFile& elfFile, Elf32_Ehdr& header,
             KUInt32 relocationTableOffset = 0;
             KUInt32 relocationTableSize = 0;
             KUInt32 relocationTableEntrySize = sizeof(Elf32_Rel);
-            for (int j = 0; j < dynamicEntriesCount; j++) {
+            for (int j = 0; j < (int) dynamicEntriesCount; j++) {
                 KUInt32 tag = UByteSex_FromBigEndian((KUInt32) dynamicEntries[j].d_tag);
                 if (tag == DT_HASH) {
                     hashTableOffset = UByteSex_FromBigEndian(dynamicEntries[j].d_un.d_ptr);
@@ -254,7 +265,7 @@ ParseELF(TDCLNSFrame& frame, TELFFile& elfFile) {
     if (baseVAddr != 0) {
         // We probably could handle this by loading relocations first and
         // relocating to 0.
-        printf("Invalid base address, expected 0 got %x\n", baseVAddr);
+        printf("Invalid base address, expected 0 got %x\n", (unsigned int) baseVAddr);
         throw std::runtime_error("Invalid base address");
     }
 
@@ -285,14 +296,14 @@ int main( int argc, char** argv )
 
     try {
         // Open files early to fail fast.
-        TDCLPOSIXFiles theFilesIntf;
-        TDCLPOSIXFile expFile( &theFilesIntf, argv[2] );
+        TDCLPlatformFiles theFilesIntf;
+        TDCLPlatformFile expFile( &theFilesIntf, argv[2] );
         expFile.Open(true);
 
         TELFFile elfFile(&theFilesIntf, argv[5]);
         elfFile.Open(true);
 
-        TDCLPOSIXFile outputFile( &theFilesIntf, argv[4] );
+        TDCLPlatformFile outputFile( &theFilesIntf, argv[4] );
         outputFile.Create();
         outputFile.Open(false);
 

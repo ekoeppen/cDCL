@@ -3,4 +3,4 @@
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-$1 kstreams-and-buffers | diff -u - $DIR/master-test-kstreams-and-buffers
+$1 kstreams-and-buffers | tr -d '\r' | diff -u - $DIR/master-test-kstreams-and-buffers

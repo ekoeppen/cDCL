@@ -40,6 +40,7 @@
 // ANSI C & POSIX
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>

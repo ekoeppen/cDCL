@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 // ISO C++
 #include <stdexcept>
@@ -31,8 +32,20 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLDoesntExistException.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Headers/DCLDefinitions.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#define strtok_r strtok_s
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
 #include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
+
 #include <DCL/Package/TDCLPackage.h>
 #include <DCL/Streams/TDCLMemStream.h>
 
@@ -145,8 +158,8 @@ int main( int argc, char** argv )
     int theResult = 0;
 
     try {
-        TDCLPOSIXFiles theFilesIntf;
-        TDCLPOSIXFile srcFile(&theFilesIntf, argv[3]);
+        TDCLPlatformFiles theFilesIntf;
+        TDCLPlatformFile srcFile(&theFilesIntf, argv[3]);
         srcFile.Open(true);
 
         int line = 1;
@@ -233,7 +246,7 @@ int main( int argc, char** argv )
                                 blockPtr = (uint8_t*) ::malloc(blockSize);
                                 char byteStr[3];
                                 byteStr[2] = 0;
-                                for (int i = 0; i < blockSize; i++) {
+                                for (int i = 0; i < (int) blockSize; i++) {
                                     byteStr[0] = inlineData[i * 2];
                                     byteStr[1] = inlineData[i * 2 + 1];
                                     uint8_t byte = (uint8_t) strtoul(byteStr, NULL, 16);
@@ -242,7 +255,7 @@ int main( int argc, char** argv )
                             } else if (lastToken[0] == '"') {
                                 char* filename = strtok_r(NULL, "\"", &brkt);
                                 try {
-                                    TDCLFile* blockFile = new TDCLPOSIXFile(&theFilesIntf, filename);
+                                    TDCLFile* blockFile = new TDCLPlatformFile(&theFilesIntf, filename);
                                     blockFile->Open(true);
                                     blockSize = blockFile->GetLength();
                                     blockPtr = (uint8_t*) ::malloc(blockSize);
@@ -302,7 +315,7 @@ int main( int argc, char** argv )
                     goto next_line;
                 }
                 try {
-                    TDCLFile* packageFile = new TDCLPOSIXFile(&theFilesIntf, filename);
+                    TDCLFile* packageFile = new TDCLPlatformFile(&theFilesIntf, filename);
                     packageFile->Open(true);
                     TDCLPackage* package = new TDCLPackage(packageFile);
                     packageList.push_back(package);
@@ -323,7 +336,7 @@ int main( int argc, char** argv )
             continue;
         }
         if (!fatalError) {
-            TDCLPOSIXFile outputFile(&theFilesIntf, argv[2]);
+            TDCLPlatformFile outputFile(&theFilesIntf, argv[2]);
             outputFile.Create();
             outputFile.Open(false);
             

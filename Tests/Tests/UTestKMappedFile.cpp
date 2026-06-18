@@ -36,9 +36,24 @@
 #include <cstdio>
 #include <cstring>
 #include <fcntl.h>
+#include <filesystem>
+#include <string>
+#include <system_error>
 #include <unistd.h>
 
-static const char* kTestTempPath = "/tmp/cdcl_test_mappedfile.bin";
+static const std::string& GetTestTempPath(void)
+{
+	static const std::string sPath = []() {
+		std::error_code ec;
+		std::filesystem::path tempDir = std::filesystem::temp_directory_path(ec);
+		if (ec)
+		{
+			return std::string("cdcl_test_mappedfile.bin");
+		}
+		return (tempDir / "cdcl_test_mappedfile.bin").string();
+	}();
+	return sPath;
+}
 
 void
 UTestKMappedFile::Run(void)
@@ -54,11 +69,11 @@ void
 UTestKMappedFile::TestMapAndGrow(void)
 {
 	(void) ::printf("Testing Map and Grow...\n");
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 
 	{
 		// Create a new mapped file with initial size 1024 bytes
-		TMappedFile mapped(kTestTempPath, 1024, O_RDWR | O_CREAT);
+		TMappedFile mapped(GetTestTempPath().c_str(), 1024, O_RDWR | O_CREAT);
 		assert(mapped.GetBuffer() != nullptr);
 		assert(mapped.GetSize() == 1024);
 		assert(mapped.GetCreated() == true);
@@ -75,7 +90,7 @@ UTestKMappedFile::TestMapAndGrow(void)
 	// Reopen and grow file to 2048 bytes
 	{
 		TMappedFile mapped;
-		int err = mapped.Map(kTestTempPath, 2048, O_RDWR);
+		int err = mapped.Map(GetTestTempPath().c_str(), 2048, O_RDWR);
 		assert(err == 0);
 		assert(mapped.GetBuffer() != nullptr);
 		assert(mapped.GetSize() == 2048);
@@ -96,18 +111,18 @@ UTestKMappedFile::TestMapAndGrow(void)
 		mapped.Sync();
 	}
 
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 }
 
 void
 UTestKMappedFile::TestReadWriteSync(void)
 {
 	(void) ::printf("Testing Read/Write/Sync...\n");
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 
 	const size_t kSize = 4096;
 	{
-		TMappedFile mapped(kTestTempPath, kSize, O_RDWR | O_CREAT);
+		TMappedFile mapped(GetTestTempPath().c_str(), kSize, O_RDWR | O_CREAT);
 		assert(mapped.GetBuffer() != nullptr);
 		assert(mapped.GetSize() == kSize);
 
@@ -121,7 +136,7 @@ UTestKMappedFile::TestReadWriteSync(void)
 
 	// Verify persisted contents directly via POSIX read
 	{
-		int fd = ::open(kTestTempPath, O_RDONLY);
+		int fd = ::open(GetTestTempPath().c_str(), O_RDONLY);
 		assert(fd >= 0);
 		char readBuf[kSize];
 		ssize_t bytesRead = ::read(fd, readBuf, kSize);
@@ -133,19 +148,19 @@ UTestKMappedFile::TestReadWriteSync(void)
 		::close(fd);
 	}
 
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 }
 
 void
 UTestKMappedFile::TestReadOnly(void)
 {
 	(void) ::printf("Testing Read-Only mapping...\n");
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 
 	const size_t kSize = 512;
 	// Create file first
 	{
-		TMappedFile mapped(kTestTempPath, kSize, O_RDWR | O_CREAT);
+		TMappedFile mapped(GetTestTempPath().c_str(), kSize, O_RDWR | O_CREAT);
 		char* buf = (char*) mapped.GetBuffer();
 		(void) ::memset(buf, 0x5A, kSize);
 		mapped.Sync();
@@ -153,7 +168,7 @@ UTestKMappedFile::TestReadOnly(void)
 
 	// Open read-only with size 0 (map whole file)
 	{
-		TMappedFile mapped(kTestTempPath, 0, O_RDONLY);
+		TMappedFile mapped(GetTestTempPath().c_str(), 0, O_RDONLY);
 		assert(mapped.GetBuffer() != nullptr);
 		assert(mapped.GetSize() == kSize);
 		assert(mapped.GetCreated() == false);
@@ -165,5 +180,5 @@ UTestKMappedFile::TestReadOnly(void)
 		}
 	}
 
-	(void) ::unlink(kTestTempPath);
+	(void) ::unlink(GetTestTempPath().c_str());
 }

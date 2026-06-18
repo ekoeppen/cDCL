@@ -39,6 +39,13 @@ public:
 	///
 	static void Posix( void );
 
+#if TARGET_OS_WIN32
+	///
+	/// Test pour les threads Win32.
+	///
+	static void Win32( void );
+#endif
+
 private:
 	///
 	/// Classe pour le test.
