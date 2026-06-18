@@ -75,6 +75,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Disable git autocrlf
+      run: git config --global core.autocrlf false
+
     - name: Checkout source code
       uses: actions/checkout@v6
 
@@ -86,9 +89,8 @@ jobs:
       shell: bash
       run: cmake --build build
 
-    - name: Run tests
-      shell: bash
-      run: ctest . -C Debug
+    - name: Run tests (optional tests excluded)
+      run: ctest . -C Debug -LE optional
       working-directory: build
 
     - name: Upload artifacts

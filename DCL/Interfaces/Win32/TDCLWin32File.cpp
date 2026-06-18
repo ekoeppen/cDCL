@@ -179,12 +179,11 @@ KUInt64 TDCLWin32File::GetLength()
 
 void TDCLWin32File::Close()
 {
-	if (!IsOpen())
+	if (mFile != NULL)
 	{
-		throw DCLBadStateError;
+		::fclose(mFile);
+		mFile = NULL;
 	}
-	::fclose(mFile);
-	mFile = NULL;
 }
 
 void TDCLWin32File::Read( void* outBuffer, KUInt32* ioCount )

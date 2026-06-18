@@ -5,5 +5,6 @@ GTAGS
 *.lo
 *.a
 .DS_Store
-build
+build*
 DoxyOutput
+*.gcov

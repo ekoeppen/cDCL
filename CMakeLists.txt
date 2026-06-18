@@ -23,6 +23,12 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 if(WIN32)
     message(STATUS "Platform: WIN32")
     add_definitions(-DTARGET_OS_WIN32=1)
+    if(MINGW)
+        if(NOT BUILD_SHARED_LIBS)
+            add_link_options(-static)
+        endif()
+        add_link_options(-static-libgcc -static-libstdc++)
+    endif()
 else()
     message(STATUS "Platform: POSIX")
     add_definitions(-DTARGET_OS_POSIX=1)
@@ -46,10 +52,8 @@ IF("${isSystemDir}" STREQUAL "-1")
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
-if (NOT WIN32)
-    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-endif()
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 add_library (K
 K/Defines/KDefinitions.cpp
@@ -87,14 +91,12 @@ target_include_directories(K PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_sources(K PRIVATE
-        K/Misc/TMappedFile.cpp
-    )
-    if(APPLE)
-        target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
-    endif()
-    target_link_libraries(K PRIVATE Threads::Threads)
+target_sources(K PRIVATE
+    K/Misc/TMappedFile.cpp
+)
+target_link_libraries(K PRIVATE Threads::Threads)
+if(APPLE)
+    target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
 endif()
 
 add_library (DCL
@@ -242,6 +244,7 @@ if (WIN32)
     target_sources(DCL PRIVATE
         DCL/Interfaces/Win32/TDCLWin32File.cpp
         DCL/Interfaces/Win32/TDCLWin32Files.cpp
+        DCL/Interfaces/Win32/TDCLWin32Threads.cpp
         DCL/Interfaces/Win32/TDCLWin32Dir.cpp
         DCL/Interfaces/Win32/TDCLWin32DirBase.cpp
         DCL/Interfaces/Win32/TDCLWin32RootDir.cpp
@@ -492,13 +495,9 @@ DCL/Streams/TDCLStream.h
 )
 
 
-if (NOT WIN32)
-    add_subdirectory (Sample_Code/ToolchainUtils)
-    add_subdirectory (Sample_Code/PackageUtils)
-    add_subdirectory (Tests)
-endif()
-
-
+add_subdirectory (Sample_Code/ToolchainUtils)
+add_subdirectory (Sample_Code/PackageUtils)
+add_subdirectory (Tests)
 add_subdirectory (Sample_Code/NSOFtoXML)
 
 foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})

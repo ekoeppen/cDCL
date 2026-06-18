@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:			NESPackager.cp
+// Fichier:			NESPackager.cpp
 // Projet:			(DCL - PackageUtils)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
@@ -17,12 +17,26 @@
 #include <DCL/Headers/DCLDefinitions.h>
 
 // ANSI C & POSIX
-#include <libgen.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include <sys/param.h>
+
+#if TARGET_OS_WIN32
+#include <DCL/Interfaces/Win32/TDCLWin32File.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Files.h>
+#include <DCL/Interfaces/POSIX/Compat/libgen.h>
+#include <DCL/Interfaces/POSIX/Compat/getopt.h>
+typedef TDCLWin32File TDCLPlatformFile;
+typedef TDCLWin32Files TDCLPlatformFiles;
+#else
+#include <libgen.h>
+#include <getopt.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
+#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
+typedef TDCLPOSIXFile TDCLPlatformFile;
+typedef TDCLPOSIXFiles TDCLPlatformFiles;
+#endif
 
 // ISO C++
 #include <stdexcept>
@@ -31,8 +45,6 @@
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLDoesntExistException.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFile.h>
-#include <DCL/Interfaces/POSIX/TDCLPOSIXFiles.h>
 #include <DCL/NS_Objects/Exchange/TDCLNSOFDecoder.h>
 #include <DCL/NS_Objects/Objects/TDCLNSArray.h>
 #include <DCL/NS_Objects/Objects/TDCLNSBinary.h>
@@ -82,7 +94,7 @@ void help( const char* inToolName );
 /// \return le modèle pour le paquet.
 ///
 TDCLNSRef GetTemplate(
-			TDCLPOSIXFiles* inFilesIntf,
+			TDCLPlatformFiles* inFilesIntf,
 			const char* inTemplatePath,
 			char* inToolName );
 
@@ -119,7 +131,7 @@ void BuildPackageFrame(
 /// \param inPackageSym		signature (de BuildPackageSym)
 ///
 void BuildPackage(
-			TDCLPOSIXFiles* inFilesIntf,
+			TDCLPlatformFiles* inFilesIntf,
 			const TDCLNSRef& inPackageFrame,
 			const char* outPkgFilePath,
 			const TDCLNSRef& inPackageSym );
@@ -174,11 +186,11 @@ help( const char* inToolName )
 }
 
 // -------------------------------------------------------------------------- //
-//  * GetTemplate( TDCLPOSIXFiles*, const char*, const char* )
+//  * GetTemplate( TDCLPlatformFiles*, const char*, const char* )
 // -------------------------------------------------------------------------- //
 TDCLNSRef
 GetTemplate(
-		TDCLPOSIXFiles* inFilesIntf,
+		TDCLPlatformFiles* inFilesIntf,
 		const char* inTemplatePath,
 		char* inToolName )
 {
@@ -188,7 +200,7 @@ GetTemplate(
 	try {
 		if (inTemplatePath)
 		{
-			theTemplateFile = new TDCLPOSIXFile( inFilesIntf, inTemplatePath );
+			theTemplateFile = new TDCLPlatformFile( inFilesIntf, inTemplatePath );
 			theTemplateFile->Open( true );
 		} else {
 			// Recherche à côté de NESPackager.
@@ -209,7 +221,7 @@ GetTemplate(
 						theSuffix1Length + 1 );	// terminateur.
 			
 			try {
-				theTemplateFile = new TDCLPOSIXFile( inFilesIntf, theTemplatePath );
+				theTemplateFile = new TDCLPlatformFile( inFilesIntf, theTemplatePath );
 				theTemplateFile->Open( true );
 			} catch (TDCLDoesntExistException& anException) {
 			    try {
@@ -218,10 +230,10 @@ GetTemplate(
                             (void*) &theTemplatePath[theBaseLength],
                             (const void*) pkgTemplatePathSuffix2,
                             theSuffix2Length + 1 );	// terminateur.
-                    theTemplateFile = new TDCLPOSIXFile( inFilesIntf, theTemplatePath );
+                    theTemplateFile = new TDCLPlatformFile( inFilesIntf, theTemplatePath );
                     theTemplateFile->Open( true );
                 } catch (TDCLDoesntExistException& anException) {
-                    theTemplateFile = new TDCLPOSIXFile( inFilesIntf, pkgTemplateInstallPath );
+                    theTemplateFile = new TDCLPlatformFile( inFilesIntf, pkgTemplateInstallPath );
                     theTemplateFile->Open( true );
                 }
 			}
@@ -269,8 +281,7 @@ GetTemplate(
 		{
 			::free( theTemplatePath );
 		}
-		if (theTemplateFile)
-		{
+		if (theTemplateFile) {
 			theTemplateFile->Close();
 			delete theTemplateFile;
 		}
@@ -375,11 +386,11 @@ BuildPackageFrame(
 }
 
 // -------------------------------------------------------------------------- //
-//  * BuildPackage( TDCLPOSIXFiles*, const TDCLNSRef&, const char*, ... )
+//  * BuildPackage( TDCLPlatformFiles*, const TDCLNSRef&, const char*, ... )
 // -------------------------------------------------------------------------- //
 void
 BuildPackage(
-		TDCLPOSIXFiles* inFilesIntf,
+		TDCLPlatformFiles* inFilesIntf,
 		const TDCLNSRef& inPackageFrame,
 		const char* outPkgFilePath,
 		const TDCLNSRef& inPackageSym )
@@ -389,7 +400,7 @@ BuildPackage(
 	
 	if (outPkgFilePath)
 	{
-		theOutputFile = new TDCLPOSIXFile( inFilesIntf, outPkgFilePath );
+		theOutputFile = new TDCLPlatformFile( inFilesIntf, outPkgFilePath );
 		theOutputFile->Create();
 		theOutputFile->Open( false );
 		theOutputStream = theOutputFile;
@@ -564,7 +575,7 @@ main( int inArgc, char** inArgv )
 	}
 	
 	// Interface pour les fichiers.
-	TDCLPOSIXFiles theFilesIntf;
+	TDCLPlatformFiles theFilesIntf;
 	
 	// Flux d'entrée.
 	TDCLStream* theROMStream = nil;
@@ -574,7 +585,7 @@ main( int inArgc, char** inArgv )
 
 	if (theFilePath)
 	{
-		theFile = new TDCLPOSIXFile( &theFilesIntf, theFilePath );
+		theFile = new TDCLPlatformFile( &theFilesIntf, theFilePath );
 		theFile->Open( true );
 		theROMStream = theFile;
 	} else {

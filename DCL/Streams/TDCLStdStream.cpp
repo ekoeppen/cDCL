@@ -42,8 +42,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-
-#if TARGET_OS_WIN32 || TARGET_OS_CYGWIN
+#if TARGET_OS_WIN32
 #include <io.h>
 #endif
 
