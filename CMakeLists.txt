@@ -387,11 +387,17 @@ K/Crypto/U3DES.h
 K/Crypto/UDES.h
 K/Defines/KDefinitions.h
 K/Defines/UByteSex.h
+K/Exceptions/TException.h
+K/Exceptions/Errors/TError.h
+K/Exceptions/Errors/TMemError.h
+K/Exceptions/IO/TEOFException.h
+K/Exceptions/IO/TIOException.h
 K/Math/TInt64.h
 K/Math/TSInt64.h
 K/Math/TUInt64.h
 K/Math/UTInt64.h
 K/Misc/RelocHack.h
+K/Misc/CRC32.h
 K/Misc/TCircleBuffer.h
 K/Misc/TDoubleLinkedList.h
 K/Misc/TMappedFile.h
@@ -400,12 +406,18 @@ K/Misc/TRefCounter.h
 K/Misc/TSmartPtr.h
 K/Misc/UBase64.h
 K/Misc/UPStrings.h
+K/Streams/TFileStream.h
+K/Streams/TMemoryStream.h
+K/Streams/TRandomAccessStream.h
+K/Streams/TResetStream.h
+K/Streams/TStream.h
 K/Tests/KDebug.h
 K/Tests/TFunctionMonitor.h
 K/Tests/TMonitorMethodClient.h
 K/Tests/TNewtonTraceMonitor.h
 K/Tests/TTraceMonitor.h
 K/Threads/TCondVar.h
+K/Threads/TFiber.h
 K/Threads/TMutex.h
 K/Threads/TThread.h
 K/Unicode/TMutableStringRef.h
@@ -423,11 +435,36 @@ if (NOT WIN32 OR CYGWIN)
     target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
 
+if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_sources(DCL PRIVATE
+        K/Defines/KDefinitions.cpp
+        K/Exceptions/TException.cpp
+        K/Exceptions/Errors/TError.cpp
+        K/Exceptions/Errors/TMemError.cpp
+        K/Exceptions/IO/TEOFException.cpp
+        K/Exceptions/IO/TIOException.cpp
+        K/Misc/CRC32.cpp
+        K/Misc/TCircleBuffer.cpp
+        K/Misc/TMappedFile.cpp
+        K/Streams/TFileStream.cpp
+        K/Streams/TStream.cpp
+        K/Threads/TCondVar.cpp
+        K/Threads/TFiber.cpp
+        K/Threads/TMutex.cpp
+        K/Threads/TThread.cpp
+    )
+    if(APPLE)
+        target_compile_definitions(DCL PRIVATE TARGET_OS_OSX=1)
+    endif()
+    target_link_libraries(DCL PRIVATE Threads::Threads)
+endif()
+
 if (NOT WIN32)
     add_subdirectory (Sample_Code/ToolchainUtils)
     add_subdirectory (Sample_Code/PackageUtils)
     add_subdirectory (Tests)
 endif()
+
 add_subdirectory (Sample_Code/NSOFtoXML)
 
 foreach(HEADER ${DCL_HEADERS})

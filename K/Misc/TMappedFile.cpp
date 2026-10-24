@@ -129,7 +129,7 @@ TMappedFile::TMappedFile(
 						0 );
 		mMapped = true;
 	
-		if (((int) mBuffer) == -1)
+		if (mBuffer == MAP_FAILED)
 		{
 			mMapped = false;
 
