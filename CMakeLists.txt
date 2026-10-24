@@ -173,6 +173,25 @@ DCL/Server/TDCLSimpleServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
+DCL/Communication_Layers/Common/TDCLSocket.cpp
+DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
+DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
+DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
+DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
+DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
+DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
+DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
+DCL/Interfaces/POSIX/TDCLPThreads.cpp
+K/Defines/KDefinitions.cpp
+K/Exceptions/TException.cpp
+K/Exceptions/Errors/TError.cpp
+K/Exceptions/Errors/TMemError.cpp
+K/Exceptions/IO/TEOFException.cpp
+K/Exceptions/IO/TIOException.cpp
+K/Misc/CRC32.cpp
+K/Misc/TCircleBuffer.cpp
+K/Streams/TFileStream.cpp
+K/Streams/TStream.cpp
 K/Crypto/UDES.cpp
 K/Crypto/UDESTables.cpp
 K/Math/TInt64.cpp
@@ -435,19 +454,9 @@ if (NOT WIN32 OR CYGWIN)
     target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
 
-if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CYGWIN)
     target_sources(DCL PRIVATE
-        K/Defines/KDefinitions.cpp
-        K/Exceptions/TException.cpp
-        K/Exceptions/Errors/TError.cpp
-        K/Exceptions/Errors/TMemError.cpp
-        K/Exceptions/IO/TEOFException.cpp
-        K/Exceptions/IO/TIOException.cpp
-        K/Misc/CRC32.cpp
-        K/Misc/TCircleBuffer.cpp
         K/Misc/TMappedFile.cpp
-        K/Streams/TFileStream.cpp
-        K/Streams/TStream.cpp
         K/Threads/TCondVar.cpp
         K/Threads/TFiber.cpp
         K/Threads/TMutex.cpp

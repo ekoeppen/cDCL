@@ -110,7 +110,7 @@ TFileStream::TFileStream(FILE* inFile) :
 		mFile(inFile),
 		mWeOpenedTheFile(false)
 {
-#if TARGET_OS_WIN32
+#if TARGET_OS_WIN32 && !TARGET_OS_CYGWIN
 	mIsWriting = mIsReading = 1;
 	// Windows does not have a standard API for getting this value
 	// see: NtQueryInformationFile

@@ -45,8 +45,8 @@
 
 #include <K/Defines/KDefinitions.h>
 
-// ANSI C & POSIX
-#if TARGET_OS_WIN32
+// Cygwin uses POSIX threads and setjmp rather than the native Windows API.
+#if TARGET_OS_WIN32 && !TARGET_OS_CYGWIN
 #include <process.h>
 #include <windows.h>
 #define FIBER_USE_UCONTEXT

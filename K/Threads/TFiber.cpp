@@ -37,7 +37,7 @@
 #include "TFiber.h"
 
 // ANSI C & POSIX
-#if !TARGET_OS_WIN32
+#if !TARGET_OS_WIN32 || TARGET_OS_CYGWIN
 #include <sys/time.h>
 #endif
 #include <errno.h>
