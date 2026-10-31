@@ -1,0 +1,10 @@
+UTestKThreads: starting
+Mutex: locked
+Mutex: unlocked
+Mutex: try_lock succeeded
+CondVar: relative wait timed out as expected (true)
+Worker: running
+Main: worker started
+Worker: finished
+Main: worker joined/done
+UTestKThreads: complete

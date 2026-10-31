@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©e le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -38,13 +39,9 @@
 
 #include <K/Defines/KDefinitions.h>
 
-// ANSI C & POSIX
-#include <pthread.h>
-#include <assert.h>
-
-// K
-#include <K/Threads/TMutex.h>
-#include <K/Threads/TCondVar.h>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 ///
 /// Class for a thread.
@@ -52,7 +49,7 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TThread
 {
@@ -83,7 +80,7 @@ public:
 
 	///
 	/// Destructor.
-	/// Detaches and joins the thread.
+	/// Detaches or joins the thread.
 	///
 	~TThread( void );
 
@@ -113,7 +110,7 @@ public:
 	/// \param inMillisecs		time to sleep.
 	/// \return	\c true if we slept all the time, \c false otherwise.
 	///
-	Boolean Sleep( KUInt32 inMilliseconds /* = kForever */ );
+	Boolean Sleep( KUInt32 inMilliseconds = kForever );
 
 	///
 	/// Wakes the thread up.
@@ -123,57 +120,30 @@ public:
 
 private:
 	///
-	/// Thread entry point (static).
+	/// Check for cooperative suspension point from the executing thread.
 	///
-	/// \param inUserData		pointer to the runnable.
-	///
-	template<class TRunnable>
-	static void*	SEntryPoint( void* inUserData )
-		{
-			PreRun();
-			((TRunnable*) inUserData)->Run();
-			return NULL;
-		}
-
-	///
-	/// Setup the thread (register signal actions).
-	///
-	static void	PreRun( void );
-
-	///
-	/// Handler for SIGUSR1.
-	/// NOP.
-	///
-	/// \param inSignal	received signal (always SIGUSR1).
-	///
-	static void SignalUSR1( int inSignal );
-
-	///
-	/// Handler for SIGUSR2.
-	/// Calls sigsuspend.
-	///
-	/// \param inSignal	received signal (always SIGUSR2).
-	///
-	static void SignalUSR2( int inSignal );
+	void	CheckSuspend( void );
 
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TThread( const TThread& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TThread& operator = ( const TThread& inCopy );
 
 	/// \name Variables
-	pthread_t			mThread;		///< Thread.
-	TMutex				mMutex;			///< Mutex.
-	TCondVar			mCondVar;		///< CondVar (for sleep).
+	std::thread			mThread;		///< Standard thread object.
+	std::thread::id		mThreadId;		///< Thread id.
+	mutable std::mutex	mMutex;			///< Mutex protecting state.
+	std::condition_variable	mSleepCond;	///< CondVar for sleep.
+	std::condition_variable	mSuspendCond;	///< CondVar for suspend/resume.
 	EState				mState;			///< State of the thread.
 	KUInt32				mWakeCount;		///< Wake counter.
 	KUInt32				mSuspendCount;	///< Count suspend calls.
@@ -185,13 +155,23 @@ private:
 template<class TRunnable>
 TThread::TThread( TRunnable* inRunnable )
 	:
+		mThreadId(),
 		mState( kRunning ),
 		mWakeCount( 0 ),
 		mSuspendCount( 0 )
 {
-	int err = ::pthread_create( &mThread, NULL, SEntryPoint<TRunnable>, inRunnable );
-	assert( err == 0 );
-	(void) err;
+	mThread = std::thread([this, inRunnable]() {
+		{
+			std::lock_guard<std::mutex> lock(mMutex);
+			mThreadId = std::this_thread::get_id();
+		}
+		inRunnable->Run();
+		{
+			std::lock_guard<std::mutex> lock(mMutex);
+			mState = kStopped;
+		}
+	});
+	mThreadId = mThread.get_id();
 }
 
 #endif

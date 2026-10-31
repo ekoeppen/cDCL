@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©e le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -36,28 +37,16 @@
 #include <K/Defines/KDefinitions.h>
 #include "TCondVar.h"
 
-// ANSI C & POSIX
-#include <assert.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <errno.h>
+#include <chrono>
 
 // K
 #include <K/Threads/TMutex.h>
-
-// -------------------------------------------------------------------------- //
-// Constantes
-// -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
 //  * TCondVar( void )
 // -------------------------------------------------------------------------- //
 TCondVar::TCondVar( void )
 {
-	int err = ::pthread_cond_init( &mCondVar, NULL );
-	assert( err == 0 );
-	(void) err;
 }
 
 // -------------------------------------------------------------------------- //
@@ -65,9 +54,6 @@ TCondVar::TCondVar( void )
 // -------------------------------------------------------------------------- //
 TCondVar::~TCondVar( void )
 {
-	int err = ::pthread_cond_destroy( &mCondVar );
-	assert( err == 0 );
-	(void) err;
 }
 
 // -------------------------------------------------------------------------- //
@@ -76,9 +62,7 @@ TCondVar::~TCondVar( void )
 void
 TCondVar::Broadcast( void )
 {
-	int err = ::pthread_cond_broadcast( &mCondVar );
-	assert( err == 0 );
-	(void) err;
+	mCondVar.notify_all();
 }
 
 // -------------------------------------------------------------------------- //
@@ -87,9 +71,7 @@ TCondVar::Broadcast( void )
 void
 TCondVar::Signal( void )
 {
-	int err = ::pthread_cond_signal( &mCondVar );
-	assert( err == 0 );
-	(void) err;
+	mCondVar.notify_one();
 }
 
 // -------------------------------------------------------------------------- //
@@ -98,15 +80,12 @@ TCondVar::Signal( void )
 Boolean
 TCondVar::TimedWait( TMutex* inMutex, const struct timespec* inAbsTime )
 {
-	int err = ::pthread_cond_timedwait( &mCondVar, &inMutex->mMutex, inAbsTime );
-	if (err == ETIMEDOUT)
-	{
-		return false;
-	} else {
-		assert( err == 0 );
-		return true;
-	}
-	(void) err;
+	auto dur = std::chrono::seconds(inAbsTime->tv_sec) +
+	           std::chrono::nanoseconds(inAbsTime->tv_nsec);
+	auto target_tp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+		std::chrono::system_clock::time_point(std::chrono::duration_cast<std::chrono::system_clock::duration>(dur)));
+	std::cv_status status = mCondVar.wait_until(inMutex->mMutex, target_tp);
+	return (status == std::cv_status::no_timeout);
 }
 
 // -------------------------------------------------------------------------- //
@@ -115,39 +94,19 @@ TCondVar::TimedWait( TMutex* inMutex, const struct timespec* inAbsTime )
 Boolean
 TCondVar::TimedWaitRelative( TMutex* inMutex, const struct timespec* inRelTime )
 {
-#if HAS_COND_TIMEDWAIT_RELATIVE_NP
-	int err = ::pthread_cond_timedwait_relative_np(
-					&mCondVar, &inMutex->mMutex, inRelTime );
-#else
-	struct timespec abs_time;
-	struct timeval now;
-	(void) gettimeofday( &now, NULL );
-	abs_time.tv_nsec = (now.tv_usec * 1000) + inRelTime->tv_nsec;
-	abs_time.tv_sec = now.tv_sec + (abs_time.tv_nsec / 1000000000);
-	abs_time.tv_nsec %= 1000000000;
-	int err = ::pthread_cond_timedwait(
-					&mCondVar, &inMutex->mMutex, &abs_time );
-#endif
-
-	if (err == ETIMEDOUT)
-	{
-		return false;
-	} else {
-		assert( err == 0 );
-		return true;
-	}
-	(void) err;
+	auto rel_dur = std::chrono::seconds(inRelTime->tv_sec) +
+	               std::chrono::nanoseconds(inRelTime->tv_nsec);
+	std::cv_status status = mCondVar.wait_for(inMutex->mMutex, rel_dur);
+	return (status == std::cv_status::no_timeout);
 }
 
 // -------------------------------------------------------------------------- //
-//  * Wait( TMutex*, const struct timespec* )
+//  * Wait( TMutex* )
 // -------------------------------------------------------------------------- //
 void
 TCondVar::Wait( TMutex* inMutex )
 {
-	int err = ::pthread_cond_wait( &mCondVar, &inMutex->mMutex );
-	assert( err == 0 );
-	(void) err;
+	mCondVar.wait( inMutex->mMutex );
 }
 
 // =============================================================================== //
