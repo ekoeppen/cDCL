@@ -114,11 +114,7 @@ public:
 	{
 		if (mCursor >= mData.size())
 		{
-#if HAS_EXCEPTION_HANDLING
 			throw EOFException;
-#else
-			return 0;
-#endif
 		}
 		return mData[mCursor];
 	}

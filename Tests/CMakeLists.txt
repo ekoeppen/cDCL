@@ -15,6 +15,7 @@ Tests/UTestPkg.cpp
 Tests/UTestThreads.cpp
 Tests/UTestKThreads.cpp
 Tests/UTestKMappedFile.cpp
+	Tests/UTestKStreamsAndBuffers.cpp
 Tests/UTestTime.cpp
 Tests/UTestXML.cpp
 )

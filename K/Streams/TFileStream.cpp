@@ -27,6 +27,7 @@
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -42,10 +43,8 @@
 #include <sys/stat.h>
 
 // K
-#if HAS_EXCEPTION_HANDLING
 #include <K/Exceptions/IO/TEOFException.h>
 #include <K/Exceptions/IO/TIOException.h>
-#endif
 
 // -------------------------------------------------------------------------- //
 // Constantes
@@ -55,23 +54,6 @@
 // Local Function Replacements
 // -------------------------------------------------------------------------- //
 
-#if _MSC_VER
-#if 0 // if we need files larger than 4GB
-static inline off_t ftello(FILE *a) { return (off_t)::_ftelli64(a); }
-static inline off_t fseeko(FILE *a, off_t b, int c) { return (off_t)::_fseeki64(a, b, c); }
-#else
-static inline off_t
-ftello(FILE* a)
-{
-	return (off_t)::ftell(a);
-}
-static inline off_t
-fseeko(FILE* a, off_t b, int c)
-{
-	return (off_t)::fseek(a, b, c);
-}
-#endif
-#endif
 
 // -------------------------------------------------------------------------- //
 //  * TFileStream( const char*, const char* )
@@ -81,12 +63,10 @@ TFileStream::TFileStream(const char* inPath, const char* inMode) :
 		mWeOpenedTheFile(true)
 {
 	mFile = ::fopen(inPath, inMode);
-#if HAS_EXCEPTION_HANDLING
 	if (mFile == NULL)
 	{
 		throw TIOException();
 	}
-#endif
 	switch (inMode[0])
 	{
 		case 'r':
@@ -110,7 +90,7 @@ TFileStream::TFileStream(FILE* inFile) :
 		mFile(inFile),
 		mWeOpenedTheFile(false)
 {
-#if TARGET_OS_WIN32 && !TARGET_OS_CYGWIN
+#if TARGET_OS_WIN32
 	mIsWriting = mIsReading = 1;
 	// Windows does not have a standard API for getting this value
 	// see: NtQueryInformationFile
@@ -158,12 +138,10 @@ TFileStream::Read(void* outBuffer, KUInt32* ioCount)
 	{
 		*ioCount = (KUInt32) theCount;
 
-#if HAS_EXCEPTION_HANDLING
 		if (feof(mFile) == 0)
 		{
 			throw TIOException();
 		}
-#endif
 	}
 }
 
@@ -178,9 +156,7 @@ TFileStream::Write(const void* inBuffer, KUInt32* ioCount)
 	if (*ioCount != theCount)
 	{
 		*ioCount = (KUInt32) theCount;
-#if HAS_EXCEPTION_HANDLING
 		throw TIOException();
-#endif
 	}
 }
 
@@ -202,20 +178,12 @@ TFileStream::PeekByte(void)
 	int theNextChar = getc(mFile);
 	if (theNextChar == EOF)
 	{
-#if HAS_EXCEPTION_HANDLING
 		throw EOFException;
-#else
-		return EOF;
-#endif
 	}
 
 	if (::ungetc(theNextChar, mFile) != theNextChar)
 	{
-#if HAS_EXCEPTION_HANDLING
 		throw TIOException();
-#else
-		return EOF;
-#endif
 	}
 
 	return (KUInt8) theNextChar;
@@ -255,9 +223,7 @@ TFileStream::SetCursor(KSInt64 inPos, ECursorMode inMode)
 	int theErr = ::fseeko(mFile, (off_t) inPos, whence);
 	if (theErr != 0)
 	{
-#if HAS_EXCEPTION_HANDLING
 		throw TIOException();
-#endif
 	}
 }
 

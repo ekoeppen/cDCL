@@ -35,12 +35,9 @@
 #define _UBYTESEX_H
 
 #include <K/Defines/KDefinitions.h>
-#if TARGET_OS_COMPAT_POSIX
-#include <arpa/inet.h>
-#endif
 
 ///
-/// Classe pour gérer le sexe des octets.
+/// Classe pour gérer le sexe des octets (endianness).
 ///
 /// Convertit des mots de grand indien vers petit indien et inversement.
 /// Fournit des macros pour faire la conversion selon la plateforme.
@@ -88,9 +85,25 @@ public:
 		}
 
 	///
+	/// Echange les octets d'un mot de 64 bits.
+	///
+	/// \param inWord	mot de 64 bits en entrée.
+	/// \return le mot de 64 bits inversé.
+	///
+	static inline KUInt64	Swap( const KUInt64 inWord )
+		{
+#if defined(__GNUC__) || defined(__clang__)
+			return __builtin_bswap64(inWord);
+#else
+			return (
+					(((KUInt64) Swap((KUInt32) (inWord & 0xFFFFFFFFULL))) << 32) |
+					((KUInt64) Swap((KUInt32) (inWord >> 32))));
+#endif
+		}
+
+	///
 	/// Generic template to handle any integer type based on size.
 	/// Resolves ambiguity when typedefs differ from base types.
-	/// Newton data is always 16- or 32-bit; any other width is a compile-time error.
 	///
 	/// \param inWord	integer value to swap.
 	/// \return the byte-swapped value.
@@ -99,10 +112,14 @@ public:
 	static inline T Swap(T inWord)
 		{
 			static_assert(
-				sizeof(T) == 2 || sizeof(T) == 4,
-				"UByteSex::Swap<T>: unsupported type width (Newton data is 2 or 4 bytes only)");
-			if (sizeof(T) == 2) return (T)Swap((KUInt16)inWord);
-			return (T)Swap((KUInt32)inWord);
+				sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8,
+				"UByteSex::Swap<T>: unsupported type width (must be 2, 4, or 8 bytes)");
+			if constexpr (sizeof(T) == 2)
+				return (T) Swap((KUInt16) inWord);
+			else if constexpr (sizeof(T) == 4)
+				return (T) Swap((KUInt32) inWord);
+			else
+				return (T) Swap((KUInt64) inWord);
 		}
 
 #if TARGET_RT_LITTLE_ENDIAN

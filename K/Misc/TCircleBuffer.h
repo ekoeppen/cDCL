@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©√© le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -39,13 +40,11 @@
 #include <K/Defines/KDefinitions.h>
 
 ///
-/// Class for a ring buffer that can be growed if required.
+/// Class for a ring buffer that can be grown if required.
 /// This class is not thread safe.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.2 $
-///
-/// \test	aucun test défini.
 ///
 class TCircleBuffer
 {
@@ -78,6 +77,22 @@ public:
 	KUIntPtr	Consume( void* outBuffer, KUIntPtr inAmount );
 
 	///
+	/// Copy data for the consumer without advancing the consumer cursor.
+	///
+	/// \param outBuffer	where to write data.
+	/// \param inAmount		number of bytes to copy.
+	/// \return the number of bytes actually copied.
+	///
+	KUIntPtr	Peek( void* outBuffer, KUIntPtr inAmount );
+
+	///
+	/// Advance the consumer cursor without copying data.
+	///
+	/// \param inAmount		number of bytes to discard.
+	///
+	void		Discard( KUIntPtr inAmount );
+
+	///
 	/// Determine if the buffer is empty.
 	///
 	/// \return \c true if the buffer is empty, false otherwise.
@@ -86,27 +101,26 @@ public:
 		{
 			return mProducerCrsr == mConsumerCrsr;
 		}
-	
-private:
-	///
-	/// Constructeur par copie volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
-	///
-	TCircleBuffer( const TCircleBuffer& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Determine the number of bytes available for consumption.
 	///
-	/// \param inCopy		objet à copier
+	/// \return number of bytes available.
 	///
-	TCircleBuffer& operator = ( const TCircleBuffer& inCopy );
+	KUIntPtr	AvailableBytes( void ) const;
+
+private:
+	/// Copy constructor deleted.
+	TCircleBuffer( const TCircleBuffer& inCopy ) = delete;
+
+	/// Assignment operator deleted.
+	TCircleBuffer& operator = ( const TCircleBuffer& inCopy ) = delete;
 
 	/// \name Variables
-	KUInt8*					mBuffer;		///< Where data is hold.
-	KUIntPtr				mProducerCrsr;	///< Producer cursor.
-	KUIntPtr				mConsumerCrsr;	///< Consumer cursor.
-	KUIntPtr				mBufferSize;	///< Size of the buffer.
+	KUInt8*					mBuffer { nullptr };		///< Where data is held.
+	KUIntPtr				mProducerCrsr { 0 };	///< Producer cursor.
+	KUIntPtr				mConsumerCrsr { 0 };	///< Consumer cursor.
+	KUIntPtr				mBufferSize { 0 };	///< Size of the buffer.
 };
 
 #endif
