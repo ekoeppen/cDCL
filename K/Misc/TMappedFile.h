@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			14/2/2005
+// Cr√©√© le:			14/2/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -39,8 +40,13 @@
 #include <K/Defines/KDefinitions.h>
 
 // ANSI C & POSIX
-#include <sys/types.h>
+#include <cstddef>
 #include <fcntl.h>
+#include <sys/types.h>
+
+#if TARGET_OS_WIN32
+#include <windows.h>
+#endif
 
 ///
 /// Class for a file read entirely (with mmap if available).
@@ -48,11 +54,16 @@
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.3 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TMappedFile
 {
 public:
+	///
+	/// Default constructor.
+	///
+	TMappedFile() = default;
+
 	///
 	/// Constructor from a path and a boolean to determine if the file
 	/// could be written.
@@ -68,22 +79,48 @@ public:
 	///
 	TMappedFile(
 			const char* inFilePath,
-			size_t inSize = 0,
-			int inFlags = O_RDONLY,
-			void* preferredAddress = NULL );
+		size_t inSize = 0,
+		int inFlags = O_RDONLY,
+		void* preferredAddress = nullptr );
 
 	///
 	/// Destructor.
 	/// Close the file (write it if mmap failed).
 	///
 	~TMappedFile( void );
+
+	///
+	/// Map a file into memory.
+	///
+	/// \param inFilePath	path to the file.
+	/// \param inSize		amount of the file mapped, 0 means map all the file.
+	/// \param inFlags		flags for the file (O_RDONLY/O_WRONLY/O_RDWR)
+	/// \param preferredAddress	address where to map the file, if possible.
+	///
+	/// \return 0 if mapping was successful, -1 if an error occurred
+	///
+	int		Map(
+			const char* inFilePath,
+		size_t inSize = 0,
+		int inFlags = O_RDONLY,
+		void* preferredAddress = nullptr );
+
+	///
+	/// Unmap file.
+	///
+	void	Unmap( void );
 	
 	///
-	/// Accessor on the file buffer pointer, NULL if a problem occurred.
+	/// Accessor on the file buffer pointer, nullptr if a problem occurred.
 	///
 	/// \return the buffer.
 	///
 	void*	GetBuffer( void )
+		{
+			return mBuffer;
+		}
+
+	const void*	GetBuffer( void ) const
 		{
 			return mBuffer;
 		}
@@ -115,26 +152,25 @@ public:
 
 private:
 	///
-	/// Constructeur par copie volontairement indisponible.
+	/// Copy constructor deleted.
 	///
-	/// \param inCopy		objet à copier
-	///
-	TMappedFile( const TMappedFile& inCopy );
+	TMappedFile( const TMappedFile& inCopy ) = delete;
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Copy assignment operator deleted.
 	///
-	/// \param inCopy		objet à copier
-	///
-	TMappedFile& operator = ( const TMappedFile& inCopy );
+	TMappedFile& operator = ( const TMappedFile& inCopy ) = delete;
 
 	/// \name Variables
-	void*		mBuffer;	///< Buffer to access the file.
-	size_t		mSize;		///< Size of the file.
-	Boolean		mMapped;	///< If file is actually mapped.
-	Boolean		mReadOnly;	///< If file is read only.
-	Boolean		mCreated;	///< Whether the file was created/grown.
-	int			mFileFd;	///< fd to the file.
+	void*		mBuffer = nullptr;		///< Buffer to access the file.
+	size_t		mSize = 0;				///< Size of the file.
+	Boolean		mMapped = false;		///< If file is actually mapped.
+	Boolean		mReadOnly = false;		///< If file is read only.
+	Boolean		mCreated = false;		///< Whether the file was created/grown.
+	int			mFileFd = -1;			///< fd to the file.
+#if TARGET_OS_WIN32
+	HANDLE		mFileMapping = nullptr;	///< Win32 file mapping handle.
+#endif
 };
 
 #endif

@@ -31,6 +31,7 @@
 #include "UTestPkg.h"
 #include "UTestThreads.h"
 #include "UTestKThreads.h"
+#include "UTestKMappedFile.h"
 #include "UTestTime.h"
 #include "UTestXML.h"
 
@@ -108,6 +109,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestThreads::Posix();
 		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
 			UTestKThreads::RunTests();
+		} else if (::strcmp(inTestName, "kmappedfile") == 0) {
+			UTestKMappedFile::Run();
 		} else if (::strcmp(inTestName, "time-values") == 0) {
 			UTestTime::CheckReturnValues();
 		} else if (::strcmp(inTestName, "xml-waltersmith") == 0) {
