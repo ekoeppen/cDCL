@@ -14,6 +14,7 @@ Tests/UTestNSOF.cpp
 Tests/UTestPkg.cpp
 Tests/UTestThreads.cpp
 Tests/UTestKThreads.cpp
+Tests/UTestKMappedFile.cpp
 Tests/UTestTime.cpp
 Tests/UTestXML.cpp
 )
@@ -56,4 +57,3 @@ set_tests_properties(
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-doxygen.sh
     PROPERTIES LABELS "optional"
 )
-
