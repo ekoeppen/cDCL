@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©e le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -36,25 +37,18 @@
 #include <K/Defines/KDefinitions.h>
 #include "TThread.h"
 
-// ANSI C & POSIX
-#include <sys/time.h>
-#include <errno.h>
-#include <signal.h>
-
-// -------------------------------------------------------------------------- //
-// Constantes
-// -------------------------------------------------------------------------- //
+#include <chrono>
+#include <cassert>
 
 // -------------------------------------------------------------------------- //
 //  * ~TThread( void )
 // -------------------------------------------------------------------------- //
 TThread::~TThread( void )
 {
-	int err = ::pthread_detach( mThread );
-	assert( err == 0 );
-	err = ::pthread_join( mThread, NULL );
-	assert( (err == 0) || (err == EINVAL) );
-	(void) err;
+	if (mThread.joinable())
+	{
+		mThread.detach();
+	}
 }
 
 // -------------------------------------------------------------------------- //
@@ -63,7 +57,25 @@ TThread::~TThread( void )
 Boolean
 TThread::IsCurrentThread( void ) const
 {
-	return (::pthread_equal(mThread, ::pthread_self()) != 0);
+	return (std::this_thread::get_id() == mThreadId);
+}
+
+// -------------------------------------------------------------------------- //
+//  * CheckSuspend( void )
+// -------------------------------------------------------------------------- //
+void
+TThread::CheckSuspend( void )
+{
+	std::unique_lock<std::mutex> lock(mMutex);
+	while (mSuspendCount > 0)
+	{
+		mState = kSuspended;
+		mSuspendCond.wait(lock);
+	}
+	if (mState == kSuspended)
+	{
+		mState = kRunning;
+	}
 }
 
 // -------------------------------------------------------------------------- //
@@ -72,21 +84,12 @@ TThread::IsCurrentThread( void ) const
 void
 TThread::Suspend( void )
 {
-	mMutex.Lock();
-	
+	std::lock_guard<std::mutex> lock(mMutex);
+	mSuspendCount++;
 	if (mState == kRunning)
 	{
 		mState = kSuspended;
-		
-		// Send SIGUSR2
-		int err = ::pthread_kill(mThread, SIGUSR2);
-		assert( err == 0 );
-		(void) err;
-	} else if ((mState == kSuspended) || (mState == kSleeping)) {
-		mSuspendCount++;
 	}
-	
-	mMutex.Unlock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -95,68 +98,19 @@ TThread::Suspend( void )
 void
 TThread::Resume( void )
 {
-	mMutex.Lock();
-	
+	std::lock_guard<std::mutex> lock(mMutex);
 	if (mSuspendCount > 0)
 	{
 		mSuspendCount--;
-		if ((mState == kSuspended) && (mSuspendCount == 0))
+		if (mSuspendCount == 0)
 		{
-			mState = kRunning;
-			
-			// Send SIGUSR1
-			int err = ::pthread_kill(mThread, SIGUSR1);
-			assert( err == 0 );
-			(void) err;
+			if (mState == kSuspended)
+			{
+				mState = kRunning;
+			}
+			mSuspendCond.notify_all();
 		}
 	}
-
-	mMutex.Unlock();
-}
-
-// ------------------------------------------------------------------------- //
-//  * SignalUSR2( int )
-// ------------------------------------------------------------------------- //
-void
-TThread::SignalUSR2( int /* inSignal */ )
-{
-	// Wait for SIGUSR1.
-	sigset_t theSigset;
-	
-	(void) sigfillset( &theSigset );
-	(void) sigdelset( &theSigset, SIGUSR1 );
-	
-	(void) sigsuspend( &theSigset );
-}
-
-// ------------------------------------------------------------------------- //
-//  * SignalUSR1( int )
-// ------------------------------------------------------------------------- //
-void
-TThread::SignalUSR1( int /* inSignal */ )
-{
-}
-
-// ------------------------------------------------------------------------- //
-//  * PreRun( void )
-// ------------------------------------------------------------------------- //
-void
-TThread::PreRun( void )
-{
-	// SIGUSR2 (suspend).
-	struct sigaction theSigAction;
-	theSigAction.sa_flags = 0;
-	theSigAction.sa_handler = SignalUSR2;
-	(void) sigemptyset(&theSigAction.sa_mask);
-
-	int err = sigaction(SIGUSR2, &theSigAction, NULL);
-
-	// SIGUSR1 (resume).
-	// Block SIGUSR2 to avoid any suspend while we resume.
-	theSigAction.sa_handler = SignalUSR1;
-	(void) sigaddset(&theSigAction.sa_mask, SIGUSR2);
-	err = sigaction(SIGUSR1, &theSigAction, NULL);
-	(void) err;
 }
 
 // ------------------------------------------------------------------------- //
@@ -166,64 +120,46 @@ Boolean
 TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 {
 	assert(IsCurrentThread());
-	
-	Boolean theResult;
-	
+	Boolean theResult = false;
 	Boolean forever = (inMilliseconds == kForever);
-	
-	// Acquire the mutex.
-	mMutex.Lock();
 
-	// Number of wake counts.
+	std::unique_lock<std::mutex> lock(mMutex);
+
 	if (mWakeCount > 0)
 	{
 		mWakeCount--;
-		theResult = false;	// On n'a pas dormi tout le temps demandé.
-
-		// Release the mutex.
-		mMutex.Unlock();
+		theResult = false;
 	} else {
-		// On dort.
 		mState = kSleeping;
-		
+
 		if (!forever)
 		{
-			// Determine when to wake up.
-			timespec theTimeToWake;
-			if (!forever)
-			{
-				timeval theCurrentTime;
-				(void) ::gettimeofday( &theCurrentTime, nil );
-				// Traduction en timespec et ajout du délai.		
-				theTimeToWake.tv_sec =
-					((long) (inMilliseconds / 1000)) + theCurrentTime.tv_sec;
-				theTimeToWake.tv_nsec =
-					(((long) ((inMilliseconds % 1000) * 1000))
-						+ theCurrentTime.tv_usec) * 1000;
-			}
-			theResult = !mCondVar.TimedWait(&mMutex, &theTimeToWake);
+			auto duration = std::chrono::milliseconds(inMilliseconds);
+			std::cv_status status = mSleepCond.wait_for(lock, duration);
+			theResult = (status == std::cv_status::timeout);
 		} else {
+			mSleepCond.wait(lock);
 			theResult = false;
-			mCondVar.Wait(&mMutex);
 		}
 
-		// We're running or we're suspended.
 		if (mSuspendCount > 0)
 		{
 			mState = kSuspended;
 		} else {
 			mState = kRunning;
 		}
-		
-		// Release the mutex.
-		mMutex.Unlock();
-		
-		if (mState == kSuspended)
-		{
-			SignalUSR2(SIGUSR2);
-		}
 	}
-	
+
+	while (mSuspendCount > 0)
+	{
+		mState = kSuspended;
+		mSuspendCond.wait(lock);
+	}
+	if (mState == kSuspended)
+	{
+		mState = kRunning;
+	}
+
 	return theResult;
 }
 
@@ -233,23 +169,15 @@ TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 void
 TThread::WakeUp( void )
 {
-	// Acquire the mutex.
-	mMutex.Lock();
+	std::lock_guard<std::mutex> lock(mMutex);
 
-	// If the thread is sleeping, wake it up.
 	if (mState == kSleeping)
 	{
-		// Signal the condition variable.
-		mCondVar.Signal();
+		mSleepCond.notify_one();
 	} else {
-		// Otherwise, increase the wake counter.
 		mWakeCount++;
 	}
-	
-	// Release the mutex.
-	mMutex.Unlock();
 }
-
 
 // ============================================================================= //
 // `Lasu' Releases SAG 0.3 -- Freeware Book Takes Paves For New World Order      //

@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©e le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -38,8 +39,8 @@
 
 #include <K/Defines/KDefinitions.h>
 
-// ANSI C & POSIX
-#include <pthread.h>
+#include <condition_variable>
+#include <ctime>
 
 class TMutex;
 
@@ -49,7 +50,7 @@ class TMutex;
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.1 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class TCondVar
 {
@@ -95,7 +96,7 @@ public:
 	///
 	Boolean TimedWaitRelative(
 						TMutex* inMutex,
-						const struct timespec* inAbsTime );
+						const struct timespec* inRelTime );
 
 	///
 	/// Wait for the conditional variable to be freed.
@@ -108,19 +109,19 @@ private:
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TCondVar( const TCondVar& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Op√©rateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		objet √† copier
 	///
 	TCondVar& operator = ( const TCondVar& inCopy );
 
 	/// \name Variables
-	pthread_cond_t		mCondVar;	///< Condition variable.
+	std::condition_variable_any	mCondVar;	///< Condition variable.
 };
 
 #endif

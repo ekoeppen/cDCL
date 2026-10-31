@@ -3,7 +3,7 @@
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©e le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -36,22 +37,11 @@
 #include <K/Defines/KDefinitions.h>
 #include "TMutex.h"
 
-// ANSI C & POSIX
-#include <assert.h>
-#include <errno.h>
-
-// -------------------------------------------------------------------------- //
-// Constantes
-// -------------------------------------------------------------------------- //
-
 // -------------------------------------------------------------------------- //
 //  * TMutex( void )
 // -------------------------------------------------------------------------- //
 TMutex::TMutex( void )
 {
-	int err = ::pthread_mutex_init( &mMutex, NULL );
-	assert( err == 0 );
-	(void) err;
 }
 
 // -------------------------------------------------------------------------- //
@@ -59,9 +49,6 @@ TMutex::TMutex( void )
 // -------------------------------------------------------------------------- //
 TMutex::~TMutex( void )
 {
-	int err = ::pthread_mutex_destroy( &mMutex );
-	assert( err == 0 );
-	(void) err;
 }
 
 // -------------------------------------------------------------------------- //
@@ -70,9 +57,7 @@ TMutex::~TMutex( void )
 void
 TMutex::Lock( void )
 {
-	int err = ::pthread_mutex_lock( &mMutex );
-	assert( err == 0 );
-	(void) err;
+	mMutex.lock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -81,9 +66,7 @@ TMutex::Lock( void )
 void
 TMutex::Unlock( void )
 {
-	int err = ::pthread_mutex_unlock( &mMutex );
-	assert( err == 0 );
-	(void) err;
+	mMutex.unlock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -92,15 +75,7 @@ TMutex::Unlock( void )
 Boolean
 TMutex::TryLock( void )
 {
-	int err = ::pthread_mutex_lock( &mMutex );
-	if (err == EBUSY)
-	{
-		return true;
-	} else {
-		assert( err == 0 );
-		return false;
-	}
-	(void) err;
+	return mMutex.try_lock();
 }
 
 // ========================================= //

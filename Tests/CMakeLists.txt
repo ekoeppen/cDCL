@@ -13,6 +13,7 @@ Tests/UTestNS.cpp
 Tests/UTestNSOF.cpp
 Tests/UTestPkg.cpp
 Tests/UTestThreads.cpp
+Tests/UTestKThreads.cpp
 Tests/UTestTime.cpp
 Tests/UTestXML.cpp
 )

@@ -30,6 +30,7 @@
 #include "UTestNSOF.h"
 #include "UTestPkg.h"
 #include "UTestThreads.h"
+#include "UTestKThreads.h"
 #include "UTestTime.h"
 #include "UTestXML.h"
 
@@ -105,6 +106,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestPkg::IdemPotent();
 		} else if (::strcmp(inTestName, "threads-posix") == 0) {
 			UTestThreads::Posix();
+		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
+			UTestKThreads::RunTests();
 		} else if (::strcmp(inTestName, "time-values") == 0) {
 			UTestTime::CheckReturnValues();
 		} else if (::strcmp(inTestName, "xml-waltersmith") == 0) {

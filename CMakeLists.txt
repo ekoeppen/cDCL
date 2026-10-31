@@ -74,6 +74,9 @@ K/Unicode/TString.cpp
 K/Unicode/TStringRef.cpp
 K/Unicode/UUTF16Conv.cpp
 K/Unicode/UUTF16CStr.cpp
+K/Threads/TCondVar.cpp
+K/Threads/TMutex.cpp
+K/Threads/TThread.cpp
 )
 
 target_include_directories(K PUBLIC
@@ -85,10 +88,6 @@ target_include_directories(K PUBLIC
 if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(K PRIVATE
         K/Misc/TMappedFile.cpp
-        K/Threads/TCondVar.cpp
-        K/Threads/TFiber.cpp
-        K/Threads/TMutex.cpp
-        K/Threads/TThread.cpp
     )
     if(APPLE)
         target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
@@ -293,7 +292,6 @@ K/Tests/TMonitorMethodClient.h
 K/Tests/TNewtonTraceMonitor.h
 K/Tests/TTraceMonitor.h
 K/Threads/TCondVar.h
-K/Threads/TFiber.h
 K/Threads/TMutex.h
 K/Threads/TThread.h
 K/Unicode/TMutableStringRef.h
