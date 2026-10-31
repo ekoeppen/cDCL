@@ -32,6 +32,7 @@
 #include "UTestThreads.h"
 #include "UTestKThreads.h"
 #include "UTestKMappedFile.h"
+#include "UTestKStreamsAndBuffers.h"
 #include "UTestTime.h"
 #include "UTestXML.h"
 
@@ -111,6 +112,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestKThreads::RunTests();
 		} else if (::strcmp(inTestName, "kmappedfile") == 0) {
 			UTestKMappedFile::Run();
+		} else if (::strcmp(inTestName, "kstreams-and-buffers") == 0) {
+			UTestKStreamsAndBuffers::Run();
 		} else if (::strcmp(inTestName, "time-values") == 0) {
 			UTestTime::CheckReturnValues();
 		} else if (::strcmp(inTestName, "xml-waltersmith") == 0) {

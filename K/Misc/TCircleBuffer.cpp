@@ -1,9 +1,9 @@
 // ==============================
-// Fichier:			TCircleBuffer.cp
+// Fichier:			TCircleBuffer.cpp
 // Projet:			K
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			26/5/2005
+// Cr√©√© le:			26/5/2005
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -27,6 +27,7 @@
 // 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 // 
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -37,8 +38,8 @@
 #include "TCircleBuffer.h"
 
 // ANSI C & POSIX
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 // -------------------------------------------------------------------------- //
 // Constantes
@@ -49,12 +50,15 @@
 // -------------------------------------------------------------------------- //
 TCircleBuffer::TCircleBuffer( KUIntPtr inInitialCapacity /* = 0 */ )
 	:
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mProducerCrsr( 0 ),
 		mConsumerCrsr( 0 ),
 		mBufferSize( inInitialCapacity )
 {
-	mBuffer = (KUInt8*) ::malloc( inInitialCapacity );
+	if (inInitialCapacity > 0)
+	{
+		mBuffer = (KUInt8*) ::malloc( inInitialCapacity );
+	}
 }
 
 // -------------------------------------------------------------------------- //
@@ -70,88 +74,72 @@ TCircleBuffer::~TCircleBuffer( void )
 
 // -------------------------------------------------------------------------- //
 //  * Produce( const void*, KUIntPtr )
+//		One byte always stays free: in a full buffer, the producer cursor would
+//		be on the consumer cursor, and the buffer would look empty. Both
+//		cursors are always below mBufferSize.
 // -------------------------------------------------------------------------- //
 void
 TCircleBuffer::Produce( const void* inBuffer, KUIntPtr inAmount )
 {
 	// Enlarge the buffer if required.
-	KUIntPtr amountFree;
-	if (mConsumerCrsr <= mProducerCrsr)
+	KUIntPtr amountUsed = AvailableBytes();
+	if (inAmount >= mBufferSize - amountUsed)
 	{
-		// ---C123P---
-		amountFree = mBufferSize - (mProducerCrsr - mConsumerCrsr);
-	} else {
-		// 456P---C123
-		amountFree = mProducerCrsr - mConsumerCrsr;
-	}
-	
-	if (inAmount > amountFree)
-	{
-		KUIntPtr delta = inAmount - amountFree;
-		KUInt8* newBuffer = (KUInt8*) ::malloc( mBufferSize + delta );
-		
+		KUIntPtr newSize = amountUsed + inAmount + 1;
+		KUInt8* newBuffer = (KUInt8*) ::malloc( newSize );
+
 		// Copy data, put unconsumed data at the beginning.
-		if (mConsumerCrsr <= mProducerCrsr)
-		{
-			// ---C123P--- -> C123P--------
-			(void) ::memcpy(
-				mBuffer,
-				(const void*) (mBuffer + mConsumerCrsr),
-				mProducerCrsr - mConsumerCrsr);
-			mProducerCrsr -= mConsumerCrsr;
-			mConsumerCrsr = 0;
-		} else {
-			// 456P---C123 -> C123456P-----
-			(void) ::memcpy(
-				mBuffer,
-				(const void*) (mBuffer + mConsumerCrsr),
-				mBufferSize - mConsumerCrsr);
-			(void) ::memcpy(
-				mBuffer + (mBufferSize - mConsumerCrsr),
-				(const void*) mBuffer,
-				mProducerCrsr);
-			mProducerCrsr += mBufferSize - mConsumerCrsr;
-			mConsumerCrsr = 0;
-		}
-		
-		// Update buffer.
-		mBufferSize += delta;
-		::free(mBuffer);
+		(void) Peek( newBuffer, amountUsed );
+		::free( mBuffer );
 		mBuffer = newBuffer;
+		mBufferSize = newSize;
+		mConsumerCrsr = 0;
+		mProducerCrsr = amountUsed;
 	}
-	
-	// Copy data.
-	if (mConsumerCrsr <= mProducerCrsr)
+
+	// Copy data, to the end of the buffer and then from its beginning.
+	KUIntPtr toEnd = mBufferSize - mProducerCrsr;
+	if (inAmount > toEnd)
 	{
-		// ---C123P---
-		if (inAmount + mProducerCrsr > mBufferSize)
-		{
-			KUIntPtr toEnd = mBufferSize - mProducerCrsr;
-			KUIntPtr fromBeginning = inAmount - toEnd;
-			(void) ::memcpy(
-				mBuffer + mProducerCrsr,
-				inBuffer,
-				toEnd );
-			(void) ::memcpy(
-				mBuffer,
-				((KUInt8*) inBuffer) + toEnd,
-				fromBeginning );
-			mProducerCrsr = fromBeginning;
-		} else {
-			(void) ::memcpy(
-				mBuffer + mProducerCrsr,
-				inBuffer,
-				inAmount );
-			mProducerCrsr += inAmount;
-		}
+		KUIntPtr fromBeginning = inAmount - toEnd;
+		(void) ::memcpy(
+			mBuffer + mProducerCrsr,
+			inBuffer,
+			toEnd );
+		(void) ::memcpy(
+			mBuffer,
+			((const KUInt8*) inBuffer) + toEnd,
+			fromBeginning );
+		mProducerCrsr = fromBeginning;
 	} else {
-		// 456P---C123
 		(void) ::memcpy(
 			mBuffer + mProducerCrsr,
 			inBuffer,
 			inAmount );
 		mProducerCrsr += inAmount;
+		if (mProducerCrsr == mBufferSize)
+		{
+			mProducerCrsr = 0;
+		}
 	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * AvailableBytes( void )
+// -------------------------------------------------------------------------- //
+KUIntPtr
+TCircleBuffer::AvailableBytes( void ) const
+{
+	KUIntPtr max = 0;
+	if (mConsumerCrsr <= mProducerCrsr)
+	{
+		// ---C123P---
+		max = mProducerCrsr - mConsumerCrsr;
+	} else {
+		// 456P---C123
+		max = mBufferSize + mProducerCrsr - mConsumerCrsr;
+	}
+	return max;
 }
 
 // -------------------------------------------------------------------------- //
@@ -160,8 +148,19 @@ TCircleBuffer::Produce( const void* inBuffer, KUIntPtr inAmount )
 KUIntPtr
 TCircleBuffer::Consume( void* outBuffer, KUIntPtr inAmount )
 {
+	KUIntPtr amount = Peek( outBuffer, inAmount );
+	Discard( amount );
+	return amount;
+}
+
+// -------------------------------------------------------------------------- //
+//  * Peek( void*, KUIntPtr )
+// -------------------------------------------------------------------------- //
+KUIntPtr
+TCircleBuffer::Peek( void* outBuffer, KUIntPtr inAmount )
+{
 	KUIntPtr amount = inAmount;
-	
+
 	// Copy data.
 	if (mConsumerCrsr <= mProducerCrsr)
 	{
@@ -176,8 +175,6 @@ TCircleBuffer::Consume( void* outBuffer, KUIntPtr inAmount )
 			outBuffer,
 			(const void*) (mBuffer + mConsumerCrsr),
 			amount );
-
-		mConsumerCrsr += amount;
 	} else {
 		// 456P---C123
 		KUIntPtr max = mBufferSize + mProducerCrsr - mConsumerCrsr;
@@ -189,7 +186,7 @@ TCircleBuffer::Consume( void* outBuffer, KUIntPtr inAmount )
 		if (amount + mConsumerCrsr > mBufferSize)
 		{
 			KUIntPtr toEnd = mBufferSize - mConsumerCrsr;
-			KUIntPtr fromBeginning = inAmount - toEnd;
+			KUIntPtr fromBeginning = amount - toEnd;
 			(void) ::memcpy(
 				outBuffer,
 				(const void*) (mBuffer + mConsumerCrsr),
@@ -198,17 +195,37 @@ TCircleBuffer::Consume( void* outBuffer, KUIntPtr inAmount )
 				((KUInt8*) outBuffer) + toEnd,
 				(const void*) mBuffer,
 				fromBeginning );
-			mConsumerCrsr = fromBeginning;
 		} else {
 			(void) ::memcpy(
 				outBuffer,
 				(const void*) (mBuffer + mConsumerCrsr),
-				inAmount );
-			mConsumerCrsr += inAmount;
+				amount );
 		}
 	}
-	
+
 	return amount;
+}
+
+// -------------------------------------------------------------------------- //
+//  * Discard( KUIntPtr )
+// -------------------------------------------------------------------------- //
+void
+TCircleBuffer::Discard( KUIntPtr inAmount )
+{
+	KUIntPtr amount = inAmount;
+	KUIntPtr max = AvailableBytes();
+
+	if (amount > max)
+	{
+		amount = max;
+	}
+
+	if (amount + mConsumerCrsr >= mBufferSize)
+	{
+		mConsumerCrsr = amount - (mBufferSize - mConsumerCrsr);
+	} else {
+		mConsumerCrsr += amount;
+	}
 }
 
 // ============================================================================== //

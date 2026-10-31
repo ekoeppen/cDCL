@@ -27,6 +27,7 @@
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
