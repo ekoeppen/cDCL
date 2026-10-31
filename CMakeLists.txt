@@ -79,6 +79,8 @@ K/Threads/TMutex.cpp
 K/Threads/TThread.cpp
 )
 
+add_library(cDCL::K ALIAS K)
+
 target_include_directories(K PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/K>
@@ -222,6 +224,8 @@ DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
 )
+
+add_library(cDCL::DCL ALIAS DCL)
 
 target_include_directories(DCL PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
