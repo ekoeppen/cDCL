@@ -96,38 +96,3 @@ jobs:
       with:
         label: mingw-native
         suffix: .exe
-
-  # Build and test under Cygwin on Windows
-  build-cygwin:
-    runs-on: windows-latest
-
-    steps:
-    - name: Disable git autocrlf
-      run: git config --global core.autocrlf false
-
-    - name: Checkout source code
-      uses: actions/checkout@v6
-
-    - name: Install dependencies
-      uses: cygwin/cygwin-install-action@v6
-      with:
-        packages: gcc-core gcc-g++ cmake ninja perl
-
-    - name: Configure
-      shell: bash
-      run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug
-
-    - name: Build
-      shell: bash
-      run: cmake --build build
-
-    - name: Run required tests (optional tests are excluded)
-      shell: bash
-      run: export PATH="$(pwd):$PATH" && ctest . -C Debug -LE optional
-      working-directory: build
-
-    - name: Upload artifacts
-      uses: ./.github/actions/upload-artifacts
-      with:
-        label: windows-cygwin
-        suffix: .exe

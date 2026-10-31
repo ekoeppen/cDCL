@@ -64,7 +64,7 @@ UPStrings::P2CStrCopy(
 				long inMaxLength )
 {
 	// Taille de la chaîne
-	register long theLength = inSourceString[0];
+	long theLength = inSourceString[0];
 	
 	// On tronque si nécessaire.
 	if (theLength > inMaxLength)
@@ -91,12 +91,12 @@ UPStrings::C2PStrCopy(
 	// On mesure la taille en même temps qu'on copie.
 
 	// Taille de la chaîne
-	register long theLength = 0;
+	long theLength = 0;
 
 	// Curseur sur la chaîne.
-	register const char* theSourceString = inSourceString;
+	const char* theSourceString = inSourceString;
 	do {
-		register char theChar = *theSourceString;
+		char theChar = *theSourceString;
 		if (theChar == '\0')
 		{
 			break;
@@ -124,7 +124,7 @@ char*
 UPStrings::P2CStr( Str255 ioString )
 {
 	// Taille de la chaîne
-	register long theLength = ioString[0];
+	long theLength = ioString[0];
 	
 	// Déplacement des caractères.
 	// BlockMove sait gérer les zones de mémoire qui se recouvrent.
@@ -143,16 +143,16 @@ unsigned char*
 UPStrings::C2PStr( char* ioString )
 {
 	// Taille de la chaîne
-	register long theLength = 0;
+	long theLength = 0;
 
 	// Caractère précédent.
-	register char thePreviousChar = '\0';
+	char thePreviousChar = '\0';
 
 	// Curseur sur la chaîne.
-	register char* theString = ioString;
+	char* theString = ioString;
 	do {
 		// Lecture du caractère courant.
-		register char theChar = *theString;
+		char theChar = *theString;
 		
 		// On écrit le caractère précédent.
 		*theString = thePreviousChar;

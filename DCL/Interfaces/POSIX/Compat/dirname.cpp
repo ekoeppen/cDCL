@@ -33,7 +33,7 @@ dirname(const char *path)
 	static char bname[MAXPATHLEN];
 
 	/* end of the base */
-	register const char *endp;
+	const char *endp;
 
 	/* Empty or NULL string gets treated as "." */
 	if (path == NULL || *path == '\0') {

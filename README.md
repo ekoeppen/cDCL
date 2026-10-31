@@ -5,8 +5,8 @@
 The Desktop Connection Library (DCL) is a multi-platform library to connect to
 Apple Newton Devices using the Dock protocol and to manipulate NewtonOS data.
 
-The library and sample code programs run on macOS X, Linux and Cygwin, with
-limited native Win32 support via MinGW (no file system, serial I/O, threading or
+The library and sample code programs run on macOS X and Linux with limited
+native Win32 support via MinGW (no file system, serial I/O, threading or
 networking support).
 
 ## Compilation and portability
