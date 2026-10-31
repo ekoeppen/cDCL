@@ -53,20 +53,9 @@
 #endif
 
 #if TARGET_OS_OPENSTEP
-	#include <K/Misc/UPStrings.h>
-
-	#ifdef __MWERKS__
-		#pragma	warn_resultnotused	off
-	#endif
-
-	#include <CoreServices/CoreServices.h>
 	#include <stdio.h>
 	#include <syslog.h>
 	#include <stdarg.h>
-
-	#ifdef __MWERKS__
-		#pragma	warn_resultnotused	on
-	#endif
 #endif
 
 #if TARGET_OS_WIN32

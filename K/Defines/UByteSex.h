@@ -26,6 +26,7 @@
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -36,9 +37,6 @@
 #include <K/Defines/KDefinitions.h>
 #if TARGET_OS_COMPAT_POSIX
 #include <arpa/inet.h>
-#endif
-#if TARGET_OS_OPENSTEP
-#include <libkern/OSByteOrder.h>
 #endif
 
 ///
@@ -62,10 +60,8 @@ public:
 	///
 	static inline KUInt16	Swap( const KUInt16 inWord )
 		{
-#if TARGET_OS_OPENSTEP
-			return OSSwapInt16((UInt16) inWord);
-#elif TARGET_RT_LITTLE_ENDIAN && TARGET_OS_COMPAT_POSIX
-			return (KUInt16) htons((uint16_t) inWord);
+#if defined(__GNUC__) || defined(__clang__)
+			return __builtin_bswap16(inWord);
 #else
 			return (KUInt16) ((inWord << 8) | (inWord >> 8));
 #endif
@@ -80,10 +76,8 @@ public:
 	///
 	static inline KUInt32	Swap( const KUInt32 inWord )
 		{
-#if TARGET_OS_OPENSTEP
-			return OSSwapInt32((UInt32) inWord);
-#elif TARGET_RT_LITTLE_ENDIAN && TARGET_OS_COMPAT_POSIX
-			return (KUInt32) htonl((uint32_t) inWord);
+#if defined(__GNUC__) || defined(__clang__)
+			return __builtin_bswap32(inWord);
 #else
 			return (
 					((inWord >> 24)	& 0x000000FF) | 
