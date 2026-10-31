@@ -1,24 +1,108 @@
-![C/C++ CI](https://github.com/pguyot/DCL/workflows/C/C++%20CI/badge.svg)
+# Apple Newton Desktop Connectivity Library (cDCL)
 
-# Apple Newton Desktop Connectivity Library
+![C/C++ CI](https://github.com/ekoeppen/cDCL/workflows/C/C++%20CI/badge.svg)
 
-The Desktop Connection Library (DCL) is a multi-platform library to connect to
-Apple Newton Devices using the Dock protocol and to manipulate NewtonOS data.
+The Desktop Connectivity Library (cDCL) is a modern C++ multi-platform library
+designed to connect to Apple Newton devices via the Newton Dock protocol,
+manipulate NewtonOS data structures (`NSRef`, frames, symbols, packages), and
+provide core streaming and serialization utilities.
 
-The library and sample code programs run on macOS X and Linux with limited
-native Win32 support via MinGW (no file system, serial I/O, threading or
-networking support).
+The repository consists of two main libraries:
 
-## Compilation and portability
+- **`DCL`**: Domain-specific implementation of the Newton Dock protocol, package
+  encoding/decoding, and object stores.
+- **`K`**: Foundational systems library providing binary streams, ring buffers,
+  memory-mapped files, and endianness utilities.
 
-This release of the DCL should be compiled with CMake:
+## Architecture & Design
+
+### Modern C++17 Standard
+
+The codebase targets **C++17** (`-std=c++17`) using standard primitives
+(`std::thread`, `std::mutex`, `std::condition_variable`, `<atomic>`, and
+`<chrono>`).
+
+### Streamlined Platform Strategy
+
+Builds target three platform tiers using built-in compiler macros
+(`__APPLE__`, `__linux__`, `_WIN32`):
+
+- **macOS** (Clang / libc++)
+- **Linux** (GCC / Clang / libstdc++)
+- **Windows** (native Win32 via MinGW-w64)
+
+Compared to the original [DCL](https://sourceforge.net/projects/newton-dcl/),
+legacy platforms (Cygwin, MSVC, Classic Mac OS 8/9, BeOS) are dropped. macOS and
+Linux share a unified POSIX implementation (`TARGET_OS_POSIX`), while Windows
+relies on native Win32 APIs (`TARGET_OS_WIN32`) via MinGW-w64.
+
+### Compatibility Shims
+
+To permit downstream consumers (such as Einstein) and legacy tools to migrate
+smoothly without high churn:
+
+- Legacy types (`KUInt32`, `KSInt16`, `Boolean`, etc.) are provided as
+  lightweight `using` aliases to standard `<cstdint>` types (`uint32_t`,
+  `int16_t`) and `bool`.
+- Concurrency facades (`K::TThread`, `K::TMutex`, `K::TCondVar`) remain
+  available as thin wrappers encapsulating standard C++17 concurrency.
+
+## CMake Integration (Downstream Consumers)
+
+cDCL exports namespaced modern CMake targets: `cDCL::K` and `cDCL::DCL`
+(`cDCL::DCL` automatically links and pulls `cDCL::K`).
+
+### Via CMake `FetchContent` (Recommended)
+
+In your project's `CMakeLists.txt`:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(
+    cDCL
+    GIT_REPOSITORY https://github.com/ekoeppen/cDCL.git
+    GIT_TAG        master  # or a specific tag/hash
+)
+FetchContent_MakeAvailable(cDCL)
+
+# Link against K alone (for systems primitives) or DCL (for Newton dock/objects):
+target_link_libraries(my_app PRIVATE cDCL::DCL)
+```
+
+### Via `add_subdirectory` / Git Submodule
+
+```cmake
+add_subdirectory(externals/cDCL)
+target_link_libraries(my_app PRIVATE cDCL::K cDCL::DCL)
+```
+
+### Header Include Conventions
+
+The include directories are configured so downstream consumers can use either
+namespaced includes or flat includes:
+
+```cpp
+// Namespaced (preferred):
+#include <K/Misc/TCircleBuffer.h>
+#include <K/Defines/UByteSex.h>
+#include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
+
+// Flat includes are also supported:
+#include "TCircleBuffer.h"
+#include "TDCLNSFrame.h"
+```
+
+## Compilation
+
+Build with CMake (requires CMake 3.31+ and a C++17 compiler):
 
 ```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ```
 
-MinGW requires usage of a toolchain file if cross compiled from e.g. macOS or
+MinGW requires usage of a toolchain file when cross-compiling from macOS or
 Linux:
 
 ```sh
@@ -26,25 +110,27 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=cmake/mingw-toolc
 cmake --build build
 ```
 
-Note: When using MSYS2 as the MinGW distribution, CMake needs to be the MinGW
-version to ensure the host system is detected as Win32 and not Cygwin.
+Binaries can be statically linked by setting the `BUILD_SHARED_LIBS` CMake
+option to `OFF`:
 
-Binaries can be statically linked against libDCL to simplify distribution by
-setting the `BUILD_SHARED_LIBS` CMake property to `OFF`.
+```sh
+cmake -B build -DBUILD_SHARED_LIBS=OFF
+cmake --build build
+```
 
 ## Testing
 
 Tests are executed using `ctest` from the build directory:
 
 ```sh
-ctest . -C Debug
+ctest --test-dir build -C Debug --output-on-failure
 ```
 
-Note that the `doxygen` test is marked as optional since it fails due to some
-documentation gaps, it can be excluded from test execution:
+The `doxygen` test is marked as optional and can be excluded if Doxygen is not
+installed:
 
 ```sh
-ctest . -C Debug -LE optional
+ctest --test-dir build -C Debug -LE optional
 ```
 
 ## License and authors
