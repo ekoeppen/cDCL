@@ -1,7 +1,9 @@
 cmake_minimum_required (VERSION 3.31)
 project (dcl)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
 set(default_build_type "Release")
@@ -18,10 +20,7 @@ endif()
 # Default to building shared libraries unless specified otherwise
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-if(CYGWIN)
-    message(STATUS "Platform: CYGWIN")
-    add_definitions(-DTARGET_OS_CYGWIN=1)
-elseif(WIN32)
+if(WIN32)
     message(STATUS "Platform: WIN32")
     add_definitions(-DTARGET_OS_WIN32=1)
 else()
@@ -46,6 +45,56 @@ LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib"
 IF("${isSystemDir}" STREQUAL "-1")
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ENDIF("${isSystemDir}" STREQUAL "-1")
+
+if (NOT WIN32)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+endif()
+
+add_library (K
+K/Defines/KDefinitions.cpp
+K/Exceptions/TException.cpp
+K/Exceptions/Errors/TError.cpp
+K/Exceptions/Errors/TMemError.cpp
+K/Exceptions/IO/TEOFException.cpp
+K/Exceptions/IO/TIOException.cpp
+K/Misc/CRC32.cpp
+K/Misc/TCircleBuffer.cpp
+K/Streams/TFileStream.cpp
+K/Streams/TStream.cpp
+K/Crypto/UDES.cpp
+K/Crypto/UDESTables.cpp
+K/Math/TInt64.cpp
+K/Math/TSInt64.cpp
+K/Math/TUInt64.cpp
+K/Math/UTInt64.cpp
+K/Misc/UBase64.cpp
+K/Misc/TRefCounter.cpp
+K/Unicode/TString.cpp
+K/Unicode/TStringRef.cpp
+K/Unicode/UUTF16Conv.cpp
+K/Unicode/UUTF16CStr.cpp
+)
+
+target_include_directories(K PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/K>
+    $<INSTALL_INTERFACE:include>
+)
+
+if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_sources(K PRIVATE
+        K/Misc/TMappedFile.cpp
+        K/Threads/TCondVar.cpp
+        K/Threads/TFiber.cpp
+        K/Threads/TMutex.cpp
+        K/Threads/TThread.cpp
+    )
+    if(APPLE)
+        target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
+    endif()
+    target_link_libraries(K PRIVATE Threads::Threads)
+endif()
 
 add_library (DCL
 DCL/Communication_Layers/TDCLBufferedPipe.cpp
@@ -173,31 +222,20 @@ DCL/Server/TDCLSimpleServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
-K/Defines/KDefinitions.cpp
-K/Exceptions/TException.cpp
-K/Exceptions/Errors/TError.cpp
-K/Exceptions/Errors/TMemError.cpp
-K/Exceptions/IO/TEOFException.cpp
-K/Exceptions/IO/TIOException.cpp
-K/Misc/CRC32.cpp
-K/Misc/TCircleBuffer.cpp
-K/Streams/TFileStream.cpp
-K/Streams/TStream.cpp
-K/Crypto/UDES.cpp
-K/Crypto/UDESTables.cpp
-K/Math/TInt64.cpp
-K/Math/TSInt64.cpp
-K/Math/TUInt64.cpp
-K/Math/UTInt64.cpp
-K/Misc/UBase64.cpp
-K/Misc/TRefCounter.cpp
-K/Unicode/TString.cpp
-K/Unicode/TStringRef.cpp
-K/Unicode/UUTF16Conv.cpp
-K/Unicode/UUTF16CStr.cpp
 )
 
-if (WIN32 AND NOT CYGWIN)
+target_include_directories(DCL PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/DCL>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(DCL PUBLIC K)
+if(APPLE)
+    target_compile_definitions(DCL PRIVATE TARGET_OS_OSX=1)
+endif()
+
+if (WIN32)
     target_sources(DCL PRIVATE
         DCL/Interfaces/Win32/TDCLWin32File.cpp
         DCL/Interfaces/Win32/TDCLWin32Files.cpp
@@ -217,7 +255,55 @@ else()
         DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
         DCL/Interfaces/POSIX/TDCLPThreads.cpp
     )
+    target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
+
+set(K_HEADERS
+K/Crypto/U3DES.h
+K/Crypto/UDES.h
+K/Defines/KDefinitions.h
+K/Defines/UByteSex.h
+K/Exceptions/TException.h
+K/Exceptions/Errors/TError.h
+K/Exceptions/Errors/TMemError.h
+K/Exceptions/IO/TEOFException.h
+K/Exceptions/IO/TIOException.h
+K/Math/TInt64.h
+K/Math/TSInt64.h
+K/Math/TUInt64.h
+K/Math/UTInt64.h
+K/Misc/RelocHack.h
+K/Misc/CRC32.h
+K/Misc/TCircleBuffer.h
+K/Misc/TDoubleLinkedList.h
+K/Misc/TMappedFile.h
+K/Misc/TNameServerSingleton.h
+K/Misc/TRefCounter.h
+K/Misc/TSmartPtr.h
+K/Misc/UBase64.h
+K/Misc/UPStrings.h
+K/Streams/TFileStream.h
+K/Streams/TMemoryStream.h
+K/Streams/TRandomAccessStream.h
+K/Streams/TResetStream.h
+K/Streams/TStream.h
+K/Tests/KDebug.h
+K/Tests/TFunctionMonitor.h
+K/Tests/TMonitorMethodClient.h
+K/Tests/TNewtonTraceMonitor.h
+K/Tests/TTraceMonitor.h
+K/Threads/TCondVar.h
+K/Threads/TFiber.h
+K/Threads/TMutex.h
+K/Threads/TThread.h
+K/Unicode/TMutableStringRef.h
+K/Unicode/TString.h
+K/Unicode/TStringRef.h
+K/Unicode/UnicodeDefinitions.h
+K/Unicode/UUTF16Conv.h
+K/Unicode/UUTF16CStr.h
+K/XML/UExpatUtils.h
+)
 
 set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
@@ -401,71 +487,8 @@ DCL/Streams/TDCLMemStream.h
 DCL/Streams/TDCLRandomAccessStream.h
 DCL/Streams/TDCLStdStream.h
 DCL/Streams/TDCLStream.h
-K/Crypto/U3DES.h
-K/Crypto/UDES.h
-K/Defines/KDefinitions.h
-K/Defines/UByteSex.h
-K/Exceptions/TException.h
-K/Exceptions/Errors/TError.h
-K/Exceptions/Errors/TMemError.h
-K/Exceptions/IO/TEOFException.h
-K/Exceptions/IO/TIOException.h
-K/Math/TInt64.h
-K/Math/TSInt64.h
-K/Math/TUInt64.h
-K/Math/UTInt64.h
-K/Misc/RelocHack.h
-K/Misc/CRC32.h
-K/Misc/TCircleBuffer.h
-K/Misc/TDoubleLinkedList.h
-K/Misc/TMappedFile.h
-K/Misc/TNameServerSingleton.h
-K/Misc/TRefCounter.h
-K/Misc/TSmartPtr.h
-K/Misc/UBase64.h
-K/Misc/UPStrings.h
-K/Streams/TFileStream.h
-K/Streams/TMemoryStream.h
-K/Streams/TRandomAccessStream.h
-K/Streams/TResetStream.h
-K/Streams/TStream.h
-K/Tests/KDebug.h
-K/Tests/TFunctionMonitor.h
-K/Tests/TMonitorMethodClient.h
-K/Tests/TNewtonTraceMonitor.h
-K/Tests/TTraceMonitor.h
-K/Threads/TCondVar.h
-K/Threads/TFiber.h
-K/Threads/TMutex.h
-K/Threads/TThread.h
-K/Unicode/TMutableStringRef.h
-K/Unicode/TString.h
-K/Unicode/TStringRef.h
-K/Unicode/UnicodeDefinitions.h
-K/Unicode/UUTF16Conv.h
-K/Unicode/UUTF16CStr.h
-K/XML/UExpatUtils.h
 )
 
-if (NOT WIN32 OR CYGWIN)
-    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    find_package(Threads REQUIRED)
-    target_link_libraries(DCL PRIVATE Threads::Threads)
-endif()
-
-if(APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CYGWIN)
-    target_sources(DCL PRIVATE
-        K/Misc/TMappedFile.cpp
-        K/Threads/TCondVar.cpp
-        K/Threads/TFiber.cpp
-        K/Threads/TMutex.cpp
-        K/Threads/TThread.cpp
-    )
-    if(APPLE)
-        target_compile_definitions(DCL PRIVATE TARGET_OS_OSX=1)
-    endif()
-    target_link_libraries(DCL PRIVATE Threads::Threads)
-endif()
 
 if (NOT WIN32)
     add_subdirectory (Sample_Code/ToolchainUtils)
@@ -473,14 +496,15 @@ if (NOT WIN32)
     add_subdirectory (Tests)
 endif()
 
+
 add_subdirectory (Sample_Code/NSOFtoXML)
 
-foreach(HEADER ${DCL_HEADERS})
+foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
    install(FILES ${HEADER} DESTINATION include/${DIR})
 endforeach()
 
-install(TARGETS DCL 
+install(TARGETS K DCL 
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)

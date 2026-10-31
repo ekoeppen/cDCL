@@ -77,9 +77,9 @@ TString::TString( const char* inCString )
 	// Détermination de la taille et calcul, dans la foulée, de la somme de contrôle.
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
-	register char theCharacter;
-	register Boolean fitsOn7Bits = true;
-	register const char* theInputString = inCString;
+	char theCharacter;
+	Boolean fitsOn7Bits = true;
+	const char* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
@@ -125,9 +125,9 @@ TString::TString( const char* inCString, EEncoding inEncoding )
 	// Détermination de la taille.
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
-	register char theCharacter;
-	register Boolean fitsOn7Bits = true;
-	register const char* theInputString = inCString;
+	char theCharacter;
+	Boolean fitsOn7Bits = true;
+	const char* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
@@ -175,8 +175,8 @@ TString::TString( const KUInt16* inCString )
 	KUInt32 theStringSize = 0;
 	KUInt32 theHashCode = 0;
 	KUInt16 theCharacter;
-	register Boolean justHadDoubleChar = false;
-	register const KUInt16* theInputString = inCString;
+	Boolean justHadDoubleChar = false;
+	const KUInt16* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
 		theHashCode += theCharacter;
@@ -222,13 +222,13 @@ TString::TString( const char* inChars, KUInt32 inSize )
 	
 	// Copie des caractères et calcul, dans la foulée, de la somme de contrôle.
 	KUInt32 theHashCode = 0;
-	register Boolean fitsOn7Bits = true;
-	register const char* theInputString = inChars;
-	register char* theBufferString = (char*) mString;
-	register KUInt32 index = inSize;
+	Boolean fitsOn7Bits = true;
+	const char* theInputString = inChars;
+	char* theBufferString = (char*) mString;
+	KUInt32 index = inSize;
 	while (index-- > 0)
 	{
-		register char theCharacter = *theInputString++;	// Caractère courant.
+		char theCharacter = *theInputString++;	// Caractère courant.
 
 		if ((fitsOn7Bits) && (theCharacter & 0x80))
 		{

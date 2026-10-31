@@ -34,7 +34,7 @@ basename(const char *path)
 	static char bname[MAXPATHLEN];
 	
 	/* end of the base and start of the base respectively */
-	register const char *endp, *startp;
+	const char *endp, *startp;
 
 	/* Empty or NULL string gets treated as "." */
 	if (path == NULL || *path == '\0') {

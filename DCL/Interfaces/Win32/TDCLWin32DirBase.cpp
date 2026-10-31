@@ -40,6 +40,8 @@
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
+#include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLExistsAlreadyException.h>
 #include <K/Unicode/UUTF16CStr.h>
 #include <string.h>
 #include <stdlib.h>
@@ -104,7 +106,7 @@ TDCLFSItemRef TDCLWin32DirBase::CreateFile( const KUInt16* inName )
 	}
 
 	TDCLFSItemRef theResult(new TDCLWin32File(GetFilesIntf(), theFullPath));
-	((TDCLFile*)theResult.GetItem())->Create();
+	((TDCLFile*) theResult)->Create();
 	return theResult;
 }
 
