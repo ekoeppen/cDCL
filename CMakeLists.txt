@@ -500,6 +500,7 @@ DCL/Streams/TDCLStream.h
 
 add_subdirectory (Sample_Code/ToolchainUtils)
 add_subdirectory (Sample_Code/PackageUtils)
+add_subdirectory (Sample_Code/PackageLoader)
 add_subdirectory (Tests)
 add_subdirectory (Sample_Code/NSOFtoXML)
 
