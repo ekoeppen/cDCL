@@ -170,11 +170,11 @@ TMappedFile::Map(
 		DWORD dwDesiredAccess = mReadOnly ? FILE_MAP_READ : (FILE_MAP_READ | FILE_MAP_WRITE);
 		if (preferredAddress != nullptr)
 		{
-			mBuffer = ::MapViewOfFileEx( mFileMapping, dwDesiredAccess, 0, 0, mSize, preferredAddress );
+			mBuffer = ::MapViewOfFileEx( (HANDLE) mFileMapping, dwDesiredAccess, 0, 0, mSize, preferredAddress );
 		}
 		if (mBuffer == nullptr)
 		{
-			mBuffer = ::MapViewOfFile( mFileMapping, dwDesiredAccess, 0, 0, mSize );
+			mBuffer = ::MapViewOfFile( (HANDLE) mFileMapping, dwDesiredAccess, 0, 0, mSize );
 		}
 
 		if (mBuffer != nullptr)
@@ -274,7 +274,7 @@ TMappedFile::Unmap( void )
 #if TARGET_OS_WIN32
 	if (mFileMapping != nullptr)
 	{
-		::CloseHandle( mFileMapping );
+		::CloseHandle( (HANDLE) mFileMapping );
 		mFileMapping = nullptr;
 	}
 #endif
