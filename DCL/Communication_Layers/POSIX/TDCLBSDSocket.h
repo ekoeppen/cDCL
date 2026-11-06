@@ -41,7 +41,7 @@
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
 #if !TARGET_OS_COMPAT_POSIX
-	#error TDCLBSDSocket requiert la compatibilité POSIX
+	#error TDCLBSDSocket requires POSIX compatibility
 #endif
 
 // POSIX

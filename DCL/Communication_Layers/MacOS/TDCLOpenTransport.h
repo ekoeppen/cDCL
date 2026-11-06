@@ -41,7 +41,7 @@
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 
 #if !TARGET_OS_MAC
-	#error "OpenTransport est seulement disponible sur MacOS/MacOS X"
+	#error "OpenTransport is only available on MacOS/MacOS X"
 #endif
 
 // Open Transport headers.

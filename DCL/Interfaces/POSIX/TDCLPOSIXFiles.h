@@ -42,7 +42,7 @@
 #include <DCL/Interfaces/TDCLFile.h>
 
 #if !TARGET_OS_COMPAT_POSIX
-	#error TDCLPOSIXFiles requiert la compatibilité POSIX
+	#error TDCLPOSIXFiles requires POSIX compatibility
 #endif
 
 ///

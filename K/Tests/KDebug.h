@@ -263,7 +263,7 @@
 		#define KDPRINTF_SETUP
 	#else
 		#if KDebugOn
-			#warning KDPRINTF n´est pas défini
+			#warning KDPRINTF is not defined
 		#endif
 	#endif
 #endif
