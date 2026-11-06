@@ -38,7 +38,7 @@
 #include <DCL/Communication_Layers/MacOS/TDCLOTSerial.h>
 
 #if !TARGET_OS_MACOS
-	#error OTSerial ne marche que sur MacOS
+	#error OTSerial only works on MacOS
 #endif
 
 // ANSI C

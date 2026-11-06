@@ -41,7 +41,7 @@
 
 // Vérification de la cible.
 #if !TARGET_OS_MACOS || TARGET_OS_OPENSTEP
-	#error "La Communication Toolbox n'est disponible que sur MacOS"
+	#error "The Communication Toolbox is only available on MacOS"
 #endif
 
 // DCL

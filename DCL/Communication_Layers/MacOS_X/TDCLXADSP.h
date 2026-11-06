@@ -74,7 +74,7 @@ extern "C" {
 #endif
 
 #if !TARGET_HAS_XADSP
-	#error "X ADSP n'est disponible que sur OS X (PPC/i386 legacy)"
+	#error "X ADSP is only available on OS X (PPC/i386 legacy)"
 #endif
 
 ///

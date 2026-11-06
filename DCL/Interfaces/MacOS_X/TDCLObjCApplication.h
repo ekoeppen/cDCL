@@ -40,7 +40,7 @@
 #include <DCL/Interfaces/TDCLApplication.h>
 
 #if !TARGET_OS_OPENSTEP
-	#error TDCLObjCApplication ne fonctionne que sur OSX/OpenSTEP.
+	#error TDCLObjCApplication only works on OSX/OpenSTEP.
 #endif
 
 #include <objc/objc.h>

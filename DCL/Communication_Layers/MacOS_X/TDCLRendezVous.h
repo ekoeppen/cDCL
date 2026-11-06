@@ -41,7 +41,7 @@
 #include <DCL/Communication_Layers/POSIX/TDCLBSDSocket.h>
 
 #if !TARGET_OS_OPENSTEP
-	#error "RendezVous n'est disponible que sur OS X"
+	#error "RendezVous is only available on OS X"
 #endif
 
 // MacOS
