@@ -107,6 +107,7 @@ DCL/Communication_Layers/TDCLHammerPipe.cpp
 DCL/Communication_Layers/TDCLPipe.cpp
 DCL/Communication_Layers/TDCLPipeProxy.cpp
 DCL/Communication_Layers/TDCLSyncCommLayer.cpp
+DCL/Communication_Layers/Common/TDCLSocket.cpp
 DCL/Data/Text/TDCLStyleRef.cpp
 DCL/Data/Text/TDCLFontSpecification.cpp
 DCL/Data/Text/TDCLClParagraph.cpp
@@ -242,6 +243,7 @@ endif()
 
 if (WIN32)
     target_sources(DCL PRIVATE
+        DCL/Communication_Layers/Win32/TDCLWin32Socket.cpp
         DCL/Interfaces/Win32/TDCLWin32File.cpp
         DCL/Interfaces/Win32/TDCLWin32Files.cpp
         DCL/Interfaces/Win32/TDCLWin32Threads.cpp
@@ -249,9 +251,9 @@ if (WIN32)
         DCL/Interfaces/Win32/TDCLWin32DirBase.cpp
         DCL/Interfaces/Win32/TDCLWin32RootDir.cpp
     )
+    target_link_libraries(DCL PUBLIC ws2_32)
 else()
     target_sources(DCL PRIVATE
-        DCL/Communication_Layers/Common/TDCLSocket.cpp
         DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
         DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
@@ -319,6 +321,7 @@ DCL/Communication_Layers/MacOS_X/TDCLRendezVousOT.h
 DCL/Communication_Layers/MacOS_X/TDCLXADSP.h
 DCL/Communication_Layers/MacOS_X/TDCLXADSPSocket.h
 DCL/Communication_Layers/POSIX/TDCLBSDSocket.h
+DCL/Communication_Layers/Win32/TDCLWin32Socket.h
 DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h
 DCL/Communication_Layers/TDCLBufferedPipe.h
 DCL/Communication_Layers/TDCLCommLayer.h
