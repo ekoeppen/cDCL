@@ -118,7 +118,7 @@ TDCLDockCommand::ReceiveCommand(
 				 	// Length of the command.
 	theCommand = UByteSex_FromBigEndian(theHeader[2]);
 	
-	KDEBUG2( ">> Commande %.8X de taille %i",
+	KDEBUG2( ">> Command %.8X, length %i",
 		(unsigned int) theCommand, (int) theLength );
 
 	if (theLength == 0)
@@ -377,7 +377,7 @@ TDCLDockCommand::SendCommand(
 						ProgressFuncPtr inProgressFuncPtr /* = nil */,
 						void* inRefCon /* = nil */ )
 {
-	KDEBUG2( "<< Commande %.8X de taille %i",
+	KDEBUG2( "<< Command %.8X, length %i",
 				(unsigned int) GetCommand(), (int) GetLength() );
 
 	// Envoi de l'entête et récupération de la taille.
