@@ -100,9 +100,9 @@ int main( int inArgc, char** inArgv );
 void
 usage( const char* inToolName )
 {
-    (void) ::fprintf( stderr, "Syntaxe: %s [options] [--] [chemin]\n", inToolName );
+    (void) ::fprintf( stderr, "Syntax: %s [options] [--] [path]\n", inToolName );
     (void) ::fprintf( stderr,
-                        "Essayez %s --help pour plus d'information\n", inToolName );
+                        "Try %s --help for more information\n", inToolName );
 }
 
 // -------------------------------------------------------------------------- //
@@ -111,18 +111,18 @@ usage( const char* inToolName )
 void
 help( const char* inToolName )
 {
-    (void) ::fprintf( stderr, "%s - extrait une ou les parties d'un paquet Newton (fichier ou stdin).\n", inToolName );
-    (void) ::fprintf( stderr, "%s [options] [--] [chemin]\n", inToolName );
-    (void) ::fprintf( stderr, "   -h|-?       afficher cette aide.\n" );
-    (void) ::fprintf( stderr, "   -n <x>      extraire seulement la partie x.\n" );
-    (void) ::fprintf( stderr, "   -n -<x>     extraire seulement la partie x\n" );
-    (void) ::fprintf( stderr, "               en partant de la fin.\n" );
-    (void) ::fprintf( stderr, "   -x          convertir en XML lorsque c'est possible.\n" );
-    (void) ::fprintf( stderr, "   -s          convertir en NSOF lorsque c'est possible.\n" );
-    (void) ::fprintf( stderr, "   -o -        extraire la/les parties sur stdout.\n" );
-    (void) ::fprintf( stderr, "   -o prefixe  extraire la/les parties dans prefixe.n\n" );
-    (void) ::fprintf( stderr, "               (ou juste prefixe si utilisé avec -n)\n" );
-    (void) ::fprintf( stderr, "   -V addr     adresse virtuelle (paquets en ROM/chargés)\n" );
+    (void) ::fprintf( stderr, "%s - extract one or all parts of a Newton package (file or stdin).\n", inToolName );
+    (void) ::fprintf( stderr, "%s [options] [--] [path]\n", inToolName );
+    (void) ::fprintf( stderr, "   -h|-?       display this help.\n" );
+    (void) ::fprintf( stderr, "   -n <x>      extract only part x.\n" );
+    (void) ::fprintf( stderr, "   -n -<x>     extract only part x\n" );
+    (void) ::fprintf( stderr, "               starting from the end.\n" );
+    (void) ::fprintf( stderr, "   -x          convert to XML when possible.\n" );
+    (void) ::fprintf( stderr, "   -s          convert to NSOF when possible.\n" );
+    (void) ::fprintf( stderr, "   -o -        extract part(s) to stdout.\n" );
+    (void) ::fprintf( stderr, "   -o prefix   extract part(s) to prefix.n\n" );
+    (void) ::fprintf( stderr, "               (or just prefix if used with -n)\n" );
+    (void) ::fprintf( stderr, "   -V addr     virtual address (ROM/loaded packages)\n" );
 }
 
 // -------------------------------------------------------------------------- //
@@ -278,8 +278,8 @@ main( int inArgc, char** inArgv )
     {
         theFilePath = inArgv[0];
     } else if (inArgc > 1) {
-        // Trop d'arguments.
-        (void) ::fprintf( stderr, "Trop d'arguments.\n" );
+        // Too many arguments.
+        (void) ::fprintf( stderr, "Too many arguments.\n" );
         ::usage( ::basename( theToolName ) );
         ::exit( 1 );
     }
@@ -329,7 +329,7 @@ main( int inArgc, char** inArgv )
 
             if (theActualPartIndex >= nbParts)
             {
-                (void) ::fprintf( stderr, "Aucune partie d'indice %i\n", partIndex );
+                (void) ::fprintf( stderr, "No part at index %i\n", partIndex );
                 ::exit( 2 );
             }
 
@@ -361,25 +361,25 @@ main( int inArgc, char** inArgv )
         }
     } catch (TDCLDoesntExistException& anException) {
         // Le fichier n'existe pas.
-        (void) ::fprintf( stderr, "Le paquet est introuvable\n" );
+        (void) ::fprintf( stderr, "Package not found\n" );
     } catch (TDCLExistsAlreadyException& anException) {
         // Le fichier existe déjà.
-        (void) ::fprintf( stderr, "Un fichier cible existe déjà\n" );
+        (void) ::fprintf( stderr, "Target file already exists\n" );
     } catch (TDCLException& anException) {
         // On affiche l'exception.
-        (void) ::fprintf( stderr, "Une exception DCL est survenue (%s, %i, %i)\n",
+        (void) ::fprintf( stderr, "A DCL exception occurred (%s, %i, %i)\n",
                             anException.GetExceptionName(),
                             (int) anException.GetExCode(),
                             (int) anException.GetError() );
         theResult = -1;
     } catch (std::exception& anException) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception STD est survenue (%s)\n",
+        (void) ::fprintf( stderr, "A STD exception occurred (%s)\n",
                             anException.what() );
         theResult = -1;
     } catch (...) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception inconnue est survenue\n" );
+        (void) ::fprintf( stderr, "An unknown exception occurred\n" );
         theResult = -1;
     }
 

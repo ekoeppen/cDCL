@@ -53,9 +53,9 @@ int main( int inArgc, char** inArgv );
 void
 usage( char* inToolName )
 {
-    (void) ::fprintf( stderr, "Syntaxe: %s [options] [--] [chemin]\n", inToolName );
+    (void) ::fprintf( stderr, "Syntax: %s [options] [--] [path]\n", inToolName );
     (void) ::fprintf( stderr,
-                        "Essayez %s --help pour plus d'information\n", inToolName );
+                        "Try %s --help for more information\n", inToolName );
 }
 
 // -------------------------------------------------------------------------- //
@@ -64,10 +64,10 @@ usage( char* inToolName )
 void
 help( char* inToolName )
 {
-    (void) ::fprintf( stderr, "%s - affiche le catalogue d'un paquet Newton (fichier ou stdin).\n", inToolName );
+    (void) ::fprintf( stderr, "%s - display the directory of a Newton package (file or stdin).\n", inToolName );
     (void) ::fprintf( stderr, "%s [options] [--] [chemin]\n", inToolName );
-    (void) ::fprintf( stderr, "   --help      afficher cette aide.\n" );
-    (void) ::fprintf( stderr, "   --vaddr     adresse virtuelle du paquet (paquets en ROM/chargés).\n" );
+    (void) ::fprintf( stderr, "   --help      display this help.\n" );
+    (void) ::fprintf( stderr, "   --vaddr     virtual address of the package (ROM/loaded packages).\n" );
 }
 
 // -------------------------------------------------------------------------- //
@@ -104,7 +104,7 @@ main( int inArgc, char** inArgv )
                 indexOpt += 2;
                 continue;
             } else {
-                (void) ::fprintf( stderr, "Erreur de syntaxe\n" );
+                (void) ::fprintf( stderr, "Syntax error\n" );
                 ::usage( ::basename( inArgv[0] ) );
                 ::exit( 1 );
             }
@@ -115,7 +115,7 @@ main( int inArgc, char** inArgv )
     if (indexOpt + 1 == inArgc) {
         theFilePath = inArgv[indexOpt];
     } else if (indexOpt < inArgc) {
-        (void) ::fprintf( stderr, "Erreur de syntaxe\n" );
+        (void) ::fprintf( stderr, "Syntax error\n" );
         ::usage( ::basename( inArgv[0] ) );
         ::exit( 1 );
     }
@@ -350,19 +350,19 @@ main( int inArgc, char** inArgv )
 
     } catch (TDCLException& anException) {
         // On affiche l'exception.
-        (void) ::fprintf( stderr, "Une exception DCL est survenue (%s, %i, %i)\n",
+        (void) ::fprintf( stderr, "A DCL exception occurred (%s, %i, %i)\n",
                             anException.GetExceptionName(),
                             (int) anException.GetExCode(),
                             (int) anException.GetError() );
         theResult = -1;
     } catch (std::exception& anException) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception STD est survenue (%s)\n",
+        (void) ::fprintf( stderr, "A STD exception occurred (%s)\n",
                             anException.what() );
         theResult = -1;
     } catch (...) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception inconnue est survenue\n" );
+        (void) ::fprintf( stderr, "An unknown exception occurred\n" );
         theResult = -1;
     }
 

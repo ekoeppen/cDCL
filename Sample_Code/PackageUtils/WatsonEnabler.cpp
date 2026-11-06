@@ -52,9 +52,9 @@ int main( int inArgc, char** inArgv );
 void
 usage( char* inToolName )
 {
-    (void) ::fprintf( stderr, "Syntaxe: %s [options] [--] [input output]\n", inToolName );
+    (void) ::fprintf( stderr, "Syntax: %s [options] [--] [input output]\n", inToolName );
     (void) ::fprintf( stderr,
-                        "Essayez %s --help pour plus d'information\n", inToolName );
+                        "Try %s --help for more information\n", inToolName );
 }
 
 // -------------------------------------------------------------------------- //
@@ -63,9 +63,9 @@ usage( char* inToolName )
 void
 help( char* inToolName )
 {
-    (void) ::fprintf( stderr, "%s - 'signe' le paquet pour Watson (fichier ou stdin).\n", inToolName );
+    (void) ::fprintf( stderr, "%s - 'signs' package for Watson (file or stdin).\n", inToolName );
     (void) ::fprintf( stderr, "%s [options] [--] [input output]\n", inToolName );
-    (void) ::fprintf( stderr, "   --help      afficher cette aide.\n" );
+    (void) ::fprintf( stderr, "   --help      display this help.\n" );
 }
 
 // -------------------------------------------------------------------------- //
@@ -95,7 +95,7 @@ main( int inArgc, char** inArgv )
                 inputFilePath = inArgv[2];
                 outputFilePath = inArgv[3];
             } else {
-                (void) ::fprintf( stderr, "Nombre incorrect d'arguments.\n" );
+                (void) ::fprintf( stderr, "Incorrect number of arguments.\n" );
                 ::usage( ::basename( inArgv[0] ) );
                 ::exit( 1 );
             }
@@ -104,7 +104,7 @@ main( int inArgc, char** inArgv )
             outputFilePath = inArgv[2];
         } else {
             // Trop d'arguments.
-            (void) ::fprintf( stderr, "Nombre incorrect d'arguments.\n" );
+            (void) ::fprintf( stderr, "Incorrect number of arguments.\n" );
             ::usage( ::basename( inArgv[0] ) );
             ::exit( 1 );
         }
@@ -132,7 +132,7 @@ main( int inArgc, char** inArgv )
             outputFile->Open(false);
             outputStream = outputFile;
         } catch (TDCLExistsAlreadyException& anException) {
-            fprintf(stderr, "Le fichier %s existe déjà\n", outputFilePath);
+            fprintf(stderr, "File %s already exists\n", outputFilePath);
             return 1;
         }
     } else {
@@ -143,11 +143,11 @@ main( int inArgc, char** inArgv )
         // Lecture du paquet.
         TDCLPackage thePackage( inputStream );
         if (thePackage.GetPackageFlags() & TDCLPackage::kWatsonSignaturePresentFlag) {
-            fprintf(stderr, "Le paquet est déjà prévu pour Watson\n");
+            fprintf(stderr, "Package is already prepared for Watson\n");
             return 1;
         }
         if (thePackage.GetRelocation()) {
-            fprintf(stderr, "Le paquet contient des relocations, ce qui est incompatible avec le système de signature du Watson\n");
+            fprintf(stderr, "Package contains relocations, which is incompatible with Watson's signature system\n");
             return 1;
         }
         TDCLPkgPart* theSignature = new TDCLPkgPart(0, "xxxxSLB0Schlumberger Industries", 32);
@@ -156,19 +156,19 @@ main( int inArgc, char** inArgv )
 		thePackage.WriteToStream( outputStream );
     } catch (TDCLException& anException) {
         // On affiche l'exception.
-        (void) ::fprintf( stderr, "Une exception DCL est survenue (%s, %i, %i)\n",
+        (void) ::fprintf( stderr, "A DCL exception occurred (%s, %i, %i)\n",
                             anException.GetExceptionName(),
                             (int) anException.GetExCode(),
                             (int) anException.GetError() );
         theResult = -1;
     } catch (std::exception& anException) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception STD est survenue (%s)\n",
+        (void) ::fprintf( stderr, "A STD exception occurred (%s)\n",
                             anException.what() );
         theResult = -1;
     } catch (...) {
         // Exception inconnue.
-        (void) ::fprintf( stderr, "Une exception inconnue est survenue\n" );
+        (void) ::fprintf( stderr, "An unknown exception occurred\n" );
         theResult = -1;
     }
 
