@@ -44,9 +44,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 
-#if TARGET_OS_WIN32
-#include <windows.h>
-#endif
 
 ///
 /// Class for a file read entirely (with mmap if available).
@@ -169,7 +166,7 @@ private:
 	Boolean		mCreated = false;		///< Whether the file was created/grown.
 	int			mFileFd = -1;			///< fd to the file.
 #if TARGET_OS_WIN32
-	HANDLE		mFileMapping = nullptr;	///< Win32 file mapping handle.
+	void*		mFileMapping = nullptr;	///< Win32 file mapping handle (opaque).
 #endif
 };
 
