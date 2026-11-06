@@ -75,7 +75,7 @@ UTestNSOF::WalterSmith( void )
 	if (nbPairs != theWalterSmithFrame.GetLength())
 	{
 		(void) ::printf(
-				"Erreur: les tailles divergent (%u != %u)\n",
+				"Error: sizes differ (%u != %u)\n",
 				(unsigned int) nbPairs,
 				(unsigned int) theWalterSmithFrame.GetLength());
 	} else {
@@ -87,7 +87,7 @@ UTestNSOF::WalterSmith( void )
 			if (!theFrameDecoded.HasSlot(theKey))
 			{
 				(void) ::printf(
-						"Erreur: la structure décodée n'a pas la clé %s\n",
+						"Error: decoded structure missing key %s\n",
 						(const char*) theKey );
 			} else {
 				// Est-ce un immédiat?
@@ -99,12 +99,12 @@ UTestNSOF::WalterSmith( void )
 					if (theWSValue.ClassOf() != theFDValue.ClassOf())
 					{
 						(void) ::printf(
-							"Erreur: Clé %s: les classes des valeurs"
-							" divergent\n",
+							"Error: Key %s: value classes"
+							" differ\n",
 							theKey.GetString());
 					} else if (!theWSValue.IsPtr()) {
 						(void) ::printf(
-							"Erreur: Clé %s: les valeurs divergent\n",
+							"Error: Key %s: values differ\n",
 							theKey.GetString());
 					}
 				}

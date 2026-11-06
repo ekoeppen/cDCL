@@ -16,8 +16,8 @@
 # ===========
 
 if [ $# -ne 1 ]; then
-	echo "Nombre invalide d'arguments."
-	echo "Syntaxe: $0 <chemin vers DCLTests>"
+	echo "Invalid number of arguments."
+	echo "Syntax: $0 <path to DCLTests>"
 	exit 1
 fi
 
@@ -48,7 +48,7 @@ NOTAVAILFILE=$TMPDIR/dcl-tests-$$-notavail
 rm -f $TMPDIR/dcl-tests-*
 
 cat > $NOTAVAILFILE << ENDNOTAVAIL
-Test non disponible pour cette plateforme
+Test not available for this platform
 ENDNOTAVAIL
 
 # MŽthode pour comparer.
@@ -57,13 +57,13 @@ compare() {
 	then
 		if [ `diff -u $MASTERFILE $OUTFILE | tee /dev/stderr | wc -l` -ne "0" ]
 		then
-			echo "$0 : ECHEC"
+			echo "$0 : FAILED"
 			exit 1
 		else
-			echo "$0 : SUCCES"
+			echo "$0 : SUCCEEDED"
 		fi
 	else
-		echo "$0 : NON DISPONIBLE"
+		echo "$0 : NOT AVAILABLE"
 	fi
 }
 

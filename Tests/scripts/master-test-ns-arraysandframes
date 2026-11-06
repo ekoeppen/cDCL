@@ -1,55 +1,55 @@
-1- création d'une structure
-4 paires
+1- frame creation
+4 pairs
 00FB92C2 - quatre - 4
 972D6606 - deux - 2
 BD5280CB - un - 1
 D4E5AAC9 - trois - 3
-2- suppression d'une clé
-3 paires
+2- delete a key
+3 pairs
 00FB92C2 - quatre - 4
 972D6606 - deux - 2
 D4E5AAC9 - trois - 3
-3- création d'un tableau
-6 éléments
+3- array creation
+6 elements
 0 - 1
 1 - 2
 2 - 3
 3 - 4
 4 - 5
 5 - 6
-4- suppression au début
-5 éléments
+4- delete at start
+5 elements
 0 - 2
 1 - 3
 2 - 4
 3 - 5
 4 - 6
-5- suppression au milieu
-4 éléments
+5- delete in middle
+4 elements
 0 - 2
 1 - 3
 2 - 5
 3 - 6
-6- suppression à la fin
-3 éléments
+6- delete at end
+3 elements
 0 - 2
 1 - 3
 2 - 5
-7- insertion au début
-4 éléments
+7- insert at start
+4 elements
 0 - 10
 1 - 2
 2 - 3
 3 - 5
-8- insertion au milieu
-5 éléments
+8- insert in middle
+5 elements
 0 - 10
 1 - 2
 2 - 3
 3 - 11
 4 - 5
-8- insertion à la fin
-6 éléments
+8- insert at end
+6 elements
 0 - 10
 1 - 2
 2 - 3

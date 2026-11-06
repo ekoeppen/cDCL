@@ -16,15 +16,15 @@
 # ===========
 
 if [ $# -ne 1 ]; then
-	echo "Nombre invalide d'arguments."
-	echo "Syntaxe: $0 <chemin vers DCLTests> <port série>"
+	echo "Invalid number of arguments."
+	echo "Syntax: $0 <path to DCLTests> <serial port>"
 	exit 1
 fi
 
 DEVPATH=$2
 . common.sh $1
 
-echo "Ceci est un test manuel. L'expérimentateur doit évaluer si le test s'est bien passé."
+echo "This is a manual test. The tester must evaluate whether the test passed."
 
 "$DCLTESTS" cl-cad-fdserial $DEVPATH
 

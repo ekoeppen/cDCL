@@ -36,7 +36,7 @@ UTestTime::CheckReturnValues( void )
 	// On vérifie que time(3) ne retourne pas -1.
 	if (::time(NULL) == (time_t) -1)
 	{
-		(void) ::printf( "time(3) retourne -1\n" );
+		(void) ::printf( "time(3) returned -1\n" );
 	}
 
 	// On vérifie que l'heure en secondes depuis 1993 est supérieure à
@@ -45,7 +45,7 @@ UTestTime::CheckReturnValues( void )
 	if (theTime < ((KUInt32) 0x407E2400))
 	{
 		(void) ::printf(
-			"TimeInSecondsSince1993 semble incorrect! (%.8X)\n",
+			"TimeInSecondsSince1993 seems incorrect! (%.8X)\n",
 			(unsigned int) theTime );
 	}
 
@@ -53,7 +53,7 @@ UTestTime::CheckReturnValues( void )
 	if (theTime < ((KUInt32) 0xE7E75E00))
 	{
 		(void) ::printf(
-			"TimeInSecondsSince1904 semble incorrect! (%.8X)\n",
+			"TimeInSecondsSince1904 seems incorrect! (%.8X)\n",
 			(unsigned int) theTime );
 	}
 
@@ -61,7 +61,7 @@ UTestTime::CheckReturnValues( void )
 	if (theTime < ((KUInt32) 0x03DD74C4))
 	{
 		(void) ::printf(
-			"TimeInMinutesSince1904 semble incorrect! (%.8X)\n",
+			"TimeInMinutesSince1904 seems incorrect! (%.8X)\n",
 			(unsigned int) theTime );
 	}
 }
