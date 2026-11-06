@@ -138,7 +138,7 @@ int main(int argc, char* argv [])
 	    if(sentCount < 0)
 	    {
 	    	err = sentCount;
-		    (void) ::printf("Echec lors de l'Žcriture %d\n", err );
+		    (void) ::printf("Failed to write %d\n", err );
 	    	break;
 		}
 
