@@ -130,19 +130,19 @@ int main(int /* argc */, char * /* argv */[])
 	
 	if (bpf_fd < 0)
 	{
-		(void) ::printf( "Impossible d'ouvrir un bpf (%i)\n", errno );
+		(void) ::printf( "Failed to open bpf (%i)\n", errno );
 	} else {
 		// On associe ˆ en1 (Airport) -- il faudrait rŽcupŽrer depuis IOKit.
 		struct ifreq ifr;
 		(void) ::strncpy(ifr.ifr_name, "en1", sizeof(ifr.ifr_name));
 		if (ioctl(bpf_fd, BIOCSETIF, &ifr) < 0)
 		{
-			(void) ::printf( "Echec avec BIOCSETIF (%i)\n", errno );
+			(void) ::printf( "Failed with BIOCSETIF (%i)\n", errno );
 		} else {
 			// On configure en promiscuous.
 			if (::ioctl(bpf_fd, BIOCPROMISC, NULL) < 0)
 			{
-				(void) ::printf( "Echec avec BIOCPROMISC (%i)\n", errno );
+				(void) ::printf( "Failed with BIOCPROMISC (%i)\n", errno );
 			}
 		}
 	}
@@ -181,7 +181,7 @@ int main(int /* argc */, char * /* argv */[])
 	    if(recvCount < 0)
 	    {
 	    	err = recvCount;
-		    ::printf("Echec lors de la lecture %d\n", err );
+		    ::printf("Failed to read %d\n", err );
 	    	break;
 		}
 
@@ -195,7 +195,7 @@ int main(int /* argc */, char * /* argv */[])
 		if ((err == 0) && (theCloseErr))
 		{
 			err = theCloseErr;
-			::printf("Erreur ˆ la fermeture du serveur %d\n", err );
+			::printf("Error closing server %d\n", err );
 		}
 	}
 	
@@ -206,7 +206,7 @@ int main(int /* argc */, char * /* argv */[])
 		if ((err == 0) && (theCloseErr))
 		{
 			err = theCloseErr;
-			::printf("Erreur ˆ la fermeture du client %d\n", err );
+			::printf("Error closing client %d\n", err );
 		}
 	}
 
