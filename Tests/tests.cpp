@@ -51,8 +51,8 @@ main( int argc, char* argv[] )
 		argument = argv[2];
 	} else if (argc != 2)
 	{
-		(void) ::printf( "Erreur de syntaxe.\n" );
-		(void) ::printf( "%s <nom du test> [argument]\n", argv[0] );
+		(void) ::printf( "Syntax error.\n" );
+		(void) ::printf( "%s <test name> [argument]\n", argv[0] );
 		::exit(1);
 	}
 	
@@ -91,14 +91,14 @@ test( const char* inTestName, const char* inArgument )
 #if TARGET_OS_MAC && !TARGET_OS_COMPAT_POSIX
 			UTestNS::References();
 #else
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #endif
 		} else if (::strcmp(inTestName, "ns-references-kill") == 0) {
 			// ... différent de celui qu'on a si on appelle kill avec SIGINT.
 #if !TARGET_OS_MAC || TARGET_OS_COMPAT_POSIX
 			UTestNS::References();
 #else
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #endif
 		} else if (::strcmp(inTestName, "nsof-waltersmith") == 0) {
 			UTestNSOF::WalterSmith();
@@ -121,25 +121,25 @@ test( const char* inTestName, const char* inArgument )
 		} else if (::strcmp(inTestName, "xml-classes") == 0) {
 			UTestXML::Classes();
 		} else {
-			(void) ::printf( "%s est un test inconnu.\n", inTestName );
+			(void) ::printf( "%s is an unknown test.\n", inTestName );
 		}
 	} catch ( TDCLException& anException ) {
-		(void) ::printf( "Une exception TDCLException est survenue.\n" );
+		(void) ::printf( "A TDCLException occurred.\n" );
 #if kDCLDebugFILEandLINE
-		(void) ::printf( ">> %s (code: %u, erreur: %i) [%s:%u]\n",
+		(void) ::printf( ">> %s (code: %u, error: %i) [%s:%u]\n",
 						anException.GetExceptionName(),
 						(unsigned int) anException.GetExCode(),
 						(int) anException.GetError(),
 						anException.GetFileName(),
 						(unsigned int) anException.GetLine() );
 #else
-		(void) ::printf( ">> %s (code: %u, erreur: %i)\n",
+		(void) ::printf( ">> %s (code: %u, error: %i)\n",
 						anException.GetExceptionName(),
 						(unsigned int) anException.GetExCode(),
 						(int) anException.GetError() );
 #endif
 	} catch (...) {
-		(void) ::printf( "Une exception inconnue est survenue.\n" );
+		(void) ::printf( "An unknown exception occurred.\n" );
 	}
 }
 

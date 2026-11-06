@@ -93,7 +93,7 @@ void
 UTestNS::FrameKeysSort( void )
 {
 	// 1 - test du tri au vol.
-	(void) ::printf( "1- Test du tri au vol\n" );
+	(void) ::printf( "1- On-the-fly sort test\n" );
 	// 'onze et 'sept on même valeur de hachage (si si).
 	TDCLNSFrame theFrame;
 	theFrame.Set( "un",				TDCLNSRef::MakeInt( 1 ) );
@@ -121,7 +121,7 @@ UTestNS::FrameKeysSort( void )
 	// On affiche toutes les valeurs dans l'ordre
 	KUInt32 indexPairs;
 	KUInt32 nbPairs = theFrame.GetLength();
-	(void) ::printf( "%u paires\n", (unsigned int) nbPairs );
+	(void) ::printf( "%u pairs\n", (unsigned int) nbPairs );
 	for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 	{
 		TDCLNSRef theKey = theFrame.GetKey(indexPairs);
@@ -133,7 +133,7 @@ UTestNS::FrameKeysSort( void )
 			(int) theValue.ToInt());
 	}
 
-	(void) ::printf( "\n2- Ajout de deux paires et tri par insertion\n" );
+	(void) ::printf( "\n2- Add two pairs and insertion sort\n" );
 	
 	// Conversion en flux.
 	TDCLMemStream theMemStream;
@@ -157,7 +157,7 @@ UTestNS::FrameKeysSort( void )
 	
 	// Affichage à nouveau.
 	nbPairs = theFrameAgain.GetLength();
-	(void) ::printf( "%u paires\n", (unsigned int) nbPairs );
+	(void) ::printf( "%u pairs\n", (unsigned int) nbPairs );
 	for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 	{
 		TDCLNSRef theKey = theFrameAgain.GetKey(indexPairs);
@@ -258,7 +258,7 @@ UTestNS::References( void )
 void
 UTestNS::ArraysAndFrames( void )
 {
-	(void) ::printf( "1- création d'une structure\n" );
+	(void) ::printf( "1- frame creation\n" );
 	TDCLNSFrame theFrame;
 	theFrame.Set( "un",				TDCLNSRef::MakeInt( 1 ) );
 	theFrame.Set( "deux",			TDCLNSRef::MakeInt( 2 ) );
@@ -268,7 +268,7 @@ UTestNS::ArraysAndFrames( void )
 	// Affichage.
 	KUInt32 indexSlots;
 	KUInt32 nbSlots = theFrame.GetLength();
-	(void) ::printf( "%u paires\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u pairs\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theKey = theFrame.GetKey(indexSlots);
@@ -283,22 +283,22 @@ UTestNS::ArraysAndFrames( void )
 	// La clé est-elle présente?
 	if (!theFrame.HasSlot( "un" ))
 	{
-		(void) ::printf( "'un' devrait être dans la structure.\n" );
+		(void) ::printf( "'un' should be in the frame.\n" );
 	}
 
 	// Suppression d'une clé.
-	(void) ::printf( "2- suppression d'une clé\n" );
+	(void) ::printf( "2- delete a key\n" );
 	(void) theFrame.RemoveSlot( "un" );
 
 	// La clé est-elle présente?
 	if (theFrame.HasSlot( "un" ))
 	{
-		(void) ::printf( "'un' ne devrait plus être dans la structure.\n" );
+		(void) ::printf( "'un' should no longer be in the frame.\n" );
 	}
 	
 	// Affichage à nouveau.
 	nbSlots = theFrame.GetLength();
-	(void) ::printf( "%u paires\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u pairs\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theKey = theFrame.GetKey(indexSlots);
@@ -310,7 +310,7 @@ UTestNS::ArraysAndFrames( void )
 			(int) theValue.ToInt());
 	}
 
-	(void) ::printf( "3- création d'un tableau\n" );
+	(void) ::printf( "3- array creation\n" );
 	TDCLNSArray theArray;
 	theArray.Add( TDCLNSRef::MakeInt( 1 ) );
 	theArray.Add( TDCLNSRef::MakeInt( 2 ) );
@@ -320,7 +320,7 @@ UTestNS::ArraysAndFrames( void )
 	theArray.Add( TDCLNSRef::MakeInt( 6 ) );
 
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -329,11 +329,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 	
-	(void) ::printf( "4- suppression au début\n" );
+	(void) ::printf( "4- delete at start\n" );
 	theArray.RemoveSlot( 0 );
 
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -342,11 +342,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 
-	(void) ::printf( "5- suppression au milieu\n" );
+	(void) ::printf( "5- delete in middle\n" );
 	theArray.RemoveSlot( 2 );
 	
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -355,11 +355,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 
-	(void) ::printf( "6- suppression à la fin\n" );
+	(void) ::printf( "6- delete at end\n" );
 	theArray.RemoveSlot( nbSlots - 1 );
 	
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -368,11 +368,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 
-	(void) ::printf( "7- insertion au début\n" );
+	(void) ::printf( "7- insert at start\n" );
 	theArray.Insert( 0, TDCLNSRef::MakeInt( 10 ) );
 	
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -381,11 +381,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 
-	(void) ::printf( "8- insertion au milieu\n" );
+	(void) ::printf( "8- insert in middle\n" );
 	theArray.Insert( 3, TDCLNSRef::MakeInt( 11 ) );
 	
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );
@@ -394,11 +394,11 @@ UTestNS::ArraysAndFrames( void )
 			(int) theElement.ToInt());
 	}
 
-	(void) ::printf( "8- insertion à la fin\n" );
+	(void) ::printf( "8- insert at end\n" );
 	theArray.Insert( nbSlots, TDCLNSRef::MakeInt( 12 ) );
 	
 	nbSlots = theArray.GetLength();
-	(void) ::printf( "%u éléments\n", (unsigned int) nbSlots );
+	(void) ::printf( "%u elements\n", (unsigned int) nbSlots );
 	for (indexSlots = 0; indexSlots < nbSlots; indexSlots++)
 	{
 		TDCLNSRef theElement = theArray.Get( indexSlots );

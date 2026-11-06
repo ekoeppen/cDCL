@@ -45,7 +45,7 @@ void
 UTestCommLayers::ConnectAndDisconnectBSDSocket( void )
 {
 #if !TARGET_OS_COMPAT_POSIX
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
 	IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -70,7 +70,7 @@ void
 UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 {
 #if !TARGET_OS_COMPAT_POSIX
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
 	IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -95,7 +95,7 @@ void
 UTestCommLayers::ConnectAndDisconnectXADSP( void )
 {
 #if !TARGET_OS_OPENSTEP || TARGET_OS_OPENSTEP_AMD64 || TARGET_OS_OPENSTEP_ARM64
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
 	IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -120,7 +120,7 @@ void
 UTestCommLayers::StartAndStopTwiceBSDSocket( void )
 {
 #if !TARGET_OS_COMPAT_POSIX
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
     // Interface pour les processus légers (supprimée par ~TDCLApplication)
     IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -145,7 +145,7 @@ void
 UTestCommLayers::StartAndStopTwiceFDSerialPort( const char* inDevPath )
 {
 #if !TARGET_OS_COMPAT_POSIX
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
 	IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -170,7 +170,7 @@ void
 UTestCommLayers::StartAndStopTwiceXADSP( void )
 {
 #if !TARGET_OS_OPENSTEP || TARGET_OS_OPENSTEP_AMD64 || TARGET_OS_OPENSTEP_ARM64
-	(void) ::printf( "Test non disponible pour cette plateforme\n" );
+	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
 	IDCLThreads* theThreadsIntf = new TDCLPThreads();
@@ -211,7 +211,7 @@ UTestCommLayers::ConnectAndDisconnect(
 	
 	theServer.Stop();
 	
-	(void) ::fprintf( inApplication->GetLogFile(), "Arrêt du serveur...\n" );
+	(void) ::fprintf( inApplication->GetLogFile(), "Stopping server...\n" );
 	
 	// On attend qu'il ferme (à améliorer sans doute).
 	while (theServer.GetState() != TDCLSimpleServer::kStopped)
@@ -237,7 +237,7 @@ UTestCommLayers::StartAndStopTwice(
 	
 	inApplication->WaitUntilServerIsDown();
 
-	(void) ::fprintf( inApplication->GetLogFile(), "Deuxième test\n" );
+	(void) ::fprintf( inApplication->GetLogFile(), "Second test\n" );
 	
 	(void) ::sleep( 1 );
 
@@ -354,7 +354,7 @@ UTestCommLayers::TCADApplication::ConnectedToNewtonDevice(
 	// Déconnexion.
 	if (!inLink->Disconnect())
 	{
-		(void) ::fprintf( GetLogFile(), "Disconnect() a retourné false!\n" );
+		(void) ::fprintf( GetLogFile(), "Disconnect() returned false!\n" );
 	}
 }
 

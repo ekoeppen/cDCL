@@ -17,7 +17,7 @@
 
 . common.sh $*
 
-echo "Ceci est un test manuel. L'experimentateur doit evaluer si le test s'est bien passe."
+echo "This is a manual test. The tester must evaluate whether the test passed."
 
 "$DCLTESTS" cl-cad-bsd
 

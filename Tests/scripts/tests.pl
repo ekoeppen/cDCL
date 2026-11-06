@@ -41,7 +41,7 @@ my $MasterFile;
 # --------------------------------------------------------------------------- #
 sub Usage()
 {
-	printf STDERR "Syntaxe: perl tests.pl <chemin vers DCLTests> [<test> | all]\n";
+	printf STDERR "Syntax: perl tests.pl <path to DCLTests> [<test> | all]\n";
 	exit 2;
 }
 
@@ -66,7 +66,7 @@ sub CheckAndParseArguments()
 {
 	if ($#ARGV != 1)
 	{
-		printf STDERR "Nombre incorrect d'arguments\n";
+		printf STDERR "Incorrect number of arguments\n";
 		Usage();
 	}
 	
@@ -74,7 +74,7 @@ sub CheckAndParseArguments()
 	$DCLTests = $ARGV[0];
 	if (! -x "$DCLTests")
 	{
-		printf STDERR "DCLTests ($DCLTests) n'est pas exécutable\n";
+		printf STDERR "DCLTests ($DCLTests) is not executable\n";
 		Usage();
 	}
 	
@@ -85,7 +85,7 @@ sub CheckAndParseArguments()
 		$MasterFile = $ProgramPath . "master-test-" . $Test;
 		if (! -e $MasterFile)
 		{
-			printf STDERR "Aucun fichier maître pour $Test ne fut trouvé\n";
+			printf STDERR "No master file found for $Test\n";
 			Usage();
 		}
 	}
@@ -104,16 +104,16 @@ sub Test( $ $ )
 	my @Master = <MASTER_FILE>;
 	close MASTER_FILE;
 	
-	open TEST_RESULT, "'$DCLTests' $Test 2>&1 |" or die "Impossible de lancer le test";
+	open TEST_RESULT, "'$DCLTests' $Test 2>&1 |" or die "Unable to run test";
 	my @TestResult = <TEST_RESULT>;
-	close TEST_RESULT or $TestResult[$#TestResult + 1] = "Erreur lors de la fermeture de DCLTests.";
+	close TEST_RESULT or $TestResult[$#TestResult + 1] = "Error closing DCLTests.";
 	
 	# Comparaison.
 	my $lineCount = $#TestResult;
 	if (($lineCount == 0)
-		&& ($TestResult[0] eq "Test non disponible pour cette plateforme\n"))
+		&& ($TestResult[0] eq "Test not available for this platform\n"))
 	{
-		print "Test $Test : NON DISPONIBLE\n";
+		print "Test $Test : NOT AVAILABLE\n";
 	} else {
 		# Itération sur les deux.
 		my $different = 0;
@@ -160,10 +160,10 @@ sub Test( $ $ )
 		
 		if ($different)
 		{
-			print "Test $Test : ECHEC\n";
+			print "Test $Test : FAILED\n";
 			$result = -1;
 		} else {
-			print "Test $Test : SUCCES\n";
+			print "Test $Test : SUCCESS\n";
 		}
 	}
 	return $result;
@@ -181,9 +181,9 @@ my $exitCode = 0;
 if ($Test eq "all")
 {
 	# Itération sur les tous les master-test dans $ProgramPath
-	opendir MASTER_DIR, $ProgramPath or die "Impossible d'ouvrir $ProgramPath";
+	opendir MASTER_DIR, $ProgramPath or die "Unable to open $ProgramPath";
 	my @MasterDirFiles = readdir MASTER_DIR;
-	closedir MASTER_DIR or die "Erreur à la fermeture de $ProgramPath";
+	closedir MASTER_DIR or die "Error closing $ProgramPath";
 	
 	foreach my $MasterDirFile (@MasterDirFiles)
 	{

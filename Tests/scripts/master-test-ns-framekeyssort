@@ -1,5 +1,5 @@
-1- Test du tri au vol
-21 paires
+1- On-the-fly sort test
+21 pairs
 00FB92C2 - quatre - 4
 100B4CEA - huit - 8
 2F2653FC - quinze - 15
@@ -22,8 +22,8 @@ CCE00454 - six - 6
 D4E5AAC9 - trois - 3
 FCD1E040 - dix-neuf - 19
 
-2- Ajout de deux paires et tri par insertion
-23 paires
+2- Add two pairs and insertion sort
+23 pairs
 00FB92C2 - quatre - 4
 100B4CEA - huit - 8
 2F2653FC - quinze - 15
