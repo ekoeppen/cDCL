@@ -17,17 +17,27 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include "UTestCommLayers.h"
 
-// POSIX
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
 #include <DCL/Server/TDCLSimpleServer.h>
 
-#if TARGET_OS_COMPAT_POSIX
+#if TARGET_OS_WIN32
+#include <DCL/Communication_Layers/Win32/TDCLWin32Socket.h>
+#include <DCL/Interfaces/Win32/TDCLWin32Threads.h>
+typedef TDCLWin32Socket TDCLPlatformSocket;
+typedef TDCLWin32Threads TDCLPlatformThreads;
+#else
 #include <DCL/Communication_Layers/POSIX/TDCLBSDSocket.h>
-#include <DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h>
 #include <DCL/Interfaces/POSIX/TDCLPThreads.h>
+typedef TDCLBSDSocket TDCLPlatformSocket;
+typedef TDCLPThreads TDCLPlatformThreads;
+#endif
+
+#if TARGET_OS_COMPAT_POSIX
+#include <DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h>
 #endif
 
 #if TARGET_OS_OPENSTEP && !TARGET_OS_OPENSTEP_AMD64 && !TARGET_OS_OPENSTEP_ARM64
@@ -44,17 +54,17 @@
 void
 UTestCommLayers::ConnectAndDisconnectBSDSocket( void )
 {
-#if !TARGET_OS_COMPAT_POSIX
+#if !TARGET_OS_COMPAT_POSIX && !TARGET_OS_WIN32
 	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPThreads();
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 	
 	// Création de l'application.
 	TCADApplication theApplication( theThreadsIntf );
 	
 	// Création de la couche de communication
-	TDCLBSDSocket theCommLayer( theThreadsIntf );
+	TDCLPlatformSocket theCommLayer( theThreadsIntf );
 	
 	// Test à proprement parler.
 	ConnectAndDisconnect(
@@ -73,7 +83,7 @@ UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPThreads();
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 		
 	// Création de l'application.
 	TCADApplication theApplication( theThreadsIntf );
@@ -98,7 +108,7 @@ UTestCommLayers::ConnectAndDisconnectXADSP( void )
 	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPThreads();
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 		
 	// Création de l'application.
 	TCADApplication theApplication( theThreadsIntf );
@@ -119,17 +129,17 @@ UTestCommLayers::ConnectAndDisconnectXADSP( void )
 void
 UTestCommLayers::StartAndStopTwiceBSDSocket( void )
 {
-#if !TARGET_OS_COMPAT_POSIX
+#if !TARGET_OS_COMPAT_POSIX && !TARGET_OS_WIN32
 	(void) ::printf( "Test not available for this platform\n" );
 #else
     // Interface pour les processus légers (supprimée par ~TDCLApplication)
-    IDCLThreads* theThreadsIntf = new TDCLPThreads();
+    IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 
     // Création de l'application.
     TSASTApplication theApplication( theThreadsIntf );
 
     // Création de la couche de communication
-    TDCLBSDSocket theCommLayer( theThreadsIntf );
+    TDCLPlatformSocket theCommLayer( theThreadsIntf );
 
     // Test à proprement parler.
     StartAndStopTwice(
@@ -148,7 +158,7 @@ UTestCommLayers::StartAndStopTwiceFDSerialPort( const char* inDevPath )
 	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPThreads();
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 	
 	// Création de l'application.
 	TSASTApplication theApplication( theThreadsIntf );
@@ -173,7 +183,7 @@ UTestCommLayers::StartAndStopTwiceXADSP( void )
 	(void) ::printf( "Test not available for this platform\n" );
 #else
 	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPThreads();
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
 	
 	// Création de l'application.
 	TSASTApplication theApplication( theThreadsIntf );
@@ -216,7 +226,7 @@ UTestCommLayers::ConnectAndDisconnect(
 	// On attend qu'il ferme (à améliorer sans doute).
 	while (theServer.GetState() != TDCLSimpleServer::kStopped)
 	{
-		(void) ::sleep( 1 );
+		std::this_thread::sleep_for( std::chrono::seconds(1) );
 	}
 }
 
@@ -239,7 +249,7 @@ UTestCommLayers::StartAndStopTwice(
 
 	(void) ::fprintf( inApplication->GetLogFile(), "Second test\n" );
 	
-	(void) ::sleep( 1 );
+	std::this_thread::sleep_for( std::chrono::seconds(1) );
 
 	inApplication->ResetTest();
 	
