@@ -29,6 +29,7 @@
 //   Michael Vacík <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //   Simon Stapleton <simon@tufty.co.uk>
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -191,9 +192,12 @@ protected:
 	///
 	/// Attend des données (méthode bloquante).
 	///
-	/// \return \c true si des données sont présentes, \c false sinon.
+	/// \param inTimeoutMs	délai maximal en millisecondes, ou -1 pour
+	///						attendre indéfiniment.
+	/// \return \c true si des données sont présentes, \c false sinon
+	///			(délai expiré ou erreur).
 	///
-	Boolean				Select( void );
+	Boolean				Select( long inTimeoutMs = -1 );
 
 private:
 	///
@@ -314,6 +318,14 @@ private:
 		virtual	void		SetTimeout( long inTimeout );
 
 	protected:
+		///
+		/// Interval at which WaitForIncomingData checks whether the pipe
+		/// was disconnected while no data arrives.
+		///
+		enum {
+			kDisconnectPollMs = 100
+		};
+
 		///
 		/// Constructeur.
 		/// Vous n'êtes pas supposés créer des TSocketPipe vous-mêmes.
