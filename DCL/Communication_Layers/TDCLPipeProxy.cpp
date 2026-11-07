@@ -137,7 +137,9 @@ TDCLPipeProxy::PeekByte( void )
 TDCLCommLayer*
 TDCLPipeProxy::Connected( TDCLLink* inLink )
 {
-	return mSubPipe->Connected( inLink );
+	TDCLCommLayer* theResult = mSubPipe->Connected( inLink );
+	(void) TDCLPipe::Connected( inLink );
+	return theResult;
 }
 
 // -------------------------------------------------------------------------- //
