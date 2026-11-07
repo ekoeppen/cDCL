@@ -186,7 +186,7 @@ TDCLInspectorCommand* TDCLInspectorCommand::ReceiveCommand(	TDCLStream* inStream
 			}
 
 			if ( theLength == sizeof( KUInt32 ) ) {
-				theCommandObject = (TDCLInspectorCommand*) new TDCLDockCmdSingleLong( theCommand, *((KUInt32*) theData) );
+				theCommandObject = (TDCLInspectorCommand*) new TDCLDockCmdSingleLong( theCommand, UByteSex_FromBigEndian( *((KUInt32*) theData) ) );
 			} else {
 				switch ( theCommand ) {
 					case kDStackFrame:

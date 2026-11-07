@@ -93,9 +93,20 @@ TDCLSyncCommLayer::StopListening( void )
 			WakeUp();
 
 			// On attend que le processus léger termine.
-			while (GetThreadState() != IDCLThreads::kStopped)
+			int waitCount = 0;
+			while ((GetThreadState() != IDCLThreads::kStopped) && (waitCount < 50))
 			{
 				Yield();
+				waitCount++;
+			}
+
+			// Si le processus léger ne s'est pas arrêté, on le stoppe de force.
+			if (GetThreadState() != IDCLThreads::kStopped)
+			{
+				try {
+					TDCLThread::Stop();
+				} catch ( ... ) {
+				}
 			}
 		} catch ( ... ) {
 			// On reste silencieux.
