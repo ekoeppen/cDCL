@@ -30,6 +30,8 @@
 //   Michael Vacík <mici@metastasis.net> (original author)
 //   Filip Zawadiak <philz@vyx.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
+//   Eckhart Koeppen <eck@40hz.org> (protocol state machine)
+//   Protocol state machine portions Copyright (C) 2026 Eckhart Koeppen.
 //
 // ***** END LICENSE BLOCK *****
 //
@@ -71,16 +73,77 @@
 // DCL
 #include <DCL/Exceptions/IO_Exceptions/TDCLIOException.h>
 
+// ISO C++
+#include <chrono>
+#include <cstddef>
+#include <cstdint>
+#include <deque>
+#include <vector>
+
 ///
-/// Une connexion pour la compression MNP. S'utilise pour la compression MNP
-/// sur liaison série.
+/// The single error reported for an MNP failure: a protocol anomaly, a
+/// timeout or a transport error. The session has failed and the transport
+/// has been closed, best effort; LD transmission is not guaranteed.
+///
+class TDCLMNPProtocolException
+	:
+		public TDCLIOException
+{
+public:
+#if kDCLDebugFILEandLINE
+	TDCLMNPProtocolException( const char* inFileName, KUInt32 inLine, KSInt32 inError = 0 )
+		: TDCLIOException( exUnknownError, inError, inFileName, inLine )
+	{
+	}
+#else
+	TDCLMNPProtocolException( KSInt32 inError = 0 )
+		: TDCLIOException( exUnknownError, inError )
+	{
+	}
+#endif
+
+	virtual const char*
+	GetExceptionName( void ) const override
+	{
+		return "protocol error, link dropped";
+	}
+};
+
+#if kDCLDebugFILEandLINE
+	#define DCLMNPProtocolError( inReason ) \
+		TDCLMNPProtocolException( __FILE__, __LINE__, inReason )
+#else
+	#define DCLMNPProtocolError( inReason ) \
+		TDCLMNPProtocolException( inReason )
+#endif
+
+///
+/// MNP pipe for the Newton serial link: a one-frame, stop-and-wait transport
+/// for the simplified profile in .topics/mnp-timerless-bdd.md.
+/// Negotiates window 2 to enable the Newton's Inspector keepalive LAs, but
+/// sends only one LT at a time and advertises receive credit 1.
+///
+/// Each pipe supports a single session; Connected() may only be called once.
+/// The wire codec and table-driven protocol state machine are private parts of
+/// this pipe. Protocol transitions queue frames without doing I/O or reading a
+/// clock. Transport driving runs on the calling thread (the link thread):
+/// it polls the sub-pipe's BytesAvailable() every
+/// millisecond until data arrives or the caller's wait limit passes, feeds
+/// wire bytes to the protocol, and writes the frames it produces. One
+/// stall timer bounds blocking waits for handshake, acknowledgement, credit
+/// and peer LD. It restarts on protocol
+/// progress (state changes or accepted inbound LTs), never on partial frames
+/// or repeated LAs. No timer runs while idle; Read uses only GetTimeout().
+///
+/// Errors: a protocol failure throws TDCLMNPProtocolException from Read,
+/// Write, FlushOutput and BytesAvailable. A valid LD from the Newton ends the
+/// stream: buffered data stays readable, then Read, Write and FlushOutput
+/// throw TDCLEOFException, and PeerDisconnected() returns true.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \author	Filip Zawadiak <philz@vyx.net> (?)
-/// \version $Revision: 1.3 $
-///
-/// \todo	à terminer
-/// \test	aucun test défini.
+/// \author	Eckhart Koeppen <eck@40hz.org> (state machine rewrite)
+/// \test	UTestMNPPipe (public API), UTestMNPProtocol (private protocol/codec).
 ///
 class TDCLMNPPipe
 	:
@@ -97,7 +160,6 @@ public:
 		///< le paquet Newton à installer en morceaux de 128 octets). Le Newton
 		///< n'aime pas mes paquets de 299 octets, en revanche, ça marche
 		///< avec 253+3.
-		kInputFrameIncrement		= 1024	///< 1 KB
 	};
 
 	///
@@ -106,8 +168,7 @@ public:
 	///
 	/// \param inSubPipe				couche de communication sur laquelle
 	///									faire de la compression MNP.
-	/// \param inOutputMaxBufferSize	taille maximale de la mémoire tampon
-	///									de sortie.
+	/// \param inOutputMaxBufferSize	maximum LT payload, clamped to 1..253.
 	///
 	TDCLMNPPipe(
 			TDCLPipe* inSubPipe,
@@ -121,157 +182,407 @@ public:
 	/// \name interface entrée/sortie
 
 	///
-	/// Lit des octets.
+	/// Reads delivered payload. Waits until enough data has arrived, or for
+	/// GetTimeout() seconds if positive.
 	///
-	/// \param outBuffer	mémoire tampon pour les octets lus.
-	/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-	///						Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
-	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
+	/// \throws TDCLEOFException			after a peer LD, once the data is read.
+	/// \throws TDCLMNPProtocolException	if the link failed.
+	/// \note The ordinary pipe timeout is also fatal (LD 04, protocol exception).
 	///
 	virtual	void		Read( void* outBuffer, KUInt32* ioCount );
 
 	///
-	/// Ecrit des octets.
-	///
-	/// \param inBuffer		mémoire tampon pour les octets à écrire.
-	/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-	///						sortie. Cette valeur est mise à jour avant que
-	///						l'exception ne soit lancée si un problème est
-	///						survenu.
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// Buffers application bytes and sends them in LTs of the configured size,
+	/// one at a time, honouring the Newton's credit. ioCount reports bytes
+	/// accepted into buffering, not bytes transmitted or acknowledged.
 	///
 	virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
 
 	///
-	/// Vide la mémoire tampon de sortie.
-	///
-	/// \throws TDCLIOException	si un problème est survenu.
+	/// Sends buffered output as an LT. Does not wait for its acknowledgement;
+	/// the next send or Disconnect does. Read has only the pipe timeout.
 	///
 	virtual void		FlushOutput( void );
 
 	///
-	/// Détermine si des octets sont disponibles dans la mémoire tampon d'entrée.
-	///
-	/// \return \c true s'il y a des octets disponibles, \c false sinon.
+	/// Processes frames that have arrived and reports whether delivered
+	/// payload is waiting. Never blocks.
 	///
 	virtual	Boolean		BytesAvailable( void );
 
 	///
-	/// Déconnecte le canal de communication avec le client.
+	/// Local disconnect (D2'): flushes buffered output, waits for the pending
+	/// LT's LA, then the Newton's LD, under the stall timeout. An LA stall
+	/// sends LD 04 (unclean); an LD stall sends LD ff (clean). A peer LD
+	/// receives no reply. Disconnects the sub-pipe and never throws.
 	///
 	virtual	void		Disconnect( void );
 
 	///
-	/// Méthode appelée par le lien pour dire qu'il est connecté
-	/// via cette connexion. Cette méthode est appelée juste avant
-	/// que des données soient échangées.
+	/// Whether the Newton closed the MNP link with a valid LD frame.
+	/// False after a local protocol failure.
 	///
-	/// Envoie l'entête MNP (et reçoit celui du Newton).
+	virtual	Boolean		PeerDisconnected( void );
+
 	///
-	/// \return l'interface de communication.
+	/// Runs the MNP handshake (LR, LR reply, LA) once. A repeated call fails
+	/// an active session; a detached or terminal pipe cannot be restarted.
+	///
+	/// \throws TDCLMNPProtocolException	if the handshake fails or times out.
+	/// \throws TDCLEOFException			if the Newton sends LD instead.
 	///
 	virtual	TDCLCommLayer*	Connected( TDCLLink* inLink );
 
 	///
-	/// Send ACK
+	/// Answer every inbound LA with LA(last received, 1) (K1). Used by
+	/// TDCLInspectorLink.
 	///
-	virtual	void		SendACK( void );
+	void				SetKeepAlive( Boolean inKeepAlive );
 
-	///
-	/// Send ACK
-	///
-	inline	void		SetKeepAlive( Boolean inKeepAlive )
-		{
-			mSendKeepAlive = inKeepAlive;
-		}
+	/// \name Stall timeout
+	static constexpr std::chrono::milliseconds kDefaultStallTimeout{ 6000 };
+
+	/// Completed sessions have exactly two outcomes for applications: normal
+	/// closure or failure (retry). This status survives cleanup; LD reasons
+	/// are diagnostic details, not success/error return codes.
+	enum class EOutcome
+	{
+		kInProgress,
+		kClosed,
+		kFailed
+	};
+	EOutcome GetOutcome( void ) const;
 
 private:
+	friend class TMNPPipeTestAccess;
+	friend class TMNPPipeStatusTestAccess;
+
+	// Protocol types and transition table.
+	using Bytes = std::vector<std::uint8_t>;
+
+	/// PushByte() results. Every framing error is fatal (LD 0xfe).
+	enum class EFrameResult : std::uint8_t
+	{
+		kNone,
+		kFrame,
+		kError
+	};
+
+	/// Largest decoded frame body: a 256-byte LT plus its 3-byte header.
+	static constexpr std::size_t kMaxFrameBodySize = 259;
+
+	/// Link states, named for what is true while in them. Order:
+	/// Listening -> Negotiating -> Connected (Throttled, InFlight) ->
+	/// Disconnecting -> AwaitingPeerDisconnect -> Disconnected.
+	enum EState : std::uint8_t
+	{
+		kListening,              ///< Started; waiting for the Newton's LR.
+		kNegotiating,            ///< LR reply sent; waiting for handshake LA(0, credit 1..2).
+		kConnected,              ///< No LT outstanding, positive credit; can submit one LT.
+		kThrottled,              ///< No LT outstanding, credit 0; output waits for credit.
+		kInFlight,               ///< LT(N) sent, waiting for its LA.
+		kDisconnecting,          ///< Disconnect() requested while LT(N) is in flight (D2').
+		kAwaitingPeerDisconnect, ///< All LTs acknowledged; waiting for the Newton's LD.
+		kDisconnectedByPeer,     ///< Valid peer LD received (EOF). Terminal.
+		kDisconnected,           ///< Clean local disconnect, via peer LD or local LD 0xff. Terminal.
+		kFailed,                 ///< Fatal error; LD and closure are best effort. Terminal.
+		kStateCount
+	};
+
+	enum EEvent : std::uint8_t
+	{
+		kRequest,        ///< Valid LR (Link Request) from the Newton.
+		kHandshakeBad,   ///< LR or handshake LA we cannot accept.
+		kHandshakeAck,   ///< LA(0, credit 1..2) completing the handshake.
+		kAckWithCredit,  ///< LA acknowledging LT(N), credit > 0.
+		kAckNoCredit,    ///< LA acknowledging LT(N), credit 0.
+		kRepeatedAck,    ///< LA repeating the previous acknowledgement.
+		kPeerDisconnect, ///< Valid LD (Link Disconnect) from the Newton.
+		kSubmit,         ///< Caller hands over data to send.
+		kDisconnect,     ///< Caller requests a local disconnect.
+		kTimeout,        ///< Caller reports a stall.
+		kAnomaly         ///< Any other frame or framing error; always fatal.
+	};
+
+	enum EAction : std::uint8_t
+	{
+		kNone,
+		kQueueLRReply,
+		kQueueLT,
+		kQueueLDUser,
+		kQueueLDTimeout,
+		kQueueLDHandshake,
+		kQueueLDNegotiation
+	};
+
+	/// LD reason codes (D4').
+	enum EReason : std::uint8_t
+	{
+		kReasonUser = 0xff,
+		kReasonProtocol = 0xfe,
+		kReasonTimeout = 0x04,
+		kReasonNegotiation = 0x03,
+		kReasonHandshakeTimeout = 0x01
+	};
+
+	struct StateInfo
+	{
+		EState state;
+		bool connected;
+		bool disconnecting;
+		bool terminal;
+	};
+
+	static constexpr StateInfo kStates[kStateCount] = {
+	    { kListening, false, false, false },
+	    { kNegotiating, false, false, false },
+	    { kConnected, true, false, false },
+	    { kThrottled, true, false, false },
+	    { kInFlight, true, false, false },
+	    { kDisconnecting, true, true, false },
+	    { kAwaitingPeerDisconnect, true, true, false },
+	    { kDisconnectedByPeer, false, false, true },
+	    { kDisconnected, false, false, true },
+	    { kFailed, false, false, true },
+	};
+
+	struct Transition
+	{
+		EState state;
+		EEvent event;
+		EState next;
+		EAction action;
+	};
+
+	// Timerless transition table in docs/wip/timerless.md (37 rows).
+	static constexpr Transition kTable[] = {
+	    { kListening, kRequest, kNegotiating, kQueueLRReply },                       // H1, H2
+	    { kListening, kHandshakeBad, kFailed, kQueueLDNegotiation },                 // H3
+	    { kListening, kTimeout, kFailed, kQueueLDHandshake },                        // H4'
+	    { kListening, kPeerDisconnect, kDisconnectedByPeer, kNone },                 // D1
+	    { kListening, kDisconnect, kDisconnected, kQueueLDUser },                    // D2'
+	    { kNegotiating, kHandshakeAck, kConnected, kNone },                          // H1
+	    { kNegotiating, kHandshakeBad, kFailed, kQueueLDNegotiation },               // H3
+	    { kNegotiating, kTimeout, kFailed, kQueueLDHandshake },                      // H4'
+	    { kNegotiating, kPeerDisconnect, kDisconnectedByPeer, kNone },               // D1
+	    { kNegotiating, kDisconnect, kDisconnected, kQueueLDUser },                  // D2'
+	    { kConnected, kSubmit, kInFlight, kQueueLT },                                // T1, T5
+	    { kConnected, kAckWithCredit, kConnected, kNone },                           // A5
+	    { kConnected, kAckNoCredit, kThrottled, kNone },                             // A1
+	    { kConnected, kPeerDisconnect, kDisconnectedByPeer, kNone },                 // D1
+	    { kConnected, kDisconnect, kAwaitingPeerDisconnect, kNone },                 // D2'
+	    { kThrottled, kAckWithCredit, kConnected, kNone },                           // A1, A5
+	    { kThrottled, kAckNoCredit, kThrottled, kNone },                             // A5
+	    { kThrottled, kTimeout, kFailed, kQueueLDTimeout },                          // A2'
+	    { kThrottled, kPeerDisconnect, kDisconnectedByPeer, kNone },                 // D1
+	    { kThrottled, kDisconnect, kAwaitingPeerDisconnect, kNone },                 // D2'
+	    { kInFlight, kAckWithCredit, kConnected, kNone },                            // T1, A4
+	    { kInFlight, kAckNoCredit, kThrottled, kNone },                              // A1
+	    { kInFlight, kRepeatedAck, kInFlight, kNone },                               // A5
+	    { kInFlight, kTimeout, kFailed, kQueueLDTimeout },                           // A3'
+	    { kInFlight, kPeerDisconnect, kDisconnectedByPeer, kNone },                  // D1
+	    { kInFlight, kDisconnect, kDisconnecting, kNone },                           // D2'
+	    { kDisconnecting, kAckWithCredit, kAwaitingPeerDisconnect, kNone },          // D2', E1'
+	    { kDisconnecting, kAckNoCredit, kAwaitingPeerDisconnect, kNone },            // D2'
+	    { kDisconnecting, kRepeatedAck, kDisconnecting, kNone },                     // A5, D2'
+	    { kDisconnecting, kTimeout, kFailed, kQueueLDTimeout },                      // D2' unclean
+	    { kDisconnecting, kPeerDisconnect, kDisconnectedByPeer, kNone },             // D1
+	    { kDisconnecting, kDisconnect, kDisconnecting, kNone },                      // D2'
+	    { kAwaitingPeerDisconnect, kPeerDisconnect, kDisconnected, kNone },          // D2' peer closes
+	    { kAwaitingPeerDisconnect, kTimeout, kDisconnected, kQueueLDUser },          // D2' fallback
+	    { kAwaitingPeerDisconnect, kDisconnect, kAwaitingPeerDisconnect, kNone },    // D2'
+	    { kAwaitingPeerDisconnect, kAckWithCredit, kAwaitingPeerDisconnect, kNone }, // A5
+	    { kAwaitingPeerDisconnect, kAckNoCredit, kAwaitingPeerDisconnect, kNone },   // A5
+	};
+
+	static constexpr std::size_t kRowCount = sizeof( kTable ) / sizeof( kTable[0] );
+
+	/// Finds the row for (state, event), or nullptr if there is none.
+	static constexpr const Transition*
+	Lookup( EState inState, EEvent inEvent )
+	{
+		for ( const Transition& row : kTable )
+		{
+			if ( row.state == inState && row.event == inEvent )
+			{
+				return &row;
+			}
+		}
+		return nullptr;
+	}
+
+	/// Largest LT payload cDCL sends (T1: 1-253 bytes; the Newton rejects more).
+	static constexpr std::size_t kMaxOutputPayloadSize = 253;
+
+	/// Window > 1 enables the Newton's Inspector keepalive LAs. This is a
+	/// negotiated maximum, not our transmit concurrency or receive credit:
+	/// the state machine keeps one LT pending and QueueLA advertises credit 1.
+	static constexpr std::uint8_t kNegotiatedWindowSize = 2;
+
+	/// The exact 24-byte LR reply (window 2).
+	static const Bytes kLRReply;
+
+	/// Protocol predicates. Only WaitFor owns the stall deadline.
+	bool
+	IsStallable( void ) const
+	{
+		return Lookup( mState, kTimeout ) != nullptr;
+	}
+	bool
+	CanSubmit( void ) const
+	{
+		return mState == kConnected;
+	}
+	bool
+	IsConnected( void ) const
+	{
+		return kStates[mState].connected;
+	}
+	bool
+	IsDisconnecting( void ) const
+	{
+		return kStates[mState].disconnecting;
+	}
+	bool
+	IsTerminal( void ) const
+	{
+		return kStates[mState].terminal;
+	}
+
+	/// Wire codec: decoding dispatches complete frames, never performs I/O.
+	static Bytes EncodeFrame( const std::uint8_t* inBody, std::size_t inSize );
+	static Bytes
+	EncodeFrame( const Bytes& inBody )
+	{
+		return EncodeFrame( inBody.data(), inBody.size() );
+	}
+	EFrameResult PushByte( std::uint8_t inByte );
+
+	/// Protocol events and payload handling. No clock or transport access.
+	void OnFrame( const Bytes& inFrame );
+	void OnFramingError( void );
+	void OnStall( void );
+	/// Dispatches the buffered payload as one LT, then clears it. Requires credit.
+	void SubmitOutputPayload( void );
+	std::size_t ReadPayload( std::uint8_t* outData, std::size_t inSize );
+	EEvent Classify( const Bytes& inFrame ) const;
+	static bool IsValidLR( const Bytes& inFrame );
+	static bool IsValidLD( const Bytes& inFrame );
+	/// Contains compile-time assertions; no runtime validation is needed.
+	static void CheckTransitionTable( void );
+
+	enum class EFrameState : std::uint8_t
+	{
+		kIdle,
+		kStartDLE,
+		kBody,
+		kBodyDLE,
+		kCRCLow,
+		kCRCHigh
+	};
+
+	/// One outstanding LT: the previous sequence is acknowledged while it is pending.
+	std::uint8_t LastAckedSequence( void ) const;
+	static std::uint16_t UpdateCRC( std::uint16_t inCRC, std::uint8_t inByte );
+	void HandleLT( const Bytes& inFrame );
+	void Dispatch( EEvent inEvent );
+	void Enter( EState inState );
+	void Perform( EAction inAction );
+	void Fail( std::uint8_t inReason );
+	void QueueLA( void );
+	void QueueLD( std::uint8_t inReason );
+	void QueueLT( const Bytes& inPayload );
+
+	// Transport driving and blocking waits.
+	using Clock = std::chrono::steady_clock;
+	using TimePoint = Clock::time_point;
+
 	///
 	/// Constructeur par copie volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
 	///
 	TDCLMNPPipe( const TDCLMNPPipe& inCopy );
 
 	///
 	/// Opérateur d'assignation volontairement indisponible.
 	///
-	/// \param inCopy		objet à copier
-	///
 	TDCLMNPPipe& operator = ( const TDCLMNPPipe& inCopy );
 
-	///
-	/// Lecture d'une structure MNP depuis le Newton.
-	///
-	/// \param outFrame	un pointeur, alloué avec malloc, sur les données d'une
-	///					structure MNP décodées.
-	/// \param outSize	taille des données.
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void	ReadFrame( KUInt8** outFrame, KUInt32* outSize );
+	/// Direction of a logged MNP frame.
+	enum class EFrameDirection
+	{
+		kIn,
+		kOut,
+		kError
+	};
 
 	///
-	/// Écriture d'une structure vers le Newton.
+	/// Log a decoded MNP frame via KDebug when debug_TDCLMNPPipe is enabled.
 	///
-	/// \param inFrame	pointeur vers les données d'une structure MNP.
-	/// \param inSize	nombre d'octets des données.
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void	WriteFrame( const KUInt8* inFrame, KUInt32 inSize );
+	static	void		LogFrame( EFrameDirection inDirection,
+							const KUInt8* inFrame, KUInt32 inSize );
 
-	///
-	/// Reçoit des données du Newton.
-	///
-	/// \throws TDCLIOException	si un problème est survenu.
-	///
-	virtual void		ReceiveData( void );
+	/// Waits for the predicate or a terminal state, restarting the one stall
+	/// deadline on progress. Callers interpret EOF/failure after returning.
+	template<class Done> void WaitFor( Done inDone );
+	/// Polls the sub-pipe every millisecond until it reports data or inLimit
+	/// passes, processes a batch of input and writes protocol frames. Does not run
+	/// any timer itself (Read and idle polling use it too).
+	void				ServiceTransport( TimePoint inLimit );
+	/// Feeds a bounded batch of received bytes into the protocol, returning control
+	/// to WaitFor even if the peer is continuously readable.
+	void				ProcessAvailableInput( void );
+	/// Writes queued frames, closes terminal sessions, and reports stored failure.
+	void				ServiceOutput( void );
+	/// Submits the buffered output as one LT, waiting for credit.
+	void				SendOutputPayload( void );
+	/// Throws if the link cannot carry data (EOF or protocol error).
+	void				CheckUsable( void ) const;
+	/// Throws the stored protocol error if the link failed.
+	void				CheckFailed( void ) const;
+	/// Returns whether cooperative stop has been requested on this pipe or sub-pipe.
+	bool				IsStopRequested( void );
+	/// Closes transport without sending LD and throws TDCLUserCancelledException if stopped.
+	void				ThrowIfCancelled( void );
+	/// Detaches once; a cleanup error records failure without replacing its cause.
+	void CloseTransport( void ) noexcept;
+	/// Fatal adapter error: fail, attempt LD, close, and report the stored reason.
+	[[noreturn]] void Abort( std::uint8_t inReason );
 
-	///
-	/// Envoie des données au Newton.
-	///
-	/// \throws TDCLIOException	si un problème est survenu.
-	///
-	virtual void		SendData( void );
+	/// Pipe lifecycle around the MNP protocol. The sub-pipe is already open when
+	/// the pipe is created; this tracks whether MNP runs on it.
+	enum class EPhase
+	{
+		kAttached,	///< Sub-pipe open, MNP not started (before Connected()).
+		kRunning,	///< Connected() called; MNP runs on the sub-pipe.
+		kDetached	///< Sub-pipe closure attempted; the session cannot continue.
+	};
 
-	///
-	/// Met à jour la somme de contrôle.
-	///
-	/// \param inCRC		l'ancienne somme de contrôle.
-	/// \param inByte		octet dont on veut la somme de contrôle.
-	/// \return la nouvelle somme de contrôle.
-	///
-	KUInt16	UpdateCRC16( KUInt16 inCRC, KUInt8 inByte );
+	// Protocol state, codec state and queued frames/payload.
+	EState mState = kListening;
+	/// Counts state changes and accepted inbound LTs, including duplicates.
+	/// Compare for inequality: this unsigned counter may wrap.
+	std::uint32_t mProgress = 0;
 
-	/// \name Constantes
+	EFrameState mFrameState = EFrameState::kIdle;
+	Bytes mFrameBody;
+	std::uint16_t mFrameCRC = 0;
+	std::uint16_t mReceivedCRC = 0;
 
-	static const KUInt16	kCRC16Table[256];	///< Table pour le calcul de la
-											///< somme de contrôle.
-	static const KUInt8 SYN;	///< Caractère SYN dans la transmission MNP.
-	static const KUInt8 DLE;	///< Caractère DLE dans la transmission MNP.
-	static const KUInt8 STX;	///< Caractère STX dans la transmission MNP.
-	static const KUInt8 ETX;	///< Caractère ETX dans la transmission MNP.
-	static const KUInt8 LA;	///< Structure LA
-	static const KUInt8 LT;	///< Structure LT
-	static const KUInt8 kMNPHeader[24];		///< Entête MNP
-	static const KUInt8 kMNPFooter[8];		///< Série d'octets envoyés lors
-											///< de la déconnexion.
-	static const KUInt8 kDefaultCredits;
+	std::uint8_t mSendSeq = 0;   ///< N: sequence of the last LT queued for transmission.
+	std::uint8_t mRecvSeq = 0;   ///< R: sequence of the last accepted LT.
+	bool mHaveInbound = false;   ///< Whether an LT has been accepted.
 
-	/// \name Variables
+	std::deque<Bytes> mOutputFrames; ///< Unencoded MNP frame bodies, including control frames.
+	std::deque<std::uint8_t> mInputBuffer; ///< Accepted LT payload; no MNP headers or frame boundaries.
 
-	KUInt8*	mInputBuffer;			///< Mémoire tampon d'entrée.
-	KUInt32	mInputBufferCapacity;	///< Contenance de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferSize;		///< Taille de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferCrsr;		///< Curseur sur la mémoire tampon d'entrée.
-	KUInt8*	mOutputBuffer;			///< Mémoire tampon de sortie
-	KUInt32	mOutputBufferCapacity;	///< Taille maximale de la mémoire tampon de sortie.
-	KUInt32	mOutputBufferCrsr;		///< Index des prochains octets dans la mémoire
-									///< tampon de sortie.
-	KUInt8	mInputPacketIndex;		///< Indice du paquet d'entrée.
-	KUInt8	mOutputPacketIndex;		///< Indice du paquet de sortie.
-	Boolean mSendKeepAlive;			///< Send keepalive ACK for NTK protocol
+	std::uint8_t mLocalReason = 0;
+	bool mKeepAlive = false;
+
+	// Transport lifecycle and output not yet submitted.
+	KUInt32				mOutputPayloadLimit; ///< Configured maximum payload per outgoing LT.
+	std::vector<KUInt8>	mOutputBuffer;		///< Application bytes awaiting LT construction.
+	EPhase				mPhase = EPhase::kAttached;
+	std::chrono::milliseconds mStallTimeout{ kDefaultStallTimeout };
 };
 
 #endif

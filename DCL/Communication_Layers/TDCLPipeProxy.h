@@ -149,6 +149,11 @@ public:
 	///
 	virtual	void		ClearDataPresent( void );
 
+	///
+	/// Whether the other side already closed the link.
+	///
+	virtual	Boolean		PeerDisconnected( void );
+
 protected:
 	///
 	/// Accesseur sur la connexion dont cette classe est le

@@ -717,8 +717,22 @@ TDCLLink::TransitionFromRunning( void )
 						}
 					}
 					
+					// A pipe can consume a peer LD while checking for data and
+					// return false without delivering a command (e.g. MNP). The
+					// transport has then closed: do not wait for another data
+					// event that will never come. A protocol failure is thrown
+					// by BytesAvailable instead and goes to HandleException.
+					if (theNextState == kRunning && mPipe->PeerDisconnected()
+						&& !mPipe->BytesAvailable())
+					{
+						theNextState = kDisconnected;
+					}
+
 					// On attend à nouveau des données.
-					mPipe->ClearDataPresent();
+					if (theNextState == kRunning)
+					{
+						mPipe->ClearDataPresent();
+					}
 				} else if (theEventID == TDCLEvent::kDisconnectLink) {
 					// Il faut se déconnecter.
 					theNextState = kDisconnecting;

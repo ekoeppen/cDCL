@@ -35,6 +35,9 @@
 #include "UTestKStreamsAndBuffers.h"
 #include "UTestTime.h"
 #include "UTestXML.h"
+#include "UTestMNPProtocol.h"
+#include "UTestMNPPipe.h"
+#include "UTestMNPLinkLayer.h"
 
 // ------------------------------------------------------------------------- //
 //  * main
@@ -123,6 +126,12 @@ test( const char* inTestName, const char* inArgument )
 			UTestXML::WalterSmith();
 		} else if (::strcmp(inTestName, "xml-classes") == 0) {
 			UTestXML::Classes();
+		} else if (::strcmp(inTestName, "mnp-protocol") == 0) {
+			UTestMNPProtocol::Run();
+		} else if (::strcmp(inTestName, "mnp-pipe") == 0) {
+			UTestMNPPipe::Run();
+		} else if (::strcmp(inTestName, "mnp-link-layer") == 0) {
+			UTestMNPLinkLayer::Run();
 		} else {
 			(void) ::printf( "%s is an unknown test.\n", inTestName );
 		}
