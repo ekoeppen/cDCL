@@ -69,8 +69,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+// ISO C++
+#include <algorithm>
+#include <thread>
+
 // DCL
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
+
+// MNP frame types (second byte of a decoded frame).
+static const KUInt8 kMNPFrameLR = 1;	///< Link request.
+static const KUInt8 kMNPFrameLD = 2;	///< Link disconnect.
 
 // Commentaire intéressant de Philz:
 // Just keep in mind that MNP implementation in lpkg is very primitive.
@@ -124,7 +134,14 @@ const KUInt8 TDCLMNPPipe::STX = 0x02;
 const KUInt8 TDCLMNPPipe::ETX = 0x03;
 const KUInt8 TDCLMNPPipe::LA = 0x05;
 const KUInt8 TDCLMNPPipe::LT = 0x04;
-const KUInt8 TDCLMNPPipe::kDefaultCredits = 8;
+// MNP window k: offered in our LR, used as the credit in our LAs and as the
+// cap on unacknowledged LT frames we send. NewtonOS drops serial input when
+// several 256-byte frames arrive back to back (no flow control on the
+// emulated port), so we send one frame at a time, like gdcl.
+const KUInt8 TDCLMNPPipe::kWindowSize = 1;
+
+TDCLMNPPipe::FrameLoggerPtr TDCLMNPPipe::sFrameLogger = nil;
+void* TDCLMNPPipe::sFrameLoggerRefCon = nil;
 
 const KUInt8 TDCLMNPPipe::kMNPHeader[24] =
 {
@@ -132,7 +149,7 @@ const KUInt8 TDCLMNPPipe::kMNPHeader[24] =
 	1,2,1,
 	6,1,0,0,0,0,255,
 	2,1,2,
-	3,1,TDCLMNPPipe::kDefaultCredits,
+	3,1,TDCLMNPPipe::kWindowSize,
 	4,2,64,0,
 	8,1,3
 };
@@ -160,6 +177,13 @@ TDCLMNPPipe::TDCLMNPPipe(
 		mOutputBufferCrsr( 0 ),
 		mInputPacketIndex( 0 ),
 		mOutputPacketIndex( 0 ),
+		mLastAckedIndex( 0 ),
+		mPeerCredit( kWindowSize ),
+		mPeerDisconnected( false ),
+		mRetransmitCount( 0 ),
+		mDupAckHandled( false ),
+		mSentFrames(),
+		mLastTransmitTime( std::chrono::steady_clock::now() ),
 		mSendKeepAlive( false )
 {
 	// Création des mémoires tampon.
@@ -185,7 +209,33 @@ TDCLMNPPipe::~TDCLMNPPipe( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Read( void* outBuffer, KUInt32* ioCount )
+//  * SetFrameLogger( FrameLoggerPtr, void* )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::SetFrameLogger( FrameLoggerPtr inLogger, void* inRefCon )
+{
+	sFrameLoggerRefCon = inRefCon;
+	sFrameLogger = inLogger;
+}
+
+// ------------------------------------------------------------------------- //
+//  * LogFrame( EFrameDirection, const KUInt8*, KUInt32 )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::LogFrame(
+			EFrameDirection inDirection,
+			const KUInt8* inFrame,
+			KUInt32 inSize )
+{
+	FrameLoggerPtr theLogger = sFrameLogger;
+	if (theLogger)
+	{
+		(*theLogger)( sFrameLoggerRefCon, inDirection, inFrame, inSize );
+	}
+}
+
+// ------------------------------------------------------------------------- //
+//  * Read( void* outBuffer, KUInt32* ioCount )
 // ------------------------------------------------------------------------- //
 void
 TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
@@ -265,43 +315,231 @@ TDCLMNPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 void
 TDCLMNPPipe::ReceiveData( void )
 {
-	KUInt8* theInputFrame;
-	KUInt32 theInputFrameSize;
-	ReadFrame( &theInputFrame, &theInputFrameSize );
-
-	if ( theInputFrameSize == 4 && theInputFrame[1] == LA )
+	// Keep reading frames until some payload data is available. While we
+	// still have unacknowledged outgoing frames, use the timed pump so that
+	// lost frames get retransmitted; otherwise just block on the next frame.
+	while (mInputBufferCrsr == mInputBufferSize)
 	{
+		if (mPeerDisconnected)
+		{
+			throw DCLEOF;
+		}
+
+		if (!mSentFrames.empty())
+		{
+			PumpWithTimeout();
+		} else {
+			KUInt8* theInputFrame;
+			KUInt32 theInputFrameSize;
+			ReadFrame( &theInputFrame, &theInputFrameSize );
+			try {
+				ProcessFrame( theInputFrame, theInputFrameSize );
+			} catch (...) {
+				::free( theInputFrame );
+				throw;
+			}
+			::free( theInputFrame );
+		}
+	}
+}
+
+// ------------------------------------------------------------------------- //
+//	* ProcessFrame( const KUInt8*, KUInt32 )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::ProcessFrame( const KUInt8* inFrame, KUInt32 inSize )
+{
+	if (inSize < 2)
+	{
+		// Garbage, ignore.
+		return;
+	}
+
+	KUInt8 theType = inFrame[1];
+	if (theType == LA)
+	{
+		if (inSize >= 4)
+		{
+			ProcessAck( inFrame[2], inFrame[3] );
+		}
 		if ( mSendKeepAlive )
 		{
 			// confirm LA frames again (NTK protocol), give credit
 			SendACK();
 		}
 	}
-	else
+	else if (theType == LT)
 	{
-		mInputPacketIndex = theInputFrame[2];
-		SendACK();
-
-		// Copie des donnÈes.
-		KUInt32 toCopy = theInputFrameSize - 3;
-		if ((mInputBufferSize + toCopy) > mInputBufferCapacity)
+		if (inSize < 3)
 		{
-			mInputBufferCapacity = mInputBufferSize + toCopy;
-			mInputBuffer = (KUInt8*)
-					::realloc(
-							mInputBuffer,
-							mInputBufferCapacity );
+			return;
 		}
 
-		(void) ::memcpy(
-					&mInputBuffer[mInputBufferSize],
-					(const void*) &theInputFrame[3],
-					toCopy );
-		mInputBufferSize += toCopy;
+		KUInt8 theSeq = inFrame[2];
+		if (theSeq == (KUInt8) (mInputPacketIndex + 1))
+		{
+			// In-sequence frame: accept the payload.
+			mInputPacketIndex = theSeq;
+
+			KUInt32 toCopy = inSize - 3;
+			if ((mInputBufferSize + toCopy) > mInputBufferCapacity)
+			{
+				mInputBufferCapacity = mInputBufferSize + toCopy;
+				mInputBuffer = (KUInt8*)
+						::realloc(
+								mInputBuffer,
+								mInputBufferCapacity );
+			}
+
+			(void) ::memcpy(
+						&mInputBuffer[mInputBufferSize],
+						(const void*) &inFrame[3],
+						toCopy );
+			mInputBufferSize += toCopy;
+		}
+		// Duplicate or out-of-sequence frames are dropped; in all cases we
+		// (re-)acknowledge the last in-sequence frame so the Newton can
+		// resynchronise.
+		SendACK();
+	}
+	else if (theType == kMNPFrameLD)
+	{
+		// The Newton closed the MNP link.
+		mPeerDisconnected = true;
+		mSentFrames.clear();
+		throw DCLEOF;
+	}
+	// LR (late duplicate) and other frame types are ignored.
+}
+
+// ------------------------------------------------------------------------- //
+//	* ProcessAck( KUInt8, KUInt8 )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::ProcessAck( KUInt8 inSeq, KUInt8 inCredit )
+{
+	KUInt8 theNewlyAcked = (KUInt8) (inSeq - mLastAckedIndex);
+
+	if (theNewlyAcked == 0)
+	{
+		// Same sequence number again. If the credit grew, this is just a
+		// window update (e.g. 03 05 nn 00 followed by 03 05 nn 01).
+		// Otherwise the Newton is still waiting for the frame after inSeq
+		// (V.42 A.7.3.5 a): resend, but only once per N(R) value. The Newton
+		// repeats its last LA periodically (T404); further duplicates are
+		// left to the retransmit timer (T401), which Retransmit restarts.
+		Boolean isWindowUpdate = (inCredit > mPeerCredit);
+		mPeerCredit = inCredit;
+		if (!isWindowUpdate && !mDupAckHandled && !mSentFrames.empty())
+		{
+			auto theElapsed = std::chrono::steady_clock::now() - mLastTransmitTime;
+			if (theElapsed >= std::chrono::milliseconds( kDupAckGuardMs ))
+			{
+				mDupAckHandled = true;
+				Retransmit( false );
+			}
+		}
+	}
+	else if (theNewlyAcked <= mSentFrames.size())
+	{
+		// Progress: drop acknowledged frames.
+		for (KUInt8 i = 0; i < theNewlyAcked; i++)
+		{
+			mSentFrames.pop_front();
+		}
+		mLastAckedIndex = inSeq;
+		mPeerCredit = inCredit;
+		mRetransmitCount = 0;
+		mDupAckHandled = false;
+		mLastTransmitTime = std::chrono::steady_clock::now();
+	}
+	// Otherwise: stale/bogus acknowledgement, ignore it.
+}
+
+// ------------------------------------------------------------------------- //
+//	* PollFrame( KUInt32 )
+// ------------------------------------------------------------------------- //
+Boolean
+TDCLMNPPipe::PollFrame( KUInt32 inTimeoutMs )
+{
+	TDCLPipe* theSubPipe = GetSubPipe();
+	auto theDeadline = std::chrono::steady_clock::now()
+						+ std::chrono::milliseconds( inTimeoutMs );
+
+	while (!theSubPipe->BytesAvailable())
+	{
+		if (std::chrono::steady_clock::now() >= theDeadline)
+		{
+			return false;
+		}
+		std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
 	}
 
-	// LibÈration.
+	KUInt8* theInputFrame;
+	KUInt32 theInputFrameSize;
+	ReadFrame( &theInputFrame, &theInputFrameSize );
+	try {
+		ProcessFrame( theInputFrame, theInputFrameSize );
+	} catch (...) {
+		::free( theInputFrame );
+		throw;
+	}
 	::free( theInputFrame );
+
+	return true;
+}
+
+// ------------------------------------------------------------------------- //
+//	* PumpWithTimeout( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::PumpWithTimeout( void )
+{
+	(void) PollFrame( kPollSliceMs );
+
+	if (!mSentFrames.empty())
+	{
+		auto theElapsed = std::chrono::steady_clock::now() - mLastTransmitTime;
+		if (theElapsed >= std::chrono::milliseconds( kRetransmitTimeoutMs ))
+		{
+			if (mRetransmitCount >= kMaxRetransmits)
+			{
+				throw DCLTimeout;
+			}
+			// Timer expired: resend, probing with one frame if the Newton
+			// currently grants no credit.
+			Retransmit( true );
+		}
+	}
+}
+
+// ------------------------------------------------------------------------- //
+//	* Retransmit( Boolean )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::Retransmit( Boolean inProbe )
+{
+	size_t theCount = std::min( (size_t) mPeerCredit, (size_t) kWindowSize );
+	if (inProbe && theCount == 0)
+	{
+		theCount = 1;
+	}
+	theCount = std::min( theCount, mSentFrames.size() );
+
+	if (theCount == 0)
+	{
+		return;
+	}
+
+	for (size_t i = 0; i < theCount; i++)
+	{
+		const std::vector<KUInt8>& theFrame = mSentFrames[i];
+		WriteFrame( theFrame.data(), (KUInt32) theFrame.size() );
+	}
+	GetSubPipe()->FlushOutput();
+
+	mRetransmitCount++;
+	mLastTransmitTime = std::chrono::steady_clock::now();
 }
 
 // ------------------------------------------------------------------------- //
@@ -310,9 +548,44 @@ TDCLMNPPipe::ReceiveData( void )
 void
 TDCLMNPPipe::SendData( void )
 {
+	// Never send empty LT frames.
+	if (mOutputBufferCrsr == 0)
+	{
+		return;
+	}
+
+	if (mPeerDisconnected)
+	{
+		throw DCLEOF;
+	}
+
+	// Wait until the Newton grants a slot in its receive window. If it
+	// grants no credit at all while nothing is outstanding, there is no
+	// retransmit timer running, so bound the wait explicitly.
+	auto theStallDeadline = std::chrono::steady_clock::now()
+		+ std::chrono::milliseconds( kRetransmitTimeoutMs * kMaxRetransmits );
+	while (mSentFrames.size()
+			>= std::min( (size_t) mPeerCredit, (size_t) kWindowSize ))
+	{
+		size_t theOutstanding = mSentFrames.size();
+		KUInt8 theCredit = mPeerCredit;
+
+		PumpWithTimeout();
+
+		if ((mSentFrames.size() != theOutstanding) || (mPeerCredit != theCredit))
+		{
+			theStallDeadline = std::chrono::steady_clock::now()
+				+ std::chrono::milliseconds( kRetransmitTimeoutMs * kMaxRetransmits );
+		}
+		else if (mSentFrames.empty()
+			&& (std::chrono::steady_clock::now() >= theStallDeadline))
+		{
+			throw DCLTimeout;
+		}
+	}
+
 	// La structure de sortie comprend les données précédées de 3 octets.
-	KUInt32 theOutputFrameSize = mOutputBufferCrsr + 3;
-	KUInt8* theOutputFrame = (KUInt8*) ::malloc( theOutputFrameSize );
+	std::vector<KUInt8> theOutputFrame( mOutputBufferCrsr + 3 );
 
 	// Les 3 octets du début.
 	theOutputFrame[0] = 2;	// Taille de l'entête.
@@ -325,14 +598,18 @@ TDCLMNPPipe::SendData( void )
 			(const void*) mOutputBuffer,
 			mOutputBufferCrsr );
 
-	WriteFrame( theOutputFrame, theOutputFrameSize );
+	WriteFrame( theOutputFrame.data(), (KUInt32) theOutputFrame.size() );
 	mOutputPacketIndex++;
+
+	// Keep it until the Newton acknowledges it.
+	if (mSentFrames.empty())
+	{
+		mLastTransmitTime = std::chrono::steady_clock::now();
+	}
+	mSentFrames.push_back( std::move( theOutputFrame ) );
 
 	// On vide la mémoire tampon de sortie.
 	mOutputBufferCrsr = 0;
-
-	// Libération de la structure.
-	::free( theOutputFrame );
 }
 
 // ------------------------------------------------------------------------- //
@@ -356,7 +633,7 @@ TDCLMNPPipe::SendACK( void )
     frame[0] = sizeof( frame ) - 1;
     frame[1] = LA;
     frame[2] = mInputPacketIndex;
-    frame[3] = kDefaultCredits;
+    frame[3] = kWindowSize;
 
     WriteFrame( frame, sizeof( frame ) );
 }
@@ -403,12 +680,16 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 
 	if (theCurrentByte != DLE)
 	{
+		LogFrame( kFrameError, &theCurrentByte, 1 );
+		::free( theFrame );
 		throw DCLUnknownError;
 	}
 	// Lecture du suivant. Est-ce un STX?
 	theSubPipe->Read( &theCurrentByte, &theCount );
 	if (theCurrentByte != STX)
 	{
+		LogFrame( kFrameError, &theCurrentByte, 1 );
+		::free( theFrame );
 		throw DCLUnknownError;
 	}
 
@@ -436,6 +717,8 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 				{
 					break;
 				} else {
+					// CRC mismatch.
+					LogFrame( kFrameError, theFrame, theFrameSize );
 					// Nettoyage.
 					::free( theFrame );
 					throw DCLUnknownError;
@@ -444,6 +727,8 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 				theFrame[theFrameSize++] = theCurrentByte;
 				theCRC = UpdateCRC16( theCRC, theCurrentByte );
 			} else {
+				// Unexpected byte after DLE.
+				LogFrame( kFrameError, theFrame, theFrameSize );
 				// Nettoyage.
 				::free( theFrame );
 				throw DCLUnknownError;
@@ -453,6 +738,8 @@ TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
 			theCRC = UpdateCRC16( theCRC, theCurrentByte );
 		}
 	} while ( true );
+
+	LogFrame( kFrameIn, theFrame, theFrameSize );
 
 	// Retour du résultat.
 	*outFrame = theFrame;
@@ -467,6 +754,8 @@ TDCLMNPPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
 {
 	// Récupération de la connexion dont on est le mandataire.
 	TDCLPipe* theSubPipe = GetSubPipe();
+
+	LogFrame( kFrameOut, inFrame, inSize );
 
 	// Entête (SYN, DLE, STX)
 	KUInt8 theHeader[3] = { SYN, DLE, STX };
@@ -521,9 +810,28 @@ TDCLMNPPipe::Connected( TDCLLink* inLink )
 	::free( theInputFrame );
 
 	WriteFrame( kMNPHeader, sizeof( kMNPHeader ) );
-	mInputPacketIndex = 1;
-	ReadFrame( &theInputFrame, &theInputFrameSize );
+
+	// Reset link state. The Newton's first LT is sequence 1, as is ours.
+	mInputPacketIndex = 0;
 	mOutputPacketIndex = 1;
+	mLastAckedIndex = 0;
+	mPeerCredit = kWindowSize;
+	mPeerDisconnected = false;
+	mRetransmitCount = 0;
+	mDupAckHandled = false;
+	mSentFrames.clear();
+	mInputBufferCrsr = 0;
+	mInputBufferSize = 0;
+	mOutputBufferCrsr = 0;
+
+	// The Newton answers our LR with an LA granting its initial credit.
+	ReadFrame( &theInputFrame, &theInputFrameSize );
+	try {
+		ProcessFrame( theInputFrame, theInputFrameSize );
+	} catch (...) {
+		::free( theInputFrame );
+		throw;
+	}
 
 	// Nettoyage
 	::free( theInputFrame );
@@ -537,8 +845,30 @@ TDCLMNPPipe::Connected( TDCLLink* inLink )
 void
 TDCLMNPPipe::Disconnect( void )
 {
-	// Envoi de la séquence MNP de fin.
-	WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
+	// Give outstanding frames (typically kDDisconnect) a chance to be
+	// acknowledged before tearing down the link.
+	try {
+		auto theDeadline = std::chrono::steady_clock::now()
+							+ std::chrono::milliseconds( kRetransmitTimeoutMs );
+		while (!mPeerDisconnected && !mSentFrames.empty()
+				&& (std::chrono::steady_clock::now() < theDeadline))
+		{
+			PumpWithTimeout();
+		}
+	} catch (...) {
+		// Best effort only.
+	}
+	mSentFrames.clear();
+
+	// Envoi de la séquence MNP de fin, unless the Newton already closed.
+	if (!mPeerDisconnected)
+	{
+		try {
+			WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
+		} catch (...) {
+			// Link may already be gone.
+		}
+	}
 
 	TDCLPipeProxy::Disconnect();
 }

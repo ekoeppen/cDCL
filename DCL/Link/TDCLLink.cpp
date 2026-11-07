@@ -403,18 +403,26 @@ TDCLLink::DoDisconnect( void )
 		// Je dis à l'application que je déconnecte.
 		mApplication->Disconnecting( this );
 
+		// If the Newton already closed the link (e.g. MNP LD), there is
+		// nobody left to talk to (V.42 A.7.2): just let the server close it.
+		if (mPipe->PeerDisconnected())
+		{
+			return;
+		}
+
 		// Then, I send the disconnect command.
 		{
 			TDCLDockCmdNoData theDisconnectMessage( TDCLDockCommand::kDDisconnect );
 
 			theDisconnectMessage.SendCommand( mPipe );
+			mPipe->FlushOutput();
 		}
 
 		// Récupération du résultat.
 		Boolean gotResult = false;
 		
 		try {
-			do
+			while ((gotResult == false) && mPipe->BytesAvailable())
 			{
 				TSmartPtr<TDCLDockCommand> theNewtMessage;
 				theNewtMessage =
@@ -447,7 +455,7 @@ TDCLLink::DoDisconnect( void )
 						// Commande non prévue.
 						throw DCLUnexpDockCmd;
 				}
-			} while ((gotResult == false) && mPipe->BytesAvailable());
+			}
 			
 			// Si la connexion ne gère pas flush, on attend 5 secondes.
 

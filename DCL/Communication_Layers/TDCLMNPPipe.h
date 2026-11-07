@@ -71,6 +71,11 @@
 // DCL
 #include <DCL/Exceptions/IO_Exceptions/TDCLIOException.h>
 
+// ISO C++
+#include <chrono>
+#include <deque>
+#include <vector>
+
 ///
 /// Une connexion pour la compression MNP. S'utilise pour la compression MNP
 /// sur liaison série.
@@ -97,7 +102,11 @@ public:
 		///< le paquet Newton à installer en morceaux de 128 octets). Le Newton
 		///< n'aime pas mes paquets de 299 octets, en revanche, ça marche
 		///< avec 253+3.
-		kInputFrameIncrement		= 1024	///< 1 KB
+		kInputFrameIncrement		= 1024,	///< 1 KB
+		kRetransmitTimeoutMs		= 2000,	///< Resend unacknowledged frames after this.
+		kDupAckGuardMs				= 250,	///< Min. delay before a duplicate LA triggers a resend.
+		kPollSliceMs				= 100,	///< Granularity of the acknowledgement wait loop.
+		kMaxRetransmits				= 12	///< Give up after this many resends without progress (V.42 N400).
 	};
 
 	///
@@ -164,6 +173,11 @@ public:
 	virtual	void		Disconnect( void );
 
 	///
+	/// Whether the Newton closed the MNP link with an LD frame.
+	///
+	virtual	Boolean		PeerDisconnected( void ) { return mPeerDisconnected; }
+
+	///
 	/// Méthode appelée par le lien pour dire qu'il est connecté
 	/// via cette connexion. Cette méthode est appelée juste avant
 	/// que des données soient échangées.
@@ -186,6 +200,30 @@ public:
 		{
 			mSendKeepAlive = inKeepAlive;
 		}
+
+	///
+	/// Direction of a logged MNP frame.
+	///
+	enum EFrameDirection {
+		kFrameIn,		///< Frame received from the Newton.
+		kFrameOut,		///< Frame sent to the Newton.
+		kFrameError		///< Framing/CRC error while receiving (partial data).
+	};
+
+	///
+	/// Callback used to trace MNP frames (decoded payload, without
+	/// SYN/DLE/STX framing, DLE stuffing and CRC).
+	///
+	typedef void (*FrameLoggerPtr)(
+					void* inRefCon,
+					EFrameDirection inDirection,
+					const KUInt8* inFrame,
+					KUInt32 inSize );
+
+	///
+	/// Install a process-wide MNP frame logger (nil to disable).
+	///
+	static	void		SetFrameLogger( FrameLoggerPtr inLogger, void* inRefCon );
 
 private:
 	///
@@ -220,6 +258,40 @@ private:
 	/// \throws TDCLIOException si un problème est survenu.
 	///
 	void	WriteFrame( const KUInt8* inFrame, KUInt32 inSize );
+
+	///
+	/// Process a decoded incoming frame (LA, LT, LD).
+	///
+	/// \throws TDCLEOFException if the Newton sent a disconnect (LD) frame.
+	///
+	void	ProcessFrame( const KUInt8* inFrame, KUInt32 inSize );
+
+	///
+	/// Process an acknowledgement (LA) for our outgoing LT frames.
+	///
+	void	ProcessAck( KUInt8 inSeq, KUInt8 inCredit );
+
+	///
+	/// Read and process one frame if one arrives within inTimeoutMs.
+	///
+	/// \return \c true if a frame was processed.
+	///
+	Boolean	PollFrame( KUInt32 inTimeoutMs );
+
+	///
+	/// Wait (up to kPollSliceMs) for incoming frames, then resend
+	/// unacknowledged frames if the retransmit timer has expired.
+	///
+	/// \throws TDCLTimeoutException after kMaxRetransmits resends without progress.
+	///
+	void	PumpWithTimeout( void );
+
+	///
+	/// Resend unacknowledged frames, within the credit granted by the Newton.
+	///
+	/// \param inProbe	send at least one frame even if credit is 0.
+	///
+	void	Retransmit( Boolean inProbe );
 
 	///
 	/// Reçoit des données du Newton.
@@ -257,7 +329,7 @@ private:
 	static const KUInt8 kMNPHeader[24];		///< Entête MNP
 	static const KUInt8 kMNPFooter[8];		///< Série d'octets envoyés lors
 											///< de la déconnexion.
-	static const KUInt8 kDefaultCredits;
+	static const KUInt8 kWindowSize;	///< MNP window k: LR offer, our LA credit, max unacked LTs.
 
 	/// \name Variables
 
@@ -269,9 +341,25 @@ private:
 	KUInt32	mOutputBufferCapacity;	///< Taille maximale de la mémoire tampon de sortie.
 	KUInt32	mOutputBufferCrsr;		///< Index des prochains octets dans la mémoire
 									///< tampon de sortie.
-	KUInt8	mInputPacketIndex;		///< Indice du paquet d'entrée.
-	KUInt8	mOutputPacketIndex;		///< Indice du paquet de sortie.
+	KUInt8	mInputPacketIndex;		///< Last in-sequence LT received from the Newton.
+	KUInt8	mOutputPacketIndex;		///< Sequence number of the next LT we send.
+	KUInt8	mLastAckedIndex;		///< Last sequence number acknowledged by the Newton.
+	KUInt8	mPeerCredit;			///< Credit (window) granted by the Newton's last LA.
+	Boolean	mPeerDisconnected;		///< Newton sent an LD frame.
+	KUInt32	mRetransmitCount;		///< Resends since the last acknowledgement progress.
+	Boolean	mDupAckHandled;			///< A duplicate LA already triggered a resend for mLastAckedIndex.
+	std::deque< std::vector<KUInt8> >	mSentFrames;	///< Unacknowledged LT frames.
+	std::chrono::steady_clock::time_point	mLastTransmitTime;	///< Last (re)transmission.
 	Boolean mSendKeepAlive;			///< Send keepalive ACK for NTK protocol
+
+	///
+	/// Forward a frame to the installed logger, if any.
+	///
+	static	void		LogFrame( EFrameDirection inDirection,
+							const KUInt8* inFrame, KUInt32 inSize );
+
+	static FrameLoggerPtr	sFrameLogger;		///< Frame logger callback.
+	static void*			sFrameLoggerRefCon;	///< Frame logger refcon.
 };
 
 #endif

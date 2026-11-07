@@ -130,6 +130,15 @@ TDCLPipeProxy::ClearDataPresent( void )
 	mSubPipe->ClearDataPresent();
 }
 
+// -------------------------------------------------------------------------- //
+//  * PeerDisconnected( void )
+// -------------------------------------------------------------------------- //
+Boolean
+TDCLPipeProxy::PeerDisconnected( void )
+{
+	return mSubPipe->PeerDisconnected();
+}
+
 // ============================ //
 // <<<<< EVACUATION ROUTE <<<<< //
 // ============================ //
