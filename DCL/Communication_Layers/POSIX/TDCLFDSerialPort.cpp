@@ -29,6 +29,7 @@
 //   Michael Vacík <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //   Simon Stapleton <simon@tufty.co.uk>
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========
@@ -244,10 +245,10 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * Select( void )
+//  * Select( long )
 // -------------------------------------------------------------------------- //
 Boolean
-TDCLFDSerialPort::Select( void )
+TDCLFDSerialPort::Select( long inTimeoutMs )
 {
 	// On fait juste un appel à select en attendant des données (de la
 	// part du Newton).
@@ -263,13 +264,22 @@ TDCLFDSerialPort::Select( void )
 		FD_ZERO(&portSet);
 		FD_SET(mSerialFD,&portSet);
 
+		timeval theTimeout;
+		timeval* theTimeoutPtr = nil;
+		if (inTimeoutMs >= 0)
+		{
+			theTimeout.tv_sec = inTimeoutMs / 1000;
+			theTimeout.tv_usec = (inTimeoutMs % 1000) * 1000;
+			theTimeoutPtr = &theTimeout;
+		}
+
 		// Ne pas mettre le descripteur maximal plus un est une erreur classique
 		readyPorts = ::select(
 									mSerialFD + 1 /* nfds */,
 									&portSet /* readfds */,
 									nil /* writefds */,
 									nil /* exceptfsd */,
-									nil /* timeout */ );
+									theTimeoutPtr /* timeout */ );
 
 	} while( mReset );
 
@@ -493,14 +503,20 @@ TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void )
 Boolean
 TDCLFDSerialPort::TFDSerialPortPipe::WaitForIncomingData( void )
 {
-	Boolean theResult = false;
-	if (!mDisconnected)
+	// Wait for data, but wake up regularly so that a disconnection
+	// (DoDisconnect sets mDisconnected) ends this thread even if the Newton
+	// stays silent. A select() without timeout would block forever and make
+	// TSyncPipe::Disconnect wait for this thread indefinitely.
+	TDCLFDSerialPort* theCommLayer = (TDCLFDSerialPort*) GetCommLayer();
+	while (!mDisconnected)
 	{
-		// On attend des données.
-		theResult = ((TDCLFDSerialPort*) GetCommLayer())->Select();
+		if (theCommLayer->Select( kDisconnectPollMs ) && !mDisconnected)
+		{
+			return true;
+		}
 	}
-	
-	return theResult;
+
+	return false;
 }
 
 // -------------------------------------------------------------------------- //
