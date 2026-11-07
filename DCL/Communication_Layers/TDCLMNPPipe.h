@@ -70,6 +70,20 @@
 
 // DCL
 #include <DCL/Exceptions/IO_Exceptions/TDCLIOException.h>
+#include <chrono>
+#include <vector>
+
+/// The sole error reported for an MNP protocol failure or deadline expiry.
+class TDCLMNPProtocolError : public TDCLIOException
+{
+public:
+    TDCLMNPProtocolError() : TDCLIOException(TDCLException::exUnknownError, 0
+#if kDCLDebugFILEandLINE
+        , __FILE__, __LINE__
+#endif
+        ) {}
+    const char* GetExceptionName() const override { return "protocol error, link dropped"; }
+};
 
 ///
 /// Une connexion pour la compression MNP. S'utilise pour la compression MNP
@@ -79,14 +93,16 @@
 /// \author	Filip Zawadiak <philz@vyx.net> (?)
 /// \version $Revision: 1.3 $
 ///
-/// \todo	à terminer
-/// \test	aucun test défini.
+/// Simplified one-frame, stop-and-wait MNP transport for the Newton profile.
+/// \test	MNPPipeTest exercises the wire-level transport with an in-memory peer.
 ///
 class TDCLMNPPipe
 	:
 		public TDCLPipeProxy
 {
 public:
+    static constexpr std::chrono::milliseconds kDefaultStallTimeout{6000};
+
 	///
 	/// Constantes pour cette classe.
 	///
@@ -97,7 +113,6 @@ public:
 		///< le paquet Newton à installer en morceaux de 128 octets). Le Newton
 		///< n'aime pas mes paquets de 299 octets, en revanche, ça marche
 		///< avec 253+3.
-		kInputFrameIncrement		= 1024	///< 1 KB
 	};
 
 	///
@@ -117,6 +132,11 @@ public:
 	/// Destructeur.
 	///
 	virtual ~TDCLMNPPipe( void );
+
+    /// Default is 6 s stall wait across handshake, ACK, credit and peer LD.
+    /// Shorter deadlines may be configured for deterministic test peers.
+    void SetStallTimeout(std::chrono::milliseconds timeout);
+    std::chrono::milliseconds GetStallTimeout() const { return mStallTimeout; }
 
 	/// \name interface entrée/sortie
 
@@ -164,6 +184,11 @@ public:
 	virtual	void		Disconnect( void );
 
 	///
+	/// Whether the Newton closed the MNP link with an LD frame.
+	///
+	virtual	Boolean		PeerDisconnected( void );
+
+	///
 	/// Méthode appelée par le lien pour dire qu'il est connecté
 	/// via cette connexion. Cette méthode est appelée juste avant
 	/// que des données soient échangées.
@@ -184,8 +209,39 @@ public:
 	///
 	inline	void		SetKeepAlive( Boolean inKeepAlive )
 		{
-			mSendKeepAlive = inKeepAlive;
+            mKeepAlive = inKeepAlive;
 		}
+
+    /// Peer LD reason; zero if none was received.
+    KUInt8 PeerDisconnectReason() const { return mPeerReason; }
+    /// Whether local disconnect completed after the final LT was acknowledged.
+    Boolean DisconnectedCleanly() const { return mCleanDisconnect; }
+    /// Reason sent in the local LD (zero if none was sent).
+    KUInt8 DisconnectReason() const { return mDisconnectReason; }
+
+	///
+	/// Direction of a logged MNP frame.
+	///
+	enum EFrameDirection {
+		kFrameIn,		///< Frame received from the Newton.
+		kFrameOut,		///< Frame sent to the Newton.
+		kFrameError		///< Framing/CRC error while receiving (partial data).
+	};
+
+	///
+	/// Callback used to trace MNP frames (decoded payload, without
+	/// SYN/DLE/STX framing, DLE stuffing and CRC).
+	///
+	typedef void (*FrameLoggerPtr)(
+					void* inRefCon,
+					EFrameDirection inDirection,
+					const KUInt8* inFrame,
+					KUInt32 inSize );
+
+	///
+	/// Install a process-wide MNP frame logger (nil to disable).
+	///
+	static	void		SetFrameLogger( FrameLoggerPtr inLogger, void* inRefCon );
 
 private:
 	///
@@ -203,75 +259,44 @@ private:
 	TDCLMNPPipe& operator = ( const TDCLMNPPipe& inCopy );
 
 	///
-	/// Lecture d'une structure MNP depuis le Newton.
+	/// Forward a frame to the installed logger, if any.
 	///
-	/// \param outFrame	un pointeur, alloué avec malloc, sur les données d'une
-	///					structure MNP décodées.
-	/// \param outSize	taille des données.
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void	ReadFrame( KUInt8** outFrame, KUInt32* outSize );
+	static	void		LogFrame( EFrameDirection inDirection,
+							const KUInt8* inFrame, KUInt32 inSize );
 
-	///
-	/// Écriture d'une structure vers le Newton.
-	///
-	/// \param inFrame	pointeur vers les données d'une structure MNP.
-	/// \param inSize	nombre d'octets des données.
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void	WriteFrame( const KUInt8* inFrame, KUInt32 inSize );
+    using Clock = std::chrono::steady_clock;
+    using Bytes = std::vector<KUInt8>;
 
-	///
-	/// Reçoit des données du Newton.
-	///
-	/// \throws TDCLIOException	si un problème est survenu.
-	///
-	virtual void		ReceiveData( void );
+    void SendFrame(const Bytes& frame);
+    Bytes ReceiveFrame(Clock::time_point deadline, KUInt8 timeoutReason);
+    void Pump(Clock::time_point deadline, KUInt8 timeoutReason = 0x04);
+    void DrainAvailable();
+    void SendData();
+    template <typename Predicate>
+    void WaitFor(Predicate done, KUInt8 timeoutReason = 0x04);
+    [[noreturn]] void Fail(KUInt8 reason = 0xfe);
 
-	///
-	/// Envoie des données au Newton.
-	///
-	/// \throws TDCLIOException	si un problème est survenu.
-	///
-	virtual void		SendData( void );
+    KUInt32 mOutputCapacity;
+    Bytes mOutput;
+    Bytes mInput;
+    size_t mInputOffset = 0;
+    KUInt8 mSendSequence = 0;
+    KUInt8 mReceiveSequence = 0;
+    KUInt8 mCredit = 0;
+    KUInt32 mProgress = 0;
+    bool mPending = false;
+    bool mHaveInbound = false;
+    bool mConnected = false;
+    bool mClosed = false;
+    bool mPeerClosed = false;
+    bool mKeepAlive = false;
+    bool mCleanDisconnect = false;
+    KUInt8 mPeerReason = 0;
+    KUInt8 mDisconnectReason = 0;
+    std::chrono::milliseconds mStallTimeout{kDefaultStallTimeout};
 
-	///
-	/// Met à jour la somme de contrôle.
-	///
-	/// \param inCRC		l'ancienne somme de contrôle.
-	/// \param inByte		octet dont on veut la somme de contrôle.
-	/// \return la nouvelle somme de contrôle.
-	///
-	KUInt16	UpdateCRC16( KUInt16 inCRC, KUInt8 inByte );
-
-	/// \name Constantes
-
-	static const KUInt16	kCRC16Table[256];	///< Table pour le calcul de la
-											///< somme de contrôle.
-	static const KUInt8 SYN;	///< Caractère SYN dans la transmission MNP.
-	static const KUInt8 DLE;	///< Caractère DLE dans la transmission MNP.
-	static const KUInt8 STX;	///< Caractère STX dans la transmission MNP.
-	static const KUInt8 ETX;	///< Caractère ETX dans la transmission MNP.
-	static const KUInt8 LA;	///< Structure LA
-	static const KUInt8 LT;	///< Structure LT
-	static const KUInt8 kMNPHeader[24];		///< Entête MNP
-	static const KUInt8 kMNPFooter[8];		///< Série d'octets envoyés lors
-											///< de la déconnexion.
-	static const KUInt8 kDefaultCredits;
-
-	/// \name Variables
-
-	KUInt8*	mInputBuffer;			///< Mémoire tampon d'entrée.
-	KUInt32	mInputBufferCapacity;	///< Contenance de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferSize;		///< Taille de la mémoire tampon d'entrée.
-	KUInt32	mInputBufferCrsr;		///< Curseur sur la mémoire tampon d'entrée.
-	KUInt8*	mOutputBuffer;			///< Mémoire tampon de sortie
-	KUInt32	mOutputBufferCapacity;	///< Taille maximale de la mémoire tampon de sortie.
-	KUInt32	mOutputBufferCrsr;		///< Index des prochains octets dans la mémoire
-									///< tampon de sortie.
-	KUInt8	mInputPacketIndex;		///< Indice du paquet d'entrée.
-	KUInt8	mOutputPacketIndex;		///< Indice du paquet de sortie.
-	Boolean mSendKeepAlive;			///< Send keepalive ACK for NTK protocol
+	static FrameLoggerPtr	sFrameLogger;		///< Frame logger callback.
+	static void*			sFrameLoggerRefCon;	///< Frame logger refcon.
 };
 
 #endif

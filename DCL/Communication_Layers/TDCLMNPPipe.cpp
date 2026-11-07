@@ -69,8 +69,27 @@
 #include <stdlib.h>
 #include <string.h>
 
+// ISO C++
+#include <algorithm>
+#include <chrono>
+#include <thread>
+
 // DCL
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
+
+// MNP frame types (second byte of a decoded frame).
+static const KUInt8 kMNPFrameLR = 1;	///< Link request.
+static const KUInt8 kMNPFrameLD = 2;	///< Link disconnect.
+static const KUInt8 kMNPFrameLT = 4;
+static const KUInt8 kMNPFrameLA = 5;
+static const KUInt8 kLDReasonUser = 0xff;
+static const KUInt8 kLDReasonProtocol = 0xfe;
+static const KUInt8 kLDReasonTimeout = 0x04;
+static const KUInt8 kLDReasonNegotiation = 0x03;
+static const KUInt8 kLDReasonHandshake = 0x01;
+static const size_t kMaxInboundBody = 259;
 
 // Commentaire intéressant de Philz:
 // Just keep in mind that MNP implementation in lpkg is very primitive.
@@ -81,7 +100,7 @@
 // ------------------------------------------------------------------------- //
 //  Constantes
 // ------------------------------------------------------------------------- //
-const KUInt16 TDCLMNPPipe::kCRC16Table[256] =
+const KUInt16 kCRC16Table[256] =
 {
     0x0000, 0xc0c1, 0xc181, 0x0140, 0xc301, 0x03c0, 0x0280, 0xc241,
     0xc601, 0x06c0, 0x0780, 0xc741, 0x0500, 0xc5c1, 0xc481, 0x0440,
@@ -117,54 +136,24 @@ const KUInt16 TDCLMNPPipe::kCRC16Table[256] =
     0x8201, 0x42c0, 0x4380, 0x8341, 0x4100, 0x81c1, 0x8081, 0x4040
 };
 
-// Caractères pour la transmission MNP.
-const KUInt8 TDCLMNPPipe::SYN = 0x16;
-const KUInt8 TDCLMNPPipe::DLE = 0x10;
-const KUInt8 TDCLMNPPipe::STX = 0x02;
-const KUInt8 TDCLMNPPipe::ETX = 0x03;
-const KUInt8 TDCLMNPPipe::LA = 0x05;
-const KUInt8 TDCLMNPPipe::LT = 0x04;
-const KUInt8 TDCLMNPPipe::kDefaultCredits = 8;
-
-const KUInt8 TDCLMNPPipe::kMNPHeader[24] =
-{
-	23,
-	1,2,1,
-	6,1,0,0,0,0,255,
-	2,1,2,
-	3,1,TDCLMNPPipe::kDefaultCredits,
-	4,2,64,0,
-	8,1,3
-};
-
-const KUInt8 TDCLMNPPipe::kMNPFooter[8] =
-{
-	7,2,1,1,255,2,1,0
-};
-
+TDCLMNPPipe::FrameLoggerPtr TDCLMNPPipe::sFrameLogger = nil;
+void* TDCLMNPPipe::sFrameLoggerRefCon = nil;
 
 // ------------------------------------------------------------------------- //
 //  * TDCLMNPPipe( TDCLPipe* )
 // ------------------------------------------------------------------------- //
 TDCLMNPPipe::TDCLMNPPipe(
-			TDCLPipe* inSubPipe,
-			KUInt32 inOutputMaxBufferSize /* = kDefaultOutputMaxBufferSize */ )
-	:
-		TDCLPipeProxy( inSubPipe ),
-		mInputBuffer( nil ),
-		mInputBufferCapacity( kInputFrameIncrement ),
-		mInputBufferSize( 0 ),
-		mInputBufferCrsr( 0 ),
-		mOutputBuffer( nil ),
-		mOutputBufferCapacity( inOutputMaxBufferSize ),
-		mOutputBufferCrsr( 0 ),
-		mInputPacketIndex( 0 ),
-		mOutputPacketIndex( 0 ),
-		mSendKeepAlive( false )
+            TDCLPipe* inSubPipe,
+            KUInt32 inOutputMaxBufferSize /* = kDefaultOutputMaxBufferSize */ )
+    : TDCLPipeProxy(inSubPipe),
+      mOutputCapacity(std::max<KUInt32>(1, std::min<KUInt32>(253, inOutputMaxBufferSize)))
 {
-	// Création des mémoires tampon.
-	mInputBuffer = (KUInt8*) ::malloc( mInputBufferCapacity );
-	mOutputBuffer = (KUInt8*) ::malloc( inOutputMaxBufferSize );
+    mOutput.reserve(mOutputCapacity);
+}
+
+void TDCLMNPPipe::SetStallTimeout(std::chrono::milliseconds timeout)
+{
+    mStallTimeout = timeout;
 }
 
 // ------------------------------------------------------------------------- //
@@ -172,56 +161,230 @@ TDCLMNPPipe::TDCLMNPPipe(
 // ------------------------------------------------------------------------- //
 TDCLMNPPipe::~TDCLMNPPipe( void )
 {
-	// Nettoyage des mémoires tampon.
-	if (mInputBuffer)
-	{
-		::free( mInputBuffer );
-	}
+}
 
-	if (mOutputBuffer)
+// ------------------------------------------------------------------------- //
+//  * SetFrameLogger( FrameLoggerPtr, void* )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::SetFrameLogger( FrameLoggerPtr inLogger, void* inRefCon )
+{
+	sFrameLoggerRefCon = inRefCon;
+	sFrameLogger = inLogger;
+}
+
+// ------------------------------------------------------------------------- //
+//  * LogFrame( EFrameDirection, const KUInt8*, KUInt32 )
+// ------------------------------------------------------------------------- //
+void
+TDCLMNPPipe::LogFrame(
+			EFrameDirection inDirection,
+			const KUInt8* inFrame,
+			KUInt32 inSize )
+{
+	FrameLoggerPtr theLogger = sFrameLogger;
+	if (theLogger)
 	{
-		::free( mOutputBuffer );
+		(*theLogger)( sFrameLoggerRefCon, inDirection, inFrame, inSize );
 	}
 }
 
 // ------------------------------------------------------------------------- //
-//  * Read( void* outBuffer, KUInt32* ioCount )
+//  * Read( void* outBuffer, KUInt32* ioCount )
 // ------------------------------------------------------------------------- //
+[[noreturn]] void TDCLMNPPipe::Fail(KUInt8 reason)
+{
+    if (!mClosed) {
+        mClosed = true;
+        mDisconnectReason = reason;
+        try { SendFrame({7, kMNPFrameLD, 1, 1, reason, 2, 1, 0}); } catch (...) {}
+        try { GetSubPipe()->Disconnect(); } catch (...) {}
+    }
+    throw TDCLMNPProtocolError();
+}
+
+void TDCLMNPPipe::SendFrame(const Bytes& frame)
+{
+    Bytes wire{0x16, 0x10, 0x02};
+    KUInt16 crc = 0;
+    for (auto byte : frame) {
+        crc = (crc >> 8) ^ kCRC16Table[(crc ^ byte) & 0xff];
+        wire.push_back(byte);
+        if (byte == 0x10) wire.push_back(byte);
+    }
+    wire.push_back(0x10);
+    wire.push_back(0x03);
+    crc = (crc >> 8) ^ kCRC16Table[(crc ^ 0x03) & 0xff];
+    wire.push_back(crc & 0xff);
+    wire.push_back(crc >> 8);
+    KUInt32 count = wire.size();
+    try {
+        GetSubPipe()->Write(wire.data(), &count);
+        if (count != wire.size()) Fail();
+        GetSubPipe()->FlushOutput();
+    } catch (const TDCLMNPProtocolError&) { throw; }
+      catch (...) { Fail(); }
+    LogFrame(kFrameOut, frame.data(), frame.size());
+}
+
+TDCLMNPPipe::Bytes TDCLMNPPipe::ReceiveFrame(Clock::time_point deadline,
+                                              KUInt8 timeoutReason)
+{
+    auto readByte = [&]() -> KUInt8 {
+        while (!GetSubPipe()->BytesAvailable()) {
+            if (mClosed || Clock::now() >= deadline) Fail(timeoutReason);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        KUInt8 byte = 0;
+        KUInt32 count = 1;
+        try { GetSubPipe()->Read(&byte, &count); }
+        catch (...) { Fail(); }
+        if (count != 1) Fail();
+        return byte;
+    };
+    KUInt8 first = readByte();
+    if (deadline == Clock::time_point::max())
+        deadline = Clock::now() + mStallTimeout;
+    timeoutReason = kLDReasonProtocol;
+    while (first == 0x16) first = readByte();
+    if (first != 0x10 || readByte() != 0x02) Fail();
+    Bytes frame;
+    KUInt16 crc = 0;
+    for (;;) {
+        KUInt8 byte = readByte();
+        if (byte == 0x10) {
+            byte = readByte();
+            if (byte == 0x03) {
+                crc = (crc >> 8) ^ kCRC16Table[(crc ^ byte) & 0xff];
+                KUInt16 received = readByte();
+                received |= static_cast<KUInt16>(readByte()) << 8;
+                if (received != crc || frame.empty()) {
+                    LogFrame(kFrameError, frame.data(), frame.size());
+                    Fail(kLDReasonProtocol);
+                }
+                LogFrame(kFrameIn, frame.data(), frame.size());
+                return frame;
+            }
+            if (byte != 0x10) Fail();
+        }
+        if (frame.size() >= kMaxInboundBody) Fail();
+        frame.push_back(byte);
+        crc = (crc >> 8) ^ kCRC16Table[(crc ^ byte) & 0xff];
+    }
+}
+
+void TDCLMNPPipe::Pump(Clock::time_point deadline, KUInt8 timeoutReason)
+{
+    Bytes frame = ReceiveFrame(deadline, timeoutReason);
+    if (frame.size() < 2) Fail();
+    switch (frame[1]) {
+    case kMNPFrameLD:
+        // The wire boundary and CRC delimit the body. Newton OS sends its
+        // entire ten-byte LA buffer for an eight-byte LD; only the declared
+        // reason and optional user-code parameters are significant.
+        if ((frame[0] != 4 && frame[0] != 7) ||
+            frame.size() < (frame[0] == 7 ? 8u : 5u) ||
+            frame[2] != 1 || frame[3] != 1 ||
+            (frame[0] == 7 && (frame[5] != 2 || frame[6] != 1))) Fail();
+        mClosed = true;
+        mPeerClosed = true;
+        mPeerReason = frame[4];
+        ++mProgress;
+        GetSubPipe()->Disconnect();
+        return;
+    case kMNPFrameLA:
+        if (frame.size() != 4 || frame[0] != 3 || frame[3] > 1) Fail();
+        if (mPending) {
+            if (frame[2] == mSendSequence) {
+                mPending = false;
+                mCredit = frame[3];
+                ++mProgress;
+            } else if (frame[2] != static_cast<KUInt8>(mSendSequence - 1)) {
+                Fail();
+            }
+        } else if (frame[2] == mSendSequence) {
+            if (mCredit != frame[3]) {
+                mCredit = frame[3];
+                ++mProgress;
+            }
+        } else Fail();
+        if (mKeepAlive) SendACK();
+        return;
+    case kMNPFrameLT:
+        if (frame.size() < 4 || frame.size() > kMaxInboundBody || frame[0] != 2) Fail();
+        if (frame[2] == static_cast<KUInt8>(mReceiveSequence + 1)) {
+            mReceiveSequence = frame[2];
+            mHaveInbound = true;
+            mInput.insert(mInput.end(), frame.begin() + 3, frame.end());
+        } else if (frame[2] != mReceiveSequence || !mHaveInbound) {
+            Fail();
+        }
+        ++mProgress;
+        SendACK();
+        return;
+    default:
+        Fail();
+    }
+}
+
+void TDCLMNPPipe::DrainAvailable()
+{
+    while (!mClosed && GetSubPipe()->BytesAvailable())
+        Pump(Clock::now() + mStallTimeout, kLDReasonProtocol);
+}
+
+template <typename Predicate>
+void TDCLMNPPipe::WaitFor(Predicate done, KUInt8 timeoutReason)
+{
+    auto seen = mProgress;
+    auto deadline = Clock::now() + mStallTimeout;
+    while (!done() && !mClosed) {
+        if (mProgress != seen) {
+            seen = mProgress;
+            deadline = Clock::now() + mStallTimeout;
+        }
+        Pump(deadline, timeoutReason);
+    }
+}
+
+void TDCLMNPPipe::SendData()
+{
+    if (mOutput.empty()) return;
+    WaitFor([this] { return !mPending && mCredit != 0; });
+    if (mPeerClosed) throw DCLEOF;
+    if (mClosed) Fail();
+    mSendSequence = static_cast<KUInt8>(mSendSequence + 1);
+    Bytes frame{2, kMNPFrameLT, mSendSequence};
+    frame.insert(frame.end(), mOutput.begin(), mOutput.end());
+    SendFrame(frame);
+    mOutput.clear();
+    mCredit = 0;
+    mPending = true;
+    ++mProgress;
+}
+
 void
 TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
 {
-	KUInt32 bytesLeft = *ioCount;
-	KUInt32 bytesCopied = 0;
-	while ( bytesLeft > 0 )
-	{
-		// Faut-il lire une nouvelle structure?
-		if (mInputBufferCrsr == mInputBufferSize)
-		{
-			// On vide la mémoire tampon.
-			mInputBufferCrsr = 0;
-			mInputBufferSize = 0;
-
-			// Et on la re-remplit.
-			ReceiveData();
-		}
-
-		// Copie des données.
-		KUInt32 copyCount = bytesLeft;
-		if (copyCount + mInputBufferCrsr > mInputBufferSize)
-		{
-			copyCount = mInputBufferSize - mInputBufferCrsr;
-		}
-
-		(void) ::memcpy( (void*) &((KUInt8*) outBuffer)[bytesCopied],
-				(const void*) &mInputBuffer[mInputBufferCrsr],
-				copyCount );
-
-		// Mise à jour des curseurs.
-		mInputBufferCrsr += copyCount;
-		bytesLeft -= copyCount;
-		bytesCopied += copyCount;
-		*ioCount = bytesCopied;
-	}
+    KUInt32 done = 0, wanted = *ioCount;
+    *ioCount = 0;
+    try {
+        while (done < wanted) {
+            if (mInputOffset == mInput.size()) {
+                mInput.clear();
+                mInputOffset = 0;
+                if (mPeerClosed) throw DCLEOF;
+                if (mClosed) Fail();
+                Pump(Clock::time_point::max());
+                continue;
+            }
+            auto n = std::min<size_t>(wanted - done, mInput.size() - mInputOffset);
+            ::memcpy(static_cast<KUInt8*>(outBuffer) + done, mInput.data() + mInputOffset, n);
+            mInputOffset += n;
+            done += n;
+            *ioCount = done;
+        }
+    } catch (...) { *ioCount = done; throw; }
 }
 
 // ------------------------------------------------------------------------- //
@@ -230,109 +393,21 @@ TDCLMNPPipe::Read( void* outBuffer, KUInt32* ioCount )
 void
 TDCLMNPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 {
-	KUInt32 bytesLeft = *ioCount;
-	KUInt32 bytesCopied = 0;
-	while ( bytesLeft > 0 )
-	{
-		// Copie des données.
-		KUInt32 copyCount = bytesLeft;
-		if (copyCount + mOutputBufferCrsr > mOutputBufferCapacity)
-		{
-			copyCount = mOutputBufferCapacity - mOutputBufferCrsr;
-		}
-
-		(void) ::memcpy( (void*) &mOutputBuffer[mOutputBufferCrsr],
-				(const void*) &((const KUInt8*) inBuffer)[bytesCopied],
-				copyCount );
-
-		// Mise à jour des curseurs.
-		mOutputBufferCrsr += copyCount;
-		bytesLeft -= copyCount;
-		bytesCopied += copyCount;
-		*ioCount = bytesCopied;
-
-		// Faut-il écrire la structure?
-		if (mOutputBufferCrsr == mOutputBufferCapacity)
-		{
-			SendData();
-		}
-	}
-}
-
-// ------------------------------------------------------------------------- //
-//	* ReceiveData( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLMNPPipe::ReceiveData( void )
-{
-	KUInt8* theInputFrame;
-	KUInt32 theInputFrameSize;
-	ReadFrame( &theInputFrame, &theInputFrameSize );
-
-	if ( theInputFrameSize == 4 && theInputFrame[1] == LA )
-	{
-		if ( mSendKeepAlive )
-		{
-			// confirm LA frames again (NTK protocol), give credit
-			SendACK();
-		}
-	}
-	else
-	{
-		mInputPacketIndex = theInputFrame[2];
-		SendACK();
-
-		// Copie des donnÈes.
-		KUInt32 toCopy = theInputFrameSize - 3;
-		if ((mInputBufferSize + toCopy) > mInputBufferCapacity)
-		{
-			mInputBufferCapacity = mInputBufferSize + toCopy;
-			mInputBuffer = (KUInt8*)
-					::realloc(
-							mInputBuffer,
-							mInputBufferCapacity );
-		}
-
-		(void) ::memcpy(
-					&mInputBuffer[mInputBufferSize],
-					(const void*) &theInputFrame[3],
-					toCopy );
-		mInputBufferSize += toCopy;
-	}
-
-	// LibÈration.
-	::free( theInputFrame );
-}
-
-// ------------------------------------------------------------------------- //
-//	* SendData( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLMNPPipe::SendData( void )
-{
-	// La structure de sortie comprend les données précédées de 3 octets.
-	KUInt32 theOutputFrameSize = mOutputBufferCrsr + 3;
-	KUInt8* theOutputFrame = (KUInt8*) ::malloc( theOutputFrameSize );
-
-	// Les 3 octets du début.
-	theOutputFrame[0] = 2;	// Taille de l'entête.
-	theOutputFrame[1] = LT;
-	theOutputFrame[2] = mOutputPacketIndex;
-
-	// Copie des données.
-	(void) ::memcpy(
-			&theOutputFrame[3],
-			(const void*) mOutputBuffer,
-			mOutputBufferCrsr );
-
-	WriteFrame( theOutputFrame, theOutputFrameSize );
-	mOutputPacketIndex++;
-
-	// On vide la mémoire tampon de sortie.
-	mOutputBufferCrsr = 0;
-
-	// Libération de la structure.
-	::free( theOutputFrame );
+    KUInt32 done = 0, wanted = *ioCount;
+    *ioCount = 0;
+    try {
+        if (mPeerClosed) throw DCLEOF;
+        if (!mConnected || mClosed) Fail();
+        while (done < wanted) {
+            if (mOutput.size() == mOutputCapacity) SendData();
+            auto n = std::min<size_t>(wanted - done, mOutputCapacity - mOutput.size());
+            const auto* bytes = static_cast<const KUInt8*>(inBuffer) + done;
+            mOutput.insert(mOutput.end(), bytes, bytes + n);
+            done += n;
+            *ioCount = done;
+            if (mOutput.size() == mOutputCapacity) SendData();
+        }
+    } catch (...) { *ioCount = done; throw; }
 }
 
 // ------------------------------------------------------------------------- //
@@ -341,8 +416,12 @@ TDCLMNPPipe::SendData( void )
 void
 TDCLMNPPipe::FlushOutput( void )
 {
-	SendData();
-	GetSubPipe()->FlushOutput();
+    if (mPeerClosed) throw DCLEOF;
+    if (mClosed) Fail();
+    DrainAvailable();
+    if (mPeerClosed) throw DCLEOF;
+    SendData();
+    GetSubPipe()->FlushOutput();
 }
 
 // ------------------------------------------------------------------------- //
@@ -351,14 +430,8 @@ TDCLMNPPipe::FlushOutput( void )
 void
 TDCLMNPPipe::SendACK( void )
 {
-    KUInt8 frame[4];
-
-    frame[0] = sizeof( frame ) - 1;
-    frame[1] = LA;
-    frame[2] = mInputPacketIndex;
-    frame[3] = kDefaultCredits;
-
-    WriteFrame( frame, sizeof( frame ) );
+    if (mClosed) Fail();
+    SendFrame({3, kMNPFrameLA, mReceiveSequence, 1});
 }
 
 // ------------------------------------------------------------------------- //
@@ -367,168 +440,8 @@ TDCLMNPPipe::SendACK( void )
 Boolean
 TDCLMNPPipe::BytesAvailable( void )
 {
-	Boolean theResult;
-
-	if (mInputBufferCrsr < mInputBufferSize)
-	{
-		theResult = true;
-	} else {
-		theResult = GetSubPipe()->BytesAvailable();
-	}
-
-	return theResult;
-}
-
-// ------------------------------------------------------------------------- //
-//	* ReadFrame( KUInt8**, KUInt32* )
-// ------------------------------------------------------------------------- //
-void
-TDCLMNPPipe::ReadFrame( KUInt8** outFrame, KUInt32* outSize )
-{
-	// Récupération de la connexion dont on est le mandataire.
-	TDCLPipe* theSubPipe = GetSubPipe();
-
-	KUInt8* theFrame = (KUInt8*) ::malloc( kInputFrameIncrement );
-	KUInt32 theFrameCapacity = kInputFrameIncrement;
-	KUInt32 theFrameSize = 0;
-
-	KUInt8 theCurrentByte;
-	KUInt32 theCount = sizeof( theCurrentByte );
-	KUInt16 theCRC = 0;
-
-	// Passage des caractères SYN au début.
-	do {
-		theSubPipe->Read( &theCurrentByte, &theCount );
-	} while ( theCurrentByte == SYN );
-
-	if (theCurrentByte != DLE)
-	{
-		throw DCLUnknownError;
-	}
-	// Lecture du suivant. Est-ce un STX?
-	theSubPipe->Read( &theCurrentByte, &theCount );
-	if (theCurrentByte != STX)
-	{
-		throw DCLUnknownError;
-	}
-
-	do {
-		if (theFrameSize == theFrameCapacity)
-		{
-			// Agrandissement de la taille de la structure.
-			theFrameCapacity += kInputFrameIncrement;
-			theFrame =
-				(KUInt8*) ::realloc( theFrame, theFrameCapacity );
-		}
-
-		theSubPipe->Read( &theCurrentByte, &theCount );
-		if (theCurrentByte == DLE)
-		{
-			theSubPipe->Read( &theCurrentByte, &theCount );
-			if (theCurrentByte == ETX)
-			{
-				theCRC = UpdateCRC16( theCRC, theCurrentByte );
-				theSubPipe->Read( &theCurrentByte, &theCount );
-				KUInt16 theOriginalCRC = theCurrentByte;
-				theSubPipe->Read( &theCurrentByte, &theCount );
-				theOriginalCRC |= theCurrentByte << 8;
-				if (theOriginalCRC == theCRC)
-				{
-					break;
-				} else {
-					// Nettoyage.
-					::free( theFrame );
-					throw DCLUnknownError;
-				}
-			} else if (theCurrentByte == DLE) {
-				theFrame[theFrameSize++] = theCurrentByte;
-				theCRC = UpdateCRC16( theCRC, theCurrentByte );
-			} else {
-				// Nettoyage.
-				::free( theFrame );
-				throw DCLUnknownError;
-			}
-		} else {
-			theFrame[theFrameSize++] = theCurrentByte;
-			theCRC = UpdateCRC16( theCRC, theCurrentByte );
-		}
-	} while ( true );
-
-	// Retour du résultat.
-	*outFrame = theFrame;
-	*outSize = theFrameSize;
-}
-
-// ------------------------------------------------------------------------- //
-//	* WriteFrame( const KUInt8*, KUInt32 )
-// ------------------------------------------------------------------------- //
-void
-TDCLMNPPipe::WriteFrame( const KUInt8* inFrame, KUInt32 inSize )
-{
-	// Récupération de la connexion dont on est le mandataire.
-	TDCLPipe* theSubPipe = GetSubPipe();
-
-	// Entête (SYN, DLE, STX)
-	KUInt8 theHeader[3] = { SYN, DLE, STX };
-	KUInt32 theCount = sizeof( theHeader );
-	theSubPipe->Write( theHeader, &theCount );
-
-	// Écriture des données, en remplaçant les DLE par DLE, DLE.
-	KUInt32 indexFrame;
-	KUInt8 theCurrentByte;
-	theCount = sizeof( theCurrentByte );
-	KUInt16 theCRC = 0;
-
-	for (indexFrame = 0; indexFrame < inSize; indexFrame++)
-	{
-		theCurrentByte = inFrame[indexFrame];
-
-		if (theCurrentByte == DLE)
-		{
-			// On écrit deux fois DLE.
-			theSubPipe->Write( &theCurrentByte, &theCount );
-		}
-		theSubPipe->Write( &theCurrentByte, &theCount );
-		theCRC = UpdateCRC16( theCRC, theCurrentByte );
-	}
-
-	// DLE, ETX puis CRC
-	theCurrentByte = DLE;
-	theSubPipe->Write( &theCurrentByte, &theCount );
-	theCurrentByte = ETX;
-	theSubPipe->Write( &theCurrentByte, &theCount );
-	theCRC = UpdateCRC16( theCRC, theCurrentByte );
-
-	// CRC
-	theCurrentByte = (KUInt8) (theCRC & 0x00FF);
-	theSubPipe->Write( &theCurrentByte, &theCount );
-	theCurrentByte = (KUInt8) ((theCRC & 0xFF00) >> 8);
-	theSubPipe->Write( &theCurrentByte, &theCount );
-}
-
-// ------------------------------------------------------------------------- //
-//  * Connected( TDCLLink* inLink )
-// ------------------------------------------------------------------------- //
-TDCLCommLayer*
-TDCLMNPPipe::Connected( TDCLLink* inLink )
-{
-	TDCLCommLayer* theResult = TDCLPipeProxy::Connected( inLink );
-
-	// Echange de l'entête MNP (?)
-	KUInt8* theInputFrame;
-	KUInt32 theInputFrameSize;
-	ReadFrame( &theInputFrame, &theInputFrameSize );
-	::free( theInputFrame );
-
-	WriteFrame( kMNPHeader, sizeof( kMNPHeader ) );
-	mInputPacketIndex = 1;
-	ReadFrame( &theInputFrame, &theInputFrameSize );
-	mOutputPacketIndex = 1;
-
-	// Nettoyage
-	::free( theInputFrame );
-
-	return theResult;
+    if (!mClosed) DrainAvailable();
+    return mInputOffset < mInput.size();
 }
 
 // ------------------------------------------------------------------------- //
@@ -537,20 +450,97 @@ TDCLMNPPipe::Connected( TDCLLink* inLink )
 void
 TDCLMNPPipe::Disconnect( void )
 {
-	// Envoi de la séquence MNP de fin.
-	WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
-
-	TDCLPipeProxy::Disconnect();
+    if (mClosed) return;
+    if (!mConnected) {
+        mClosed = true;
+        mDisconnectReason = kLDReasonUser;
+        try { SendFrame({7, kMNPFrameLD, 1, 1, kLDReasonUser, 2, 1, 0}); } catch (...) {}
+        try { GetSubPipe()->Disconnect(); } catch (...) {}
+        mCleanDisconnect = true;
+        return;
+    }
+    try {
+        // Flush any buffered output and wait for the final LT's LA (D2' step 1).
+        SendData();
+        WaitFor([this] { return !mPending; });
+        if (mPeerClosed) {
+            mCleanDisconnect = true;
+            return;
+        }
+        if (mClosed) return;
+    } catch (...) {
+        if (!mClosed) {
+            mClosed = true;
+            mDisconnectReason = kLDReasonTimeout;
+            try { SendFrame({7, kMNPFrameLD, 1, 1, kLDReasonTimeout, 2, 1, 0}); }
+            catch (...) {}
+        }
+        try { GetSubPipe()->Disconnect(); } catch (...) {}
+        return;
+    }
+    // D2' steps 2-3: wait for the Newton's LD; send LD 0xff only on stall.
+    try {
+        WaitFor([this] { return mPeerClosed; }, kLDReasonUser);
+    } catch (...) {}
+    mCleanDisconnect = (mPeerClosed || mDisconnectReason == kLDReasonUser);
 }
 
-// ------------------------------------------------------------------------- //
-//	* UpdateCRC16( KUInt16, KUInt8 )
-// ------------------------------------------------------------------------- //
-KUInt16
-TDCLMNPPipe::UpdateCRC16( KUInt16 inCRC, KUInt8 inByte )
+Boolean
+TDCLMNPPipe::PeerDisconnected()
 {
-	return (KUInt16)(((inCRC >> 8) & 0xFF)
-			^ kCRC16Table[ (inCRC & 0xFF) ^ inByte ]);
+    if (!mClosed) DrainAvailable();
+    return mPeerClosed;
+}
+
+TDCLCommLayer*
+TDCLMNPPipe::Connected(TDCLLink* link)
+{
+    auto lr = ReceiveFrame(Clock::now() + mStallTimeout, kLDReasonHandshake);
+    // V.42 Annex A LR: fixed prefix, then type/length/value parameters.
+    // The captured Newton LR is 41 bytes with length indicator 0x26, not
+    // body-size-minus-one; the frame boundary is supplied by the wire codec.
+    static const Bytes prefix{0x02, 0x01, 0x06, 0x01, 0, 0, 0, 0, 0xff};
+    if (lr.size() < 11 || lr[1] != kMNPFrameLR ||
+        !std::equal(prefix.begin(), prefix.end(), lr.begin() + 2)) Fail(kLDReasonNegotiation);
+    bool framing = false, window = false, n401 = false, optimization = false;
+    for (size_t i = 11; i < lr.size();) {
+        if (lr.size() - i < 2 || lr[i+1] > lr.size() - i - 2) Fail(kLDReasonNegotiation);
+        const auto id = lr[i], len = lr[i+1];
+        const auto value = i + 2;
+        switch (id) {
+        case 2: // Octet-oriented framing.
+            if (framing || len != 1 || lr[value] != 2) Fail(kLDReasonNegotiation);
+            framing = true;
+            break;
+        case 3: // Newton's offered transmit window; we respond with one.
+            if (window || len != 1 || lr[value] == 0) Fail(kLDReasonNegotiation);
+            window = true;
+            break;
+        case 4: // N401 (little-endian), overridden by optimization bit 1.
+            if (n401 || len != 2 ||
+                (static_cast<unsigned>(lr[value]) |
+                 (static_cast<unsigned>(lr[value+1]) << 8)) < 64) Fail(kLDReasonNegotiation);
+            n401 = true;
+            break;
+        case 8: // 256-byte data fields and fixed-field LT/LA.
+            if (optimization || len != 1 || lr[value] != 3) Fail(kLDReasonNegotiation);
+            optimization = true;
+            break;
+        default: // Additional Newton parameters are not echoed or interpreted.
+            break;
+        }
+        i += 2 + len;
+    }
+    if (!framing || !window || !n401 || !optimization) Fail(kLDReasonNegotiation);
+    // Reply proven compatible with the observed hardware trace.
+    SendFrame({0x17, 1, 2, 1, 6, 1, 0, 0, 0, 0, 0xff,
+               2, 1, 2, 3, 1, 1, 4, 2, 64, 0, 8, 1, 3});
+    auto la = ReceiveFrame(Clock::now() + mStallTimeout, kLDReasonHandshake);
+    if (la != Bytes({3, kMNPFrameLA, 0, 1})) Fail(kLDReasonNegotiation);
+    mConnected = true;
+    mCredit = 1;
+    ++mProgress;
+    return TDCLPipeProxy::Connected(link);
 }
 
 // ========================================================================== //

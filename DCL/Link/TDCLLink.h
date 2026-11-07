@@ -67,7 +67,7 @@ class TDCLPipe;
 ///
 class TDCLLink
 	:
-		private TDCLThread
+		protected TDCLThread
 {
 public:
 	///

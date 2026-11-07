@@ -637,8 +637,14 @@ TDCLLink::TransitionFromRunning( void )
 						}
 					}
 					
-					// On attend à nouveau des données.
-					mPipe->ClearDataPresent();
+					// A pipe can consume a peer LD while checking for data and
+					// return false without delivering a command. Do not wait for
+					// another data event from a transport that has already closed.
+					if (theNextState == kRunning && mPipe->PeerDisconnected() &&
+						!mPipe->BytesAvailable())
+						theNextState = kDisconnected;
+					if (theNextState == kRunning)
+						mPipe->ClearDataPresent();
 				} else if (theEventID == TDCLEvent::kDisconnectLink) {
 					// Il faut se déconnecter.
 					theNextState = kDisconnecting;

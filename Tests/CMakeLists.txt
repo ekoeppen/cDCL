@@ -45,6 +45,11 @@ endif(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
 target_link_libraries (DCLTests PUBLIC DCL PRIVATE Threads::Threads)
 
+add_executable(MNPPipeTest Tests/MNPPipeTest.cpp)
+target_link_libraries(MNPPipeTest PRIVATE DCL Threads::Threads)
+add_test(NAME MNPPipeTest COMMAND MNPPipeTest)
+set_tests_properties(MNPPipeTest PROPERTIES TIMEOUT 15)
+
 file(GLOB TEST_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-*.sh)
 foreach(TEST_SCRIPT ${TEST_SCRIPTS})
     add_test(NAME ${TEST_SCRIPT}
