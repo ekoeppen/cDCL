@@ -289,6 +289,7 @@ protected:
 		std::mutex					mWorkerMutex;
 		std::condition_variable_any	mWorkerCV;
 		bool						mWorkerWoken;
+		std::atomic<bool>			mTransportDisconnected;
 		std::atomic<std::thread::id> mWorkerThreadId;
 		std::jthread				mWorkerThread;
 	};

@@ -253,6 +253,7 @@ TDCLSyncCommLayer::TSyncPipe::TSyncPipe( TDCLSyncCommLayer* inCommLayer )
 	:
 		TDCLPipe( inCommLayer ),
 		mWorkerWoken( false ),
+		mTransportDisconnected( false ),
 		mWorkerThreadId()
 {
 }
@@ -340,17 +341,28 @@ TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 {
 	(void) RequestStop();
 
-	if (GetLink())
+	// Always tear down the transport even if Connected() has not attached a
+	// link yet (e.g. failed handshake before TDCLPipeProxy::Connected()), so
+	// the underlying comm layer does not remain busy.
+	if ( !mTransportDisconnected.exchange( true ) )
 	{
-		// On appelle la méthode qui fait vraiment le travail.
-		DoDisconnect();
-		
-		// On relâche le processus s'il attendait
-		WakeWorker();
-		
-		// On attend que le processus léger termine.
-		JoinWorker();
+		try
+		{
+			DoDisconnect();
+		}
+		catch ( ... )
+		{
+			WakeWorker();
+			JoinWorker();
+			throw;
+		}
 	}
+
+	// On relâche le processus s'il attendait
+	WakeWorker();
+
+	// On attend que le processus léger termine.
+	JoinWorker();
 }
 
 // --------------------------------------------------------------------------------	//
