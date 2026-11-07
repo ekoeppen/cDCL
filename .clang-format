@@ -1,7 +1,9 @@
 Language: Cpp
 BasedOnStyle: LLVM
 IndentWidth: 4
-UseTab: Never
+TabWidth: 4
+AccessModifierOffset: -4
+UseTab: ForIndentation
 ColumnLimit: 120
 BreakBeforeBraces: Allman
 AlwaysBreakAfterReturnType: AllDefinitions
@@ -11,8 +13,7 @@ PointerAlignment: Left
 IndentPPDirectives: None
 ConstructorInitializerIndentWidth: 4
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
-BreakConstructorInitializers: BeforeComma
-SpaceBeforeParens: Always
+BreakConstructorInitializers: BeforeColon
 SpaceAfterCStyleCast: false
 SpaceAfterTemplateKeyword: false
 SortIncludes: false
@@ -25,12 +26,13 @@ AlignEscapedNewlines: Left
 Language: ObjC
 BasedOnStyle: LLVM
 IndentWidth: 4
-UseTab: Never
+TabWidth: 4
+AccessModifierOffset: -4
+UseTab: ForIndentation
 ColumnLimit: 120
 BreakBeforeBraces: Allman
 AlwaysBreakAfterReturnType: AllDefinitions
 AllowShortFunctionsOnASingleLine: None
-SpaceBeforeParens: Always
 SpacesInParentheses: true
 PointerAlignment: Left
 IndentPPDirectives: None
