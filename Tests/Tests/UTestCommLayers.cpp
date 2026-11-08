@@ -789,16 +789,16 @@ UTestCommLayers::StartAndStopTwice( TDCLCommLayer* inCommLayer, TSASTApplication
 	theServer.Start();
 
 	inApplication->WaitUntilServerIsDown();
+	theServer.Join();
 
 	(void)::fprintf( inApplication->GetLogFile(), "Second test\n" );
-
-	std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
 
 	inApplication->ResetTest();
 
 	theServer.Start();
 
 	inApplication->WaitUntilServerIsDown();
+	theServer.Join();
 
 	inApplication->ResetTest();
 }

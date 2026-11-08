@@ -49,6 +49,16 @@ endif(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
 target_link_libraries (DCLTests PUBLIC DCL PRIVATE Threads::Threads)
 
+add_executable(CommLayerShutdownTests
+    CommLayerShutdownTests.cpp
+    Tests/TTestApplication.cpp
+    Tests/TTestEmptyFilesIntf.cpp
+    Tests/TTestServer.cpp
+)
+target_link_libraries(CommLayerShutdownTests PRIVATE DCL Threads::Threads)
+add_test(NAME comm-layer-shutdown COMMAND CommLayerShutdownTests)
+set_tests_properties(comm-layer-shutdown PROPERTIES TIMEOUT 30)
+
 file(GLOB TEST_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-*.sh)
 foreach(TEST_SCRIPT ${TEST_SCRIPTS})
     add_test(NAME ${TEST_SCRIPT}
