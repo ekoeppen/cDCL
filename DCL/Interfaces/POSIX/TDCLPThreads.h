@@ -42,6 +42,7 @@
 
 // POSIX
 #include <pthread.h>
+#include <atomic>
 
 ///
 /// Mise en place de l'interface IDCLThreads avec les pthreads.
@@ -170,6 +171,9 @@ private:
 		///
 		virtual void	Stop( void );
 
+		/// Wait for the native thread, even if its reported state is kStopped.
+		virtual void	Join( void );
+
 		///
 		/// Suspend le processus léger.
 		/// Cette méthode peut être appelée à partir d'un autre processus
@@ -277,7 +281,8 @@ private:
 		/// \name variables privées.
 
 		pthread_t		mThread;		///< Ben le processus léger.
-		EState			mState;			///< L'état du processus.
+		std::atomic<EState> mState;		///< L'état du processus.
+		bool            mJoinable;		///< Native thread still needs joining.
 		TSemaphore		mSyncSemaphore;	///< Sémaphore utilisé pour
 										///< synchroniser.
 		pthread_mutex_t	mMutex;			///< Mutex pour protéger l'état.

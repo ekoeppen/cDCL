@@ -85,22 +85,14 @@ TDCLSyncCommLayer::StopListening( void )
 	// On ne fait rien si on n'est pas en train d'écouter.
 	if (GetServer())
 	{
-		// On appelle la méthode qui fait vraiment le travail.
-		try {
-			DoStopListening();
-		
-			// Réveil du processus léger
-			WakeUp();
+		// Interrupt the blocking transport wait, then wake a worker sleeping
+		// until its pending request is accepted/refused.
+		DoStopListening();
+		WakeUp();
 
-			// On attend que le processus léger termine.
-			while (GetThreadState() != IDCLThreads::kStopped)
-			{
-				Yield();
-			}
-		} catch ( ... ) {
-			// On reste silencieux.
-		}
-		
+		// kStopped alone is not proof of native thread exit. Keep the server
+		// and transport alive until the worker has really finished.
+		Join();
 		SetServer( nil );
 	}
 }

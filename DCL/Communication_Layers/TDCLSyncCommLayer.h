@@ -95,7 +95,9 @@ public:
 
 	///
 	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	/// Dit au processus léger de s'arrêter une fois que DoStopListening a terminé.
+	/// Wakes the listener and waits for its actual exit before returning.
+	/// Must be called outside the listener thread. Shutdown errors propagate;
+	/// the server association is only cleared after a successful join.
 	/// Ne fait rien si on n'est pas en train d'écouter.
 	///
 	virtual void		StopListening( void );

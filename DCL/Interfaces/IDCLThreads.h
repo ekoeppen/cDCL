@@ -143,6 +143,12 @@ public:
 		///
 		virtual void	Stop( void ) = 0;
 
+		/// Wait for actual thread exit and release its native resources.
+		/// Does not request termination. Safe before Start or after a prior Join.
+		/// Must not be called by the worker itself; lifecycle calls are serialized
+		/// by the owner.
+		virtual void	Join( void ) = 0;
+
 		///
 		/// Suspend le processus léger.
 		/// Cette méthode peut être appelée à partir d'un autre processus

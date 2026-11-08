@@ -81,6 +81,12 @@ public:
 			mThread->Stop();
 		}
 
+	/// Wait for the worker to exit before destroying or reusing its state.
+	inline void Join( void )
+		{
+			mThread->Join();
+		}
+
 	///
 	/// Suspend le processus léger.
 	///

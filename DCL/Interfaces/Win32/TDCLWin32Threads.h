@@ -12,6 +12,7 @@
 #include <DCL/Interfaces/IDCLThreads.h>
 
 #include <windows.h>
+#include <atomic>
 
 ///
 /// Implementation of IDCLThreads for Win32.
@@ -35,6 +36,7 @@ public:
 
 		virtual void	Start( void );
 		virtual void	Stop( void );
+		virtual void	Join( void );
 		virtual	void	Suspend( void );
 		virtual	void	Resume( void );
 		virtual	Boolean	Sleep( KUInt32 inMillisecs );
@@ -46,7 +48,7 @@ public:
 
 		HANDLE			mThread;
 		DWORD			mThreadId;
-		EState			mState;
+		std::atomic<EState> mState;
 		TDCLThread*     mThreadedObject;
 		HANDLE          mSleepEvent;
 	};

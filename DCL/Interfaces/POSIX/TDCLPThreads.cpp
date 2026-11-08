@@ -279,6 +279,7 @@ TDCLPThreads::TThread::TThread( TDCLThread* inThreadedObject )
 	:
 		IThread( inThreadedObject ),
 		mState( kStopped ),
+		mJoinable( false ),
 		mSyncSemaphore(),
 		mWakeCount( 0 )
 {
@@ -327,14 +328,7 @@ TDCLPThreads::TThread::TThread( TDCLThread* inThreadedObject )
 // ------------------------------------------------------------------------- //
 TDCLPThreads::TThread::~TThread( void )
 {
-	if (mState != kStopped)
-	{
-		(void) ::pthread_join( mThread, NULL );
-		if (mState != kStopped)
-		{
-			throw DCLThreadActive;
-		}
-	}
+	Join();
 
 	// On nettoie.
 	int theErr = ::pthread_cond_destroy( &mSleepCond );
@@ -372,6 +366,12 @@ TDCLPThreads::TThread::~TThread( void )
 void
 TDCLPThreads::TThread::Start( void )
 {
+	// Reap a previous run before overwriting its pthread_t.
+	if (mState == kStopped)
+	{
+		Join();
+	}
+
 	AcquireMutex();
 
 	if (mState != kStopped)
@@ -380,6 +380,9 @@ TDCLPThreads::TThread::Start( void )
 		throw DCLThreadActive;
 	}
 	
+	// Wake-ups belong to one run, not to the next incarnation of the worker.
+	mWakeCount = 0;
+
 	// On synchronise.
 	mSyncSemaphore.Acquire();
 	
@@ -406,6 +409,8 @@ TDCLPThreads::TThread::Start( void )
 			throw DCLPlatformUnknownError( theErr );
 	}
 
+	mJoinable = true;
+
 	// Attente que Run soit appelé et mState mis à jour.
 	mSyncSemaphore.Acquire();
 
@@ -413,6 +418,25 @@ TDCLPThreads::TThread::Start( void )
 	mSyncSemaphore.Release();
 
 	ReleaseMutex();
+}
+
+// ------------------------------------------------------------------------- //
+//  * Join( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLPThreads::TThread::Join( void )
+{
+	if (mJoinable)
+	{
+		// Do not hold mMutex: the worker may need it to finish Sleep/WakeUp.
+		int theErr = ::pthread_join( mThread, NULL );
+		if (theErr != 0)
+		{
+			throw DCLPlatformUnknownError( theErr );
+		}
+		mJoinable = false;
+		mState = kStopped;
+	}
 }
 
 // ------------------------------------------------------------------------- //

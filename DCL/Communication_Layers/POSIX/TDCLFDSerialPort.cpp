@@ -100,7 +100,8 @@ TDCLFDSerialPort::TDCLFDSerialPort(
 		mDisconnecting( false ),
 		mRequestPresent( false ),
 		mResetMutex( nil ),
-		mWaitRequestMutex( nil )
+		mWaitRequestMutex( nil ),
+		mTimeout( kDefaultTimeout )
 {
 	if (inDevPath)
 	{
@@ -131,7 +132,8 @@ TDCLFDSerialPort::TDCLFDSerialPort(
 		mDisconnecting( false ),
 		mRequestPresent( false ),
 		mResetMutex( nil ),
-		mWaitRequestMutex( nil )
+		mWaitRequestMutex( nil ),
+		mTimeout( kDefaultTimeout )
 {
 	if (inDevPath)
 	{
@@ -363,6 +365,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::TFDSerialPortPipe(
 	:
 		TSyncPipe(inCommLayer->GetThreadsIntf(), inCommLayer),
 		mSerialFD( inCommLayer->GetSerialFD() ),
+		mTimeout( kDefaultTimeout ),
 		mDisconnected( false ),
 		mLog( NULL )
 {

@@ -63,9 +63,7 @@ TDCLWin32Threads::TThread::TThread( TDCLThread* inThreadedObject )
 
 TDCLWin32Threads::TThread::~TThread( void )
 {
-	if (mState != kStopped) {
-        Stop();
-    }
+	Join();
     ::CloseHandle(mSleepEvent);
 }
 
@@ -80,15 +78,35 @@ TDCLWin32Threads::TThread::Start( void )
 #endif
 	}
 
+	Join();
+	::ResetEvent(mSleepEvent);
+	mState = kRunning;
 	mThread = ::CreateThread(NULL, 0, Run, this, 0, &mThreadId);
 	if (mThread == NULL) {
+		mState = kStopped;
 #if kDCLDebugFILEandLINE
 		throw TDCLThreadException(TDCLException::exThreadActive, 0, __FILE__, __LINE__);
 #else
 		throw TDCLThreadException(TDCLException::exThreadActive, 0);
 #endif
 	}
-	mState = kRunning;
+}
+
+void
+TDCLWin32Threads::TThread::Join( void )
+{
+	if (mThread != NULL) {
+		if (::WaitForSingleObject(mThread, INFINITE) != WAIT_OBJECT_0) {
+#if kDCLDebugFILEandLINE
+			throw TDCLThreadException(TDCLException::exThreadActive, ::GetLastError(), __FILE__, __LINE__);
+#else
+			throw TDCLThreadException(TDCLException::exThreadActive, ::GetLastError());
+#endif
+		}
+		::CloseHandle(mThread);
+		mThread = NULL;
+		mState = kStopped;
+	}
 }
 
 void
@@ -103,9 +121,7 @@ TDCLWin32Threads::TThread::Stop( void )
 	}
 
 	::TerminateThread(mThread, 0);
-	::CloseHandle(mThread);
-	mThread = NULL;
-	mState = kStopped;
+	Join();
 }
 
 void

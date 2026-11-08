@@ -126,6 +126,10 @@ public:
 	///			le serveur est dans l'état inconnu (ne devrait pas arriver).
 	///
 	void				Stop( void );
+
+	/// Wait for complete server thread exit after requesting Stop().
+	/// Must be called outside the server thread before destruction or restart.
+	void Join( void ) { TDCLThread::Join(); }
 	
 	///
 	/// Termine brutalement toute connexion (opération synchrone).
