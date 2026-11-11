@@ -68,7 +68,7 @@
 #define KDEBUG_ENABLED 0
 #endif
 
-#define LOGGING
+// #define LOGGING
 
 // -------------------------------------------------------------------------- //
 //  * KeySchedule( const KUInt64&, SSubKey[16] )

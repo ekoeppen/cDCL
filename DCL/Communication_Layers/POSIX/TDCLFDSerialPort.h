@@ -343,7 +343,6 @@ private:
 		long					mTimeout;			///< Temporisation pour cette
 													///< interface.
 		Boolean					mDisconnected;		///< Si la connexion a été rompue par le client.
-		FILE*					mLog;
 	};
 	
 	/// \name Variables

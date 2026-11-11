@@ -306,7 +306,8 @@ TDCLDockCommand::ReceiveCommand(
 					{
 						theCommandObject = (TDCLDockCommand*)
 							new TDCLDockCmdSingleLong(
-								theCommand, *((KUInt32*) theData) );
+								theCommand,
+								UByteSex_FromBigEndian(*((KUInt32*) theData)) );
 					} else {
 						// I create a TDCLDockCmdGeneric
 						theCommandObject = (TDCLDockCommand*)
