@@ -125,6 +125,21 @@ cmake -B build -DBUILD_SHARED_LIBS=OFF
 cmake --build build
 ```
 
+## Soup export
+
+[SoupDownloader](Tools/SoupDownloader/README.md) exports a named soup from
+all Newton stores over TCP/IP or serial/MNP, preserving entries and metadata as NSOF:
+
+```sh
+cmake --build build --target SoupDownloader
+build/Tools/SoupDownloader/SoupDownloader \
+    -s /dev/cu.usbserial-XXXX Names ./Names-export
+```
+
+The output directory is created if absent, or reused for a fresh export if it
+already exists. Requires Newton OS 2.x and a macOS/Linux host; stores without
+the soup are skipped.
+
 ## Testing
 
 Tests use [doctest](https://github.com/doctest/doctest) (`KTests` for `K`,

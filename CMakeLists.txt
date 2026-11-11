@@ -470,6 +470,7 @@ if(CDCL_BUILD_TOOLS)
     add_subdirectory (Tools/PackageUtils)
     add_subdirectory (Tools/NSOFtoXML)
     add_subdirectory (Tools/PackageLoader)
+    add_subdirectory (Tools/SoupDownloader)
 endif()
 
 if(CDCL_BUILD_TESTS AND BUILD_TESTING)
