@@ -497,6 +497,7 @@ add_subdirectory (Sample_Code/ToolchainUtils)
 add_subdirectory (Sample_Code/PackageUtils)
 add_subdirectory (Sample_Code/NSOFtoXML)
 add_subdirectory (Sample_Code/PackageLoader)
+add_subdirectory (Sample_Code/SoupDownloader)
 add_subdirectory (Tests)
 
 foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})
