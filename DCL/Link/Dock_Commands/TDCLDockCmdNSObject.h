@@ -106,6 +106,11 @@ public:
 	///
 	void					SetObject( const TDCLNSRef& inObject );
 
+	/// Raw NSOF payload, excluding Dock padding. Valid for this object's lifetime
+	/// or until SetObject() is called; permits lossless export without decoding.
+	const void* GetNSOFData() const { return mBuffer; }
+	KUInt32 GetNSOFSize() const { return mBufferSize; }
+
 protected:
 	///
 	/// Récupère le pointeur sur les données.
