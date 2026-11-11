@@ -8,3 +8,4 @@ GTAGS
 build*
 DoxyOutput
 *.gcov
+.cache
