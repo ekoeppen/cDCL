@@ -36,8 +36,6 @@
 // $Id: TDCLFDSerialPort.cp,v 1.9 2006/02/13 01:55:30 pguyot Exp $
 // ===========
 
-#define LOGGING
-
 // POSIX & ANSI
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -61,25 +59,6 @@
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
-
-#ifdef LOGGING
-#define LOGFILE "/tmp/dclserlog.txt"
-#define INITLOG() {mLog = fopen (LOGFILE, "w+");}
-#define ENDLOG() {fclose (mLog);}
-#define LOGDATA(dir, data, len)\
-	{int i; \
-	fprintf( mLog, "[%08d] %c ", (int) time( NULL ), dir); \
-	for ( i = 0; i < len; i++ ) fprintf (mLog, "%02x ", ((unsigned char *) (data))[i] ); \
-	fputc( '\n', mLog);}
-#define LOGREAD(data, len) LOGDATA('>', data, len)
-#define LOGWRITE(data, len) LOGDATA('<', data, len)
-#else
-#define INITLOG()
-#define ENDLOG()
-#define LOGDATA(dir, data, len)
-#define LOGREAD(data, len)
-#define LOGWRITE(data, len)
-#endif
 
 // -------------------------------------------------------------------------- //
 //  * TDCLFDSerialPort( IDCLThreads*, const char*, long )
@@ -363,10 +342,9 @@ TDCLFDSerialPort::TFDSerialPortPipe::TFDSerialPortPipe(
 	:
 		TSyncPipe(inCommLayer->GetThreadsIntf(), inCommLayer),
 		mSerialFD( inCommLayer->GetSerialFD() ),
-		mDisconnected( false ),
-		mLog( NULL )
+		mTimeout( kDefaultTimeout ),
+		mDisconnected( false )
 {
-	INITLOG();
 }
 
 // -------------------------------------------------------------------------- //
@@ -382,7 +360,6 @@ TDCLFDSerialPort::TFDSerialPortPipe::~TFDSerialPortPipe( void )
 			// Silence!
 		}
 	}
-	ENDLOG();
 }
 
 // -------------------------------------------------------------------------- //
@@ -443,7 +420,6 @@ TDCLFDSerialPort::TFDSerialPortPipe::Read( void* outBuffer, KUInt32* ioCount )
 	{
 		throw DCLUnknownError;
 	}
-	LOGREAD( outBuffer, readBytes );
 }
 
 // -------------------------------------------------------------------------- //
@@ -468,7 +444,6 @@ TDCLFDSerialPort::TFDSerialPortPipe::Write(
 	{
 		throw DCLUnknownError;
 	}
-	LOGWRITE( inBuffer, sentBytes );
 }
 
 // -------------------------------------------------------------------------- //
