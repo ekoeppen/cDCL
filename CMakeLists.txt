@@ -472,6 +472,7 @@ if(CDCL_BUILD_SAMPLES)
     add_subdirectory (Sample_Code/PackageLoader)
     add_subdirectory (Sample_Code/SoupDownloader)
     add_subdirectory (Sample_Code/FullDock)
+    add_subdirectory (Sample_Code/Inspector)
 endif()
 
 if(CDCL_BUILD_TESTS AND BUILD_TESTING)
