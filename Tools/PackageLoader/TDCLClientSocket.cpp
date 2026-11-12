@@ -1,0 +1,291 @@
+// ==============================
+// File: TDCLClientSocket.cpp
+// Project: Desktop Connection Library (PackageLoader)
+// ==============================
+
+#include <DCL/Headers/DCLDefinitions.h>
+#include "TDCLClientSocket.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <chrono>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/time.h>
+#endif
+
+#include <DCL/Communication_Layers/TDCLBufferedPipe.h>
+#include <DCL/Exceptions/Errors/TDCLBadParamError.h>
+#include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Exceptions/TDCLNotAvailableException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
+
+TDCLClientSocket::TDCLClientSocket(
+		std::string inHost,
+		unsigned short inPort,
+		long inTimeout )
+	:
+		TDCLPlatformSocket( inPort, 1, inTimeout ),
+		mHost( std::move( inHost ) ),
+		mPort( inPort ),
+		mConnectedSocket( kInvalidSocket ),
+		mConnected( false ),
+		mStopped( false )
+{
+}
+
+TDCLClientSocket::~TDCLClientSocket( void )
+{
+	Destroy();
+
+	{
+		std::lock_guard<std::mutex> lock( mSocketMutex );
+		if (mConnectedSocket != kInvalidSocket)
+		{
+			CloseSocket( mConnectedSocket );
+			mConnectedSocket = kInvalidSocket;
+		}
+	}
+
+	mWakeWait.Close();
+}
+
+void
+TDCLClientSocket::DoStartListening( void )
+{
+	int wakeErr = mWakeWait.EnsureOpen();
+	if (wakeErr != 0)
+	{
+		ThrowSocketError( wakeErr );
+	}
+	mConnected = false;
+	mStopped.store( false );
+}
+
+void
+TDCLClientSocket::DoStopListening( void )
+{
+	mStopped.store( true );
+	mWakeWait.Trigger();
+	std::lock_guard<std::mutex> lock( mSocketMutex );
+	if (mConnectedSocket != kInvalidSocket)
+	{
+		CloseSocket( mConnectedSocket );
+		mConnectedSocket = kInvalidSocket;
+	}
+}
+
+bool
+TDCLClientSocket::WaitForIncomingRequest( void )
+{
+	if (mConnected || mStopped.load() || StopRequested())
+	{
+		return false;
+	}
+
+	struct addrinfo hints;
+	(void) ::memset( &hints, 0, sizeof(hints) );
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	char portStr[16];
+	(void) ::snprintf( portStr, sizeof(portStr), "%u", mPort );
+
+	struct addrinfo* addrList = nullptr;
+	int err = ::getaddrinfo( mHost.c_str(), portStr, &hints, &addrList );
+	if (err != 0 || addrList == nullptr)
+	{
+		throw DCLPlatformBadParamError( err );
+	}
+
+	const long toSecs = GetTimeout();
+	const bool infiniteTimeout = (toSecs == kNoTimeout);
+	const long effectiveSecs = (toSecs == kDefaultTimeout) ? 30 : toSecs;
+	const auto deadline = infiniteTimeout
+		? std::chrono::steady_clock::time_point::max()
+		: (std::chrono::steady_clock::now() + std::chrono::seconds( effectiveSecs ));
+
+	dcl_socket_t sock = kInvalidSocket;
+	int lastErr = 0;
+	bool timedOut = false;
+
+	for (struct addrinfo* cur = addrList; cur != nullptr; cur = cur->ai_next)
+	{
+		if (mStopped.load() || StopRequested())
+		{
+			break;
+		}
+
+		sock = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
+		if (sock == kInvalidSocket)
+		{
+			lastErr = GetSocketError();
+			continue;
+		}
+
+		SetNonBlocking( sock, true );
+
+		int res = ::connect( sock, cur->ai_addr, (socklen_t) cur->ai_addrlen );
+		if (res < 0)
+		{
+			int sockErr = GetSocketError();
+#ifdef _WIN32
+			bool inProgress = (sockErr == WSAEWOULDBLOCK || sockErr == WSAEINPROGRESS);
+#else
+			bool inProgress = (sockErr == EINPROGRESS);
+#endif
+			if (inProgress)
+			{
+				std::chrono::milliseconds waitTimeout( -1 );
+				if (!infiniteTimeout)
+				{
+					auto now = std::chrono::steady_clock::now();
+					if (now >= deadline)
+					{
+						timedOut = true;
+						CloseSocket( sock );
+						sock = kInvalidSocket;
+						break;
+					}
+					waitTimeout = std::chrono::ceil<std::chrono::milliseconds>( deadline - now );
+				}
+				int waitErr = 0;
+				TDCLWakeableWait::EResult waitRes = mWakeWait.WaitReady(
+					(dcl_wait_handle_t) sock,
+					TDCLWakeableWait::EDirection::kWrite,
+					waitTimeout,
+					GetStopToken(),
+					&waitErr );
+				if (waitRes == TDCLWakeableWait::EResult::kTimeout)
+				{
+					timedOut = true;
+					CloseSocket( sock );
+					sock = kInvalidSocket;
+					break;
+				}
+				else if (waitRes == TDCLWakeableWait::EResult::kCancelled)
+				{
+					CloseSocket( sock );
+					sock = kInvalidSocket;
+					break;
+				}
+				else if (waitRes == TDCLWakeableWait::EResult::kReady)
+				{
+					int connectErr = 0;
+					socklen_t optLen = sizeof(connectErr);
+					if (::getsockopt( sock, SOL_SOCKET, SO_ERROR, (char*) &connectErr, &optLen ) == 0)
+					{
+						if (connectErr == 0)
+						{
+							res = 0;
+						}
+						else
+						{
+							lastErr = connectErr;
+						}
+					}
+					else
+					{
+						lastErr = GetSocketError();
+					}
+				}
+				else
+				{
+					lastErr = waitErr;
+				}
+			}
+			else
+			{
+				lastErr = sockErr;
+			}
+		}
+
+		if (res == 0)
+		{
+			SetNonBlocking( sock, true );
+			int nodelay = 1;
+			(void) ::setsockopt( sock, IPPROTO_TCP, TCP_NODELAY, (const char*) &nodelay, sizeof(nodelay) );
+			break;
+		}
+
+		CloseSocket( sock );
+		sock = kInvalidSocket;
+	}
+
+	::freeaddrinfo( addrList );
+
+	if (sock != kInvalidSocket)
+	{
+		std::lock_guard<std::mutex> lock( mSocketMutex );
+		if (mStopped.load() || StopRequested())
+		{
+			CloseSocket( sock );
+			return false;
+		}
+		mConnectedSocket = sock;
+		mConnected = true;
+		return true;
+	}
+
+	if (mStopped.load() || StopRequested())
+	{
+		return false;
+	}
+
+	if (timedOut)
+	{
+		throw DCLTimeout;
+	}
+
+	if (lastErr != 0)
+	{
+		throw DCLPlatformUnknownError( lastErr );
+	}
+
+	throw DCLNotAvailable;
+}
+
+std::unique_ptr<TDCLPipe>
+TDCLClientSocket::DoAccept( void )
+{
+	dcl_socket_t s = kInvalidSocket;
+	{
+		std::lock_guard<std::mutex> lock( mSocketMutex );
+		if (mConnectedSocket != kInvalidSocket)
+		{
+			s = mConnectedSocket;
+			mConnectedSocket = kInvalidSocket;
+		}
+	}
+	std::unique_ptr<TDCLPipe> pipe;
+	if (s != kInvalidSocket)
+	{
+		pipe = std::make_unique<TDCLBufferedPipe>( CreateSocketPipe( s, GetTimeout() ) );
+	}
+	return pipe;
+}
+
+void
+TDCLClientSocket::DoRefuse( void )
+{
+	std::lock_guard<std::mutex> lock( mSocketMutex );
+	if (mConnectedSocket != kInvalidSocket)
+	{
+		CloseSocket( mConnectedSocket );
+		mConnectedSocket = kInvalidSocket;
+	}
+}
