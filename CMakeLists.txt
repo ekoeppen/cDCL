@@ -469,6 +469,7 @@ if(CDCL_BUILD_SAMPLES)
     add_subdirectory (Sample_Code/ToolchainUtils)
     add_subdirectory (Sample_Code/PackageUtils)
     add_subdirectory (Sample_Code/NSOFtoXML)
+    add_subdirectory (Sample_Code/PackageLoader)
 endif()
 
 if(CDCL_BUILD_TESTS AND BUILD_TESTING)
