@@ -499,6 +499,7 @@ add_subdirectory (Sample_Code/NSOFtoXML)
 add_subdirectory (Sample_Code/PackageLoader)
 add_subdirectory (Sample_Code/SoupDownloader)
 add_subdirectory (Sample_Code/FullDock)
+add_subdirectory (Sample_Code/Inspector)
 add_subdirectory (Tests)
 
 foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})

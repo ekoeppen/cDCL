@@ -1,0 +1,5 @@
+if(UNIX)
+    add_executable(Inspector Inspector.cpp)
+    target_link_libraries(Inspector PRIVATE cDCL::DCL Threads::Threads)
+    install(TARGETS Inspector RUNTIME DESTINATION bin)
+endif()
