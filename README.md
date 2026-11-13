@@ -16,16 +16,16 @@ The repository consists of two main libraries:
 
 ## Architecture & Design
 
-### Modern C++17 Standard
+### Modern C++20 Standard
 
-The codebase targets **C++17** (`-std=c++17`) using standard primitives
+The codebase targets **C++20** (`-std=c++20`) using standard primitives
 (`std::thread`, `std::mutex`, `std::condition_variable`, `<atomic>`, and
 `<chrono>`).
 
 ### Streamlined Platform Strategy
 
-Builds target three platform tiers using built-in compiler macros
-(`__APPLE__`, `__linux__`, `_WIN32`):
+Builds target three platform tiers using built-in compiler macros (`__APPLE__`,
+`__linux__`, `_WIN32`):
 
 - **macOS** (Clang / libc++)
 - **Linux** (GCC / Clang / libstdc++)

@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.31)
 project (dcl)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -95,6 +95,7 @@ target_sources(K PRIVATE
     K/Misc/TMappedFile.cpp
 )
 target_link_libraries(K PRIVATE Threads::Threads)
+target_compile_features(K PUBLIC cxx_std_20)
 if(APPLE)
     target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
 endif()
