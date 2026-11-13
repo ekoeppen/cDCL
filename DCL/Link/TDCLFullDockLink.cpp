@@ -169,6 +169,8 @@ TDCLFullDockLink::ProcessDockCommand(
 					this,
 					mCurrentEngine,
 					&inException );
+			mCurrentEngine->WorkIsOver();
+			mCurrentEngine = nullptr;
 		}
 	}
 
