@@ -188,6 +188,14 @@ public:
 	///
 	virtual	void		ClearDataPresent( void ) = 0;
 
+	///
+	/// Whether the other side already closed the link (e.g. an MNP LD
+	/// frame was received). Once this is true, nothing more should be sent.
+	///
+	/// \return \c true if the peer disconnected, \c false otherwise.
+	///
+	virtual	Boolean		PeerDisconnected( void ) { return false; }
+
 protected:
 	///
 	/// Le constructeur de la classe mandataire a besoin d'accéder à la couche
