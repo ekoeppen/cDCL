@@ -32,39 +32,21 @@
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Interfaces/Common/TDCLStdThreads.h>
 #include <DCL/Interfaces/IDCLThreads.h>
-
-#if TARGET_OS_WIN32
-#include <DCL/Interfaces/Win32/TDCLWin32Threads.h>
-#else
-#include <DCL/Interfaces/POSIX/TDCLPThreads.h>
-#endif
+#include <DCL/Interfaces/TDCLEvent.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 // -------------------------------------------------------------------------- //
-//  * Posix( void )
+//  * StdThreads( void )
 // -------------------------------------------------------------------------- //
 void
-UTestThreads::Posix( void )
+UTestThreads::StdThreads( void )
 {
-#if !TARGET_OS_WIN32
-	TDCLPThreads thePThreads;
+	TDCLStdThreads theStdThreads;
 
-	TestThreads( &thePThreads );
-#endif
+	TestThreads( &theStdThreads );
 }
-
-#if TARGET_OS_WIN32
-// -------------------------------------------------------------------------- //
-//  * Win32( void )
-// -------------------------------------------------------------------------- //
-void
-UTestThreads::Win32( void )
-{
-	TDCLWin32Threads theWin32Threads;
-
-	TestThreads( &theWin32Threads );
-}
-#endif
 
 // -------------------------------------------------------------------------- //
 //  * TestThreads( IDCLThreads* )
@@ -119,9 +101,38 @@ UTestThreads::TestThreads( IDCLThreads* inThreadsIntf )
 		(void) ::sleep( 5 );
 		(void) ::printf( "TestThreads - ... Sleep - 4\n" );
 
+		theBlocker.Join();
+
 		(void) ::printf( "TestThreads - thread->GetState: %i\n",
 						theBlocker.GetThreadState() );
 	} // <-- Suppression du bloqueur.
+
+	// Test RequestStop, Join, WaitNextEvent, and TStopForwarder.
+	{
+		TWaiter theWaiter( inThreadsIntf );
+		TStoppable theForwardedTarget;
+
+		(void) ::printf( "TestThreads - Waiter Start\n" );
+		theWaiter.Start();
+
+		TStopForwarder theForwarder(
+							theWaiter.GetStopToken(),
+							theForwardedTarget );
+
+		theWaiter.PostEvent(
+			new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kBytesAvailable ) );
+		(void) ::sleep( 1 );
+
+		(void) ::printf( "TestThreads - Waiter RequestStop\n" );
+		(void) theWaiter.RequestStop();
+		theWaiter.Join();
+		(void) ::printf(
+					"TestThreads - Waiter Joined (gotEvent=%i, exitedOnStop=%i, forwarded=%i, state=%i)\n",
+					theWaiter.mGotEvent ? 1 : 0,
+					theWaiter.mExitedOnStop ? 1 : 0,
+					theForwardedTarget.StopRequested() ? 1 : 0,
+					theWaiter.GetThreadState() );
+	}
 	
 	// Suppression du mutex.
 	delete theSemaphore;
@@ -220,6 +231,49 @@ UTestThreads::TBlocker::HandleException( TDCLException* inException )
 	} else {
 		(void) ::printf( ">> Unknown Exception\n" );
 	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * TWaiter( IDCLThreads* )
+// -------------------------------------------------------------------------- //
+UTestThreads::TWaiter::TWaiter( IDCLThreads* inThreadsIntf )
+	:
+		TDCLThread( inThreadsIntf ),
+		mGotEvent( false ),
+		mExitedOnStop( false )
+{
+}
+
+// -------------------------------------------------------------------------- //
+//  * TWaiter::Run( void )
+// -------------------------------------------------------------------------- //
+void
+UTestThreads::TWaiter::Run( void )
+{
+	TDCLEvent* theFirst = WaitNextEvent();
+	if (theFirst)
+	{
+		mGotEvent = true;
+		delete theFirst;
+	}
+
+	TDCLEvent* theSecond = WaitNextEvent();
+	if (theSecond == nil && StopRequested())
+	{
+		mExitedOnStop = true;
+	}
+	if (theSecond)
+	{
+		delete theSecond;
+	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * TWaiter::HandleException( TDCLException* )
+// -------------------------------------------------------------------------- //
+void
+UTestThreads::TWaiter::HandleException( TDCLException* /* inException */ )
+{
 }
 
 // ========================================================================== //

@@ -84,12 +84,6 @@ TDCLBSDSocket::IsAvailable( void )
 	return theResult;
 }
 
-int
-TDCLBSDSocket::MakeSocketPair( dcl_socket_t outPair[2] )
-{
-	return ::socketpair( AF_UNIX, SOCK_STREAM, PF_UNSPEC, outPair );
-}
-
 void
 TDCLBSDSocket::CloseSocket( dcl_socket_t inSocket )
 {
@@ -116,23 +110,36 @@ TDCLBSDSocket::SetNonBlocking( dcl_socket_t inSocket, bool inNonBlocking )
 }
 
 int
-TDCLBSDSocket::SetSocketTimeout( dcl_socket_t inSocket, long inTimeoutInSecs )
-{
-	struct timeval theTimeoutStructure;
-	theTimeoutStructure.tv_sec = inTimeoutInSecs;
-	theTimeoutStructure.tv_usec = 0;
-	int theResult = ::setsockopt( inSocket, SOL_SOCKET, SO_RCVTIMEO, &theTimeoutStructure, sizeof( theTimeoutStructure ) );
-	if ( theResult < 0 )
-	{
-		return theResult;
-	}
-	return ::setsockopt( inSocket, SOL_SOCKET, SO_SNDTIMEO, &theTimeoutStructure, sizeof( theTimeoutStructure ) );
-}
-
-int
 TDCLBSDSocket::GetSocketError( void ) const
 {
 	return errno;
+}
+
+bool
+TDCLBSDSocket::IsWouldBlockError( int inErr ) const
+{
+	return ( inErr == EINTR ) || ( inErr == EAGAIN )
+#if ( EWOULDBLOCK != EAGAIN )
+	       || ( inErr == EWOULDBLOCK )
+#endif
+	    ;
+}
+
+bool
+TDCLBSDSocket::IsInterruptedError( int inErr ) const
+{
+	return ( inErr == EINTR );
+}
+
+bool
+TDCLBSDSocket::IsAbortedAcceptError( int inErr ) const
+{
+	// The client closed the connection while it was queued.
+	return ( inErr == ECONNABORTED )
+#ifdef EPROTO
+	       || ( inErr == EPROTO )
+#endif
+	    ;
 }
 
 void
@@ -269,38 +276,6 @@ TDCLBSDSocket::ThrowSendError( int inErr ) const
 
 	case ETIMEDOUT:
 		throw DCLPlatformTimeout( inErr );
-
-	case ENOMEM:
-		throw DCLPlatformMemError( inErr );
-
-	case ENOBUFS:
-#ifdef ENOSR
-	case ENOSR:
-#endif
-		throw DCLPlatformLimitReachedError( inErr );
-
-	case EFAULT:
-	default:
-		throw DCLPlatformUnknownError( inErr );
-	}
-}
-
-void
-TDCLBSDSocket::ThrowTimeoutError( int inErr ) const
-{
-	switch ( inErr )
-	{
-	case ENOPROTOOPT:
-		break;
-
-	case EBADF:
-	case EDOM:
-	case ENOTSOCK:
-		throw DCLPlatformBadParamError( inErr );
-
-	case EINVAL:
-	case EISCONN:
-		throw DCLPlatformBadStateError( inErr );
 
 	case ENOMEM:
 		throw DCLPlatformMemError( inErr );

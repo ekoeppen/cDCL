@@ -35,16 +35,9 @@ class UTestThreads
 {
 public:
 	///
-	/// Test pour les threads POSIX.
+	/// Test for C++20 threads (TDCLStdThreads).
 	///
-	static void Posix( void );
-
-#if TARGET_OS_WIN32
-	///
-	/// Test pour les threads Win32.
-	///
-	static void Win32( void );
-#endif
+	static void StdThreads( void );
 
 private:
 	///
@@ -107,6 +100,25 @@ private:
 
 		IDCLThreads::ISemaphore*	mSemaphore;	///< Référence sur le sémaphore.
 		IDCLThreads::ISemaphore*	mMutex;		///< Référence sur le mutex.
+	};
+
+	///
+	/// Test helper class for RequestStop / Join / WaitNextEvent / TStopForwarder.
+	///
+	class TWaiter
+		:
+			public TDCLThread
+	{
+	public:
+		friend class UTestThreads;
+
+		TWaiter( IDCLThreads* inThreadsIntf );
+
+		virtual void Run( void );
+		virtual void HandleException( TDCLException* inException );
+
+		bool	mGotEvent;
+		bool	mExitedOnStop;
 	};
 
 	///

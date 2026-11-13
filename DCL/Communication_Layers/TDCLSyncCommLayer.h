@@ -83,6 +83,11 @@ public:
 			Boolean	inFlushAvailable = false,
 			KUInt32	inMaxPipeCount = kDefaultPipeCount
 			);
+
+	///
+	/// Destructor.
+	///
+	virtual				~TDCLSyncCommLayer( void );
 	
 	///
 	/// Commence à écouter.
@@ -99,6 +104,29 @@ public:
 	/// Ne fait rien si on n'est pas en train d'écouter.
 	///
 	virtual void		StopListening( void );
+
+	///
+	/// Requests cooperative stop of the communication layer and its thread.
+	///
+	/// \return \c true if this call triggered the stop.
+	///
+	virtual bool		RequestStop( void );
+
+	///
+	/// Returns the stop token of the communication layer.
+	///
+	inline std::stop_token	GetStopToken( void ) const noexcept
+		{
+			return TDCLCommLayer::GetStopToken();
+		}
+
+	///
+	/// Returns whether a stop has been requested.
+	///
+	inline bool			StopRequested( void ) const noexcept
+		{
+			return TDCLCommLayer::StopRequested() || TDCLThread::StopRequested();
+		}
 
 protected:
 	///
@@ -205,6 +233,34 @@ protected:
 		TSyncPipe(
 				IDCLThreads* inThreadsIntf,
 				TDCLSyncCommLayer*	inCommLayer );
+
+		///
+		/// Destructor.
+		///
+		virtual				~TSyncPipe( void );
+
+		///
+		/// Requests cooperative stop of the pipe and its thread.
+		///
+		/// \return \c true if this call triggered the stop.
+		///
+		virtual bool		RequestStop( void );
+
+		///
+		/// Returns the stop token of the pipe.
+		///
+		inline std::stop_token	GetStopToken( void ) const noexcept
+			{
+				return TDCLPipe::GetStopToken();
+			}
+
+		///
+		/// Returns whether a stop has been requested.
+		///
+		inline bool			StopRequested( void ) const noexcept
+			{
+				return TDCLPipe::StopRequested() || TDCLThread::StopRequested();
+			}
 
 		///
 		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt

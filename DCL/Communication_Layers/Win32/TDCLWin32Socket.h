@@ -59,16 +59,16 @@ public:
 
 protected:
 	virtual int SetListenSocketOptions( dcl_socket_t inSocket ) override;
-	virtual int MakeSocketPair( dcl_socket_t outPair[2] ) override;
 	virtual void CloseSocket( dcl_socket_t inSocket ) override;
 	virtual int SetNonBlocking( dcl_socket_t inSocket, bool inNonBlocking ) override;
-	virtual int SetSocketTimeout( dcl_socket_t inSocket, long inTimeoutInSecs ) override;
 	virtual int GetSocketError( void ) const override;
+	virtual bool IsWouldBlockError( int inErr ) const override;
+	virtual bool IsInterruptedError( int inErr ) const override;
+	virtual bool IsAbortedAcceptError( int inErr ) const override;
 	virtual void ThrowSocketError( int inErr ) const override;
 	virtual void ThrowSelectError( int inErr ) const override;
 	virtual void ThrowRecvError( int inErr ) const override;
 	virtual void ThrowSendError( int inErr ) const override;
-	virtual void ThrowTimeoutError( int inErr ) const override;
 
 private:
 	TDCLWin32Socket( const TDCLWin32Socket& inCopy );

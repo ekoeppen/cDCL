@@ -42,6 +42,7 @@
 // DCL
 #include <DCL/Interfaces/IDCLThreads.h>
 #include <DCL/Interfaces/TDCLEvent.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 ///
 /// Classe pour un objet dans un processus léger.
@@ -53,6 +54,8 @@
 /// \test	aucun test défini.
 ///
 class TDCLThread
+	:
+		public TStoppable
 {
 public:
 	///
@@ -68,17 +71,35 @@ public:
 	///
 	/// Démarre le processus léger.
 	///
+	/// The stop source is reset by the system thread only if starting is
+	/// permitted (see PrepareStart).
+	///
 	inline void Start( void )
 		{
 			mThread->Start();
 		}
 
 	///
-	/// Arrête le processus léger.
+	/// Requests cooperative stop of the thread and wakes it up.
 	///
-	inline void Stop( void )
+	/// \return \c true if this call triggered the stop.
+	///
+	virtual bool RequestStop( void )
 		{
-			mThread->Stop();
+			bool theResult = TStoppable::RequestStop();
+			if (theResult)
+			{
+				mThread->WakeUp();
+			}
+			return theResult;
+		}
+
+	///
+	/// Waits for the thread to finish executing.
+	///
+	inline void Join( void )
+		{
+			mThread->Join();
 		}
 
 	///
@@ -181,6 +202,18 @@ protected:
 			}
 
 private:
+	/// Only IThread may call PrepareStart.
+	friend class IDCLThreads::IThread;
+
+	///
+	/// Prepares a new start: resets the stop source.
+	/// Called by IThread::Start once starting is permitted.
+	///
+	inline void PrepareStart( void )
+		{
+			ResetStopSource();
+		}
+
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///

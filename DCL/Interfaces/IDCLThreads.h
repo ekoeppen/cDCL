@@ -126,13 +126,12 @@ public:
 		virtual void	Start( void ) = 0;
 
 		///
-		/// Arrête le processus (de manière violente).
+		/// Waits for the thread to finish executing.
+		/// Has no effect if the thread has not been started or has already been joined.
 		///
-		/// Lance une exception si le processus léger est arrêté.
+		/// \throws TDCLThreadDeadLockException if called from the thread itself.
 		///
-		/// \throws TDCLException si le processus léger est arrêté.
-		///
-		virtual void	Stop( void ) = 0;
+		virtual void	Join( void ) = 0;
 
 		///
 		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
@@ -163,6 +162,16 @@ public:
 		/// \return l'état du processus (arrêté, actif, endormi)
 		///
 		virtual	EState	GetState( void ) = 0;
+
+	protected:
+		///
+		/// Prepares the associated TDCLThread object for a new start
+		/// (resets its stop source).
+		///
+		/// Implementations of Start must call this after verifying that
+		/// starting is allowed and before launching the thread.
+		///
+		void			PrepareThreadedObjectForStart( void );
 
 	private:
 		///
