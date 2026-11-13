@@ -35,6 +35,7 @@
 // ===========
 
 #include <DCL/Link/Dock_Commands/TDCLDockCmdDesktopInfo.h>
+#include <K/Defines/UByteSex.h>
 
 // ANSI C
 #include <stdlib.h>
@@ -61,12 +62,12 @@ TDCLDockCmdDesktopInfo::TDCLDockCmdDesktopInfo(
 		mDesktopArrayPtr( nil ),
 		mLength( 0 )
 {
-	mDesktopInfo.fProtocolVersion = kProtocolVersion;
-	mDesktopInfo.fDesktopType = inPlatformKind;
+	mDesktopInfo.fProtocolVersion = UByteSex_ToBigEndian( (KUInt32) kProtocolVersion );
+	mDesktopInfo.fDesktopType = UByteSex_ToBigEndian( inPlatformKind );
 	mDesktopInfo.fEncryptedKey[0] = inEncKey1;
 	mDesktopInfo.fEncryptedKey[1] = inEncKey2;
-	mDesktopInfo.fSessionType = inSessionType;
-	mDesktopInfo.fAllowSelectiveSync = inSelectiveBackup;
+	mDesktopInfo.fSessionType = UByteSex_ToBigEndian( inSessionType );
+	mDesktopInfo.fAllowSelectiveSync = UByteSex_ToBigEndian( (KUInt32) inSelectiveBackup );
 	
 	// Conversion du tableau en données NSOF.
 	TDCLMemStream theMemStream;
