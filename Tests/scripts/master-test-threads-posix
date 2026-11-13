@@ -18,13 +18,9 @@ TestThreads - ... Sleep - 3
 TestThreads - thread->WakeUp
 TBlocker::Run - ... Sleep - 2 (false)
 TBlocker::Run - Loop ...
-TestThreads - ... Sleep - 4
-TestThreads - thread->Suspend ...
-TestThreads - ... Sleep - 5
-TestThreads - thread->Resume ...
 TBlocker::Run - ... Loop
 TBlocker::Run - throw DCLUnknownError
 TBlocker::HandleException
 >> TDCLUnknownError \(code: 5, error: 0\) \[(.*)UTestThreads.cp+:[0-9]+\]
-TestThreads - ... Sleep - 6
+TestThreads - ... Sleep - 4
 TestThreads - thread->GetState: 0

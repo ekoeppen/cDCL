@@ -63,7 +63,6 @@ public:
 	enum EState {
 		kStopped,		///< Arrêté.
 		kRunning,		///< En train de tourner (n'a pas forcément le CPU)
-		kSuspended,		///< Suspendu (attend un appel à la méthode Resume)
 		kSleeping		///< Endormi (par la méthode Sleep) (attend WakeUp)
 	};
 	
@@ -73,20 +72,12 @@ public:
 	virtual	~IDCLThreads( void ) {};
 
 	///
-	/// Donne du temps aux autres processus.
-	/// Cette méthode est appelée à partir de la méthode
-	/// Run de TDCLThread ou du processus léger principal.
-	///
-	virtual	void	Yield( void ) = 0;	
-
-	///
 	/// Abstraction pour les processus légers.
 	///
 	/// Cette interface est utilisée par TDCLThread (qui doit être dérivé pour
 	/// les objets qui doivent être dans des processus légers).
 	///
-	/// Ces objets peuvent être en train de tourner (Running) ou pas, et s'ils
-	/// sont en train de tourner, ils peuvent êtres suspendus ou pas.
+	/// Ces objets peuvent être en train de tourner (Running) ou arrêtés (Stopped).
 	///
 	class IThread
 	{
@@ -144,27 +135,6 @@ public:
 		virtual void	Stop( void ) = 0;
 
 		///
-		/// Suspend le processus léger.
-		/// Cette méthode peut être appelée à partir d'un autre processus
-		/// léger.
-		/// Lance une exception si le processus léger est arrêté, mais
-		/// est silencieux si le processus est suspendu.
-		///
-		/// \throws TDCLException si le processus léger est arrêté.
-		///
-		virtual	void	Suspend( void ) = 0;
-
-		///
-		/// Reprend le processus léger.
-		/// Cette méthode est appelée à partir d'un autre processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté.
-		/// mais est silencieux si le processus n'est pas suspendu.
-		///
-		/// \throws TDCLException si le processus léger est arrêté.
-		///
-		virtual	void	Resume( void ) = 0;
-	
-		///
 		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
 		/// WakeUp soit appelée.
 		/// Note: le processus peut aussi dormir plus longtemps.
@@ -190,7 +160,7 @@ public:
 		///
 		/// Détermine l'état du processus.
 		///
-		/// \return l'état du processus (arrêté, actif, suspendu)
+		/// \return l'état du processus (arrêté, actif, endormi)
 		///
 		virtual	EState	GetState( void ) = 0;
 

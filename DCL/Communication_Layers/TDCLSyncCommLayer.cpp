@@ -37,6 +37,9 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
+// C++
+#include <thread>
+
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Link/TDCLLink.h>
@@ -95,7 +98,7 @@ TDCLSyncCommLayer::StopListening( void )
 			// On attend que le processus léger termine.
 			while (GetThreadState() != IDCLThreads::kStopped)
 			{
-				Yield();
+				std::this_thread::yield();
 			}
 		} catch ( ... ) {
 			// On reste silencieux.
@@ -198,7 +201,7 @@ TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 		// On attend que le processus léger termine.
 		while (GetThreadState() != IDCLThreads::kStopped)
 		{
-			Yield();
+			std::this_thread::yield();
 		}
 	}
 }

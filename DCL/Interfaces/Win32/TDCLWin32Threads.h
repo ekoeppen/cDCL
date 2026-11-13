@@ -21,7 +21,6 @@ class TDCLWin32Threads
 		public IDCLThreads
 {
 public:
-	virtual	void	Yield( void );
 	virtual IThread*	CreateThread( TDCLThread* inThreadedObject );
 	virtual ISemaphore*	CreateSemaphore( void );
 
@@ -35,8 +34,6 @@ public:
 
 		virtual void	Start( void );
 		virtual void	Stop( void );
-		virtual	void	Suspend( void );
-		virtual	void	Resume( void );
 		virtual	Boolean	Sleep( KUInt32 inMillisecs );
 		virtual	void	WakeUp( void );
 		virtual	EState	GetState( void );

@@ -453,14 +453,11 @@ TDCLLink::DoDisconnect( void )
 
 			if (!mPipe->FlushAvailable())
 			{
-				IDCLThreads* theThreadsIntf = mApplication->GetThreadsIntf();
 				time_t now = ::time(NULL);
 				while( (::time(NULL) - now) < kClosingTimeout )
 				{
 					mPipe->Idle();				// Give time to the pipe,
 						  // in case its implementation requires it.
-
-					theThreadsIntf->Yield();	// Il faut savoir partager.
 				}
 			}
 		} catch (TDCLEOFException& anException) {
@@ -484,9 +481,6 @@ TDCLLink::Run( void )
 	Boolean keepLooping = true;
 	while( keepLooping )
 	{
-		// On donne un peu de temps.
-		Yield();
-
 		EState theState;
 		EState theNextState;
 
@@ -713,8 +707,6 @@ TDCLLink::HandleException( TDCLException* inException )
 TDCLLink::EState
 TDCLLink::Idle( void )
 {
-	Yield();
-	
 	return kRunning;
 }
 

@@ -536,7 +536,6 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 	{
 		timeoutInSecs = kSocketDefaultTimeout;
 	}
-	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time( NULL );
 
 	while ( toRead > 0 )
@@ -579,7 +578,6 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 			toRead -= readBytes;
 			theBuffer += readBytes;
 		}
-		theThreadsIntf->Yield();
 	}
 }
 
@@ -593,7 +591,6 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 	{
 		timeoutInSecs = kSocketDefaultTimeout;
 	}
-	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time( NULL );
 
 	while ( toWrite > 0 )
@@ -636,6 +633,5 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			toWrite -= sentBytes;
 			theBuffer += sentBytes;
 		}
-		theThreadsIntf->Yield();
 	}
 }

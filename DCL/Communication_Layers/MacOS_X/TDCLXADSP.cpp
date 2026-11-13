@@ -588,7 +588,6 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 		timeoutInSecs = kXADSPDefaultTimeout;
 	}
 
-	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time(NULL);
 
 	// Premier octet.
@@ -676,9 +675,6 @@ TDCLXADSP::TXADSPPipe::Read( void* outBuffer, KUInt32* ioCount )
 			toRead -= readBytes;
 			theBuffer += readBytes;
 		}
-
-		// On partage le CPU.
-		theThreadsIntf->Yield();
 	}
 }
 
@@ -701,7 +697,6 @@ TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 		timeoutInSecs = kXADSPDefaultTimeout;
 	}
 
-	IDCLThreads* theThreadsIntf = GetThreadsIntf();
 	time_t lastOperation = ::time(NULL);
 
 	while( toWrite > 0 )
@@ -788,9 +783,6 @@ TDCLXADSP::TXADSPPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			toWrite -= sentBytes;
 			theBuffer += sentBytes;
 		}
-
-		// On partage le CPU.
-		theThreadsIntf->Yield();
 	}
 }
 
