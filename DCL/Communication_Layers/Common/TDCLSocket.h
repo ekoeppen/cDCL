@@ -39,6 +39,7 @@
 #define _TDCLSOCKET_H
 
 #include <DCL/Headers/DCLDefinitions.h>
+#include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
 #if TARGET_OS_WIN32
@@ -71,6 +72,7 @@ public:
 
 	void Destroy( void );
 
+	virtual void StopListening( void ) override;
 	virtual void SetTimeout( long inTimeout ) override;
 	virtual long GetTimeout( void ) override;
 	virtual void Disconnected( TDCLPipe* inPipe ) override;
@@ -98,16 +100,19 @@ protected:
 	virtual int SetListenSocketOptions( dcl_socket_t inSocket );
 	virtual TDCLPipe* CreateSocketPipe( dcl_socket_t inSocket, long inTimeout );
 
-	virtual int MakeSocketPair( dcl_socket_t outPair[2] ) = 0;
 	virtual void CloseSocket( dcl_socket_t inSocket ) = 0;
 	virtual int SetNonBlocking( dcl_socket_t inSocket, bool inNonBlocking ) = 0;
-	virtual int SetSocketTimeout( dcl_socket_t inSocket, long inTimeoutInSecs ) = 0;
 	virtual int GetSocketError( void ) const = 0;
+	virtual bool IsWouldBlockError( int inErr ) const = 0;
+	/// Returns true if the error is an interrupt (EINTR) that should be retried.
+	virtual bool IsInterruptedError( int inErr ) const = 0;
+	/// Returns true if accept() failed because the client disconnected before
+	/// being accepted (e.g. ECONNABORTED). Not a server error.
+	virtual bool IsAbortedAcceptError( int inErr ) const = 0;
 	virtual void ThrowSocketError( int inErr ) const = 0;
 	virtual void ThrowSelectError( int inErr ) const = 0;
 	virtual void ThrowRecvError( int inErr ) const = 0;
 	virtual void ThrowSendError( int inErr ) const = 0;
-	virtual void ThrowTimeoutError( int inErr ) const = 0;
 
 	class TSocketPipe;
 	friend class TSocketPipe;
@@ -140,8 +145,8 @@ protected:
 		TDCLSocket* mSocketCommLayer;
 		dcl_socket_t mClientSocket;
 		long mTimeout;
-		dcl_socket_t mPublicPairMember;
-		dcl_socket_t mPrivatePairMember;
+		TDCLWakeableWait mDataWakeWait;
+		TDCLWakeableWait mIOWakeWait;
 		Boolean mClientSocketIsClosed;
 	};
 
@@ -149,12 +154,13 @@ private:
 	TDCLSocket( const TDCLSocket& inCopy );
 	TDCLSocket& operator=( const TDCLSocket& inCopy );
 
+	void CloseListenSockets( void );
+
 	dcl_socket_t mServerSocket;
 	KUInt32 mCurrentPipeCount;
 	KUInt32 mBackLogSize;
 	long mTimeout;
-	dcl_socket_t mPublicPairMember;
-	dcl_socket_t mPrivatePairMember;
+	TDCLWakeableWait mWakeWait;
 	Boolean mSocketsAreClosed;
 	unsigned short mPort;
 };

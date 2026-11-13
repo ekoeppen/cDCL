@@ -45,6 +45,7 @@
 #include <DCL/Link/TDCLLink.h>
 #include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
 // -------------------------------------------------------------------------- //
@@ -71,6 +72,8 @@ TDCLOneLinkServer::TDCLOneLinkServer( TDCLApplication* inApplication )
 // -------------------------------------------------------------------------- //
 TDCLOneLinkServer::~TDCLOneLinkServer( void )
 {	
+	Kill();
+
 	// Suppression de la connexion.
 	if (mPipe)
 	{
@@ -199,23 +202,57 @@ TDCLOneLinkServer::DoStop( void )
 }
 
 // -------------------------------------------------------------------------- //
+//  * DoRequestStop( void )
+// -------------------------------------------------------------------------- //
+void
+TDCLOneLinkServer::DoRequestStop( void )
+{
+	if (mPipe)
+	{
+		(void) mPipe->RequestStop();
+	}
+	if (mLink)
+	{
+		(void) mLink->RequestStop();
+	}
+	if (mListMutex)
+	{
+		mListMutex->Acquire();
+		KUInt32 nbCL = mNbCommLayers;
+		for (KUInt32 indexCL = 0; indexCL < nbCL; indexCL++)
+		{
+			(void) mCommLayers[indexCL]->RequestStop();
+		}
+		mListMutex->Release();
+	}
+}
+
+// -------------------------------------------------------------------------- //
 //  * DoKill( void )
 // -------------------------------------------------------------------------- //
 void
 TDCLOneLinkServer::DoKill( void )
 {
 	if (mPipe)
-	{	
+	{
+		(void) mPipe->RequestStop();
+	}
+
+	if (mLink)
+	{
+		(void) mLink->RequestStop();
+		try {
+			mLink->Join();
+		} catch ( TDCLThreadDeadLockException& ) {
+		}
+	}
+
+	if (mPipe)
+	{
 		try {
 			mPipe->Disconnect();
 		} catch (...) {
 			// On fait le silence sur les exceptions.
-		}
-
-		// On dit au lien qu'il a été déconnecté.
-		if (mLink)
-		{
-			(void) mLink->Close();
 		}
 
 		// Suppression de l'interface.
@@ -223,12 +260,14 @@ TDCLOneLinkServer::DoKill( void )
 		mPipe = nil;
 	}
 
+	mListMutex->Acquire();
 	KUInt32 nbCL = mNbCommLayers;
 	KUInt32 indexCL;
 	for (indexCL = 0; indexCL < nbCL; indexCL++)
 	{
 		mCommLayers[indexCL]->StopListening();
 	}
+	mListMutex->Release();
 }
 
 // -------------------------------------------------------------------------- //
@@ -253,6 +292,13 @@ TDCLOneLinkServer::HandleIncomingConnection( TDCLCommLayer* inCommLayer )
 
 		// On accepte la connexion.
 		mPipe = inCommLayer->Accept();
+
+		// No connection (e.g. client disconnected before accept):
+		// do not start the link and keep listening.
+		if (mPipe == nil)
+		{
+			return kRunning;
+		}
 				
 		// On dit au lien de se connecter.
 		if ((mLink) && (!mLink->Connect( mPipe, this )))

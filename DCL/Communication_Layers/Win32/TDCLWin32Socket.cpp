@@ -123,90 +123,6 @@ TDCLWin32Socket::SetListenSocketOptions( dcl_socket_t inSocket )
 	                     sizeof( theExclusiveFlag ) );
 }
 
-int
-TDCLWin32Socket::MakeSocketPair( dcl_socket_t outPair[2] )
-{
-	EnsureWinsockInit();
-	dcl_socket_t listener = ::socket( AF_INET, SOCK_STREAM, 0 );
-	if ( listener == INVALID_SOCKET )
-	{
-		return -1;
-	}
-
-	struct sockaddr_in addr;
-	(void)::memset( &addr, 0, sizeof( addr ) );
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
-	addr.sin_port = 0; // ephemeral port
-
-	if ( ::bind( listener, (struct sockaddr*)&addr, sizeof( addr ) ) != 0 )
-	{
-		::closesocket( listener );
-		return -1;
-	}
-
-	int len = sizeof( addr );
-	if ( ::getsockname( listener, (struct sockaddr*)&addr, &len ) != 0 )
-	{
-		::closesocket( listener );
-		return -1;
-	}
-
-	if ( ::listen( listener, 1 ) != 0 )
-	{
-		::closesocket( listener );
-		return -1;
-	}
-
-	outPair[0] = ::socket( AF_INET, SOCK_STREAM, 0 );
-	if ( outPair[0] == INVALID_SOCKET )
-	{
-		::closesocket( listener );
-		return -1;
-	}
-
-	if ( ::connect( outPair[0], (struct sockaddr*)&addr, sizeof( addr ) ) != 0 )
-	{
-		::closesocket( outPair[0] );
-		::closesocket( listener );
-		return -1;
-	}
-
-	struct sockaddr_in clientAddr;
-	int clientLen = sizeof( clientAddr );
-	if ( ::getsockname( outPair[0], (struct sockaddr*)&clientAddr, &clientLen ) != 0 )
-	{
-		::closesocket( outPair[0] );
-		::closesocket( listener );
-		return -1;
-	}
-
-	for ( ;; )
-	{
-		struct sockaddr_in acceptedAddr;
-		int acceptedLen = sizeof( acceptedAddr );
-		outPair[1] = ::accept( listener, (struct sockaddr*)&acceptedAddr, &acceptedLen );
-		if ( outPair[1] == INVALID_SOCKET )
-		{
-			::closesocket( outPair[0] );
-			::closesocket( listener );
-			return -1;
-		}
-
-		if ( ( acceptedLen >= (int)sizeof( acceptedAddr ) ) && ( acceptedAddr.sin_family == clientAddr.sin_family ) &&
-		     ( acceptedAddr.sin_addr.s_addr == clientAddr.sin_addr.s_addr ) &&
-		     ( acceptedAddr.sin_port == clientAddr.sin_port ) )
-		{
-			break;
-		}
-
-		::closesocket( outPair[1] );
-	}
-
-	::closesocket( listener );
-	return 0;
-}
-
 void
 TDCLWin32Socket::CloseSocket( dcl_socket_t inSocket )
 {
@@ -221,21 +137,28 @@ TDCLWin32Socket::SetNonBlocking( dcl_socket_t inSocket, bool inNonBlocking )
 }
 
 int
-TDCLWin32Socket::SetSocketTimeout( dcl_socket_t inSocket, long inTimeoutInSecs )
-{
-	DWORD timeoutMs = (DWORD)( inTimeoutInSecs * 1000 );
-	int theResult = ::setsockopt( inSocket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeoutMs, sizeof( timeoutMs ) );
-	if ( theResult < 0 )
-	{
-		return theResult;
-	}
-	return ::setsockopt( inSocket, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeoutMs, sizeof( timeoutMs ) );
-}
-
-int
 TDCLWin32Socket::GetSocketError( void ) const
 {
 	return ::WSAGetLastError();
+}
+
+bool
+TDCLWin32Socket::IsWouldBlockError( int inErr ) const
+{
+	return ( inErr == WSAEINTR ) || ( inErr == WSAEWOULDBLOCK );
+}
+
+bool
+TDCLWin32Socket::IsInterruptedError( int inErr ) const
+{
+	return ( inErr == WSAEINTR );
+}
+
+bool
+TDCLWin32Socket::IsAbortedAcceptError( int inErr ) const
+{
+	// The client closed the connection while it was queued.
+	return ( inErr == WSAECONNRESET ) || ( inErr == WSAECONNABORTED );
 }
 
 void
@@ -367,31 +290,6 @@ TDCLWin32Socket::ThrowSendError( int inErr ) const
 	case WSAEFAULT:
 	case WSAENETDOWN:
 	case WSAENETUNREACH:
-	default:
-		throw DCLPlatformUnknownError( inErr );
-	}
-}
-
-void
-TDCLWin32Socket::ThrowTimeoutError( int inErr ) const
-{
-	switch ( inErr )
-	{
-	case WSAENOPROTOOPT:
-		break;
-
-	case WSAEBADF:
-	case WSAENOTSOCK:
-		throw DCLPlatformBadParamError( inErr );
-
-	case WSAEINVAL:
-	case WSAEISCONN:
-		throw DCLPlatformBadStateError( inErr );
-
-	case WSAENOBUFS:
-		throw DCLPlatformLimitReachedError( inErr );
-
-	case WSAEFAULT:
 	default:
 		throw DCLPlatformUnknownError( inErr );
 	}

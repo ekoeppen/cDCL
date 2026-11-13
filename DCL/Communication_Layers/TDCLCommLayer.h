@@ -41,6 +41,7 @@
 
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 // Pré-déclarations
 class TDCLPipe;
@@ -68,6 +69,8 @@ class TDCLServer;
 /// \test	UTestCommLayers
 ///
 class TDCLCommLayer
+	:
+		public TStoppable
 {
 public:
 	enum {

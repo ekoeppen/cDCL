@@ -170,6 +170,25 @@ public:
 	Boolean				Close( void );
 
 	///
+	/// Requests cooperative stop of the link thread.
+	///
+	/// \return \c true if this call triggered the stop.
+	///
+	bool				RequestStop( void );
+
+	///
+	/// Returns whether cooperative stop of the link has been requested.
+	///
+	/// \return \c true if RequestStop() has been called.
+	///
+	using TDCLThread::StopRequested;
+
+	///
+	/// Waits for the link thread to finish executing.
+	///
+	void				Join( void );
+
+	///
 	/// Détermine si le lien est connecté.
 	///
 	/// \return \c true si le lien est connecté, \c false sinon.

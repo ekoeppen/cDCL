@@ -62,6 +62,8 @@ TDCLThread::~TDCLThread( void )
 {
 	if (mThread)
 	{
+		(void) TStoppable::RequestStop();
+		mThread->WakeUp();
 		delete mThread;
 	}
 	
@@ -82,6 +84,15 @@ TDCLThread::~TDCLThread( void )
 }
 
 // ------------------------------------------------------------------------- //
+//  * IDCLThreads::IThread::PrepareThreadedObjectForStart( void )
+// ------------------------------------------------------------------------- //
+void
+IDCLThreads::IThread::PrepareThreadedObjectForStart( void )
+{
+	mThreadedObject->PrepareStart();
+}
+
+// ------------------------------------------------------------------------- //
 //  * WaitNextEvent( KUInt32, KUInt32 )
 // ------------------------------------------------------------------------- //
 TDCLEvent* 
@@ -92,6 +103,11 @@ TDCLThread::WaitNextEvent(
 	TDCLEvent* theResult = nil;
 	
 	do {
+		if (StopRequested())
+		{
+			break;
+		}
+
 		// On regarde si un événement n'est pas déjà présent
 		// et cadre avec le masque.
 
@@ -140,6 +156,11 @@ TDCLThread::WaitNextEvent(
 			break;
 		}
 		
+		if (StopRequested())
+		{
+			break;
+		}
+
 		// Sinon, on dort tout le temps indiqué.
 		if (mThread->Sleep( inMilliseconds ))
 		{
@@ -148,8 +169,8 @@ TDCLThread::WaitNextEvent(
 			break;
 		}
 		
-		// On n'a pas dormi tout le temps demandé: un événement
-		// est sans doute présent. On le traite en haut de la boucle.
+		// We didn't sleep for the full duration: an event or a stop
+		// request is present. Handle it at the top of the loop.
 	} while ( true );
 	
 	return theResult;

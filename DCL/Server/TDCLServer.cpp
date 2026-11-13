@@ -42,6 +42,7 @@
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadParamError.h>
+#include <DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h>
 #include <DCL/Interfaces/TDCLEvent.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
@@ -63,6 +64,12 @@ TDCLServer::TDCLServer( TDCLApplication* inApplication )
 // ------------------------------------------------------------------------- //
 TDCLServer::~TDCLServer( void )
 {	
+	(void) TDCLThread::RequestStop();
+	try {
+		TDCLThread::Join();
+	} catch ( TDCLThreadDeadLockException& ) {
+	}
+
 	if (mStateMutex)
 	{
 		delete mStateMutex;
@@ -129,27 +136,43 @@ TDCLServer::Kill( void )
 	
 	if (mState != kStopped)
 	{
+		mState = kStopped;
+		mStateMutex->Release();
+
 		try {
+			(void) TDCLThread::RequestStop();
+			DoRequestStop();
+
+			try {
+				TDCLThread::Join();
+			} catch ( TDCLThreadDeadLockException& ) {
+			}
+
 			DoKill();
-			
-			TDCLThread::Stop();
 		} catch ( ... ) {
 			// The state is now unknown
-
+			mStateMutex->Acquire();
 			mState = kUnknown;
-			
-			// Release the semaphore
 			mStateMutex->Release();
 
 			throw;	// Rethrow.
 		}
+	} else {
+		mStateMutex->Release();
 
-		mState = kStopped;
+		try {
+			TDCLThread::Join();
+		} catch ( TDCLThreadDeadLockException& ) {
+		}
+	}
+}
 
-	} // else: do nothing
-	
-	// Libération
-	mStateMutex->Release();
+// ------------------------------------------------------------------------- //
+//  * DoRequestStop( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLServer::DoRequestStop( void )
+{
 }
 
 // ------------------------------------------------------------------------- //
@@ -237,19 +260,24 @@ TDCLServer::Run( void )
 				DoStartListening();
 				
 				// L'étape suivante est d'attendre effectivement.
-				theNextState = kRunning;
+				theNextState = StopRequested() ? kStopped : kRunning;
 				break;
 
 			case kRunning:
-				// On attend un événement.
+				if (StopRequested())
 				{
+					theNextState = kStopped;
+				} else {
+					// On attend un événement.
 					TSmartPtr< TDCLEvent > theNextEvent;
 					theNextEvent = WaitNextEvent(
 										TDCLEvent::kServerEventMask,
 										IDCLThreads::IThread::kForever );
 					
-					if (theNextEvent.Get() == nil)
+					if (StopRequested())
 					{
+						theNextState = kStopped;
+					} else if (theNextEvent.Get() == nil) {
 						// On a dormi tout le temps.
 						DoIdle();
 					} else {

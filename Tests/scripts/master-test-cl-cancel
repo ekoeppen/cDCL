@@ -1,0 +1,5 @@
+Socket cancel read: OK
+WakeableWait cancel write: OK
+Serial cancel: OK
+Server kill active link: OK
+Server cancel MNP link: OK

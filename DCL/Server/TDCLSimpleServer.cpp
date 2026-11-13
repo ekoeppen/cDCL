@@ -40,6 +40,7 @@
 // DCL
 #include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 #include <DCL/Link/TDCLLink.h>
 
@@ -63,6 +64,8 @@ TDCLSimpleServer::TDCLSimpleServer(
 // -------------------------------------------------------------------------- //
 TDCLSimpleServer::~TDCLSimpleServer( void )
 {	
+	Kill();
+
 	// Suppression de la connexion.
 	if (mPipe)
 	{
@@ -102,23 +105,51 @@ TDCLSimpleServer::DoStop( void )
 }
 
 // -------------------------------------------------------------------------- //
+//  * DoRequestStop( void )
+// -------------------------------------------------------------------------- //
+void
+TDCLSimpleServer::DoRequestStop( void )
+{
+	if (mPipe)
+	{
+		(void) mPipe->RequestStop();
+	}
+	if (mLink)
+	{
+		(void) mLink->RequestStop();
+	}
+	if (mCommLayer)
+	{
+		(void) mCommLayer->RequestStop();
+	}
+}
+
+// -------------------------------------------------------------------------- //
 //  * DoKill( void )
 // -------------------------------------------------------------------------- //
 void
 TDCLSimpleServer::DoKill( void )
 {
 	if (mPipe)
-	{	
+	{
+		(void) mPipe->RequestStop();
+	}
+
+	if (mLink)
+	{
+		(void) mLink->RequestStop();
+		try {
+			mLink->Join();
+		} catch ( TDCLThreadDeadLockException& ) {
+		}
+	}
+
+	if (mPipe)
+	{
 		try {
 			mPipe->Disconnect();
 		} catch (...) {
 			// On fait le silence sur les exceptions.
-		}
-
-		// On dit au lien qu'il a été déconnecté.
-		if (mLink)
-		{
-			(void) mLink->Close();
 		}
 
 		// Suppression de l'interface.
@@ -127,7 +158,10 @@ TDCLSimpleServer::DoKill( void )
 	}
 
 	// Fermeture du serveur.
-	mCommLayer->StopListening();
+	if (mCommLayer)
+	{
+		mCommLayer->StopListening();
+	}
 }
 
 // -------------------------------------------------------------------------- //
@@ -152,6 +186,13 @@ TDCLSimpleServer::HandleIncomingConnection( TDCLCommLayer* /* inCommLayer */ )
 
 		// On accepte la connexion.
 		mPipe = mCommLayer->Accept();
+
+		// No connection (e.g. client disconnected before accept):
+		// do not start the link and keep listening.
+		if (mPipe == nil)
+		{
+			return kRunning;
+		}
 				
 		// On dit au lien de se connecter.
 		if ((mLink) && (!mLink->Connect( mPipe, this )))
@@ -171,7 +212,11 @@ TDCLSimpleServer::HandleLinkDisconnection( TDCLLink* /* inLink */ )
 {
 	if (mPipe)
 	{	
-		mPipe->Disconnect();
+		try {
+			mPipe->Disconnect();
+		} catch ( ... ) {
+			// Swallow exceptions so mPipe is always deleted.
+		}
 
 		// Suppression de l'interface de communication.
 		delete mPipe;

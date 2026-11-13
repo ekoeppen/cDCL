@@ -42,6 +42,7 @@
 
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 // Pré-déclarations.
 class TDCLPipeProxy;
@@ -57,7 +58,8 @@ class TDCLLink;
 ///
 class TDCLPipe
 	:
-		public TDCLStream
+		public TDCLStream,
+		public TStoppable
 {
 public:
 	///
