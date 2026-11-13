@@ -46,19 +46,10 @@
 	#include <CoreServices/CoreServices.h>
 #endif
 
-#if TARGET_OS_MACOS
-	// MacOS
-	#include <Resources.h>
-	#include <TextUtils.h>
-#endif
-
 // ANSI
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-// K
-#include <K/Misc/UPStrings.h>
 
 // DCL
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
@@ -180,54 +171,12 @@ UDCLMacMachineName::ReadMachineNameFromFile( void )
 }
 #endif
 
-#if TARGET_OS_MACOS
-// -------------------------------------------------------------------------- //
-//  * ReadMachineNameFromResource( void )
-// -------------------------------------------------------------------------- //
-const char*
-UDCLMacMachineName::ReadMachineNameFromResource( void )
-{
-	// Let's get the name from the resource.
-	StringHandle theStringHdl = ::GetString( kMachineNameSTRID );
-	
-	// I check the resource is present.
-	if ( theStringHdl == nil )
-		throw DCLNotAvailable;
-	
-	// I lock it.
-	::HLock( (Handle) theStringHdl );
-	
-	// I dereference it.
-	unsigned char* theStringPtr = *theStringHdl;
-	
-	// Then I convert it to a newly allocated CString.
-	char* theMachineName =
-			(char*) ::malloc( (unsigned long) (theStringPtr[0] + 1) );
-	
-	if (theMachineName == nil)
-	{
-		// I release the resource.
-		::ReleaseResource( (Handle) theStringHdl );
-
-		throw DCLMemError;
-	}
-	
-	UPStrings::P2CStrCopy( (char*) theMachineName, theStringPtr );
-
-	// I release the resource.
-	::ReleaseResource( (Handle) theStringHdl );
-
-	return theMachineName;
-}
-#endif
-
 // -------------------------------------------------------------------------- //
 //  * GetMachineName( void )
 // -------------------------------------------------------------------------- //
 const char*
 UDCLMacMachineName::GetMachineName( void )
 {
-#if TARGET_OS_OPENSTEP
 	// Get the system version to know what to choose.
 	// Check that we have the function, or throw NotAvailable if we don't.
 	KUInt32 theMacOSXVersion;	// Version of the system.
@@ -263,11 +212,6 @@ UDCLMacMachineName::GetMachineName( void )
 	}
 	
 	return theResult;
-	
-#else	// TARGET_OS_MACOS
-	// MacOS: just use the resource method.
-	return ReadMachineNameFromResource();
-#endif
 }
 
 // ================================================================== //

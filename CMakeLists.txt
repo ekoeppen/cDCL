@@ -317,7 +317,6 @@ DCL/Communication_Layers/Common/TDCLSocket.h
 DCL/Communication_Layers/MacOS_X/at_proto.h
 DCL/Communication_Layers/MacOS_X/TDCLIOKitSerialPort.h
 DCL/Communication_Layers/MacOS_X/TDCLRendezVous.h
-DCL/Communication_Layers/MacOS_X/TDCLRendezVousOT.h
 DCL/Communication_Layers/MacOS_X/TDCLXADSP.h
 DCL/Communication_Layers/MacOS_X/TDCLXADSPSocket.h
 DCL/Communication_Layers/POSIX/TDCLBSDSocket.h
@@ -366,13 +365,10 @@ DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadStoppedException.h
-DCL/Headers/DCLDebugMacOSPPCPrefix.h
 DCL/Headers/DCLDebugOSXPrefix.h
 DCL/Headers/DCLDefinitions.h
 DCL/Headers/DCLErrorMessages.h
-DCL/Headers/DCLFinalMacOSPPCPrefix.h
 DCL/Headers/DCLFinalOSXPrefix.h
-DCL/Headers/DCLMacErrorMessages.h
 DCL/Headers/DCLStrings.h
 DCL/Headers/PrecompiledHeader.h
 DCL/Interfaces/Common/TDCLLogApplication.h
@@ -383,11 +379,6 @@ DCL/Interfaces/MacOS/TDCLMacFile.h
 DCL/Interfaces/MacOS/TDCLMacFiles.h
 DCL/Interfaces/MacOS/TDCLMacFolder.h
 DCL/Interfaces/MacOS/TDCLMacGetPutFiles.h
-DCL/Interfaces/MacOS/TDCLMacOS7DesktopFolder.h
-DCL/Interfaces/MacOS/TDCLMacOS7File.h
-DCL/Interfaces/MacOS/TDCLMacOS7Folder.h
-DCL/Interfaces/MacOS/TDCLMacThreads.h
-DCL/Interfaces/MacOS/UDCLCTBConfig.h
 DCL/Interfaces/MacOS/UDCLMacMachineName.h
 DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonDesktopFolder.h
 DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonFile.h

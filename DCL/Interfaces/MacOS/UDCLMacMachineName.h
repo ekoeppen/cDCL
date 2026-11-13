@@ -78,7 +78,6 @@ public:
 	static const char*	GetMachineName( void );
 
 private:
-#if TARGET_OS_OPENSTEP
 	///
 	/// Versions de MacOS X
 	///
@@ -95,23 +94,6 @@ private:
 	///			peut être lu
 	///
 	static const char*	ReadMachineNameFromFile( void );
-
-#else // TARGET_OS_MACOS
-	///
-	/// Constantes pour cette classe.
-	///
-	enum {
-		kMachineNameSTRID	= -16413	///< ID de la ressource
-	};
-
-	///
-	/// Récupère le nom de la machine avec la méthode de la ressource.
-	///
-	/// \return le nom de cette machine alloué avec \c malloc.
-	/// \throws TDCLNotAvailableException si le nom n'a pu être récupéré.
-	///
-	static const char*	ReadMachineNameFromResource( void );
-#endif
 };
 
 #endif
