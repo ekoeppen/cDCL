@@ -115,28 +115,9 @@ UTestThreads::TestThreads( IDCLThreads* inThreadsIntf )
 		(void) ::printf( "TestThreads - thread->WakeUp\n" );
 		theBlocker.WakeUp();
 		
-		// On dort une seconde.
-//		(void) ::printf( "TestThreads - Sleep - 4 ...\n" );
-		(void) ::sleep( 1 );
+		// On dort cinq secondes pour laisser la boucle et l'exception se terminer.
+		(void) ::sleep( 5 );
 		(void) ::printf( "TestThreads - ... Sleep - 4\n" );
-
-		// Suspension.
-		(void) ::printf( "TestThreads - thread->Suspend ...\n" );
-		theBlocker.Suspend();
-
-		// On dort une seconde.
-//		(void) ::printf( "TestThreads - Sleep - 5 ...\n" );
-		(void) ::sleep( 1 );
-		(void) ::printf( "TestThreads - ... Sleep - 5\n" );
-
-		// On le réveille.
-		(void) ::printf( "TestThreads - thread->Resume ...\n" );
-		theBlocker.Resume();
-
-		// On dort trois secondes.
-//		(void) ::printf( "TestThreads - Sleep - 6 ...\n" );
-		(void) ::sleep( 3 );
-		(void) ::printf( "TestThreads - ... Sleep - 6\n" );
 
 		(void) ::printf( "TestThreads - thread->GetState: %i\n",
 						theBlocker.GetThreadState() );

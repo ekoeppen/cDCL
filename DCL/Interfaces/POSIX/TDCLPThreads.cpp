@@ -41,7 +41,6 @@
 #include <time.h>
 #include <sys/time.h>
 #include <errno.h>
-#include <signal.h>
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLLimitReachedError.h>
@@ -58,23 +57,12 @@
 #error	Some versions of GNU Pth (like 0x104201) are not fully POSIX \
 		compliant and will not work with the DCL -- more details in the source \
 		file in case you think your version will work.
-// Two reasons:
-// - we need SIGUSR1 and SIGUSR2 for Suspend/Resume
-// - exceptions will not propagate through their scheduler (and lead to an
+// Exceptions will not propagate through their scheduler (and lead to an
 // abort, as if there was no try/catch block).
 //
 // Use the threads test to see if the implementation is compatible with the
 // DCL.
 #endif
-
-// ------------------------------------------------------------------------- //
-//  * Yield( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLPThreads::Yield( void )
-{
-	// Les processus légers POSIX sont préemptifs.
-}
 
 // ------------------------------------------------------------------------- //
 //  * CreateThread( TDCLThread* )
@@ -452,90 +440,6 @@ TDCLPThreads::TThread::Stop( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Suspend( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLPThreads::TThread::Suspend( void )
-{
-	AcquireMutex();
-
-	if (mState == kStopped)
-	{
-		ReleaseMutex();
-		throw DCLThreadStopped;
-	}
-	
-	if (mState == kRunning)
-	{
-		mState = kSuspended;
-
-		// Lorsque ce signal est appelé, on appelle sigsuspend.
-		// Cf SignalUSR2.
-		int theErr = ::pthread_kill( mThread, SIGUSR2 );
-	
-		ReleaseMutex();
-
-		switch ( theErr )
-		{
-			case 0:
-				break;
-		
-			case ESRCH:		// mThread n'est pas valide: ne doit pas arriver.
-							// sauf peut-être dans un cas très particulier où
-							// le processus léger est fini (?)
-				throw DCLPlatformThreadStopped( theErr );
-			
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
-			default:
-				throw DCLPlatformUnknownError( theErr );
-		}
-	} else {
-		ReleaseMutex();
-	}
-}
-
-// ------------------------------------------------------------------------- //
-//  * Resume( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLPThreads::TThread::Resume( void )
-{
-	AcquireMutex();
-
-	if (mState == kStopped)
-	{
-		ReleaseMutex();
-		throw DCLThreadStopped;
-	}
-	
-	if (mState == kSuspended)
-	{
-		mState = kRunning;
-
-		int theErr = ::pthread_kill( mThread, SIGUSR1 );
-	
-		ReleaseMutex();
-
-		switch ( theErr )
-		{
-			case 0:
-				break;
-		
-			case ESRCH:		// mThread n'est pas valide: ne doit pas arriver.
-							// sauf peut-être dans un cas très particulier où
-							// le processus léger est fini (?)
-				throw DCLPlatformThreadStopped( theErr );
-			
-			case EINVAL:	// Problèmes d'arguments (ne doit pas arriver)
-			default:
-				throw DCLPlatformUnknownError( theErr );
-		}
-	} else {
-		ReleaseMutex();
-	}
-}
-
-// ------------------------------------------------------------------------- //
 //  * Sleep( KUInt32 )
 // ------------------------------------------------------------------------- //
 Boolean
@@ -651,29 +555,6 @@ TDCLPThreads::TThread::Run( TThread* inThis )
 {
 	inThis->mState = kRunning;
 
-	// On enregistre les signaux pour Suspend/Resume.
-	// Suspend (SIGUSR2) d'abord.
-	struct sigaction theSigAction;
-	theSigAction.sa_flags = 0;
-	theSigAction.sa_handler = SignalUSR2;
-	sigemptyset(&theSigAction.sa_mask);
-
-	if (sigaction( SIGUSR2, &theSigAction, NULL ))
-	{
-		throw DCLPlatformUnknownError( errno );
-	}
-
-	// Ensuite, SIGUSR1 (resume).
-	// On bloque SIGUSR2 à ce moment pour éviter une
-	// suspension pendant la reprise.
-	theSigAction.sa_handler = SignalUSR1;
-	sigaddset(&theSigAction.sa_mask, SIGUSR2);
-	
-	if (sigaction( SIGUSR1, &theSigAction, NULL ))
-	{
-		throw DCLPlatformUnknownError( errno );
-	}
-
 	// Synchronisation.
 	inThis->mSyncSemaphore.Release();
 	
@@ -683,29 +564,6 @@ TDCLPThreads::TThread::Run( TThread* inThis )
 	inThis->mState = kStopped;
 	
 	return nil;
-}
-
-// ------------------------------------------------------------------------- //
-//  * SignalUSR2( int )
-// ------------------------------------------------------------------------- //
-void
-TDCLPThreads::TThread::SignalUSR2( int /* inSignal */ )
-{
-	// On attend SIGUSR1.
-	sigset_t theSigset;
-	
-	(void) sigfillset( &theSigset );			// retourne toujours 0.
-	(void) sigdelset( &theSigset, SIGUSR1 );	// idem.
-	
-	(void) sigsuspend( &theSigset );			// retourne toujours -1.
-}
-
-// ------------------------------------------------------------------------- //
-//  * SignalUSR1( int )
-// ------------------------------------------------------------------------- //
-void
-TDCLPThreads::TThread::SignalUSR1( int /* inSignal */ )
-{
 }
 
 // ------------------------------------------------------------------------- //

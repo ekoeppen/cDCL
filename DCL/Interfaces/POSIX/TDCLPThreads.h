@@ -57,12 +57,6 @@ class TDCLPThreads
 {
 public:
 	///
-	/// Donne du temps aux autres processus.
-	/// Ne fait rien puisque les pthreads sont préemptifs.
-	///
-	virtual	void	Yield( void );
-
-	///
 	/// Crée un objet IThread. À surcharger pour chaque plateforme.
 	///
 	/// \param inThreadedObject		objet associé à passer comme paramètre
@@ -171,27 +165,6 @@ private:
 		virtual void	Stop( void );
 
 		///
-		/// Suspend le processus léger.
-		/// Cette méthode peut être appelée à partir d'un autre processus
-		/// léger.
-		/// Lance une exception si le processus léger est arrêté, mais
-		/// est silencieux si le processus est suspendu.
-		///
-		/// \throws TDCLException si le processus léger est arrêté.
-		///
-		virtual	void	Suspend( void );
-
-		///
-		/// Reprend le processus léger.
-		/// Cette méthode est appelée à partir d'un autre processus léger.
-		/// Lance une exception si le processus léger n'est pas arrêté,
-		/// mais est silencieux si le processus n'est pas suspendu.
-		///
-		/// \throws TDCLException si le processus léger est arrêté.
-		///
-		virtual	void	Resume( void );
-
-		///
 		/// Dort pendant n millisecondes ou jusqu'à ce que la méthode
 		/// WakeUp soit appelée.
 		/// Note: le processus peut aussi dormir plus longtemps.
@@ -215,7 +188,7 @@ private:
 		///
 		/// Détermine l'état du processus.
 		///
-		/// \return l'état du processus (arrêté, actif, suspendu)
+		/// \return l'état du processus (arrêté, actif, endormi)
 		///
 		virtual	EState	GetState( void );
 
@@ -247,22 +220,6 @@ private:
 		/// \return \c nil
 		///
 		static void* Run( TThread* inThis );
-
-		///
-		/// Fonction appelée lorsque le signal SIGUSR1 est envoyé.
-		/// Ne fait rien.
-		///
-		/// \param inSignal	signal envoyé (toujours SIGUSR1).
-		///
-		static void SignalUSR1( int inSignal );
-
-		///
-		/// Fonction appelée lorsque le signal SIGUSR2 est envoyé.
-		/// Appelle sigsuspend (on attend SIGUSR1 (seulement)).
-		///
-		/// \param inSignal	signal envoyé (toujours SIGUSR2).
-		///
-		static void SignalUSR2( int inSignal );
 
 		///
 		/// Acquisition du mutex mMutex.

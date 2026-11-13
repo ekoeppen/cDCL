@@ -82,22 +82,6 @@ public:
 		}
 
 	///
-	/// Suspend le processus léger.
-	///
-	inline void Suspend( void )
-		{
-			mThread->Suspend();
-		}
-
-	///
-	/// Reprend le processus léger.
-	///
-	inline void Resume( void )
-		{
-			mThread->Resume();
-		}
-
-	///
 	/// Poste un événement pour ce processus.
 	/// Les événements sont gérés dans l'ordre d'arrivée (à améliorer?)
 	/// L'événement sera supprimé par une méthode du processus léger
@@ -184,16 +168,6 @@ protected:
 	inline IDCLThreads::EState GetThreadState( void )
 		{
 			return mThread->GetState();
-		}
-
-	///
-	/// Donne du temps aux autres processus.
-	/// Cette méthode est appelée à partir de la méthode
-	/// Run de TDCLThread ou du processus léger principal.
-	///
-	inline	void	Yield( void )
-		{
-			mThreadsIntf->Yield();
 		}
 
 	///

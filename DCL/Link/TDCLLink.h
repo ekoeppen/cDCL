@@ -465,7 +465,7 @@ protected:
 	/// Méthode appelée de temps en temps lorsqu'on n'a pas de nouvelles
 	/// ni de l'application du Newton.
 	///
-	/// Par défaut, appelle Yield.
+	/// Par défaut, ne fait rien et retourne kRunning.
 	/// Il faudrait en fait dire bonjour.
 	///
 	/// \return le prochain état du lien (l'état actuel étant kRunning)

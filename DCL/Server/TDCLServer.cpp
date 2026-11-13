@@ -217,9 +217,6 @@ TDCLServer::Run( void )
 	Boolean keepLooping = true;
 	while( keepLooping )
 	{
-		// On donne un peu de temps.
-		Yield();
-
 		EState theState;
 		EState theNextState;
 

@@ -11,12 +11,6 @@
 #include <DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h>
 #include <DCL/Exceptions/Thread_Exceptions/TDCLThreadStoppedException.h>
 
-void
-TDCLWin32Threads::Yield( void )
-{
-	::Sleep(0);
-}
-
 IDCLThreads::IThread*
 TDCLWin32Threads::CreateThread( TDCLThread* inThreadedObject )
 {
@@ -106,38 +100,6 @@ TDCLWin32Threads::TThread::Stop( void )
 	::CloseHandle(mThread);
 	mThread = NULL;
 	mState = kStopped;
-}
-
-void
-TDCLWin32Threads::TThread::Suspend( void )
-{
-	if (mState == kStopped) {
-#if kDCLDebugFILEandLINE
-		throw TDCLThreadStoppedException(__FILE__, __LINE__);
-#else
-		throw TDCLThreadStoppedException();
-#endif
-	}
-	if (mState == kRunning) {
-		::SuspendThread(mThread);
-		mState = kSuspended;
-	}
-}
-
-void
-TDCLWin32Threads::TThread::Resume( void )
-{
-	if (mState == kStopped) {
-#if kDCLDebugFILEandLINE
-		throw TDCLThreadStoppedException(__FILE__, __LINE__);
-#else
-		throw TDCLThreadStoppedException();
-#endif
-	}
-	if (mState == kSuspended) {
-		::ResumeThread(mThread);
-		mState = kRunning;
-	}
 }
 
 Boolean
