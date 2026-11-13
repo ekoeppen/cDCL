@@ -61,11 +61,7 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLPermissionException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLReadOnlyException.h>
 
-#if TARGET_OS_MACOS
-#include <DCL/Interfaces/MacOS/TDCLMacOS7File.h>
-#else
 #include <DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonFile.h>
-#endif
 
 // ------------------------------------------------------------------------- //
 //	* TDCLMacGetPutFiles( TDCLMacFiles* )
@@ -75,18 +71,6 @@ TDCLMacGetPutFiles::TDCLMacGetPutFiles( TDCLMacFiles* inFilesIntf )
 		mFilesIntf( inFilesIntf ),
 		mNavServicesAvailable( true )	// Défaut sous OS X.
 {
-#if CALL_NOT_IN_CARBON
-	mNavServicesAvailable = false;
-
-	if (NavServicesAvailable())
-	{
-		OSErr theErr = ::NavLoad();
-		if (theErr == noErr)
-		{
-			mNavServicesAvailable = true;
-		}
-	}
-#endif
 }
 
 // ------------------------------------------------------------------------- //
@@ -178,34 +162,6 @@ TDCLMacGetPutFiles::DoGetFile(
 			AEKeyword   theKeyword;	// Unused
 			DescType    theActualType;	// Unused
 			Size        theActualSize;	// Unused
-#if TARGET_OS_MACOS
-			FSSpec      myFSSpec;
-                        
-			// Extraction du FSSpec
-			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
-							&( myReply.selection ), 1,
-							typeFSS,
-							&theKeyword,
-							&theActualType,
-							&myFSSpec,
-							sizeof( myFSSpec ),
-							&theActualSize
-						);
-			if (theErr)
-			{
-				if (inOnlyPackages)
-				{
-					DisposeNavObjectFilterUPP(theFilterUPP);
-				}
-				throw DCLPlatformUnknownError( theErr );
-			}
-			
-			theResult = TDCLFSItemRef(
-							new TDCLMacOS7File( mFilesIntf, &myFSSpec ) );
-#else
-	// Carbon.
-
 			FSRef      myFSRef;
                         
 			// Extraction du FSRef
@@ -230,7 +186,6 @@ TDCLMacGetPutFiles::DoGetFile(
 			
 			theResult = TDCLFSItemRef(
 						new TDCLMacCarbonFile( mFilesIntf, &myFSRef ) );
-#endif
 		} catch( ... ) {
 			// I must dispose the reply.
 			(void) ::NavDisposeReply( &myReply );
@@ -253,26 +208,8 @@ TDCLMacGetPutFiles::DoGetFile(
 			DisposeNavObjectFilterUPP(theFilterUPP);
 		}
 	} else {
-#if TARGET_OS_MACOS
-		// NavServices aren't available, so let's use StandardFile on MacOS
-		StandardFileReply myReply;
-		::StandardGetFile(
-				/*fileFilter*/ nil,
-				/*numTypes*/ -1,
-				/*typeList*/ nil,
-				&myReply);
-
-		if (!myReply.sfGood)
-		{
-			throw DCLUserCancelled;
-		}
-	
-		theResult = TDCLFSItemRef(
-						new TDCLMacOS7File( mFilesIntf, &myReply.sfFile ) );
-#else
 		// With Carbon/MacOS X, we don't have anything so throw an exception.
 		throw DCLNotAvailable;
-#endif
 	}
 	
 	return theResult;
@@ -349,30 +286,6 @@ TDCLMacGetPutFiles::PutFile(
 			AEKeyword   theKeyword;	// Unused
 			DescType    theActualType;	// Unused
 			Size        theActualSize;	// Unused
-#if TARGET_OS_MACOS
-			FSSpec      myFSSpec;
-                        
-			// Extraction du FSSpec
-			theErr = ::AEGetNthPtr(
-							// Il n'y a qu'un seul élément de toute façon.
-							&( myReply.selection ), 1,
-							typeFSS,
-							&theKeyword,
-							&theActualType,
-							&myFSSpec,
-							sizeof( myFSSpec ),
-							&theActualSize
-						);
-			if (theErr)
-			{
-				throw DCLPlatformUnknownError( theErr );
-			}
-
-			theResult = TDCLFSItemRef(
-							new TDCLMacOS7File( mFilesIntf, &myFSSpec ) );
-#else
-	// Carbon.
-
 			FSRef      myFSRef;
                         
 			// Extraction du FSRef
@@ -393,7 +306,6 @@ TDCLMacGetPutFiles::PutFile(
 			
 			theResult = TDCLFSItemRef(
 							new TDCLMacCarbonFile( mFilesIntf, &myFSRef ) );
-#endif
 			
 			if (myReply.replacing)
 			{
@@ -413,64 +325,8 @@ TDCLMacGetPutFiles::PutFile(
 		}
 		
 	} else {
-#if CALL_NOT_IN_CARBON
-		// NavServices aren't available, so let's use StandardFile on MacOS
-		
-		// I translate the strings.
-		Str255 thePrompt;
-
-		UPStrings::C2PStrCopy( thePrompt, inPrompt );
-	
-		Str255 theDefaultName;
-	
-		UPStrings::C2PStrCopy( theDefaultName, inDefaultName );
-
-		StandardFileReply myReply;
-		::StandardPutFile ( thePrompt, theDefaultName, &myReply);
-
-		if (!myReply.sfGood)
-		{
-			throw DCLUserCancelled;
-		}
-		
-		if (myReply.sfReplacing)
-		{
-			OSErr theErr = ::FSpDelete( &myReply.sfFile );
-			
-			switch (theErr)
-			{	
-				case noErr:
-					break;
-				
-				case nsvErr:
-				case bdNamErr:
-				case fnfErr:
-				case dirNFErr:
-					throw DCLPlatformDoesntExist( theErr );
-					break;
-				
-				case wPrErr:
-				case fLckdErr:
-				case vLckdErr:
-					throw DCLPlatformReadOnly( theErr );
-					break;
-				
-				case fBsyErr:
-				case afpAccessDenied:
-					throw DCLPlatformPermission( theErr );
-					break;
-				
-				default:
-					throw DCLPlatformUnknownError( theErr );
-			} /* switch (theErr) */
-		}
-		
-		theResult = TDCLFSItemRef(
-						new TDCLMacOS7File( mFilesIntf, &myReply.sfFile ) );
-#else
 		// With Carbon/MacOS X, we don't have anything so throw an exception.
 		throw DCLNotAvailable;
-#endif
 	}
 	
 	return theResult;

@@ -57,7 +57,6 @@
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
-#include <DCL/Interfaces/MacOS/TDCLMacOS7DesktopFolder.h>
 #include <DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonDesktopFolder.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 #include <DCL/NS_Objects/Objects/TDCLNSArray.h>
@@ -69,11 +68,7 @@
 // ------------------------------------------------------------------------- //
 TDCLMacFiles::TDCLMacFiles( void )
 	:
-#if TARGET_OS_OPENSTEP
 		mRootFolder( new TDCLMacCarbonDesktopFolder( this ) )
-#else
-		mRootFolder( new TDCLMacOS7DesktopFolder( this ) )
-#endif
 {
 	// Recherche annonceurs.
 }
