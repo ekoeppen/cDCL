@@ -81,6 +81,13 @@ public:
 	virtual	Boolean		BytesAvailable( void );
 
 	///
+	/// Requests cooperative stop of the pipe and forwards it to the underlying pipe.
+	///
+	/// \return \c true if this call triggered the stop.
+	///
+	virtual	bool		RequestStop( void );
+
+	///
 	/// Déconnecte le canal de communication avec le client.
 	///
 	/// \remark	une fois que cette méthode est appelée, l'objet connexion est inutilisable.

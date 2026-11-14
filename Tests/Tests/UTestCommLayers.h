@@ -69,6 +69,11 @@ public:
 	///
 	static void StartAndStopTwiceXADSP( void );
 
+	///
+	/// Cooperative cancellation test for sockets and POSIX serial ports.
+	///
+	static void CancelCommLayers( void );
+
 private:
 
 	///

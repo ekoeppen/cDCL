@@ -119,6 +119,11 @@ protected:
 	virtual	void		DoStop( void );
 	
 	///
+	/// Requests cooperative stop of the link, pipe, and communication layers.
+	///
+	virtual	void		DoRequestStop( void );
+
+	///
 	/// Ferme toutes les connexions brutalement.
 	///
 	virtual	void		DoKill( void );

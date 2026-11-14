@@ -18,7 +18,7 @@
 // for the specific language governing rights and limitations under the
 // License.
 //
-// The Original Code is TDCLSocket.cp.
+// The Original Code is TDCLSocket.cpp.
 //
 // The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
@@ -38,19 +38,19 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/Common/TDCLSocket.h>
 
+#include <chrono>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <stdio.h>
 
 #if !TARGET_OS_WIN32
 #include <netinet/tcp.h>
-#include <sys/time.h>
 #include <unistd.h>
 #endif
 
 #include <K/Tests/KDebug.h>
 #include <DCL/Communication_Layers/TDCLBufferedPipe.h>
+#include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
 
@@ -61,8 +61,7 @@ TDCLSocket::TDCLSocket( IDCLThreads* inThreadsIntf, unsigned short inPort /* = k
       mCurrentPipeCount( 0 ),
       mBackLogSize( 0 ),
       mTimeout( inTimeout ),
-      mPublicPairMember( kInvalidSocket ),
-      mPrivatePairMember( kInvalidSocket ),
+      mWakeWait(),
       mSocketsAreClosed( true ),
       mPort( inPort )
 {
@@ -82,10 +81,8 @@ TDCLSocket::~TDCLSocket( void )
 }
 
 void
-TDCLSocket::Destroy( void )
+TDCLSocket::CloseListenSockets( void )
 {
-	StopListening();
-
 	if ( !mSocketsAreClosed )
 	{
 		if ( mServerSocket != kInvalidSocket )
@@ -94,20 +91,22 @@ TDCLSocket::Destroy( void )
 			mServerSocket = kInvalidSocket;
 		}
 
-		if ( mPublicPairMember != kInvalidSocket )
-		{
-			CloseSocket( mPublicPairMember );
-			mPublicPairMember = kInvalidSocket;
-		}
-
-		if ( mPrivatePairMember != kInvalidSocket )
-		{
-			CloseSocket( mPrivatePairMember );
-			mPrivatePairMember = kInvalidSocket;
-		}
-
+		mWakeWait.Close();
 		mSocketsAreClosed = true;
 	}
+}
+
+void
+TDCLSocket::StopListening( void )
+{
+	TDCLSyncCommLayer::StopListening();
+	CloseListenSockets();
+}
+
+void
+TDCLSocket::Destroy( void )
+{
+	StopListening();
 }
 
 void
@@ -193,37 +192,22 @@ TDCLSocket::DoStartListening( void )
 
 		try
 		{
-			dcl_socket_t theSocketPair[2];
-			if ( MakeSocketPair( theSocketPair ) != 0 )
+			if ( SetNonBlocking( mServerSocket, true ) != 0 )
 			{
-				int theErr = GetSocketError();
-				ThrowSocketError( theErr );
+				ThrowSocketError( GetSocketError() );
 			}
 
-			mPublicPairMember = theSocketPair[0];
-			mPrivatePairMember = theSocketPair[1];
-
-			if ( SetNonBlocking( mPrivatePairMember, true ) != 0 )
+			int wakeErr = mWakeWait.EnsureOpen();
+			if ( wakeErr != 0 )
 			{
-				int theErr = GetSocketError();
-				ThrowSocketError( theErr );
+				ThrowSocketError( wakeErr );
 			}
 
 			mSocketsAreClosed = false;
 		}
 		catch ( ... )
 		{
-			// Startup did not complete; Destroy() only closes fully opened sockets.
-			if ( mPrivatePairMember != kInvalidSocket )
-			{
-				CloseSocket( mPrivatePairMember );
-				mPrivatePairMember = kInvalidSocket;
-			}
-			if ( mPublicPairMember != kInvalidSocket )
-			{
-				CloseSocket( mPublicPairMember );
-				mPublicPairMember = kInvalidSocket;
-			}
+			mWakeWait.Close();
 			CloseSocket( mServerSocket );
 			mServerSocket = kInvalidSocket;
 			throw;
@@ -234,108 +218,92 @@ TDCLSocket::DoStartListening( void )
 void
 TDCLSocket::DoStopListening( void )
 {
-	if ( mPublicPairMember != kInvalidSocket )
-	{
-		char someByte = 0;
-		(void)::send( mPublicPairMember, &someByte, sizeof( someByte ), 0 );
-	}
+	mWakeWait.Trigger();
 }
 
 Boolean
 TDCLSocket::WaitForIncomingRequest( void )
 {
-	Boolean theResult = false;
-	fd_set socketSet;
-	FD_ZERO( &socketSet );
-	FD_SET( mServerSocket, &socketSet );
-	FD_SET( mPrivatePairMember, &socketSet );
+	int theErr = 0;
+	TDCLWakeableWait::EResult theRes = mWakeWait.WaitReady(
+	    (dcl_wait_handle_t)mServerSocket,
+	    TDCLWakeableWait::EDirection::kRead,
+	    std::chrono::milliseconds( -1 ),
+	    GetStopToken(),
+	    &theErr );
 
-	int maxSocketNb = (int)( mServerSocket > mPrivatePairMember ? mServerSocket : mPrivatePairMember );
-	int readySockets = ::select( maxSocketNb + 1, &socketSet, NULL, NULL, NULL );
-
-	if ( readySockets == -1 )
+	if ( theRes == TDCLWakeableWait::EResult::kReady )
 	{
-		int theErr = GetSocketError();
+		return true;
+	}
+
+	if ( theRes == TDCLWakeableWait::EResult::kError )
+	{
 		ThrowSelectError( theErr );
 	}
-	else if ( readySockets > 0 )
-	{
-		if ( FD_ISSET( mPrivatePairMember, &socketSet ) )
-		{
-			char someByte;
-			while ( ::recv( mPrivatePairMember, &someByte, sizeof( someByte ), 0 ) > 0 )
-			{
-			}
 
-			if ( mServerSocket != kInvalidSocket )
-			{
-				CloseSocket( mServerSocket );
-				mServerSocket = kInvalidSocket;
-			}
-
-			if ( mPublicPairMember != kInvalidSocket )
-			{
-				CloseSocket( mPublicPairMember );
-				mPublicPairMember = kInvalidSocket;
-			}
-
-			if ( mPrivatePairMember != kInvalidSocket )
-			{
-				CloseSocket( mPrivatePairMember );
-				mPrivatePairMember = kInvalidSocket;
-			}
-
-			mSocketsAreClosed = true;
-		}
-		else
-		{
-			theResult = true;
-		}
-	}
-
-	return theResult;
+	return false;
 }
 
 TDCLPipe*
 TDCLSocket::DoAccept( void )
 {
 	TDCLPipe* thePipe = nil;
-	struct sockaddr_in clientAddress;
-	socklen_t nameSize = sizeof( clientAddress );
-	dcl_socket_t theSocket = ::accept( mServerSocket, (struct sockaddr*)&clientAddress, &nameSize );
+	dcl_socket_t theSocket = kInvalidSocket;
 
-	if ( theSocket == kInvalidSocket )
+	for ( ;; )
 	{
+		struct sockaddr_in clientAddress;
+		socklen_t nameSize = sizeof( clientAddress );
+		theSocket = ::accept( mServerSocket, (struct sockaddr*)&clientAddress, &nameSize );
+
+		if ( theSocket != kInvalidSocket )
+		{
+			break;
+		}
+
 		int theErr = GetSocketError();
+		if ( IsInterruptedError( theErr ) )
+		{
+			// Interrupted: retry.
+			continue;
+		}
+
+		if ( IsWouldBlockError( theErr ) || IsAbortedAcceptError( theErr ) )
+		{
+			// No pending connection (the client left before being
+			// accepted): no connection, not an error.
+			return nil;
+		}
+
 		ThrowSocketError( theErr );
+		return nil;
+	}
+
+	KUInt32 theMaxPipeCount = GetMaxPipeCount();
+	if ( ( theMaxPipeCount == 0 ) || ( mCurrentPipeCount < theMaxPipeCount ) )
+	{
+		int theTCPFlag = 1;
+		int theResult =
+		    ::setsockopt( theSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&theTCPFlag, sizeof( theTCPFlag ) );
+		if ( theResult >= 0 )
+		{
+			theResult = SetNonBlocking( theSocket, true );
+		}
+
+		if ( theResult < 0 )
+		{
+			int theErr = GetSocketError();
+			CloseSocket( theSocket );
+			ThrowSocketError( theErr );
+		}
+
+		thePipe = new TDCLBufferedPipe( CreateSocketPipe( theSocket, mTimeout ) );
+		mCurrentPipeCount++;
 	}
 	else
 	{
-		KUInt32 theMaxPipeCount = GetMaxPipeCount();
-		if ( ( theMaxPipeCount == 0 ) || ( mCurrentPipeCount < theMaxPipeCount ) )
-		{
-			int theTCPFlag = 1;
-			int theResult =
-			    ::setsockopt( theSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&theTCPFlag, sizeof( theTCPFlag ) );
-			if ( theResult >= 0 )
-			{
-				theResult = SetNonBlocking( theSocket, false );
-			}
-
-			if ( theResult < 0 )
-			{
-				int theErr = GetSocketError();
-				CloseSocket( theSocket );
-				ThrowSocketError( theErr );
-			}
-
-			thePipe = new TDCLBufferedPipe( CreateSocketPipe( theSocket, mTimeout ) );
-			mCurrentPipeCount++;
-		}
-		else
-		{
-			CloseSocket( theSocket );
-		}
+		CloseSocket( theSocket );
 	}
 
 	return thePipe;
@@ -380,21 +348,13 @@ TDCLSocket::TSocketPipe::TSocketPipe( TDCLSocket* inCommLayer, dcl_socket_t inCl
       mSocketCommLayer( inCommLayer ),
       mClientSocket( inClientSocket ),
       mTimeout( inTimeout ),
-      mPublicPairMember( kInvalidSocket ),
-      mPrivatePairMember( kInvalidSocket ),
+      mDataWakeWait(),
+      mIOWakeWait(),
       mClientSocketIsClosed( false )
 {
 	SetTimeout( inTimeout );
 
-	dcl_socket_t theSocketPair[2];
-	if ( mSocketCommLayer->MakeSocketPair( theSocketPair ) != 0 )
-	{
-		mSocketCommLayer->ThrowSocketError( mSocketCommLayer->GetSocketError() );
-	}
-	mPublicPairMember = theSocketPair[0];
-	mPrivatePairMember = theSocketPair[1];
-
-	if ( mSocketCommLayer->SetNonBlocking( mPrivatePairMember, true ) != 0 )
+	if ( mSocketCommLayer->SetNonBlocking( mClientSocket, true ) != 0 )
 	{
 		mSocketCommLayer->ThrowSocketError( mSocketCommLayer->GetSocketError() );
 	}
@@ -410,23 +370,14 @@ TDCLSocket::TSocketPipe::~TSocketPipe( void )
 		}
 	}
 
-	if ( mPublicPairMember != kInvalidSocket )
-	{
-		ClosePipeSocket( mPublicPairMember );
-		mPublicPairMember = kInvalidSocket;
-	}
-
-	if ( mPrivatePairMember != kInvalidSocket )
-	{
-		ClosePipeSocket( mPrivatePairMember );
-		mPrivatePairMember = kInvalidSocket;
-	}
+	mDataWakeWait.Close();
+	mIOWakeWait.Close();
 }
 
 void
 TDCLSocket::TSocketPipe::Disconnect( void )
 {
-	// Keep the client socket valid until the worker has left select().
+	// Keep the client socket valid until the worker has left WaitReady().
 	TSyncPipe::Disconnect();
 
 	if ( mClientSocket != kInvalidSocket )
@@ -434,28 +385,31 @@ TDCLSocket::TSocketPipe::Disconnect( void )
 		ClosePipeSocket( mClientSocket );
 		mClientSocket = kInvalidSocket;
 	}
+	mDataWakeWait.Close();
+	mIOWakeWait.Close();
 	mClientSocketIsClosed = true;
 }
 
 Boolean
 TDCLSocket::TSocketPipe::BytesAvailable( void )
 {
-	fd_set socketSet;
-	FD_ZERO( &socketSet );
-	FD_SET( mClientSocket, &socketSet );
-
-	struct timeval timeout;
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
-
-	int readySockets = ::select( (int)mClientSocket + 1, &socketSet, NULL, NULL, &timeout );
-	if ( readySockets == -1 )
+	if ( mClientSocket == kInvalidSocket )
 	{
-		int theErr = mSocketCommLayer->GetSocketError();
+		return false;
+	}
+
+	int theErr = 0;
+	TDCLWakeableWait::EResult theRes = TDCLWakeableWait::PollNow(
+	    (dcl_wait_handle_t)mClientSocket,
+	    TDCLWakeableWait::EDirection::kRead,
+	    &theErr );
+
+	if ( theRes == TDCLWakeableWait::EResult::kError )
+	{
 		mSocketCommLayer->ThrowSelectError( theErr );
 	}
 
-	return ( readySockets > 0 );
+	return ( theRes == TDCLWakeableWait::EResult::kReady );
 }
 
 long
@@ -468,62 +422,37 @@ void
 TDCLSocket::TSocketPipe::SetTimeout( long inTimeout )
 {
 	mTimeout = inTimeout;
-	long timeoutInSecs = mTimeout;
-	if ( timeoutInSecs == kDefaultTimeout )
-	{
-		timeoutInSecs = kSocketDefaultTimeout;
-	}
-
-	int theErr = mSocketCommLayer->SetSocketTimeout( mClientSocket, timeoutInSecs );
-	if ( theErr < 0 )
-	{
-		mSocketCommLayer->ThrowTimeoutError( mSocketCommLayer->GetSocketError() );
-	}
 }
 
 Boolean
 TDCLSocket::TSocketPipe::WaitForIncomingData( void )
 {
-	Boolean theResult = false;
-	fd_set socketSet;
-	FD_ZERO( &socketSet );
-	FD_SET( mClientSocket, &socketSet );
-	FD_SET( mPrivatePairMember, &socketSet );
+	int theErr = 0;
+	TDCLWakeableWait::EResult theRes = mDataWakeWait.WaitReady(
+	    (dcl_wait_handle_t)mClientSocket,
+	    TDCLWakeableWait::EDirection::kRead,
+	    std::chrono::milliseconds( -1 ),
+	    GetStopToken(),
+	    &theErr );
 
-	int maxSocketNb = (int)( mClientSocket > mPrivatePairMember ? mClientSocket : mPrivatePairMember );
-	int readySockets = ::select( maxSocketNb + 1, &socketSet, NULL, NULL, NULL );
-
-	if ( readySockets == -1 )
+	if ( theRes == TDCLWakeableWait::EResult::kReady )
 	{
-		int theErr = mSocketCommLayer->GetSocketError();
+		return true;
+	}
+
+	if ( theRes == TDCLWakeableWait::EResult::kError )
+	{
 		mSocketCommLayer->ThrowSelectError( theErr );
 	}
-	else if ( readySockets > 0 )
-	{
-		if ( FD_ISSET( mPrivatePairMember, &socketSet ) )
-		{
-			char someByte;
-			while ( ::recv( mPrivatePairMember, &someByte, sizeof( someByte ), 0 ) > 0 )
-			{
-			}
-		}
-		else
-		{
-			theResult = true;
-		}
-	}
 
-	return theResult;
+	return false;
 }
 
 void
 TDCLSocket::TSocketPipe::DoDisconnect( void )
 {
-	if ( mPublicPairMember != kInvalidSocket )
-	{
-		char someByte = 0;
-		(void)::send( mPublicPairMember, &someByte, sizeof( someByte ), 0 );
-	}
+	mDataWakeWait.Trigger();
+	mIOWakeWait.Trigger();
 }
 
 void
@@ -536,47 +465,99 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 	{
 		timeoutInSecs = kSocketDefaultTimeout;
 	}
-	time_t lastOperation = ::time( NULL );
+
+	const bool hasTimeout = ( timeoutInSecs != kNoTimeout );
+	auto deadline = hasTimeout
+	    ? ( std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs ) )
+	    : std::chrono::steady_clock::time_point{};
 
 	while ( toRead > 0 )
 	{
-		int readBytes = ::recv( mClientSocket, theBuffer, toRead, 0 );
-		if ( readBytes < 0 )
+		if ( StopRequested() )
 		{
-			int theErr = mSocketCommLayer->GetSocketError();
+			*ioCount -= (KUInt32)toRead;
+			throw DCLUserCancelled;
+		}
+
+#if TARGET_OS_WIN32
+		int chunkSize = (int)std::min<size_t>( toRead, (size_t)INT_MAX );
+		int readBytes = ::recv( mClientSocket, theBuffer, chunkSize, 0 );
+#else
+		ssize_t readBytes = ::recv( mClientSocket, theBuffer, toRead, 0 );
+#endif
+		if ( readBytes > 0 )
+		{
+			toRead -= (size_t)readBytes;
+			theBuffer += readBytes;
+			if ( hasTimeout )
+			{
+				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs );
+			}
+			continue;
+		}
+
+		if ( readBytes == 0 )
+		{
+			*ioCount -= (KUInt32)toRead;
+			break;
+		}
+
+		int theErr = mSocketCommLayer->GetSocketError();
+		if ( !mSocketCommLayer->IsWouldBlockError( theErr ) )
+		{
 			try
 			{
 				mSocketCommLayer->ThrowRecvError( theErr );
 			}
 			catch ( ... )
 			{
-				*ioCount -= toRead;
+				*ioCount -= (KUInt32)toRead;
 				throw;
 			}
-
-			if ( ( timeoutInSecs != kNoTimeout ) && ( ( (long)( ::time( NULL ) - lastOperation ) ) > timeoutInSecs ) )
-			{
-				*ioCount -= toRead;
-				throw DCLTimeout;
-			}
 		}
-		else
+
+		std::chrono::milliseconds waitTimeout( -1 );
+		if ( hasTimeout )
 		{
-			if ( ( timeoutInSecs != kNoTimeout ) && ( ( (long)( ::time( NULL ) - lastOperation ) ) > timeoutInSecs ) )
+			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
+			    deadline - std::chrono::steady_clock::now() );
+			if ( remaining <= std::chrono::milliseconds::zero() )
 			{
-				*ioCount -= toRead;
+				*ioCount -= (KUInt32)toRead;
 				throw DCLTimeout;
 			}
+			waitTimeout = remaining;
+		}
 
-			if ( readBytes == 0 )
+		int waitErr = 0;
+		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
+		    (dcl_wait_handle_t)mClientSocket,
+		    TDCLWakeableWait::EDirection::kRead,
+		    waitTimeout,
+		    GetStopToken(),
+		    &waitErr );
+
+		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
+		{
+			*ioCount -= (KUInt32)toRead;
+			throw DCLUserCancelled;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
+		{
+			*ioCount -= (KUInt32)toRead;
+			throw DCLTimeout;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kError )
+		{
+			try
 			{
-				*ioCount -= toRead;
-				break;
+				mSocketCommLayer->ThrowSelectError( waitErr );
 			}
-
-			lastOperation = ::time( NULL );
-			toRead -= readBytes;
-			theBuffer += readBytes;
+			catch ( ... )
+			{
+				*ioCount -= (KUInt32)toRead;
+				throw;
+			}
 		}
 	}
 }
@@ -591,47 +572,99 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 	{
 		timeoutInSecs = kSocketDefaultTimeout;
 	}
-	time_t lastOperation = ::time( NULL );
+
+	const bool hasTimeout = ( timeoutInSecs != kNoTimeout );
+	auto deadline = hasTimeout
+	    ? ( std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs ) )
+	    : std::chrono::steady_clock::time_point{};
 
 	while ( toWrite > 0 )
 	{
-		int sentBytes = ::send( mClientSocket, theBuffer, toWrite, 0 );
-		if ( sentBytes < 0 )
+		if ( StopRequested() )
 		{
-			int theErr = mSocketCommLayer->GetSocketError();
+			*ioCount -= (KUInt32)toWrite;
+			throw DCLUserCancelled;
+		}
+
+#if TARGET_OS_WIN32
+		int chunkSize = (int)std::min<size_t>( toWrite, (size_t)INT_MAX );
+		int sentBytes = ::send( mClientSocket, theBuffer, chunkSize, 0 );
+#else
+		ssize_t sentBytes = ::send( mClientSocket, theBuffer, toWrite, 0 );
+#endif
+		if ( sentBytes > 0 )
+		{
+			toWrite -= (size_t)sentBytes;
+			theBuffer += sentBytes;
+			if ( hasTimeout )
+			{
+				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs );
+			}
+			continue;
+		}
+
+		if ( sentBytes == 0 )
+		{
+			*ioCount -= (KUInt32)toWrite;
+			throw DCLEOF;
+		}
+
+		int theErr = mSocketCommLayer->GetSocketError();
+		if ( !mSocketCommLayer->IsWouldBlockError( theErr ) )
+		{
 			try
 			{
 				mSocketCommLayer->ThrowSendError( theErr );
 			}
 			catch ( ... )
 			{
-				*ioCount -= toWrite;
+				*ioCount -= (KUInt32)toWrite;
 				throw;
 			}
-
-			if ( ( timeoutInSecs != kNoTimeout ) && ( ( (long)( ::time( NULL ) - lastOperation ) ) > timeoutInSecs ) )
-			{
-				*ioCount -= toWrite;
-				throw DCLTimeout;
-			}
 		}
-		else
+
+		std::chrono::milliseconds waitTimeout( -1 );
+		if ( hasTimeout )
 		{
-			if ( ( timeoutInSecs != kNoTimeout ) && ( ( (long)( ::time( NULL ) - lastOperation ) ) > timeoutInSecs ) )
+			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
+			    deadline - std::chrono::steady_clock::now() );
+			if ( remaining <= std::chrono::milliseconds::zero() )
 			{
-				*ioCount -= toWrite;
+				*ioCount -= (KUInt32)toWrite;
 				throw DCLTimeout;
 			}
+			waitTimeout = remaining;
+		}
 
-			if ( sentBytes == 0 )
+		int waitErr = 0;
+		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
+		    (dcl_wait_handle_t)mClientSocket,
+		    TDCLWakeableWait::EDirection::kWrite,
+		    waitTimeout,
+		    GetStopToken(),
+		    &waitErr );
+
+		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
+		{
+			*ioCount -= (KUInt32)toWrite;
+			throw DCLUserCancelled;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
+		{
+			*ioCount -= (KUInt32)toWrite;
+			throw DCLTimeout;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kError )
+		{
+			try
 			{
-				*ioCount -= toWrite;
-				throw DCLEOF;
+				mSocketCommLayer->ThrowSelectError( waitErr );
 			}
-
-			lastOperation = ::time( NULL );
-			toWrite -= sentBytes;
-			theBuffer += sentBytes;
+			catch ( ... )
+			{
+				*ioCount -= (KUInt32)toWrite;
+				throw;
+			}
 		}
 	}
 }

@@ -80,6 +80,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestCommLayers::StartAndStopTwiceFDSerialPort( inArgument );
 		} else if (::strcmp(inTestName, "cl-sast-xadsp") == 0) {
 			UTestCommLayers::StartAndStopTwiceXADSP();
+		} else if (::strcmp(inTestName, "cl-cancel") == 0) {
+			UTestCommLayers::CancelCommLayers();
 		} else if (::strcmp(inTestName, "ns-arraysandframes") == 0) {
 			UTestNS::ArraysAndFrames();
 		} else if (::strcmp(inTestName, "ns-framekeyssort") == 0) {
@@ -106,12 +108,9 @@ test( const char* inTestName, const char* inArgument )
 			UTestPkg::WalterSmith();
 		} else if (::strcmp(inTestName, "pkg-idempotent") == 0) {
 			UTestPkg::IdemPotent();
-		} else if (::strcmp(inTestName, "threads-posix") == 0) {
-#if TARGET_OS_WIN32
-			UTestThreads::Win32();
-#else
-			UTestThreads::Posix();
-#endif
+		} else if (::strcmp(inTestName, "threads-posix") == 0
+				|| ::strcmp(inTestName, "threads-std") == 0) {
+			UTestThreads::StdThreads();
 		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
 			UTestKThreads::RunTests();
 		} else if (::strcmp(inTestName, "kmappedfile") == 0) {

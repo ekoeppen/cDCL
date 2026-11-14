@@ -236,6 +236,12 @@ protected:
 	virtual	void		DoStop( void ) = 0;
 	
 	///
+	/// Requests cooperative stop of objects managed by the subclass
+	/// before joining the server thread.
+	///
+	virtual void		DoRequestStop( void );
+
+	///
 	/// Ferme toutes les connexions brutalement.
 	///
 	virtual	void		DoKill( void ) = 0;

@@ -42,8 +42,15 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
+// C++
+#include <condition_variable>
+#include <mutex>
+
 // POSIX
 #include <termios.h>
+
+// DCL
+#include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
 
 ///
 /// Classe pour une couche de communication à base d'un port série accédé
@@ -108,6 +115,11 @@ public:
 	/// Arrête le serveur.
 	///
 	virtual ~TDCLFDSerialPort( void );
+
+	///
+	/// Stops listening and closes the serial port if no connection is active.
+	///
+	virtual void		StopListening( void ) override;
 	
 	/// \name interface serveur
 
@@ -120,13 +132,13 @@ public:
 	/// \return	un nouvel objet TPipe créé avec new représentant la connexion
 	///			ou \c nil.
 	///
-	virtual	TDCLPipe*	DoAccept( void );
+	virtual	TDCLPipe*	DoAccept( void ) override;
 
 	///
 	/// Refuse la première requête de connexion.
 	/// Ne fait rien si aucune connexion n'est présente.
 	///
-	virtual	void		DoRefuse( void );
+	virtual	void		DoRefuse( void ) override;
 
 	///
 	/// Change la temporisation pour les nouvelles connexions.
@@ -134,7 +146,7 @@ public:
 	///
 	/// \param inTimeout	nouvelle temporisation au format \c TDCLCommLayer
 	///
-	virtual	void		SetTimeout( long inTimeout );
+	virtual	void		SetTimeout( long inTimeout ) override;
 
 	///
 	/// Récupère la temporisation utilisée pour les nouvelles connexions.
@@ -142,7 +154,7 @@ public:
 	///
 	/// \return la temporisation au format \c TDCLCommLayer
 	///
-	virtual	long		GetTimeout( void );
+	virtual	long		GetTimeout( void ) override;
 
 	///
 	/// Méthode appelée par TPipe::Disconnect() pour indiquer qu'une connexion
@@ -150,18 +162,18 @@ public:
 	///
 	/// \param inPipe	connexion qui a été fermée
 	///
-	virtual	void		Disconnected( TDCLPipe* inPipe );
+	virtual	void		Disconnected( TDCLPipe* inPipe ) override;
 
 protected:
 	///
 	/// Commence à écouter.
 	///
-	virtual	void		DoStartListening( void );
+	virtual	void		DoStartListening( void ) override;
 
 	///
 	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
 	///
-	virtual	void		DoStopListening( void );
+	virtual	void		DoStopListening( void ) override;
 
 	///
 	/// Attend qu'une requête se présente.
@@ -169,7 +181,7 @@ protected:
 	/// \return \c true si une requête est présente, \c false si la méthode a été
 	/// interrompue.
 	///
-	virtual	Boolean		WaitForIncomingRequest( void );
+	virtual	Boolean		WaitForIncomingRequest( void ) override;
 
 	///
 	/// Accesseur sur l'interface de communication.
@@ -222,6 +234,13 @@ private:
 	void				OpenAndConfigure( void );
 
 	///
+	/// Clears exclusive mode (TIOCNXCL) and closes the descriptor.
+	///
+	/// \param inFD	descriptor of the serial port to close.
+	///
+	static void			CloseSerialFD( int inFD );
+
+	///
 	/// Ferme et rouvre le port série.
 	///
 	/// \throws TDCLIOException si un problème est survenu.
@@ -260,7 +279,7 @@ private:
 		///						survenu.
 		/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
 		///
-		virtual	void		Read( void* outBuffer, KUInt32* ioCount );
+		virtual	void		Read( void* outBuffer, KUInt32* ioCount ) override;
 
 		///
 		/// Ecrit des octets.
@@ -272,14 +291,14 @@ private:
 		///						survenu.
 		/// \throws TDCLIOException	si un problème est survenu.
 		///
-		virtual	void		Write( const void* inBuffer, KUInt32* ioCount );
+		virtual	void		Write( const void* inBuffer, KUInt32* ioCount ) override;
 		
 		///
 		/// Détermine quel est le nombre d'octets disponibles dans la mémoire tampon d'entrée.
 		///
 		/// \return le nombre d'octets disponibles.
 		///
-		virtual	Boolean		BytesAvailable( void );
+		virtual	Boolean		BytesAvailable( void ) override;
 
 		///
 		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt
@@ -289,15 +308,17 @@ private:
 		/// \return \c true si une requête est présente, \c false si la méthode a été
 		/// interrompue.
 		///
-		virtual Boolean 	WaitForIncomingData( void );
+		virtual Boolean 	WaitForIncomingData( void ) override;
 
 		///
 		/// Déconnecte le canal de communication avec le client.
 		///
-		/// \remark	une fois que cette méthode est appelée, l'objet connexion est inutilisable.
-		/// 		Il peut être supprimé par l'appelant à tout instant.
+		virtual	void		Disconnect( void ) override;
+
 		///
-		virtual	void		DoDisconnect( void );
+		/// Actually disconnects the communication channel with the client.
+		///
+		virtual	void		DoDisconnect( void ) override;
 		
 		///
 		/// Récupère la temporisation pour cette connexion.
@@ -306,7 +327,7 @@ private:
 		///
 		/// \return la temporisation au format TDCLCommLayer.
 		///
-		virtual	long		GetTimeout( void );
+		virtual	long		GetTimeout( void ) override;
 
 		///
 		/// Change la temporisation pour cette connexion.
@@ -315,17 +336,9 @@ private:
 		///
 		/// \param inTimeout	temporisation au format TDCLCommLayer.
 		///
-		virtual	void		SetTimeout( long inTimeout );
+		virtual	void		SetTimeout( long inTimeout ) override;
 
 	protected:
-		///
-		/// Interval at which WaitForIncomingData checks whether the pipe
-		/// was disconnected while no data arrives.
-		///
-		enum {
-			kDisconnectPollMs = 100
-		};
-
 		///
 		/// Constructeur.
 		/// Vous n'êtes pas supposés créer des TSocketPipe vous-mêmes.
@@ -338,11 +351,13 @@ private:
 			);
 
 	private:
-		int						mSerialFD;			///< Descripteur de fichier de l'interface
-													///< de connexion.
-		long					mTimeout;			///< Temporisation pour cette
-													///< interface.
-		Boolean					mDisconnected;		///< Si la connexion a été rompue par le client.
+		int						mSerialFD;					///< File descriptor of the connection
+															///< interface.
+		long					mTimeout;					///< Timeout for this interface.
+		Boolean					mDisconnected;				///< Whether the connection was closed by the client.
+		bool					mCancelledBeforeDisconnect;	///< Whether stop was requested before Disconnect().
+		TDCLWakeableWait		mDataWakeWait;				///< Wakeable wait for WaitForIncomingData().
+		TDCLWakeableWait		mIOWakeWait;				///< Wakeable wait for Read()/Write().
 	};
 	
 	/// \name Variables
@@ -358,10 +373,9 @@ private:
 													///< le fichier.
 	Boolean						mDisconnecting;		///< Si on est en train de se déconnecter.
 	Boolean						mRequestPresent;	///< Si une requête est présente.
-	IDCLThreads::ISemaphore*	mResetMutex;		///< Sémaphore pour bloquer
-													///< Select lors de la réinitialisation.
-	IDCLThreads::ISemaphore*	mWaitRequestMutex;	///< Sémaphore pour bloquer
-													///< Select tant qu'on n'est pas connecté.
+	std::mutex					mStateMutex;		///< Mutex protecting layer state.
+	std::condition_variable_any	mStateCV;			///< Condition variable for mRequestPresent/mReset.
+	TDCLWakeableWait			mWakeWait;			///< Wakeable wait on mSerialFD.
 	long						mTimeout;			///< Temporisation pour cette
 													///< interface.
 };

@@ -37,11 +37,9 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
-// C++
-#include <thread>
-
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h>
 #include <DCL/Link/TDCLLink.h>
 #include <DCL/Server/TDCLServer.h>
 
@@ -59,8 +57,34 @@ TDCLSyncCommLayer::TDCLSyncCommLayer(
 {
 }
 
+// -------------------------------------------------------------------------- //
+//  * ~TDCLSyncCommLayer( void )
+// -------------------------------------------------------------------------- //
+TDCLSyncCommLayer::~TDCLSyncCommLayer( void )
+{
+	(void) RequestStop();
+	try {
+		Join();
+	} catch ( TDCLThreadDeadLockException& ) {
+	}
+}
+
 // ------------------------------------------------------------------------- //
-//  * StartListening( TDCLServer* )
+//  * RequestStop( void )
+// ------------------------------------------------------------------------- //
+bool
+TDCLSyncCommLayer::RequestStop( void )
+{
+	bool theResult = TDCLCommLayer::RequestStop();
+	if (TDCLThread::RequestStop())
+	{
+		theResult = true;
+	}
+	return theResult;
+}
+
+// ------------------------------------------------------------------------- //
+//  * StartListening( TDCLServer* )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
@@ -71,6 +95,9 @@ TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
 		throw DCLBadStateError;
 	}
 	
+	// Reset the communication layer's stop token.
+	TDCLCommLayer::ResetStopSource();
+
 	// Enregistrement du serveur.
 	SetServer( inServer );
 	
@@ -80,7 +107,7 @@ TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
 }
 
 // ------------------------------------------------------------------------- //
-//  * StopListening( void )
+//  * StopListening( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::StopListening( void )
@@ -90,15 +117,18 @@ TDCLSyncCommLayer::StopListening( void )
 	{
 		// On appelle la méthode qui fait vraiment le travail.
 		try {
+			(void) RequestStop();
+
 			DoStopListening();
 		
 			// Réveil du processus léger
 			WakeUp();
 
 			// On attend que le processus léger termine.
-			while (GetThreadState() != IDCLThreads::kStopped)
-			{
-				std::this_thread::yield();
+			try {
+				Join();
+			} catch ( TDCLThreadDeadLockException& ) {
+				// Avoid self-join if called from the worker thread.
 			}
 		} catch ( ... ) {
 			// On reste silencieux.
@@ -109,7 +139,7 @@ TDCLSyncCommLayer::StopListening( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * Run( void )
+//  * Run( void )
 // ------------------------------------------------------------------------- //
 void
 TDCLSyncCommLayer::Run( void )
@@ -121,7 +151,7 @@ TDCLSyncCommLayer::Run( void )
 	GetServer()->WaitingConnection( this );
 
 	// On attend qu'une requête soit présente.
-	while ( WaitForIncomingRequest() )
+	while ( !StopRequested() && WaitForIncomingRequest() )
 	{
 		// Une requête vient d'arriver. On prévient le serveur.
 		TDCLServer* theServer = GetServer();
@@ -174,7 +204,7 @@ TDCLSyncCommLayer::HandleException( TDCLException* inException )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * TSyncPipe( IDCLThreads*, TDCLSyncCommLayer* )
+//  * TSyncPipe( IDCLThreads*, TDCLSyncCommLayer* )
 // --------------------------------------------------------------------------------	//
 TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
 					IDCLThreads* inThreadsIntf, TDCLSyncCommLayer* inCommLayer )
@@ -185,11 +215,39 @@ TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Disconnect( void )
+//  * ~TSyncPipe( void )
+// --------------------------------------------------------------------------------	//
+TDCLSyncCommLayer::TSyncPipe::~TSyncPipe( void )
+{
+	(void) RequestStop();
+	try {
+		Join();
+	} catch ( TDCLThreadDeadLockException& ) {
+	}
+}
+
+// --------------------------------------------------------------------------------	//
+//  * RequestStop( void )
+// --------------------------------------------------------------------------------	//
+bool
+TDCLSyncCommLayer::TSyncPipe::RequestStop( void )
+{
+	bool theResult = TDCLPipe::RequestStop();
+	if (TDCLThread::RequestStop())
+	{
+		theResult = true;
+	}
+	return theResult;
+}
+
+// --------------------------------------------------------------------------------	//
+//  * Disconnect( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 {
+	(void) RequestStop();
+
 	if (GetLink())
 	{
 		// On appelle la méthode qui fait vraiment le travail.
@@ -199,30 +257,40 @@ TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 		WakeUp();
 		
 		// On attend que le processus léger termine.
-		while (GetThreadState() != IDCLThreads::kStopped)
-		{
-			std::this_thread::yield();
+		try {
+			Join();
+		} catch ( TDCLThreadDeadLockException& ) {
+			// Avoid self-join if called from the worker thread.
 		}
 	}
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Connected( TDCLLink* )
+//  * Connected( TDCLLink* )
 // --------------------------------------------------------------------------------	//
 TDCLCommLayer*
 TDCLSyncCommLayer::TSyncPipe::Connected( TDCLLink* inLink )
 {
+	TDCLPipe::ResetStopSource();
+
 	// Appel de la méthode par défaut.
 	TDCLCommLayer* theResult = TDCLPipe::Connected( inLink );
 	
 	// Démarrage du processus léger.
 	Start();
+
+	// A stop requested by the link before ResetStopSource() went to the
+	// old stop source and would be lost: re-request it.
+	if (inLink && inLink->StopRequested())
+	{
+		(void) RequestStop();
+	}
 	
 	return theResult;
 }
 
 // --------------------------------------------------------------------------------	//
-//  * ClearDataPresent( void )
+//  * ClearDataPresent( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::ClearDataPresent( void )
@@ -231,13 +299,18 @@ TDCLSyncCommLayer::TSyncPipe::ClearDataPresent( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * Run( void )
+//  * Run( void )
 // --------------------------------------------------------------------------------	//
 void
 TDCLSyncCommLayer::TSyncPipe::Run( void )
 {
 	do {
 		(void) Sleep();	// On attend que le lien nous demande si on veut des données.
+
+		if ( StopRequested() )
+		{
+			break;
+		}
 
 		if ( WaitForIncomingData() )
 		{
@@ -246,7 +319,7 @@ TDCLSyncCommLayer::TSyncPipe::Run( void )
 		} else {
 			break;
 		}
-	} while ( true );
+	} while ( !StopRequested() );
 }
 
 // --------------------------------------------------------------------------------	//

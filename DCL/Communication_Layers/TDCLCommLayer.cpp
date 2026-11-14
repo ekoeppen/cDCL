@@ -82,6 +82,9 @@ TDCLCommLayer::StartListening( TDCLServer* inServer )
 	// On note le serveur.
 	mServer = inServer;
 
+	// Reset the stop token.
+	ResetStopSource();
+
 	// Ensuite, on appelle la méthode qui fait vraiment le travail.
 	DoStartListening();
 
@@ -98,6 +101,8 @@ TDCLCommLayer::StopListening( void )
 	// On ne fait rien si on n'est pas en train d'écouter.
 	if (mServer)
 	{
+		RequestStop();
+
 		try {
 			// On appelle la méthode qui fait vraiment le travail.
 			DoStopListening();
