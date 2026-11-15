@@ -109,6 +109,7 @@ DCL/Communication_Layers/TDCLPipe.cpp
 DCL/Communication_Layers/TDCLPipeProxy.cpp
 DCL/Communication_Layers/TDCLSyncCommLayer.cpp
 DCL/Communication_Layers/Common/TDCLSocket.cpp
+DCL/Communication_Layers/Common/TDCLWakeableWait.cpp
 DCL/Data/Text/TDCLStyleRef.cpp
 DCL/Data/Text/TDCLFontSpecification.cpp
 DCL/Data/Text/TDCLClParagraph.cpp
@@ -146,12 +147,12 @@ DCL/Exceptions/Thread_Exceptions/TDCLThreadStoppedException.cpp
 DCL/Interfaces/Common/TDCLLogApplication.cpp
 DCL/Interfaces/TDCLApplication.cpp
 DCL/Interfaces/TDCLEvent.cpp
+DCL/Interfaces/TDCLEventQueue.cpp
 DCL/Interfaces/TDCLFile.cpp
 DCL/Interfaces/TDCLFolder.cpp
 DCL/Interfaces/TDCLFSItem.cpp
 DCL/Interfaces/TDCLFSItemRef.cpp
 DCL/Interfaces/TDCLRootFolder.cpp
-DCL/Interfaces/TDCLThread.cpp
 DCL/Interfaces/UDCLTime.cpp
 DCL/Link/App_Commands/TDCLAppCmdFile.cpp
 DCL/Link/App_Commands/TDCLAppCmdKbdChar.cpp
@@ -224,6 +225,7 @@ DCL/Package/UDCLPaperback.cpp
 DCL/Server/TDCLOneLinkServer.cpp
 DCL/Server/TDCLServer.cpp
 DCL/Server/TDCLSimpleServer.cpp
+DCL/Server/TDCLSingleLinkServer.cpp
 DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
@@ -244,10 +246,10 @@ endif()
 
 if (WIN32)
     target_sources(DCL PRIVATE
+        DCL/Communication_Layers/Win32/TDCLWakeableWaitWin32.cpp
         DCL/Communication_Layers/Win32/TDCLWin32Socket.cpp
         DCL/Interfaces/Win32/TDCLWin32File.cpp
         DCL/Interfaces/Win32/TDCLWin32Files.cpp
-        DCL/Interfaces/Win32/TDCLWin32Threads.cpp
         DCL/Interfaces/Win32/TDCLWin32Dir.cpp
         DCL/Interfaces/Win32/TDCLWin32DirBase.cpp
         DCL/Interfaces/Win32/TDCLWin32RootDir.cpp
@@ -257,12 +259,12 @@ else()
     target_sources(DCL PRIVATE
         DCL/Communication_Layers/POSIX/TDCLBSDSocket.cpp
         DCL/Communication_Layers/POSIX/TDCLFDSerialPort.cpp
+        DCL/Communication_Layers/POSIX/TDCLWakeableWaitPOSIX.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXDir.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXDirBase.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXFile.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXFiles.cpp
         DCL/Interfaces/POSIX/TDCLPOSIXRootDir.cpp
-        DCL/Interfaces/POSIX/TDCLPThreads.cpp
     )
     target_link_libraries(DCL PRIVATE Threads::Threads)
 endif()
@@ -314,6 +316,7 @@ K/XML/UExpatUtils.h
 
 set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
+DCL/Communication_Layers/Common/TDCLWakeableWait.h
 DCL/Communication_Layers/POSIX/TDCLBSDSocket.h
 DCL/Communication_Layers/Win32/TDCLWin32Socket.h
 DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h
@@ -365,22 +368,21 @@ DCL/Headers/DCLErrorMessages.h
 DCL/Headers/DCLStrings.h
 DCL/Interfaces/Common/TDCLLogApplication.h
 DCL/Interfaces/IDCLFiles.h
-DCL/Interfaces/IDCLThreads.h
 DCL/Interfaces/POSIX/Compat/libgen.h
 DCL/Interfaces/POSIX/TDCLPOSIXDir.h
 DCL/Interfaces/POSIX/TDCLPOSIXDirBase.h
 DCL/Interfaces/POSIX/TDCLPOSIXFile.h
 DCL/Interfaces/POSIX/TDCLPOSIXFiles.h
 DCL/Interfaces/POSIX/TDCLPOSIXRootDir.h
-DCL/Interfaces/POSIX/TDCLPThreads.h
 DCL/Interfaces/TDCLApplication.h
 DCL/Interfaces/TDCLEvent.h
+DCL/Interfaces/TDCLEventQueue.h
 DCL/Interfaces/TDCLFile.h
 DCL/Interfaces/TDCLFolder.h
 DCL/Interfaces/TDCLFSItem.h
 DCL/Interfaces/TDCLFSItemRef.h
 DCL/Interfaces/TDCLRootFolder.h
-DCL/Interfaces/TDCLThread.h
+DCL/Interfaces/TStoppable.h
 DCL/Interfaces/UDCLTime.h
 DCL/Link/App_Commands/TDCLAppCmdFile.h
 DCL/Link/App_Commands/TDCLAppCmdKbdChar.h
@@ -460,6 +462,7 @@ DCL/Package/UDCLPaperback.h
 DCL/Server/TDCLOneLinkServer.h
 DCL/Server/TDCLServer.h
 DCL/Server/TDCLSimpleServer.h
+DCL/Server/TDCLSingleLinkServer.h
 DCL/Streams/TDCLMemStream.h
 DCL/Streams/TDCLRandomAccessStream.h
 DCL/Streams/TDCLStdStream.h

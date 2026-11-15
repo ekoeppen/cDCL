@@ -36,12 +36,10 @@ class TTestApplication
 {
 public:
 	///
-	/// Constructeur à partir d'une interface pour les processus légers.
+	/// Constructeur par défaut.
 	/// Les informations sont envoyées sur stdout.
 	///
-	/// \param inThreadsIntf	interface pour les processus légers.
-	///
-	TTestApplication( IDCLThreads* inThreadsIntf );
+	TTestApplication( void );
 
 	///
 	/// Destructeur.
@@ -125,19 +123,6 @@ private:
 	/// \return une abstraction pour utiliser les fichiers.
 	///
 	virtual IDCLFiles*		CreateFilesIntf( void );
-	
-	///
-	/// Retourne l'abstraction pour les processus légers.
-	/// Cette méthode est appelée la première fois que
-	/// GetThreadsIntf est appelée.
-	///
-	/// \return une abstraction pour les processus légers.
-	///
-	virtual IDCLThreads*	CreateThreadsIntf( void );
-
-	/// \name Variables
-
-	IDCLThreads*				mThreadsIntf;	///< Interface pour les processus légers.
 };
 
 #endif

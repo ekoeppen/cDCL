@@ -42,6 +42,11 @@
 #include <time.h>
 #include <string.h>
 
+// C++
+#include <chrono>
+#include <optional>
+#include <thread>
+
 // K
 #include <K/Misc/TSmartPtr.h>
 #include <K/Tests/KDebug.h>
@@ -49,6 +54,7 @@
 // DCL
 #include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
+#include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
@@ -56,7 +62,7 @@
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
 #include <DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
-#include <DCL/Interfaces/IDCLThreads.h>
+#include <DCL/Interfaces/TStoppable.h>
 #include <DCL/Link/App_Commands/TDCLAppCommand.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>
@@ -97,11 +103,10 @@ TDCLLink::TDCLLink(
 					KUInt32 inType /* = TDCLDockCommand::kNone_SType */,
 					KUInt32 inIdlePeriod /* = kDefaultIdlePeriod */)
 	:
-		TDCLThread( inApplication->GetThreadsIntf() ),
 		mPipe( nil ),
 		mServer( nil ),
 		mApplication( inApplication ),
-		mStateMutex( nil ),
+		mThreadId(),
 		mState( kDisconnected ),
 		mType( inType ),
 		mIdlePeriod( inIdlePeriod ),
@@ -121,7 +126,6 @@ TDCLLink::TDCLLink(
 		mHoriScreenRes( 0 ),
 		mScreenDepth( 0 )
 {
-	mStateMutex = GetThreadsIntf()->CreateSemaphore();
 }
 
 // --------------------------------------------------------------------------------	//
@@ -129,48 +133,160 @@ TDCLLink::TDCLLink(
 // --------------------------------------------------------------------------------	//
 TDCLLink::~TDCLLink( void )
 {
+	(void) RequestStop();
+	(void) Wait();
+
 	if (mPipe)
 	{
-		Disconnected();
+		try {
+			mPipe->Disconnect();
+		} catch ( ... ) {
+		}
+		mPipe.reset();
 	}
-	
-	if (mStateMutex)
+}
+
+void
+TDCLLink::ThreadEntry( std::stop_token inStopToken )
+{
+	mThreadId.store( std::this_thread::get_id() );
+	mWorkerStopToken = std::move( inStopToken );
+	try {
+		Run();
+	} catch ( TDCLException& inException ) {
+		try {
+			HandleException( &inException );
+		} catch ( ... ) {
+		}
+	} catch ( ... ) {
+		try {
+			HandleException( nil );
+		} catch ( ... ) {
+		}
+	}
+	mWorkerStopToken = std::stop_token();
+	mThreadId.store( std::thread::id() );
+}
+
+// --------------------------------------------------------------------------------	//
+//  * RequestStop( void )
+// --------------------------------------------------------------------------------	//
+bool
+TDCLLink::RequestStop( void )
+{
+	std::stop_source theStopSource;
 	{
-		delete mStateMutex;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		theStopSource = mThread.get_stop_source();
 	}
+	return theStopSource.request_stop();
+}
+
+// --------------------------------------------------------------------------------	//
+//  * StopRequested( void )
+// --------------------------------------------------------------------------------	//
+bool
+TDCLLink::StopRequested( void ) const noexcept
+{
+	std::lock_guard<std::mutex> lock( mStateMutex );
+	return mThread.get_stop_token().stop_requested();
+}
+
+// --------------------------------------------------------------------------------	//
+//  * Wait( void )
+// --------------------------------------------------------------------------------	//
+bool
+TDCLLink::Wait( void )
+{
+	if ( std::this_thread::get_id() == mThreadId.load() )
+	{
+		return false;
+	}
+
+	std::lock_guard<std::mutex> joinLock( mJoinMutex );
+	if ( mThread.joinable() )
+	{
+		mThread.join();
+	}
+	return true;
 }
 
 // --------------------------------------------------------------------------------	//
 //  * Connect( TDCLPipe*, TDCLServer* )
 // --------------------------------------------------------------------------------	//
 Boolean
-TDCLLink::Connect( TDCLPipe* inPipe, TDCLServer* inServer )
+TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sémaphore sur l'état.
-	mStateMutex->Acquire();
-	
-	if (mState == kDisconnected)
 	{
-		// Vérification que le processus léger ne tourne pas.
-		IDCLThreads::EState theState = GetThreadState();
-		if( theState != IDCLThreads::kStopped )
+		std::unique_lock<std::mutex> lock( mStateMutex );
+
+		if (mState == kDisconnected)
 		{
-			throw DCLThreadActive;
+			if ( std::this_thread::get_id() == mThreadId.load() )
+			{
+				throw DCLThreadActive;
+			}
+
+			lock.unlock();
+
+			std::unique_lock<std::mutex> joinLock( mJoinMutex );
+			lock.lock();
+
+			if ( mState == kDisconnected )
+			{
+				if ( mThread.joinable() )
+				{
+					lock.unlock();
+					mThread.join();
+					lock.lock();
+				}
+			}
+
+			if ( mState == kDisconnected )
+			{
+				if ( mThreadId.load() != std::thread::id() )
+				{
+					throw DCLThreadActive;
+				}
+
+				theResult = true;
+				mState = kConnecting;
+				mPipe = std::move( inPipe );
+				mServer = inServer;
+				mEventQueue.Clear();
+
+				try {
+					mThread = std::jthread(
+						[ this ]( std::stop_token inStopToken )
+						{
+							ThreadEntry( std::move( inStopToken ) );
+						} );
+				} catch ( ... ) {
+					mState = kDisconnected;
+					if ( mPipe )
+					{
+						try {
+							mPipe->Disconnect();
+						} catch ( ... ) {
+						}
+						mPipe.reset();
+					}
+					mServer = nil;
+					throw;
+				}
+			}
 		}
-	
-		theResult = true;
-		mState = kConnecting;
-		mPipe = inPipe;
-		mServer = inServer;
-		
-		// Lancement du processus léger.
-		Start();
 	}
-	
-	// Libération du sémaphore
-	mStateMutex->Release();
+
+	if ( !theResult && inPipe )
+	{
+		try {
+			inPipe->Disconnect();
+		} catch ( ... ) {
+		}
+	}
 	
 	return theResult;
 }
@@ -183,16 +299,13 @@ TDCLLink::Disconnect( void )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sémaphore sur l'état.
-	mStateMutex->Acquire();
-	
-	if ((mState != kDisconnected) && (mState != kDisconnecting))
 	{
-		theResult = true;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		if ((mState != kDisconnected) && (mState != kDisconnecting))
+		{
+			theResult = true;
+		}
 	}
-	
-	// Libération du sémaphore
-	mStateMutex->Release();
 	
 	// On envoie un événement si le processus tourne toujours.
 	if (theResult)
@@ -213,16 +326,13 @@ TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 {
 	Boolean theResult = false;
 	
-	// Acquisition du sémaphore sur l'état.
-	mStateMutex->Acquire();
-	
-	if ((mState != kDisconnected) && (mState != kDisconnecting))
 	{
-		theResult = true;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		if ((mState != kDisconnected) && (mState != kDisconnecting))
+		{
+			theResult = true;
+		}
 	}
-	
-	// Libération du sémaphore
-	mStateMutex->Release();
 	
 	// On envoie un événement si le processus tourne toujours.
 	if (theResult)
@@ -256,20 +366,8 @@ TDCLLink::Close( void )
 Boolean
 TDCLLink::IsConnected( void )
 {
-	Boolean theResult = false;
-	
-	// Acquisition du sémaphore sur l'état.
-	mStateMutex->Acquire();
-	
-	if (mState != kDisconnected)
-	{
-		theResult = true;
-	}
-	
-	// Libération du sémaphore
-	mStateMutex->Release();
-	
-	return theResult;
+	std::lock_guard<std::mutex> lock( mStateMutex );
+	return (mState != kDisconnected);
 }
 
 // --------------------------------------------------------------------------------	//
@@ -278,10 +376,20 @@ TDCLLink::IsConnected( void )
 void
 TDCLLink::Disconnected( void )
 {
-	mPipe = nil;	// Je ne suis plus connecté.
+	if (mPipe)
+	{
+		try {
+			mPipe->Disconnect();
+		} catch ( ... ) {
+		}
+		mPipe.reset();	// Je ne suis plus connecté.
+	}
 
-	// On indique au serveur qu'on n'est déconnecté.
-	mServer->Disconnected( this );
+	// On indique au serveur qu'on est déconnecté.
+	if (mServer)
+	{
+		mServer->Disconnected( this );
+	}
 		
 	if (mNewtonName)
 	{
@@ -310,13 +418,18 @@ TDCLLink::DoConnect( void )
 	// des messages.
 	// On dit aussi à la connexion que le lien va l'utiliser. (idem)
 	mApplication->Connected( this, mPipe->Connected( this ) );	
+
+	if (StopRequested())
+	{
+		throw DCLUserCancelled;
+	}
 	
 	// Discussion avec le Newton.
 	TSmartPtr<TDCLDockCommand> theNewtMessage;
 
 	//	I read the kDRequestToDock message from the Newton.
 	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe );
+		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe.get() );
 
 	// I check it's a kDRequestToDock command.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDRequestToDock)
@@ -332,12 +445,12 @@ TDCLLink::DoConnect( void )
 		TDCLDockCmdSingleLong theInitiateDockingMessage(
 			TDCLDockCommand::kDInitiateDocking, mType );
 
-		theInitiateDockingMessage.SendCommand( mPipe );
+		theInitiateDockingMessage.SendCommand( mPipe.get() );
 	}
 	
 	// I read the kDNewtonName message from the Newton.
 	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe );
+		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe.get() );
 
 		// I check it's a kDNewtonName command.
 		if (theNewtMessage.Get()->GetCommand() != TDCLDockCommand::kDNewtonName)
@@ -403,11 +516,16 @@ TDCLLink::DoDisconnect( void )
 		// Je dis à l'application que je déconnecte.
 		mApplication->Disconnecting( this );
 
+		if (StopRequested())
+		{
+			return;
+		}
+
 		// Then, I send the disconnect command.
 		{
 			TDCLDockCmdNoData theDisconnectMessage( TDCLDockCommand::kDDisconnect );
 
-			theDisconnectMessage.SendCommand( mPipe );
+			theDisconnectMessage.SendCommand( mPipe.get() );
 		}
 
 		// Récupération du résultat.
@@ -418,7 +536,7 @@ TDCLLink::DoDisconnect( void )
 			{
 				TSmartPtr<TDCLDockCommand> theNewtMessage;
 				theNewtMessage =
-					TDCLDockCommand::ReceiveCommand( mPipe );
+					TDCLDockCommand::ReceiveCommand( mPipe.get() );
 				switch (theNewtMessage->GetCommand())
 				{
 					case TDCLDockCommand::kDResult:
@@ -454,10 +572,15 @@ TDCLLink::DoDisconnect( void )
 			if (!mPipe->FlushAvailable())
 			{
 				time_t now = ::time(NULL);
-				while( (::time(NULL) - now) < kClosingTimeout )
+				while( !StopRequested() && ((::time(NULL) - now) < kClosingTimeout) )
 				{
 					mPipe->Idle();				// Give time to the pipe,
 						  // in case its implementation requires it.
+					if (!StopRequested())
+					{
+						std::this_thread::sleep_for(
+							std::chrono::milliseconds( 10 ) );
+					}
 				}
 			}
 		} catch (TDCLEOFException& anException) {
@@ -477,6 +600,14 @@ TDCLLink::DoDisconnect( void )
 void
 TDCLLink::Run( void )
 {
+	const std::stop_token theStopToken = mWorkerStopToken;
+
+	std::optional<TStopForwarder> theForwarder;
+	if (mPipe)
+	{
+		theForwarder.emplace( theStopToken, *mPipe );
+	}
+
 	// Boucle principale du lien.
 	Boolean keepLooping = true;
 	while( keepLooping )
@@ -484,15 +615,15 @@ TDCLLink::Run( void )
 		EState theState;
 		EState theNextState;
 
-		// Acquisition
-		mStateMutex->Acquire();
-
-		// Récupération.
-		theState = mState;
+		{
+			std::lock_guard<std::mutex> lock( mStateMutex );
+			if (theStopToken.stop_requested())
+			{
+				mState = kDisconnected;
+			}
+			theState = mState;
+		}
 		theNextState = theState;
-	
-		// Libération
-		mStateMutex->Release();
 
 		try {
 			switch ( theState )
@@ -519,6 +650,7 @@ TDCLLink::Run( void )
 					break;
 				
 				default:	// kDisconnected, kUnknown
+					theForwarder.reset();
 					Disconnected();
 					keepLooping = false;
 					theNextState = kDisconnected;
@@ -526,6 +658,13 @@ TDCLLink::Run( void )
 			}
 		} catch (TDCLEOFException& inException) {
 			// On a été déconnecté (le Newton a probablement coupé).
+			theForwarder.reset();
+			Disconnected();
+			keepLooping = false;
+			theNextState = kDisconnected;
+		} catch (TDCLUserCancelledException& inException) {
+			// Cooperative stop requested during blocking I/O.
+			theForwarder.reset();
 			Disconnected();
 			keepLooping = false;
 			theNextState = kDisconnected;
@@ -533,19 +672,11 @@ TDCLLink::Run( void )
 		
 		if (theState != theNextState)
 		{
-			// Acquisition
-			mStateMutex->Acquire();
-
-			// Vérification que l'état n'a pas été changé pendant qu'on avait le
-			// dos tourné.
+			std::lock_guard<std::mutex> lock( mStateMutex );
 			if (mState == theState)
 			{
-				// Changement
 				mState = theNextState;
 			}
-	
-			// Libération
-			mStateMutex->Release();
 		}
 	}
 }
@@ -556,6 +687,11 @@ TDCLLink::Run( void )
 TDCLLink::EState
 TDCLLink::TransitionFromRunning( void )
 {
+	if (StopRequested())
+	{
+		return kDisconnected;
+	}
+
 	EState theNextState = kRunning;
 	
 	// On attend le prochain événement.
@@ -563,8 +699,24 @@ TDCLLink::TransitionFromRunning( void )
 	KUInt32 theEventMask =
 			TDCLEvent::kLinkEvent
 			| (GetAppCommandMask() & TDCLEvent::kAnyAppCommandMask);
-	theNextEvent = WaitNextEvent( theEventMask, mIdlePeriod );
+	const std::chrono::milliseconds theIdleTimeout =
+		(mIdlePeriod == 0)
+			? TDCLEventQueue::kForever
+			: std::chrono::milliseconds( mIdlePeriod );
+	theNextEvent = mEventQueue.WaitNextEvent(
+					theEventMask,
+					theIdleTimeout,
+					mWorkerStopToken );
 	
+	if (StopRequested())
+	{
+		if (theNextEvent)
+		{
+			delete theNextEvent;
+		}
+		return kDisconnected;
+	}
+
 	if (theNextEvent == nil)
 	{
 		// On a dormi tout le temps.
@@ -633,7 +785,7 @@ TDCLLink::TransitionFromRunning( void )
 							TDCLDockCmdSingleLong theUnknownCmdMsg(
 									TDCLDockCommand::kDUnknownCommand,
 									theNewtMessage.Get()->GetCommand() );
-							theUnknownCmdMsg.SendCommand( mPipe );
+							theUnknownCmdMsg.SendCommand( mPipe.get() );
 						}
 					}
 					
@@ -677,28 +829,56 @@ TDCLLink::TransitionFromRunning( void )
 void
 TDCLLink::HandleException( TDCLException* inException )
 {
-	// Acquisition
-	mStateMutex->Acquire();
-
-	switch ( mState )
+	EState theFinalState;
 	{
-		case kDisconnected:
-		case kConnecting:
-		case kDisconnecting:
-			mState = kDisconnected;
-			break;
-	
-		case kConnected:
-		case kRunning:
-		default:
-			mState = kUnknown;
-			break;
-	}
-	
-	// Libération
-	mStateMutex->Release();
+		std::lock_guard<std::mutex> lock( mStateMutex );
 
-	mApplication->HandleLinkException( this, inException );
+		switch ( mState )
+		{
+			case kDisconnected:
+			case kConnecting:
+			case kDisconnecting:
+				mState = kDisconnecting;
+				theFinalState = kDisconnected;
+				break;
+		
+			case kConnected:
+			case kRunning:
+			default:
+				mState = kUnknown;
+				theFinalState = kUnknown;
+				break;
+		}
+	}
+
+	auto cleanup = [ this, theFinalState ]()
+	{
+		if (mPipe)
+		{
+			try {
+				mPipe->Disconnect();
+			} catch ( ... ) {
+			}
+			mPipe.reset();
+		}
+
+		{
+			std::lock_guard<std::mutex> lock( mStateMutex );
+			if ( mState == kDisconnecting )
+			{
+				mState = theFinalState;
+			}
+		}
+	};
+
+	try {
+		mApplication->HandleLinkException( this, inException );
+	} catch ( ... ) {
+		cleanup();
+		throw;
+	}
+
+	cleanup();
 }
 
 // --------------------------------------------------------------------------------	//
@@ -747,7 +927,7 @@ TDCLLink::GetAppCommandMask( void )
 TDCLDockCommand*
 TDCLLink::ReceiveCommand( void )
 {
-	return TDCLDockCommand::ReceiveCommand( mPipe );
+	return TDCLDockCommand::ReceiveCommand( mPipe.get() );
 }
 
 // ============================================================================= //

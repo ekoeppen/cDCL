@@ -46,17 +46,80 @@
 #include <DCL/Server/TDCLServer.h>
 
 // -------------------------------------------------------------------------- //
-//  * TDCLSyncCommLayer( IDCLThreads*, Boolean, KUInt32 )
+//  * TDCLSyncCommLayer( Boolean, KUInt32 )
 // -------------------------------------------------------------------------- //
 TDCLSyncCommLayer::TDCLSyncCommLayer(
-					IDCLThreads* inThreadsIntf,
 					Boolean	inFlushAvailable /* = false */,
 					KUInt32	inMaxPipeCount /* = kDefaultPipeCount */
 				)
 	:
 		TDCLCommLayer( inFlushAvailable, inMaxPipeCount ),
-		TDCLThread( inThreadsIntf )
+		mWorkerWoken( false ),
+		mWorkerThreadId()
 {
+}
+
+// -------------------------------------------------------------------------- //
+//  * ~TDCLSyncCommLayer( void )
+// -------------------------------------------------------------------------- //
+TDCLSyncCommLayer::~TDCLSyncCommLayer( void )
+{
+	(void) RequestStop();
+	WakeWorker();
+	JoinWorker();
+}
+
+bool
+TDCLSyncCommLayer::IsCurrentThread( void ) const noexcept
+{
+	return std::this_thread::get_id() == mWorkerThreadId.load();
+}
+
+void
+TDCLSyncCommLayer::WorkerEntry( void )
+{
+	mWorkerThreadId.store( std::this_thread::get_id() );
+	try {
+		Run();
+	} catch ( TDCLException& inException ) {
+		try {
+			HandleException( &inException );
+		} catch ( ... ) {
+		}
+	} catch ( ... ) {
+		try {
+			HandleException( nil );
+		} catch ( ... ) {
+		}
+	}
+	mWorkerThreadId.store( std::thread::id() );
+}
+
+void
+TDCLSyncCommLayer::WakeWorker( void )
+{
+	{
+		std::lock_guard<std::mutex> lock( mWorkerMutex );
+		mWorkerWoken = true;
+	}
+	mWorkerCV.notify_one();
+}
+
+void
+TDCLSyncCommLayer::WaitForWorkerWake( void )
+{
+	std::unique_lock<std::mutex> lock( mWorkerMutex );
+	(void)mWorkerCV.wait( lock, GetStopToken(), [ this ] { return mWorkerWoken; } );
+	mWorkerWoken = false;
+}
+
+void
+TDCLSyncCommLayer::JoinWorker( void )
+{
+	if ( mWorkerThread.joinable() && ( mWorkerThread.get_id() != std::this_thread::get_id() ) )
+	{
+		mWorkerThread.join();
+	}
 }
 
 // ------------------------------------------------------------------------- //
@@ -70,13 +133,23 @@ TDCLSyncCommLayer::StartListening( TDCLServer* inServer )
 	{
 		throw DCLBadStateError;
 	}
-	
+
+	JoinWorker();
+
+	// Reset the communication layer's stop token.
+	ResetStopSource();
+
 	// Enregistrement du serveur.
 	SetServer( inServer );
-	
+
+	{
+		std::lock_guard<std::mutex> lock( mWorkerMutex );
+		mWorkerWoken = false;
+	}
+
 	// Démarrage du processus léger.
 	// Celui-ci appellera DoStartListening.
-	Start();
+	mWorkerThread = std::jthread( [ this ]( std::stop_token ) { WorkerEntry(); } );
 }
 
 // ------------------------------------------------------------------------- //
@@ -90,16 +163,15 @@ TDCLSyncCommLayer::StopListening( void )
 	{
 		// On appelle la méthode qui fait vraiment le travail.
 		try {
+			(void) RequestStop();
+
 			DoStopListening();
 		
 			// Réveil du processus léger
-			WakeUp();
+			WakeWorker();
 
 			// On attend que le processus léger termine.
-			while (GetThreadState() != IDCLThreads::kStopped)
-			{
-				std::this_thread::yield();
-			}
+			JoinWorker();
 		} catch ( ... ) {
 			// On reste silencieux.
 		}
@@ -121,7 +193,7 @@ TDCLSyncCommLayer::Run( void )
 	GetServer()->WaitingConnection( this );
 
 	// On attend qu'une requête soit présente.
-	while ( WaitForIncomingRequest() )
+	while ( !StopRequested() && WaitForIncomingRequest() )
 	{
 		// Une requête vient d'arriver. On prévient le serveur.
 		TDCLServer* theServer = GetServer();
@@ -133,20 +205,20 @@ TDCLSyncCommLayer::Run( void )
 			break;
 		}
 
-		(void) Sleep();	// On attend que la requête soit acceptée ou refusée.
+		WaitForWorkerWake();	// On attend que la requête soit acceptée ou refusée.
 	}
 }
 
 // ------------------------------------------------------------------------- //
 //  * Accept( void )
 // ------------------------------------------------------------------------- //
-TDCLPipe*
+std::unique_ptr<TDCLPipe>
 TDCLSyncCommLayer::Accept( void )
 {
-	TDCLPipe* thePipe = DoAccept();
+	std::unique_ptr<TDCLPipe> thePipe = DoAccept();
 
 	// Réveil du processus léger (pour la prochaine requête).
-	WakeUp();
+	WakeWorker();
 
 	return thePipe;
 }
@@ -160,7 +232,7 @@ TDCLSyncCommLayer::Refuse( void )
 	DoRefuse();
 	
 	// Réveil du processus léger (pour la prochaine requête).
-	WakeUp();
+	WakeWorker();
 }
 
 // --------------------------------------------------------------------------------	//
@@ -174,14 +246,89 @@ TDCLSyncCommLayer::HandleException( TDCLException* inException )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * TSyncPipe( IDCLThreads*, TDCLSyncCommLayer* )
+//  * TSyncPipe( TDCLSyncCommLayer* )
 // --------------------------------------------------------------------------------	//
-TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
-					IDCLThreads* inThreadsIntf, TDCLSyncCommLayer* inCommLayer )
+TDCLSyncCommLayer::TSyncPipe::TSyncPipe( TDCLSyncCommLayer* inCommLayer )
 	:
 		TDCLPipe( inCommLayer ),
-		TDCLThread( inThreadsIntf )
+		mWorkerWoken( false ),
+		mWorkerThreadId()
 {
+}
+
+// --------------------------------------------------------------------------------	//
+//  * ~TSyncPipe( void )
+// --------------------------------------------------------------------------------	//
+TDCLSyncCommLayer::TSyncPipe::~TSyncPipe( void )
+{
+	(void) RequestStop();
+	WakeWorker();
+	JoinWorker();
+}
+
+bool
+TDCLSyncCommLayer::TSyncPipe::IsCurrentThread( void ) const noexcept
+{
+	return std::this_thread::get_id() == mWorkerThreadId.load();
+}
+
+void
+TDCLSyncCommLayer::TSyncPipe::WorkerEntry( void )
+{
+	struct ThreadIdGuard
+	{
+		std::atomic<std::thread::id>& mId;
+		ThreadIdGuard( std::atomic<std::thread::id>& inId )
+			: mId( inId )
+		{
+			mId.store( std::this_thread::get_id() );
+		}
+		~ThreadIdGuard()
+		{
+			mId.store( std::thread::id() );
+		}
+	} guard( mWorkerThreadId );
+
+	try {
+		Run();
+	} catch ( TDCLException& inException ) {
+		try {
+			HandleException( &inException );
+		} catch ( ... ) {
+		}
+	} catch ( ... ) {
+		try {
+			HandleException( nil );
+		} catch ( ... ) {
+		}
+	}
+}
+
+void
+TDCLSyncCommLayer::TSyncPipe::WakeWorker( void )
+{
+	{
+		std::lock_guard<std::mutex> lock( mWorkerMutex );
+		mWorkerWoken = true;
+	}
+	mWorkerCV.notify_one();
+}
+
+void
+TDCLSyncCommLayer::TSyncPipe::WaitForWorkerWake( void )
+{
+	std::unique_lock<std::mutex> lock( mWorkerMutex );
+	(void)mWorkerCV.wait( lock, GetStopToken(), [ this ] { return mWorkerWoken; } );
+	mWorkerWoken = false;
+}
+
+void
+TDCLSyncCommLayer::TSyncPipe::JoinWorker( void )
+{
+	if ( mWorkerThread.joinable() && ( mWorkerThread.get_id() != std::this_thread::get_id() ) )
+	{
+		mWorkerThread.join();
+	}
 }
 
 // --------------------------------------------------------------------------------	//
@@ -190,19 +337,18 @@ TDCLSyncCommLayer::TSyncPipe::TSyncPipe(
 void
 TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 {
+	(void) RequestStop();
+
 	if (GetLink())
 	{
 		// On appelle la méthode qui fait vraiment le travail.
 		DoDisconnect();
 		
 		// On relâche le processus s'il attendait
-		WakeUp();
+		WakeWorker();
 		
 		// On attend que le processus léger termine.
-		while (GetThreadState() != IDCLThreads::kStopped)
-		{
-			std::this_thread::yield();
-		}
+		JoinWorker();
 	}
 }
 
@@ -212,11 +358,26 @@ TDCLSyncCommLayer::TSyncPipe::Disconnect( void )
 TDCLCommLayer*
 TDCLSyncCommLayer::TSyncPipe::Connected( TDCLLink* inLink )
 {
+	JoinWorker();
+
+	ResetStopSource();
+
 	// Appel de la méthode par défaut.
 	TDCLCommLayer* theResult = TDCLPipe::Connected( inLink );
-	
+
+	{
+		std::lock_guard<std::mutex> lock( mWorkerMutex );
+		mWorkerWoken = false;
+	}
+
 	// Démarrage du processus léger.
-	Start();
+	mWorkerThread = std::jthread( [ this ]( std::stop_token ) { WorkerEntry(); } );
+
+	// A stop requested by the link before ResetStopSource() would be lost: re-request it.
+	if (inLink && inLink->StopRequested())
+	{
+		(void) RequestStop();
+	}
 	
 	return theResult;
 }
@@ -227,7 +388,7 @@ TDCLSyncCommLayer::TSyncPipe::Connected( TDCLLink* inLink )
 void
 TDCLSyncCommLayer::TSyncPipe::ClearDataPresent( void )
 {
-	WakeUp();
+	WakeWorker();
 }
 
 // --------------------------------------------------------------------------------	//
@@ -237,7 +398,12 @@ void
 TDCLSyncCommLayer::TSyncPipe::Run( void )
 {
 	do {
-		(void) Sleep();	// On attend que le lien nous demande si on veut des données.
+		WaitForWorkerWake();	// On attend que le lien nous demande si on veut des données.
+
+		if ( StopRequested() )
+		{
+			break;
+		}
 
 		if ( WaitForIncomingData() )
 		{
@@ -246,7 +412,7 @@ TDCLSyncCommLayer::TSyncPipe::Run( void )
 		} else {
 			break;
 		}
-	} while ( true );
+	} while ( !StopRequested() );
 }
 
 // --------------------------------------------------------------------------------	//

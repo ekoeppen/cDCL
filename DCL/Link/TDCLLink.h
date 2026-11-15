@@ -39,9 +39,15 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
+// C++
+#include <atomic>
+#include <memory>
+#include <mutex>
+#include <thread>
+
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
-#include <DCL/Interfaces/TDCLThread.h>
+#include <DCL/Interfaces/TDCLEventQueue.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 class TDCLApplication;
@@ -66,8 +72,6 @@ class TDCLPipe;
 /// \test	aucun test défini.
 ///
 class TDCLLink
-	:
-		private TDCLThread
 {
 public:
 	///
@@ -146,11 +150,11 @@ public:
 	/// Méthode asynchrone pour connecter le Newton.
 	/// Démarre le processus léger.
 	///
-	/// \param inPipe	Interface de communication associée au lien.
+	/// \param inPipe	Interface de communication associée au lien (propriété transférée).
 	/// \param inServer	Serveur qui gère l'interface de communication.
 	/// \return \c true si le lien était déconnecté, \c false sinon.
 	///
-	Boolean				Connect( TDCLPipe* inPipe, TDCLServer* inServer );
+	Boolean				Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer );
 		
 	///
 	/// Méthode asynchrone pour déconnecter le Newton.
@@ -168,6 +172,34 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon.
 	///
 	Boolean				Close( void );
+
+	///
+	/// Requests cooperative stop of the link worker.
+	///
+	/// \return \c true if this call triggered the stop.
+	///
+	bool				RequestStop( void );
+
+	///
+	/// Returns whether cooperative stop of the link has been requested.
+	///
+	/// \return \c true if RequestStop() has been called.
+	///
+	bool				StopRequested( void ) const noexcept;
+
+	///
+	/// Waits for the link worker to finish executing.
+	/// Returns \c false immediately if called from inside the link worker itself.
+	///
+	bool				Wait( void );
+
+	///
+	/// Returns \c true if called from the link worker thread itself.
+	///
+	inline bool			IsCurrentThread( void ) const noexcept
+		{
+			return std::this_thread::get_id() == mThreadId.load();
+		}
 
 	///
 	/// Détermine si le lien est connecté.
@@ -193,7 +225,7 @@ public:
 	///
 	inline TDCLPipe* 	GetPipe( void )
 		{
-			return mPipe;
+			return mPipe.get();
 		}
 
 	///
@@ -350,6 +382,12 @@ public:
 		{
 			return mScreenDepth;
 		}
+
+	///
+	/// Destructeur.
+	/// Indique que le lien a été déconnecté si nécessaire.
+	///
+	virtual		~TDCLLink( void );
 	
 protected:
 	///
@@ -372,12 +410,6 @@ protected:
 		TDCLApplication* inApplication,
 		KUInt32 inType = TDCLDockCommand::kNone_SType,
 		KUInt32 inIdlePeriod = kDefaultIdlePeriod );
-	
-	///
-	/// Destructeur.
-	/// Indique que le lien a été déconnecté si nécessaire.
-	///
-	virtual		~TDCLLink( void );
 
 	///
 	/// Poste une commande à effectuer.
@@ -490,6 +522,11 @@ protected:
 	///
 	virtual void HandleException( TDCLException* inException );
 
+	inline void			PostEvent( TDCLEvent* inEvent )
+		{
+			mEventQueue.PostEvent( inEvent );
+		}
+
 	///
 	/// Méthode invoquée lorsque le processus de connexion est
 	/// terminé.
@@ -527,6 +564,8 @@ protected:
 	virtual TDCLDockCommand* ReceiveCommand( void );
 
 private:
+	void				ThreadEntry( std::stop_token inStopToken );
+
 	///
 	/// Constructeur par copie volontairement indisponible.
 	///
@@ -559,12 +598,17 @@ protected:
 	};
 
 	/// \name Variables privées.
-	TDCLPipe*					mPipe;				///< Interface de communication.
+	std::unique_ptr<TDCLPipe>	mPipe;				///< Interface de communication.
 													///< \c nil si on n'est pas connecté.
 	TDCLServer*					mServer;			///< Serveur qui gère l'interface de
 													///< communication.
 	TDCLApplication* 			mApplication;		///< Référence sur l'application.
-	IDCLThreads::ISemaphore*	mStateMutex;		///< Sémaphore sur l'état.
+	TDCLEventQueue				mEventQueue;		///< File d'événements du lien.
+	mutable std::mutex			mStateMutex;		///< Mutex sur l'état.
+	std::mutex					mJoinMutex;			///< Mutex pour Wait().
+	std::atomic<std::thread::id> mThreadId;			///< Identifiant du thread actif.
+	std::jthread				mThread;			///< Thread du lien.
+	std::stop_token				mWorkerStopToken;	///< Token du worker courant.
 	EState						mState;				///< Etat.
 	KUInt32						mType;				///< Type de connexion Dock.
 	KUInt32						mIdlePeriod;		///< Temps en millisecondes entre les

@@ -26,14 +26,15 @@
 // Tests
 #include "tests.h"
 #include "UTestCommLayers.h"
+#include "UTestEventQueue.h"
 #include "UTestNS.h"
 #include "UTestNSOF.h"
 #include "UTestPkg.h"
-#include "UTestThreads.h"
 #include "UTestKThreads.h"
 #include "UTestKMappedFile.h"
 #include "UTestKStreamsAndBuffers.h"
 #include "UTestTime.h"
+#include "UTestWakeableWait.h"
 #include "UTestXML.h"
 
 // ------------------------------------------------------------------------- //
@@ -78,6 +79,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestCommLayers::StartAndStopTwiceFDSerialPort( inArgument );
 		} else if (::strcmp(inTestName, "cl-server-config") == 0) {
 			UTestCommLayers::TestServerConfiguration();
+		} else if (::strcmp(inTestName, "cl-cancel") == 0) {
+			UTestCommLayers::CancelCommLayers();
 		} else if (::strcmp(inTestName, "ns-arraysandframes") == 0) {
 			UTestNS::ArraysAndFrames();
 		} else if (::strcmp(inTestName, "ns-framekeyssort") == 0) {
@@ -104,20 +107,18 @@ test( const char* inTestName, const char* inArgument )
 			UTestPkg::WalterSmith();
 		} else if (::strcmp(inTestName, "pkg-idempotent") == 0) {
 			UTestPkg::IdemPotent();
-		} else if (::strcmp(inTestName, "threads-posix") == 0) {
-#if TARGET_OS_WIN32
-			UTestThreads::Win32();
-#else
-			UTestThreads::Posix();
-#endif
 		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
 			UTestKThreads::RunTests();
+		} else if (::strcmp(inTestName, "event-queue") == 0) {
+			UTestEventQueue::Run();
 		} else if (::strcmp(inTestName, "kmappedfile") == 0) {
 			UTestKMappedFile::Run();
 		} else if (::strcmp(inTestName, "kstreams-and-buffers") == 0) {
 			UTestKStreamsAndBuffers::Run();
 		} else if (::strcmp(inTestName, "time-values") == 0) {
 			UTestTime::CheckReturnValues();
+		} else if (::strcmp(inTestName, "wakeable-wait") == 0) {
+			UTestWakeableWait::Run();
 		} else if (::strcmp(inTestName, "xml-waltersmith") == 0) {
 			UTestXML::WalterSmith();
 		} else if (::strcmp(inTestName, "xml-classes") == 0) {

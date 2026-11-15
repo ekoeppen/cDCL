@@ -2,9 +2,6 @@
 // File:			TDCLSimpleServer.h
 // Project:			Desktop Connection Library
 //
-// Created:			15/1/2002
-// Tab width:		4 spaces
-//
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
 //
@@ -20,158 +17,73 @@
 //
 // The Original Code is TDCLSimpleServer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
-// and Nicolas Zinovieff. Portions created by the Initial Developers are
-// Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
+// The Initial Developers of the Original Code are Paul Guyot.
+// Portions created by the Initial Developer are Copyright (C) 2002-2004 the
+// Initial Developer. All Rights Reserved.
 //
 // Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
+//   Paul Guyot <pguyot@kallisys.net>
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLSimpleServer.h,v 1.5 2004/11/24 14:09:08 paul Exp $
-// ===========
 
 #ifndef _TDCLSIMPLESERVER_H
 #define _TDCLSIMPLESERVER_H
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include <DCL/Server/TDCLServer.h>
+#include <DCL/Server/TDCLSingleLinkServer.h>
+
+// C++
+#include <memory>
 
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
+#include <DCL/Link/TDCLLink.h>
 
-class TDCLLink;
-
 ///
-/// Class for a simple server that listens on only a single communication
-/// interface and serves only one connection at a time.
-/// This is an NPI/NTK-style server.
-///
-/// The link must be created first (because the link assumes the server already
-/// exists).
-///
-/// \author	Paul Guyot <pguyot@kallisys.net>
-/// \version $Revision: 1.5 $
-///
-/// \test	no tests defined.
+/// Class for a simple server with a single communication layer and a single
+/// link, both owned by the server.
 ///
 class TDCLSimpleServer
 	:
-		public TDCLServer
+		public TDCLSingleLinkServer
 {
 public:
 	///
-	/// Constructor from an application and a communication layer.
-	///
-	/// \param inApplication	application notified of server activity.
-	/// \param inCommLayer		communication layer used for the server.
+	/// Constructor from an application, a communication layer, and an
+	/// optional link.
 	///
 	TDCLSimpleServer(
-			TDCLApplication* inApplication,
-			TDCLCommLayer* inCommLayer
-		);
+				TDCLApplication* inApplication,
+				std::unique_ptr<TDCLCommLayer> inCommLayer,
+				std::unique_ptr<TDCLLink> inLink = nullptr );
 
-	///
-	/// Sets the link.
-	/// This method may only be called before Start() has been called.
-	/// Calling it once Start() has been called (even after a subsequent Stop()
-	/// or Kill()) throws TDCLBadStateError.
-	///
-	/// \param inLink		link to use when a connection is established.
-	/// 	hrows TDCLBadStateError if Start() has already been called.
-	///
-	void				SetLink( TDCLLink* inLink );
-	
 	///
 	/// Destructor.
+	/// Stops the server and destroys the link and then the communication layer.
 	///
-	virtual	~TDCLSimpleServer( void );
-	
-protected:
+	virtual ~TDCLSimpleServer( void );
 
 	///
-	/// Starts listening.
-	/// This method is called when the server is started (from the server
-	/// thread).
+	/// Non-owning accessor for the owned communication layer.
 	///
-	virtual	void		DoStartListening( void );
-
-	///
-	/// Stops the server.
-	///
-	virtual	void		DoStop( void );
-	
-	///
-	/// Forcefully closes all connections.
-	///
-	virtual	void		DoKill( void );
-
-	///
-	/// Handles the arrival of a new connection.
-	///
-	/// \param inCommLayer	communication interface that received the request.
-	///						(ignored)
-	/// \throws TDCLException if a problem occurred.
-	///
-	virtual EState		HandleIncomingConnection(
-								TDCLCommLayer* inCommLayer );
-
-	///
-	/// Method called on the server thread to indicate that a link has been
-	/// disconnected and the communication interface must be closed.
-	///
-	/// \param inLink	the link that was disconnected.
-	/// \return the new state of the server.
-	/// \throws TDCLException if a problem occurred.
-	///
-	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink );
-
-	///
-	/// Method called by the server when nothing is happening.
-	/// It allows calling Idle on communication interfaces that need it.
-	///
-	virtual	void		DoIdle( void );
-
-	///
-	/// Accessor for the link.
-	///
-	/// \return the link to use when a connection is established.
-	///
-	inline TDCLLink*		GetLink( void )
+	inline TDCLCommLayer*	GetCommLayer( void ) const
 		{
-			return mLink;
+			return mCommLayer.get();
 		}
+
+protected:
+	virtual void	DoStartListening( void ) override;
+	virtual void	DoStopListening( void ) override;
+	virtual void	DoRequestStopCommLayers( void ) override;
+	virtual void	DoIdle( void ) override;
+
 private:
-	///
-	/// Copy constructor intentionally unavailable.
-	///
-	/// \param inCopy		object to copy
-	///
-	TDCLSimpleServer( const TDCLSimpleServer& inCopy );
+	TDCLSimpleServer( const TDCLSimpleServer& inCopy ) = delete;
+	TDCLSimpleServer& operator = ( const TDCLSimpleServer& inCopy ) = delete;
 
-	///
-	/// Assignment operator intentionally unavailable.
-	///
-	/// \param inCopy		object to copy
-	///
-	TDCLSimpleServer& operator = ( const TDCLSimpleServer& inCopy );
-
-	/// \name Member variables
-
-	TDCLLink*			mLink;			///< Reference to the single link.
-	TDCLCommLayer*		mCommLayer;		///< Reference to the communication
-										///< interface.
-	TDCLPipe*			mPipe;			///< Reference to the connection, \c nil
-										///< if not connected.
+	std::unique_ptr<TDCLCommLayer>	mCommLayer;
 };
 
 #endif
-		// _TDCLSIMPLESERVER_H
-
-// ======================================================== //
-// Blinding speed can compensate for a lot of deficiencies. //
-//                 -- David Nichols                         //
-// ======================================================== //
+// _TDCLSIMPLESERVER_H

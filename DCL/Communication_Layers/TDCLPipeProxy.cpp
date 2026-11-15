@@ -68,11 +68,29 @@ TDCLPipeProxy::BytesAvailable( void )
 }
 
 // -------------------------------------------------------------------------- //
+//  * RequestStop( void )
+// -------------------------------------------------------------------------- //
+bool
+TDCLPipeProxy::RequestStop( void )
+{
+	bool theResult = TDCLPipe::RequestStop();
+	if (mSubPipe)
+	{
+		if (mSubPipe->RequestStop())
+		{
+			theResult = true;
+		}
+	}
+	return theResult;
+}
+
+// -------------------------------------------------------------------------- //
 //  * Disconnect( void )
 // -------------------------------------------------------------------------- //
 void
 TDCLPipeProxy::Disconnect( void )
 {
+	(void) TDCLPipe::RequestStop();
 	mSubPipe->Disconnect();
 }
 
@@ -128,6 +146,12 @@ void
 TDCLPipeProxy::ClearDataPresent( void )
 {
 	mSubPipe->ClearDataPresent();
+}
+
+bool
+TDCLPipeProxy::IsCurrentThread( void ) const noexcept
+{
+	return mSubPipe ? mSubPipe->IsCurrentThread() : false;
 }
 
 // ============================ //

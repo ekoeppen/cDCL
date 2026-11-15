@@ -39,8 +39,12 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
+// C++
+#include <memory>
+
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 // Pré-déclarations
 class TDCLPipe;
@@ -68,6 +72,8 @@ class TDCLServer;
 /// \test	UTestCommLayers
 ///
 class TDCLCommLayer
+	:
+		public TStoppable
 {
 public:
 	enum {
@@ -139,16 +145,25 @@ public:
 	/// le client ou \c nil s'il n'y a pas de requête de connexion présente.
 	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la
-	///			connexion ou \c nil.
+	/// \return un nouvel objet TDCLPipe représentant la
+	///			connexion ou \c nullptr.
 	///
-	virtual	TDCLPipe*	Accept( void ) = 0;
+	virtual	std::unique_ptr<TDCLPipe>	Accept( void ) = 0;
 	
 	///
 	/// Refuse la première requête de connexion.
 	/// Ne fait rien si aucune connexion n'est présente.
 	///
 	virtual	void		Refuse( void ) = 0;
+
+	///
+	/// Returns \c true if called from an internal worker thread owned by
+	/// this communication layer.
+	///
+	virtual	bool		IsCurrentThread( void ) const noexcept
+		{
+			return false;
+		}
 
 	///
 	/// Détermine si la couche de communication sait vider la mémoire tampon de

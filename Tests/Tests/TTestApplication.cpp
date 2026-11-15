@@ -24,12 +24,11 @@
 #include "TTestEmptyFilesIntf.h"
 
 // ------------------------------------------------------------------------- //
-//  * TTestApplication( IDCLThreads* )
+//  * TTestApplication( void )
 // ------------------------------------------------------------------------- //
-TTestApplication::TTestApplication( IDCLThreads* inThreadsIntf )
+TTestApplication::TTestApplication( void )
 	:
-		TDCLLogApplication( stdout ),
-		mThreadsIntf( inThreadsIntf )
+		TDCLLogApplication( stdout )
 {
 }
 
@@ -92,15 +91,6 @@ TTestApplication::HandleException( TDCLException* inException )
 void
 TTestApplication::ExceptionOccurred( void )
 {
-}
-
-// ------------------------------------------------------------------------- //
-//  * CreateThreadsIntf( void )
-// ------------------------------------------------------------------------- //
-IDCLThreads*
-TTestApplication::CreateThreadsIntf( void )
-{
-	return mThreadsIntf;
 }
 
 // ------------------------------------------------------------------------- //

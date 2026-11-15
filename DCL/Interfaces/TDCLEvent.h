@@ -169,7 +169,7 @@ private:
 	/// La classe TDCLThread est une amie.
 	/// C'est elle qui gère la liste d'événements.
 	///
-	friend class TDCLThread;
+	friend class TDCLEventQueue;
 	
 	///
 	/// Accesseur sur l'événement suivant.

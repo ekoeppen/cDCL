@@ -58,10 +58,7 @@
 // ------------------------------------------------------------------------- //
 TDCLStdStream::TDCLStdStream( void )
 {
-#if TARGET_OS_CYGWIN
-	(void) setmode( fileno( stdin ), O_BINARY );
-	(void) setmode( fileno( stdout ), O_BINARY );
-#elif TARGET_OS_WIN32
+#if TARGET_OS_WIN32
 	(void) _setmode( _fileno( stdin ), _O_BINARY );
 	(void) _setmode( _fileno( stdout ), _O_BINARY );
 #endif
