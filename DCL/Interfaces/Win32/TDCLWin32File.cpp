@@ -152,10 +152,6 @@ Boolean TDCLWin32File::IsReadOnly() const
 
 KUInt64 TDCLWin32File::GetLength()
 {
-	if (!IsOpen())
-	{
-		throw DCLBadStateError;
-	}
 	struct _stat64 theFileInfos;
 	if (_stat64(mPath, &theFileInfos) != 0)
 	{
