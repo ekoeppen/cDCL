@@ -39,11 +39,13 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
-#include <DCL/Interfaces/TDCLThread.h>
 #include <DCL/Communication_Layers/TDCLPipe.h>
 
-// Pré-déclarations.
-class IDCLThreads;
+// C++
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 
 ///
 /// Classe pour une interface de communication synchrone qui requiert
@@ -56,8 +58,7 @@ class IDCLThreads;
 ///
 class TDCLSyncCommLayer
 	:
-		public TDCLCommLayer,
-		protected TDCLThread
+		public TDCLCommLayer
 {
 public:
 	///
@@ -79,10 +80,14 @@ public:
 	///							0 signifie pas de limite.
 	///
 	TDCLSyncCommLayer(
-			IDCLThreads* inThreadsIntf,
 			Boolean	inFlushAvailable = false,
 			KUInt32	inMaxPipeCount = kDefaultPipeCount
 			);
+
+	///
+	/// Destructor.
+	///
+	virtual				~TDCLSyncCommLayer( void );
 	
 	///
 	/// Commence à écouter.
@@ -91,21 +96,22 @@ public:
 	/// \param inServer	serveur à prévenir lorsqu'une requête est arrivée.
 	/// \throws TDCLException si le serveur est déjà en train d'écouter.
 	///
-	virtual void		StartListening( TDCLServer* inServer );
+	virtual void		StartListening( TDCLServer* inServer ) override;
 
 	///
 	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
 	/// Dit au processus léger de s'arrêter une fois que DoStopListening a terminé.
 	/// Ne fait rien si on n'est pas en train d'écouter.
 	///
-	virtual void		StopListening( void );
+	virtual void		StopListening( void ) override;
+	virtual bool		IsCurrentThread( void ) const noexcept override;
 
 protected:
 	///
 	/// Méthode appelée dans la méthode Run juste avant la boucle qui appelle
 	/// WaitForIncomingRequest.
 	///
-	virtual	void		DoStartListening( void ) = 0;
+	virtual	void		DoStartListening( void ) override = 0;
 
 	///
 	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
@@ -114,7 +120,7 @@ protected:
 	/// cette méthode.
 	/// Attention aux possible problème d'attente/de réveil.
 	///
-	virtual	void		DoStopListening( void ) = 0;
+	virtual	void		DoStopListening( void ) override = 0;
 
 	///
 	/// Attend qu'une requête se présente. Cette méthode est synchrone (c'est l'intérêt
@@ -133,9 +139,9 @@ protected:
 	/// Cette méthode appelle DoAccept et ensuite réveille le processus léger pour attendre la
 	/// présence de nouvelles requêtes.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la connexion ou \c nil.
+	/// \return un nouvel objet TDCLPipe représentant la connexion ou \c nullptr.
 	///
-	virtual	TDCLPipe*	Accept( void );
+	virtual	std::unique_ptr<TDCLPipe>	Accept( void ) override;
 	
 	///
 	/// Refuse la première requête de connexion.
@@ -143,16 +149,16 @@ protected:
 	/// Cette méthode appelle DoRefuse et ensuite réveille le processus léger pour attendre la
 	/// présence de nouvelles requêtes.
 	///
-	virtual	void		Refuse( void );
+	virtual	void		Refuse( void ) override;
 	
 	///
 	/// Retourne un objet connexion représentant le canal de communication avec le client
 	/// ou \c nil s'il n'y a pas de requête de connexion présente.
 	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
 	///
-	/// \return un nouvel objet TDCLPipe créé avec \c new représentant la connexion ou \c nil.
+	/// \return un nouvel objet TDCLPipe représentant la connexion ou \c nullptr.
 	///
-	virtual	TDCLPipe*	DoAccept( void ) = 0;
+	virtual	std::unique_ptr<TDCLPipe>	DoAccept( void ) = 0;
 	
 	///
 	/// Refuse la première requête de connexion.
@@ -187,8 +193,7 @@ protected:
 	///
 	class TSyncPipe
 		:
-			public TDCLPipe,
-			protected TDCLThread
+			public TDCLPipe
 	{
 	public:
 		/// La classe mère est une amie.
@@ -203,8 +208,12 @@ protected:
 		///							rattachée la connexion.
 		///
 		TSyncPipe(
-				IDCLThreads* inThreadsIntf,
 				TDCLSyncCommLayer*	inCommLayer );
+
+		///
+		/// Destructor.
+		///
+		virtual				~TSyncPipe( void );
 
 		///
 		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt
@@ -223,7 +232,7 @@ protected:
 		/// \remark	une fois que cette méthode est appelée, l'objet connexion est inutilisable.
 		/// 		Il peut être supprimé par l'appelant à tout instant.
 		///
-		virtual	void		Disconnect( void );
+		virtual	void		Disconnect( void ) override;
 
 		///
 		/// Déconnecte effectivement le canal de communication avec le client.
@@ -241,7 +250,7 @@ protected:
 		///
 		/// \return l'interface de communication.
 		///
-		virtual	TDCLCommLayer*	Connected( TDCLLink* inLink );
+		virtual	TDCLCommLayer*	Connected( TDCLLink* inLink ) override;
 
 		///
 		/// Méthode appelée par le lien pour dire qu'il souhaite
@@ -249,7 +258,7 @@ protected:
 		/// Au départ, l'interface de communication ne prévient
 		/// pas le lien de la présence de données.
 		///
-		virtual	void		ClearDataPresent( void );
+		virtual	void		ClearDataPresent( void ) override;
 
 		///
 		/// Méthode appelée lorsqu'une exception n'est pas interceptée.
@@ -260,6 +269,8 @@ protected:
 		///
 		virtual void HandleException( TDCLException* inException );
 
+		virtual bool IsCurrentThread( void ) const noexcept override;
+
 	protected:
 		///
 		/// Méthode exécutée dans le processus.
@@ -267,7 +278,31 @@ protected:
 		/// cette dernière méthode retourne \c true, envoie un événement au serveur.
 		///
 		virtual void Run( void );
+
+	private:
+		void WorkerEntry( void );
+		void WakeWorker( void );
+		void WaitForWorkerWake( void );
+		void JoinWorker( void );
+
+		std::mutex					mWorkerMutex;
+		std::condition_variable_any	mWorkerCV;
+		bool						mWorkerWoken;
+		std::atomic<std::thread::id> mWorkerThreadId;
+		std::jthread				mWorkerThread;
 	};
+
+private:
+	void WorkerEntry( void );
+	void WakeWorker( void );
+	void WaitForWorkerWake( void );
+	void JoinWorker( void );
+
+	std::mutex					mWorkerMutex;
+	std::condition_variable_any	mWorkerCV;
+	bool						mWorkerWoken;
+	std::atomic<std::thread::id> mWorkerThreadId;
+	std::jthread				mWorkerThread;
 };
 
 #endif

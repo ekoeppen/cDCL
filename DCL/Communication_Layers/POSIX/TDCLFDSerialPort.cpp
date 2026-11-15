@@ -20,7 +20,7 @@
 //
 // The Original Code is TDCLFDSerialPort.cp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
@@ -36,6 +36,9 @@
 // $Id: TDCLFDSerialPort.cp,v 1.9 2006/02/13 01:55:30 pguyot Exp $
 // ===========
 
+// C++
+#include <chrono>
+
 // POSIX & ANSI
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -44,9 +47,6 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
-#include <time.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include <DCL/Headers/DCLDefinitions.h>
@@ -57,19 +57,20 @@
 #include <DCL/Communication_Layers/TDCLHammerPipe.h>
 #include <DCL/Communication_Layers/TDCLBufferedPipe.h>
 #include <DCL/Exceptions/TDCLNotAvailableException.h>
+#include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
 
 // -------------------------------------------------------------------------- //
-//  * TDCLFDSerialPort( IDCLThreads*, const char*, long )
+//  * TDCLFDSerialPort( const char*, long, Boolean )
 // -------------------------------------------------------------------------- //
 TDCLFDSerialPort::TDCLFDSerialPort(
-				IDCLThreads* inThreadsIntf,
 				const char* inDevPath,
 				long inBaud /* = 38400 */,
 				Boolean inUseMNP /* = true */ )
 	:
-		TDCLSyncCommLayer( inThreadsIntf, true ),
+		TDCLSyncCommLayer( true ),
 		mIsConnected( false ),
 		mSerialFD( -1 ),
 		mDevPath( nil ),
@@ -78,29 +79,28 @@ TDCLFDSerialPort::TDCLFDSerialPort(
 		mReset( false ),
 		mDisconnecting( false ),
 		mRequestPresent( false ),
-		mResetMutex( nil ),
-		mWaitRequestMutex( nil )
+		mInSelect( false ),
+		mSelectStopSource(),
+		mStateMutex(),
+		mStateCV(),
+		mWakeWait(),
+		mTimeout( kDefaultTimeout )
 {
 	if (inDevPath)
 	{
 		Init( inDevPath );
 	}
-	
-	mResetMutex = inThreadsIntf->CreateSemaphore();
-	mWaitRequestMutex = inThreadsIntf->CreateSemaphore();
 }
 
-
 // -------------------------------------------------------------------------- //
-//  * TDCLFDSerialPort( IDCLThreads*, const char*, long )
+//  * TDCLFDSerialPort( const char*, long, KUInt32 )
 // -------------------------------------------------------------------------- //
 TDCLFDSerialPort::TDCLFDSerialPort(
-				IDCLThreads* inThreadsIntf,
 				const char* inDevPath,
 				long inBaud,
 				KUInt32 inMode )
 	:
-		TDCLSyncCommLayer( inThreadsIntf, true ),
+		TDCLSyncCommLayer( true ),
 		mIsConnected( false ),
 		mSerialFD( -1 ),
 		mDevPath( nil ),
@@ -109,16 +109,17 @@ TDCLFDSerialPort::TDCLFDSerialPort(
 		mReset( false ),
 		mDisconnecting( false ),
 		mRequestPresent( false ),
-		mResetMutex( nil ),
-		mWaitRequestMutex( nil )
+		mInSelect( false ),
+		mSelectStopSource(),
+		mStateMutex(),
+		mStateCV(),
+		mWakeWait(),
+		mTimeout( kDefaultTimeout )
 {
 	if (inDevPath)
 	{
 		Init( inDevPath );
 	}
-	
-	mResetMutex = inThreadsIntf->CreateSemaphore();
-	mWaitRequestMutex = inThreadsIntf->CreateSemaphore();
 }
 
 // -------------------------------------------------------------------------- //
@@ -126,16 +127,15 @@ TDCLFDSerialPort::TDCLFDSerialPort(
 // -------------------------------------------------------------------------- //
 TDCLFDSerialPort::~TDCLFDSerialPort( void )
 {
-	if (mWaitRequestMutex)
+	StopListening();
+
+	if (mSerialFD != -1)
 	{
-		delete mWaitRequestMutex;
+		(void)::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions );
+		CloseSerialFD( mSerialFD );
+		mSerialFD = -1;
 	}
-	
-	if (mResetMutex)
-	{
-		delete mResetMutex;
-	}
-	
+
 	if (mDevPath)
 	{
 		::free( mDevPath );
@@ -165,6 +165,34 @@ TDCLFDSerialPort::DoStartListening( void )
 		// Ouverture et configuration du port.
 		OpenAndConfigure();
 	}
+
+	int wakeErr = mWakeWait.EnsureOpen();
+	if (wakeErr != 0)
+	{
+		(void)::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions );
+		CloseSerialFD( mSerialFD );
+		mSerialFD = -1;
+		throw DCLPlatformUnknownError( wakeErr );
+	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * StopListening( void )
+// -------------------------------------------------------------------------- //
+void
+TDCLFDSerialPort::StopListening( void )
+{
+	TDCLSyncCommLayer::StopListening();
+
+	std::lock_guard<std::mutex> lock( mStateMutex );
+	mRequestPresent = false;
+	if ((!mIsConnected) && (mSerialFD != -1))
+	{
+		(void)::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions );
+		CloseSerialFD( mSerialFD );
+		mSerialFD = -1;
+	}
+	mWakeWait.Close();
 }
 
 // -------------------------------------------------------------------------- //
@@ -173,30 +201,12 @@ TDCLFDSerialPort::DoStartListening( void )
 void
 TDCLFDSerialPort::DoStopListening( void )
 {
-	if (mRequestPresent)
 	{
+		std::lock_guard<std::mutex> lock( mStateMutex );
 		mRequestPresent = false;
-		mWaitRequestMutex->Release();
 	}
-	
-	if ((!mIsConnected) && (mSerialFD != -1))
-	{
-		// Rétablissement des options.
-		int theErr = ::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions);
-		if (theErr < 0)
-		{
-			throw DCLPlatformUnknownError( errno );
-		}
-
-		// Fermeture.
-		theErr = ::close( mSerialFD );
-		if (theErr < 0)
-		{
-			throw DCLPlatformUnknownError( errno );
-		}
-		
-		mSerialFD = -1;
-	}
+	mStateCV.notify_all();
+	mWakeWait.Trigger();
 }
 
 // -------------------------------------------------------------------------- //
@@ -205,21 +215,29 @@ TDCLFDSerialPort::DoStopListening( void )
 Boolean
 TDCLFDSerialPort::WaitForIncomingRequest( void )
 {
-	if (mRequestPresent)
 	{
-		// On attend d'être déconnecté.
-		mWaitRequestMutex->Acquire();
-		mWaitRequestMutex->Release();
+		std::unique_lock<std::mutex> lock( mStateMutex );
+		mStateCV.wait( lock, GetStopToken(), [this] {
+			return !mRequestPresent;
+		} );
+		if (StopRequested())
+		{
+			return false;
+		}
 	}
 
 	Boolean theResult = Select();
-	
+
 	if (theResult)
 	{
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		if (StopRequested())
+		{
+			return false;
+		}
 		mRequestPresent = true;
-		mWaitRequestMutex->Acquire();	// On attendra la prochaine fois.
 	}
-		
+
 	return theResult;
 }
 
@@ -229,66 +247,107 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 Boolean
 TDCLFDSerialPort::Select( long inTimeoutMs )
 {
-	// On fait juste un appel à select en attendant des données (de la
-	// part du Newton).
-	int readyPorts;
-	
-	do {
-		// On tente de bloquer la méthode ici.
-		mResetMutex->Acquire();
-		mResetMutex->Release();
-
-		fd_set portSet;
-
-		FD_ZERO(&portSet);
-		FD_SET(mSerialFD,&portSet);
-
-		timeval theTimeout;
-		timeval* theTimeoutPtr = nil;
-		if (inTimeoutMs >= 0)
+	for (;;)
+	{
+		int theFD = -1;
+		std::stop_token selectToken;
 		{
-			theTimeout.tv_sec = inTimeoutMs / 1000;
-			theTimeout.tv_usec = (inTimeoutMs % 1000) * 1000;
-			theTimeoutPtr = &theTimeout;
+			std::unique_lock<std::mutex> lock( mStateMutex );
+			mStateCV.wait( lock, GetStopToken(), [this] {
+				return !mReset;
+			} );
+			if (StopRequested())
+			{
+				return false;
+			}
+			theFD = mSerialFD;
+			if (theFD < 0)
+			{
+				return false;
+			}
+			mSelectStopSource = std::stop_source{};
+			selectToken = mSelectStopSource.get_token();
+			mInSelect = true;
 		}
 
-		// Ne pas mettre le descripteur maximal plus un est une erreur classique
-		readyPorts = ::select(
-									mSerialFD + 1 /* nfds */,
-									&portSet /* readfds */,
-									nil /* writefds */,
-									nil /* exceptfsd */,
-									theTimeoutPtr /* timeout */ );
+		struct TForwardStop
+		{
+			std::stop_source& mTarget;
+			void operator()( void ) const noexcept
+			{
+				(void)mTarget.request_stop();
+			}
+		};
 
-	} while( mReset );
+		int theErr = 0;
+		TDCLWakeableWait::EResult theRes;
+		{
+			std::stop_callback<TForwardStop> stopForwarder(
+				GetStopToken(), TForwardStop{ mSelectStopSource } );
+			theRes = mWakeWait.WaitReady(
+				theFD,
+				TDCLWakeableWait::EDirection::kRead,
+				std::chrono::milliseconds( inTimeoutMs ),
+				selectToken,
+				&theErr );
+		}
 
-	return (readyPorts > 0);
+		bool wasReset = false;
+		{
+			std::lock_guard<std::mutex> lock( mStateMutex );
+			mInSelect = false;
+			wasReset = mReset;
+		}
+		mStateCV.notify_all();
+
+		if (StopRequested())
+		{
+			return false;
+		}
+		if (wasReset)
+		{
+			continue;
+		}
+
+		if (theRes == TDCLWakeableWait::EResult::kReady)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }
 
 // -------------------------------------------------------------------------- //
 //  * DoAccept( void )
 // -------------------------------------------------------------------------- //
-TDCLPipe*
+std::unique_ptr<TDCLPipe>
 TDCLFDSerialPort::DoAccept( void )
 {
-	TDCLPipe* theResult = nil;
+	std::unique_ptr<TDCLPipe> theResult;
 	
 	// Si une requête est présente, on l'accepte.
-	if (mRequestPresent)
+	bool hasRequest = false;
 	{
-		mIsConnected = true;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		hasRequest = mRequestPresent;
+	}
+	if (hasRequest)
+	{
         switch ( mPipeMode )
         {
             case kModePlain:
-                theResult = new TDCLBufferedPipe( new TFDSerialPortPipe( this ) );
+                theResult = std::make_unique<TDCLBufferedPipe>( new TFDSerialPortPipe( this ) );
                 break;
             case kModeMNP:
-                theResult = new TDCLMNPPipe( new TFDSerialPortPipe( this ) );
+                theResult = std::make_unique<TDCLMNPPipe>( new TFDSerialPortPipe( this ) );
                 break;
             case kModeHammer:
-                theResult = new TDCLHammerPipe( new TFDSerialPortPipe( this ) );
+                theResult = std::make_unique<TDCLHammerPipe>( new TFDSerialPortPipe( this ) );
                 break;
 		}
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		mIsConnected = true;
 	}
 	
 	return theResult;
@@ -328,7 +387,10 @@ TDCLFDSerialPort::GetTimeout( void )
 void
 TDCLFDSerialPort::Disconnected( TDCLPipe* /* inPipe */ )
 {
-	mIsConnected = false;
+	{
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		mIsConnected = false;
+	}
 
 	// Select fera la réinitialisation au temps voulu.
 	Reset();
@@ -340,10 +402,13 @@ TDCLFDSerialPort::Disconnected( TDCLPipe* /* inPipe */ )
 TDCLFDSerialPort::TFDSerialPortPipe::TFDSerialPortPipe(
 												TDCLFDSerialPort* inCommLayer )
 	:
-		TSyncPipe(inCommLayer->GetThreadsIntf(), inCommLayer),
+		TSyncPipe( inCommLayer ),
 		mSerialFD( inCommLayer->GetSerialFD() ),
-		mTimeout( kDefaultTimeout ),
-		mDisconnected( false )
+		mTimeout( inCommLayer->GetTimeout() ),
+		mDisconnected( false ),
+		mCancelledBeforeDisconnect( false ),
+		mDataWakeWait(),
+		mIOWakeWait()
 {
 }
 
@@ -360,6 +425,9 @@ TDCLFDSerialPort::TFDSerialPortPipe::~TFDSerialPortPipe( void )
 			// Silence!
 		}
 	}
+
+	mDataWakeWait.Close();
+	mIOWakeWait.Close();
 }
 
 // -------------------------------------------------------------------------- //
@@ -368,57 +436,86 @@ TDCLFDSerialPort::TFDSerialPortPipe::~TFDSerialPortPipe( void )
 void
 TDCLFDSerialPort::TFDSerialPortPipe::Read( void* outBuffer, KUInt32* ioCount )
 {
-	int readBytes = 0;
+	size_t toRead = (size_t) *ioCount;
+	char* theBuffer = (char*) outBuffer;
+	const bool hasTimeout = ( mTimeout > 0 );
+	auto deadline = hasTimeout
+		? ( std::chrono::steady_clock::now() + std::chrono::seconds( mTimeout ) )
+		: std::chrono::steady_clock::time_point{};
 
-	// Nombre d'octets voulus.
-	size_t wantedBytes = (size_t) *ioCount;
-
-	if ( mTimeout > 0 )
+	while ( toRead > 0 )
 	{
-		fd_set set;
-		struct timeval timeout;
-
-		/* Initialize the file descriptor set. */
-		FD_ZERO (&set);
-		FD_SET (mSerialFD, &set);
-
-		/* Initialize the timeout data structure. */
-		timeout.tv_sec = mTimeout;
-		timeout.tv_usec = 0;
-
-		/* select returns 0 if timeout, 1 if input available, -1 if error. */
-		int readyPorts = ::select( mSerialFD + 1, &set, NULL, NULL, &timeout );
-		if ( readyPorts == 0 )
+		if ( StopRequested() )
 		{
+			*ioCount -= (KUInt32) toRead;
+			throw DCLUserCancelled;
+		}
+
+		ssize_t readBytes = ::read( mSerialFD, theBuffer, toRead );
+		if ( readBytes > 0 )
+		{
+			toRead -= (size_t) readBytes;
+			theBuffer += readBytes;
+			if ( hasTimeout )
+			{
+				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( mTimeout );
+			}
+			continue;
+		}
+
+		if ( readBytes == 0 )
+		{
+			*ioCount -= (KUInt32) toRead;
+			throw DCLEOF;
+		}
+
+		int theErr = errno;
+		if ( ( theErr != EINTR ) && ( theErr != EAGAIN )
+#if ( EWOULDBLOCK != EAGAIN )
+			 && ( theErr != EWOULDBLOCK )
+#endif
+		)
+		{
+			*ioCount -= (KUInt32) toRead;
+			throw DCLPlatformUnknownError( theErr );
+		}
+
+		std::chrono::milliseconds waitTimeout( -1 );
+		if ( hasTimeout )
+		{
+			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
+				deadline - std::chrono::steady_clock::now() );
+			if ( remaining <= std::chrono::milliseconds::zero() )
+			{
+				*ioCount -= (KUInt32) toRead;
+				throw DCLTimeout;
+			}
+			waitTimeout = remaining;
+		}
+
+		int waitErr = 0;
+		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
+			mSerialFD,
+			TDCLWakeableWait::EDirection::kRead,
+			waitTimeout,
+			GetStopToken(),
+			&waitErr );
+
+		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
+		{
+			*ioCount -= (KUInt32) toRead;
+			throw DCLUserCancelled;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
+		{
+			*ioCount -= (KUInt32) toRead;
 			throw DCLTimeout;
-		} else if (readyPorts == 1 ) {
-			// Nombre d'octets effectivement lus.
-			readBytes = ::read( mSerialFD, outBuffer, wantedBytes );
-		} else {
-			throw DCLPlatformUnknownError( readyPorts );
 		}
-	} else {
-		// Nombre d'octets effectivement lus.
-		readBytes = ::read( mSerialFD, outBuffer, wantedBytes );
-	}
-
-	if (readBytes < 0)
-	{
-		int theErr;
-		if (readBytes == -1)
+		if ( waitRes == TDCLWakeableWait::EResult::kError )
 		{
-			theErr = errno;
-		} else {
-			theErr = readBytes;
+			*ioCount -= (KUInt32) toRead;
+			throw DCLPlatformUnknownError( waitErr );
 		}
-		throw DCLPlatformUnknownError( theErr );
-	}
-
-	// On met à jour avant de lancer l'exception.
-	*ioCount = (KUInt32) readBytes;
-	if ((KUInt32) readBytes != wantedBytes)
-	{
-		throw DCLUnknownError;
 	}
 }
 
@@ -429,20 +526,86 @@ void
 TDCLFDSerialPort::TFDSerialPortPipe::Write(
 										const void* inBuffer, KUInt32* ioCount )
 {
-	// Nombre d'octets voulus.
-	size_t wantedBytes = (size_t) *ioCount;
-	int sentBytes = ::write( mSerialFD, inBuffer, wantedBytes );
+	size_t toWrite = (size_t) *ioCount;
+	const char* theBuffer = (const char*) inBuffer;
+	const bool hasTimeout = ( mTimeout > 0 );
+	auto deadline = hasTimeout
+		? ( std::chrono::steady_clock::now() + std::chrono::seconds( mTimeout ) )
+		: std::chrono::steady_clock::time_point{};
 
-	if (sentBytes < 0)
+	while ( toWrite > 0 )
 	{
-		throw DCLPlatformUnknownError( errno );
-	}
+		if ( StopRequested() )
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLUserCancelled;
+		}
 
-	// On met à jour avant de lancer l'exception.
-	*ioCount = (KUInt32) sentBytes;
-	if ((KUInt32) sentBytes != wantedBytes)
-	{
-		throw DCLUnknownError;
+		ssize_t sentBytes = ::write( mSerialFD, theBuffer, toWrite );
+		if ( sentBytes > 0 )
+		{
+			toWrite -= (size_t) sentBytes;
+			theBuffer += sentBytes;
+			if ( hasTimeout )
+			{
+				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( mTimeout );
+			}
+			continue;
+		}
+
+		if ( sentBytes == 0 )
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLUnknownError;
+		}
+
+		int theErr = errno;
+		if ( ( theErr != EINTR ) && ( theErr != EAGAIN )
+#if ( EWOULDBLOCK != EAGAIN )
+			 && ( theErr != EWOULDBLOCK )
+#endif
+		)
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLPlatformUnknownError( theErr );
+		}
+
+		std::chrono::milliseconds waitTimeout( -1 );
+		if ( hasTimeout )
+		{
+			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
+				deadline - std::chrono::steady_clock::now() );
+			if ( remaining <= std::chrono::milliseconds::zero() )
+			{
+				*ioCount -= (KUInt32) toWrite;
+				throw DCLTimeout;
+			}
+			waitTimeout = remaining;
+		}
+
+		int waitErr = 0;
+		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
+			mSerialFD,
+			TDCLWakeableWait::EDirection::kWrite,
+			waitTimeout,
+			GetStopToken(),
+			&waitErr );
+
+		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLUserCancelled;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLTimeout;
+		}
+		if ( waitRes == TDCLWakeableWait::EResult::kError )
+		{
+			*ioCount -= (KUInt32) toWrite;
+			throw DCLPlatformUnknownError( waitErr );
+		}
 	}
 }
 
@@ -452,24 +615,23 @@ TDCLFDSerialPort::TFDSerialPortPipe::Write(
 Boolean
 TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void ) 
 {
-	timeval timeout;
-	fd_set portSet;
-
-	FD_ZERO( &portSet );
-	FD_SET( mSerialFD, &portSet );
-
-	timeout.tv_sec = 0;		// secondes
-	timeout.tv_usec = 0;	// microsecondes
-
-	// Délai de temporisation à 0 pour savoir si on peut lire maintenant.
-	int readyPorts = ::select( mSerialFD + 1, &portSet, NULL, NULL, &timeout );
-
-	if (readyPorts < 0)
+	if (mSerialFD < 0)
 	{
-		throw DCLPlatformNotAvailable( errno );
+		return false;
 	}
 
-	return (readyPorts > 0);
+	int theErr = 0;
+	TDCLWakeableWait::EResult theRes = TDCLWakeableWait::PollNow(
+		mSerialFD,
+		TDCLWakeableWait::EDirection::kRead,
+		&theErr );
+
+	if (theRes == TDCLWakeableWait::EResult::kError)
+	{
+		throw DCLPlatformNotAvailable( theErr );
+	}
+
+	return (theRes == TDCLWakeableWait::EResult::kReady);
 }
 
 // -------------------------------------------------------------------------- //
@@ -478,20 +640,27 @@ TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void )
 Boolean
 TDCLFDSerialPort::TFDSerialPortPipe::WaitForIncomingData( void )
 {
-	// Wait for data, but wake up regularly so that a disconnection
-	// (DoDisconnect sets mDisconnected) ends this thread even if the Newton
-	// stays silent. A select() without timeout would block forever and make
-	// TSyncPipe::Disconnect wait for this thread indefinitely.
-	TDCLFDSerialPort* theCommLayer = (TDCLFDSerialPort*) GetCommLayer();
-	while (!mDisconnected)
-	{
-		if (theCommLayer->Select( kDisconnectPollMs ) && !mDisconnected)
-		{
-			return true;
-		}
-	}
+	int theErr = 0;
+	TDCLWakeableWait::EResult theRes = mDataWakeWait.WaitReady(
+		mSerialFD,
+		TDCLWakeableWait::EDirection::kRead,
+		std::chrono::milliseconds( -1 ),
+		GetStopToken(),
+		&theErr );
 
-	return false;
+	return (theRes == TDCLWakeableWait::EResult::kReady);
+}
+
+// -------------------------------------------------------------------------- //
+//  * Disconnect( void )
+// -------------------------------------------------------------------------- //
+void
+TDCLFDSerialPort::TFDSerialPortPipe::Disconnect( void )
+{
+	mCancelledBeforeDisconnect = StopRequested();
+	TSyncPipe::Disconnect();
+	mDataWakeWait.Close();
+	mIOWakeWait.Close();
 }
 
 // -------------------------------------------------------------------------- //
@@ -500,14 +669,27 @@ TDCLFDSerialPort::TFDSerialPortPipe::WaitForIncomingData( void )
 void
 TDCLFDSerialPort::TFDSerialPortPipe::DoDisconnect( void ) 
 {
-	if(!mDisconnected) 
+	mDataWakeWait.Trigger();
+	mIOWakeWait.Trigger();
+
+	if (!mDisconnected) 
 	{
 		mDisconnected = true;
 		
-		// On envoie les derniers octets.
-		if (::tcdrain(mSerialFD) == -1)
+		if (mSerialFD >= 0)
 		{
-			throw DCLPlatformUnknownError( errno );
+			if (mCancelledBeforeDisconnect)
+			{
+				(void)::tcflush( mSerialFD, TCOFLUSH );
+			}
+			else
+			{
+				// Flush remaining outgoing bytes.
+				if (::tcdrain(mSerialFD) == -1)
+				{
+					throw DCLPlatformUnknownError( errno );
+				}
+			}
 		}
 	}
 
@@ -535,6 +717,19 @@ TDCLFDSerialPort::TFDSerialPortPipe::SetTimeout( long inTimeout )
 }
 
 // -------------------------------------------------------------------------- //
+//  * CloseSerialFD( int )
+// -------------------------------------------------------------------------- //
+void
+TDCLFDSerialPort::CloseSerialFD( int inFD )
+{
+	// Exclusive mode is attached to the tty, not the fd: clear it so
+	// reopening (without privileges) remains possible if the tty outlives
+	// close (e.g. a pseudo-terminal whose master remains open).
+	(void) ::ioctl( inFD, TIOCNXCL );
+	(void) ::close( inFD );
+}
+
+// -------------------------------------------------------------------------- //
 //  * OpenAndConfigure( void )
 // -------------------------------------------------------------------------- //
 void
@@ -548,43 +743,36 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 		throw DCLPlatformUnknownError( errno );
 	}
 	
-#if	TARGET_OS_CYGWIN
-	//hli: TIOEXCL not known under cygwin
-#else
-	// On empêche d'autres appels à open avec TIOCEXCL (cf tty(4))
+	// Prevent further open calls with TIOCEXCL (see tty(4)).
+	// Exclusive mode is cleared by CloseSerialFD before each close.
 	if (::ioctl(theFD, TIOCEXCL) == -1)
 	{
-		// Fermeture.
+		int theErrno = errno;
 		(void) ::close( theFD );
-		
-		throw DCLPlatformUnknownError( errno );
+		throw DCLPlatformUnknownError( theErrno );
 	}
-#endif
 
-	// Configuration de l'interface.
-	// On veut qu'elle soit bloquante.
+	// Configure the interface in non-blocking mode for wakeable I/O.
 	int flags = ::fcntl(theFD, F_GETFL, 0 /* ignored */);
-#if	TARGET_OS_CYGWIN
-	//hli: O_ASYNC not known under cygwin
-	flags &= ~ O_NONBLOCK;
-#else
-	flags &= ~ (O_NONBLOCK | O_ASYNC);
-#endif
+	flags &= ~O_ASYNC;
+	flags |= O_NONBLOCK;
 	flags |= O_APPEND;
 	int theErr = ::fcntl(theFD, F_SETFL, flags);
 	if (theErr < 0)
 	{
 		// Fermeture.
-		(void) ::close( theFD );
-		throw DCLPlatformUnknownError( errno );
+		int theErrno = errno;
+		CloseSerialFD( theFD );
+		throw DCLPlatformUnknownError( theErrno );
 	}
 	
 	// Enregistrement des options courantes pour pouvoir les remettre après.
 	if (::tcgetattr(theFD, &mOriginalOptions) == -1)
 	{
 		// Fermeture.
-		(void) ::close( theFD );
-		throw DCLPlatformUnknownError( errno );
+		int theErrno = errno;
+		CloseSerialFD( theFD );
+		throw DCLPlatformUnknownError( theErrno );
 	}
 	
 	// Nouvelles options.
@@ -640,21 +828,24 @@ TDCLFDSerialPort::OpenAndConfigure( void )
             break;
         #endif
         default:
-			throw DCLPlatformUnknownError( errno );
+			CloseSerialFD( theFD );
+			throw DCLPlatformUnknownError( EINVAL );
         }
 
 	if (theErr < 0)
 	{
-		(void) ::close( theFD );
-		throw DCLPlatformUnknownError( errno );
+		int theErrno = errno;
+		CloseSerialFD( theFD );
+		throw DCLPlatformUnknownError( theErrno );
 	}
 	
 	// B0 copies the speed from cfsetospeed above
 	theErr = cfsetispeed( &theOptions, B0 );
 	if (theErr < 0)
 	{
-		(void) ::close( theFD );
-		throw DCLPlatformUnknownError( errno );
+		int theErrno = errno;
+		CloseSerialFD( theFD );
+		throw DCLPlatformUnknownError( theErrno );
 	}
 	
 	// Accès bloquant jusqu'à ce qu'un caractère soit lu ou qu'une temporisation
@@ -667,9 +858,10 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 	if (theErr < 0)
     {
 		// Fermeture
-		(void) ::close( theFD );
+		int theErrno = errno;
+		CloseSerialFD( theFD );
 		
-		throw DCLPlatformUnknownError( errno );
+		throw DCLPlatformUnknownError( theErrno );
 	}
 	
 	// On enregistre le descripteur de fichier.
@@ -682,27 +874,52 @@ TDCLFDSerialPort::OpenAndConfigure( void )
 void
 TDCLFDSerialPort::Reset( void )
 {
-	// Bloquons la méthode Select.
-	mResetMutex->Acquire();
-	
-	// On marque qu'on est en train de réinitialiser.
-	mReset = true;
-	
-	// On ferme le port en ignorant les erreurs.
-	(void) ::close( mSerialFD );
-	
-	// On le rouvre.
-	OpenAndConfigure();
-	
-	// On n'est plus en train de réinitialiser.
-	mReset = false;
-		
-	// On n'a plus de requête présente.
-	mRequestPresent = false;
-	mWaitRequestMutex->Release();
+	struct TNotifyGuard
+	{
+		std::condition_variable_any& mCV;
+		~TNotifyGuard( void )
+		{
+			mCV.notify_all();
+		}
+	} notifyGuard{ mStateCV };
 
-	// Débloquage de la méthode Select.
-	mResetMutex->Release();
+	std::unique_lock<std::mutex> lock( mStateMutex );
+	mStateCV.wait( lock, [this] {
+		return !mReset;
+	} );
+	mReset = true;
+
+	if (mInSelect)
+	{
+		(void)mSelectStopSource.request_stop();
+		mStateCV.wait( lock, [this] {
+			return !mInSelect;
+		} );
+	}
+
+	struct TResetGuard
+	{
+		Boolean& mResetRef;
+		Boolean& mRequestPresentRef;
+		~TResetGuard( void )
+		{
+			mResetRef = false;
+			mRequestPresentRef = false;
+		}
+	} resetGuard{ mReset, mRequestPresent };
+
+	if (mSerialFD != -1)
+	{
+		(void)::tcflush( mSerialFD, TCIOFLUSH );
+		(void)::tcsetattr( mSerialFD, TCSANOW, &mOriginalOptions );
+		CloseSerialFD( mSerialFD );
+		mSerialFD = -1;
+	}
+
+	if (GetServer() && !StopRequested())
+	{
+		OpenAndConfigure();
+	}
 }
 
 // ======================================================== //

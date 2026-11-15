@@ -44,7 +44,6 @@
 
 // Pré-déclarations
 class IDCLFiles;
-class IDCLThreads;
 class TDCLAppCommand;
 class TDCLCommLayer;
 class TDCLDockCommand;
@@ -96,13 +95,6 @@ public:
 	/// \return une abstraction pour utiliser les fichiers.
 	///
 	IDCLFiles*		GetFilesIntf( void );
-	
-	///
-	/// Retourne l'abstraction pour les processus légers.
-	///
-	/// \return une abstraction pour les processus légers.
-	///
-	IDCLThreads*	GetThreadsIntf( void );
 
 	/// \name Interface TDCLApplication
 
@@ -295,20 +287,10 @@ private:
 	/// \return une abstraction pour utiliser les fichiers.
 	///
 	virtual IDCLFiles*		CreateFilesIntf( void ) = 0;
-	
-	///
-	/// Retourne l'abstraction pour les processus légers.
-	/// Cette méthode est appelée la première fois que
-	/// GetThreadsIntf est appelée.
-	///
-	/// \return une abstraction pour les processus légers.
-	///
-	virtual IDCLThreads*	CreateThreadsIntf( void ) = 0;
 
 	/// \name Variables privées
 	
 	IDCLFiles*		mFilesIntf;		///< Abstraction pour les fichiers.
-	IDCLThreads*	mThreadsIntf;	///< Abstraction pour les processus légers.
 };
 
 #endif

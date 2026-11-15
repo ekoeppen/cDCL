@@ -39,15 +39,13 @@
 
 // DCL
 #include <DCL/Interfaces/IDCLFiles.h>
-#include <DCL/Interfaces/IDCLThreads.h>
 
 // ------------------------------------------------------------------------- //
 //  * TDCLApplication( void )
 // ------------------------------------------------------------------------- //
 TDCLApplication::TDCLApplication( void )
 	:
-		mFilesIntf( nil ),
-		mThreadsIntf( nil )
+		mFilesIntf( nil )
 {
 	// Kilroy was here.
 }
@@ -62,11 +60,6 @@ TDCLApplication::~TDCLApplication( void )
 	{
 		delete mFilesIntf;
 	}
-
-	if (mThreadsIntf)
-	{
-		delete mThreadsIntf;
-	}
 }
 
 // ------------------------------------------------------------------------- //
@@ -80,19 +73,6 @@ TDCLApplication::GetFilesIntf( void )
 		mFilesIntf = CreateFilesIntf();
 	}
 	return mFilesIntf;
-}
-
-// ------------------------------------------------------------------------- //
-//  * GetThreadsIntf( void )
-// ------------------------------------------------------------------------- //
-IDCLThreads*
-TDCLApplication::GetThreadsIntf( void )
-{
-	if (mThreadsIntf == nil)
-	{
-		mThreadsIntf = CreateThreadsIntf();
-	}
-	return mThreadsIntf;
 }
 
 // ============================================================================= //

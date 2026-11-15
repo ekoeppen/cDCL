@@ -70,6 +70,7 @@
 #include <string.h>
 
 // DCL
+#include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/Errors/TDCLUnknownError.h>
 
 // Commentaire intéressant de Philz:
@@ -537,8 +538,18 @@ TDCLMNPPipe::Connected( TDCLLink* inLink )
 void
 TDCLMNPPipe::Disconnect( void )
 {
-	// Envoi de la séquence MNP de fin.
-	WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
+	// Send the closing MNP sequence, unless stop has been requested.
+	if (!StopRequested() && !(GetSubPipe() && GetSubPipe()->StopRequested()))
+	{
+		try {
+			WriteFrame( kMNPFooter, sizeof( kMNPFooter ) );
+		} catch ( TDCLUserCancelledException& ) {
+			// Stop requested during write: proceed with disconnection.
+		} catch ( ... ) {
+			TDCLPipeProxy::Disconnect();
+			throw;
+		}
+	}
 
 	TDCLPipeProxy::Disconnect();
 }

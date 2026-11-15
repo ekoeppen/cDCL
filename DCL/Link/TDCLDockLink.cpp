@@ -52,7 +52,6 @@
 #include <DCL/Exceptions/Link_Exceptions/TDCLBadDockCmdException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
 #include <DCL/Interfaces/IDCLFiles.h>
-#include <DCL/Interfaces/IDCLThreads.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdDesktopInfo.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNewtonInfo.h>

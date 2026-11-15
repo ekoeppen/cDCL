@@ -68,6 +68,8 @@ TDCLPipe::FlushOutput( void )
 void
 TDCLPipe::Disconnect( void )
 {
+	(void) RequestStop();
+
 	mCommLayer->Disconnected( this );
 
 	mLink = nil;

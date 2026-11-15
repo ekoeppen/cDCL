@@ -39,12 +39,17 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
+// C++
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
-#include <DCL/Interfaces/IDCLThreads.h>
-#include <DCL/Interfaces/TDCLThread.h>
+#include <DCL/Interfaces/TDCLEventQueue.h>
 
 class TDCLLink;
 
@@ -74,8 +79,6 @@ class TDCLLink;
 /// \test	no tests defined.
 ///
 class TDCLServer
-	:
-		private TDCLThread
 {
 public:
 	///
@@ -125,6 +128,12 @@ public:
 	///			the server is in the unknown state (should not happen).
 	///
 	void				Stop( void );
+
+	///
+	/// Waits for the server worker to finish executing.
+	/// Returns immediately with \c false if called from inside the server worker itself.
+	///
+	bool				Wait( void );
 	
 	///
 	/// Forcefully terminates all connections (synchronous operation).
@@ -168,7 +177,7 @@ public:
 	///
 	/// \param inLink		link that is disconnected.
 	///
-	void				Disconnected( TDCLLink* inLink );
+	virtual void		Disconnected( TDCLLink* inLink );
 
 	///
 	/// Method called when an exception is uncaught in a communication layer's
@@ -209,11 +218,10 @@ protected:
 	///
 	virtual void 		HandleException( TDCLException* inException );
 
-	/// \name TDCLThread interface
-	
+	/// \name Server execution
+
 	///
-	/// This method is called on the server thread.
-	/// It is the server's main loop.
+	/// Server main loop.
 	/// This loop terminates when an exception occurs or when the server is
 	/// stopped.
 	///
@@ -233,6 +241,17 @@ protected:
 	///
 	virtual	void		DoStop( void ) = 0;
 	
+	///
+	/// Requests cooperative stop of objects managed by the subclass
+	/// before joining the server thread.
+	///
+	virtual void		DoRequestStop( void );
+
+	///
+	/// Returns \c true if called from a worker thread that Kill() joins.
+	///
+	virtual bool		IsShutdownWorkerThread( void ) const;
+
 	///
 	/// Forcefully closes all connections.
 	///
@@ -266,19 +285,13 @@ protected:
 
 	///
 	/// Acquires the server state mutex and checks that Start() has never been
-	/// called and the server is stopped.
+	/// called and the server is completely stopped.
 	///
-	/// Must be paired with ReleaseConfigurationLock().
-	///
-	/// 	hrows TDCLBadStateError if Start() has already been called or the
+	/// \return RAII lock holding the server state mutex.
+	/// \throws TDCLBadStateError if Start() has already been called or the
 	///			server is not stopped.
 	///
-	void				AcquireConfigurationLock( void );
-
-	///
-	/// Releases the server state mutex acquired by AcquireConfigurationLock().
-	///
-	void				ReleaseConfigurationLock( void );
+	[[nodiscard]] std::unique_lock<std::mutex>	AcquireConfigurationLock( void );
 
 	inline	TDCLApplication*	GetApplication( void )
 			{
@@ -300,13 +313,22 @@ private:
 	///
 	TDCLServer& operator = ( const TDCLServer& inCopy );
 
+	void				ThreadEntry( std::stop_token inStopToken );
+
 	/// \name Member variables
 
 	TDCLApplication*			mApplication;	///< Reference to the
 											///< application.
-	IDCLThreads::ISemaphore*	mStateMutex;	///< Mutex protecting the state.
+	TDCLEventQueue				mEventQueue;	///< Server event queue.
+	std::mutex					mStateMutex;	///< Mutex protecting the state.
+	std::condition_variable		mKillCV;		///< Start/Kill synchronization.
+	std::mutex					mJoinMutex;		///< Mutex for Wait().
+	std::atomic<std::thread::id> mThreadId;		///< Active thread identifier.
+	std::thread::id				mKillThreadId;	///< Thread executing Kill().
+	std::jthread				mThread;		///< Server thread.
+	std::stop_token				mWorkerStopToken; ///< Current worker token.
 	EState						mState;			///< State.
-	Boolean						mHasStarted;	///< Whether Start() has been called.
+	bool						mHasStarted;	///< Whether Start() has been called.
 };
 
 #endif

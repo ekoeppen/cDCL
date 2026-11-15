@@ -43,6 +43,7 @@
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadParamError.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h>
 #include <DCL/Interfaces/TDCLEvent.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
@@ -51,24 +52,64 @@
 // ------------------------------------------------------------------------- //
 TDCLServer::TDCLServer( TDCLApplication* inApplication )
 	:
-		TDCLThread( inApplication->GetThreadsIntf() ),
 		mApplication( inApplication ),
-		mStateMutex( nil ),
+		mThreadId(),
+		mKillThreadId(),
 		mState( kStopped ),
 		mHasStarted( false )
 {
-	mStateMutex = GetThreadsIntf()->CreateSemaphore();
 }
 
 // ------------------------------------------------------------------------- //
 //  * ~TDCLServer( void )
 // ------------------------------------------------------------------------- //
 TDCLServer::~TDCLServer( void )
-{	
-	if (mStateMutex)
+{
+	std::stop_source theStopSource;
 	{
-		delete mStateMutex;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		theStopSource = mThread.get_stop_source();
 	}
+	(void) theStopSource.request_stop();
+	(void) Wait();
+}
+
+void
+TDCLServer::ThreadEntry( std::stop_token inStopToken )
+{
+	mThreadId.store( std::this_thread::get_id() );
+	mWorkerStopToken = std::move( inStopToken );
+	try {
+		Run();
+	} catch ( TDCLException& inException ) {
+		try {
+			HandleException( &inException );
+		} catch ( ... ) {
+		}
+	} catch ( ... ) {
+		try {
+			HandleException( nil );
+		} catch ( ... ) {
+		}
+	}
+	mWorkerStopToken = std::stop_token();
+	mThreadId.store( std::thread::id() );
+}
+
+bool
+TDCLServer::Wait( void )
+{
+	if ( std::this_thread::get_id() == mThreadId.load() )
+	{
+		return false;
+	}
+
+	std::lock_guard<std::mutex> joinLock( mJoinMutex );
+	if ( mThread.joinable() )
+	{
+		mThread.join();
+	}
+	return true;
 }
 
 // ------------------------------------------------------------------------- //
@@ -77,25 +118,73 @@ TDCLServer::~TDCLServer( void )
 void
 TDCLServer::Start( void )
 {
-	mStateMutex->Acquire();
-	
-	if (mState == kStopped)
+	if ( IsShutdownWorkerThread() )
 	{
-		mState = kStarting;
+		throw DCLThreadActive;
+	}
 
-		try {
-			TDCLThread::Start();
-			mHasStarted = true;
-		} catch ( ... ) {
-			// The state is still kStopped.
-			mState = kStopped;
-			mStateMutex->Release();
+	std::unique_lock<std::mutex> lock( mStateMutex );
+	for ( ;; )
+	{
+		mKillCV.wait( lock, [ this ] { return mKillThreadId == std::thread::id(); } );
 
-			throw;	// Rethrow.
+		if ( mState != kStopped )
+		{
+			return;
 		}
-	} // else: do nothing
-	
-	mStateMutex->Release();
+
+		lock.unlock();
+
+		std::unique_lock<std::mutex> joinLock( mJoinMutex );
+		lock.lock();
+		if ( mKillThreadId != std::thread::id() )
+		{
+			joinLock.unlock();
+			continue;
+		}
+
+		if ( mState != kStopped )
+		{
+			return;
+		}
+
+		if ( mThread.joinable() )
+		{
+			lock.unlock();
+			mThread.join();
+			lock.lock();
+
+			if ( mKillThreadId != std::thread::id() )
+			{
+				joinLock.unlock();
+				continue;
+			}
+		}
+
+		if ( mState == kStopped )
+		{
+			if ( mThreadId.load() != std::thread::id() )
+			{
+				throw DCLThreadActive;
+			}
+
+			mState = kStarting;
+			mEventQueue.Clear();
+
+			try {
+				mThread = std::jthread(
+					[ this ]( std::stop_token inStopToken )
+					{
+						ThreadEntry( std::move( inStopToken ) );
+					} );
+				mHasStarted = true;
+			} catch ( ... ) {
+				mState = kStopped;
+				throw;
+			}
+		}
+		return;
+	}
 }
 
 // ------------------------------------------------------------------------- //
@@ -104,15 +193,13 @@ TDCLServer::Start( void )
 void
 TDCLServer::Stop( void )
 {
-	mStateMutex->Acquire();
-	
+	std::lock_guard<std::mutex> lock( mStateMutex );
+
 	if ((mState == kRunning) || (mState == kStarting))
 	{
-		PostEvent(
+		mEventQueue.PostEvent(
 			new TDCLEvent( TDCLEvent::kServerEvent, TDCLEvent::kStopServer ) );
 	} // else: do nothing
-	
-	mStateMutex->Release();
 }
 
 // ------------------------------------------------------------------------- //
@@ -121,28 +208,56 @@ TDCLServer::Stop( void )
 void
 TDCLServer::Kill( void )
 {
-	mStateMutex->Acquire();
-	
+	std::unique_lock<std::mutex> lock( mStateMutex );
+	if ( !IsShutdownWorkerThread() )
+	{
+		mKillCV.wait( lock, [ this ] { return mKillThreadId == std::thread::id(); } );
+	}
+
 	if (mState != kStopped)
 	{
-		try {
-			DoKill();
-			
-			TDCLThread::Stop();
-		} catch ( ... ) {
-			// The state is now unknown
-			mState = kUnknown;
-			
-			mStateMutex->Release();
+		mState = kStopped;
+		mKillThreadId = std::this_thread::get_id();
+		std::stop_source theStopSource = mThread.get_stop_source();
+		lock.unlock();
 
+		try {
+			(void) theStopSource.request_stop();
+			DoRequestStop();
+			(void) Wait();
+			DoKill();
+		} catch ( ... ) {
+			std::lock_guard<std::mutex> errLock( mStateMutex );
+			mKillThreadId = std::thread::id();
+			mState = kUnknown;
+			mKillCV.notify_all();
 			throw;	// Rethrow.
 		}
 
-		mState = kStopped;
+		std::lock_guard<std::mutex> doneLock( mStateMutex );
+		mKillThreadId = std::thread::id();
+		mKillCV.notify_all();
+	} else {
+		lock.unlock();
+		(void) Wait();
+	}
+}
 
-	} // else: do nothing
-	
-	mStateMutex->Release();
+// ------------------------------------------------------------------------- //
+//  * DoRequestStop( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLServer::DoRequestStop( void )
+{
+}
+
+// ------------------------------------------------------------------------- //
+//  * IsShutdownWorkerThread( void ) const
+// ------------------------------------------------------------------------- //
+bool
+TDCLServer::IsShutdownWorkerThread( void ) const
+{
+	return std::this_thread::get_id() == mThreadId.load();
 }
 
 // ------------------------------------------------------------------------- //
@@ -151,15 +266,8 @@ TDCLServer::Kill( void )
 TDCLServer::EState
 TDCLServer::GetState( void )
 {
-	EState theResult;
-	
-	mStateMutex->Acquire();
-	
-	theResult = mState;
-	
-	mStateMutex->Release();
-	
-	return theResult;
+	std::lock_guard<std::mutex> lock( mStateMutex );
+	return mState;
 }
 
 // ------------------------------------------------------------------------- //
@@ -168,7 +276,7 @@ TDCLServer::GetState( void )
 void
 TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
 {
-	PostEvent( new TDCLEvent(
+	mEventQueue.PostEvent( new TDCLEvent(
 						TDCLEvent::kServerEvent,
 						TDCLEvent::kIncomingRequest,
 						inCommLayer ) );
@@ -180,7 +288,7 @@ TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
 void
 TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
 {
-	PostEvent( new TDCLEvent(
+	mEventQueue.PostEvent( new TDCLEvent(
 						 TDCLEvent::kServerEvent,
 						 TDCLEvent::kWaitingConnection,
 						 inCommLayer ) );
@@ -192,7 +300,7 @@ TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
 void
 TDCLServer::Disconnected( TDCLLink* inLink )
 {
-	PostEvent( new TDCLEvent(
+	mEventQueue.PostEvent( new TDCLEvent(
 						TDCLEvent::kServerEvent,
 						TDCLEvent::kDisconnected,
 						inLink ) );
@@ -204,6 +312,8 @@ TDCLServer::Disconnected( TDCLLink* inLink )
 void
 TDCLServer::Run( void )
 {
+	const std::stop_token theStopToken = mWorkerStopToken;
+
 	// Server main loop.
 	Boolean keepLooping = true;
 	while( keepLooping )
@@ -211,12 +321,11 @@ TDCLServer::Run( void )
 		EState theState;
 		EState theNextState;
 
-		mStateMutex->Acquire();
-
-		theState = mState;
+		{
+			std::lock_guard<std::mutex> lock( mStateMutex );
+			theState = mState;
+		}
 		theNextState = theState;
-	
-		mStateMutex->Release();
 		
 		switch ( theState )
 		{
@@ -225,22 +334,29 @@ TDCLServer::Run( void )
 				DoStartListening();
 				
 				// Next step is to actually wait.
-				theNextState = kRunning;
+				theNextState = theStopToken.stop_requested() ? kStopped : kRunning;
 				break;
 
 			case kRunning:
-				// Wait for an event.
+				if (theStopToken.stop_requested())
 				{
+					theNextState = kStopped;
+				} else {
+					// Wait for an event.
 					TSmartPtr< TDCLEvent > theNextEvent;
-					theNextEvent = WaitNextEvent(
+					theNextEvent = mEventQueue.WaitNextEvent(
 										TDCLEvent::kServerEventMask,
-										IDCLThreads::IThread::kForever );
+										TDCLEventQueue::kForever,
+										theStopToken );
 					
-					if (theNextEvent.Get() == nil)
+					if (theStopToken.stop_requested())
 					{
+						theNextState = kStopped;
+					} else if (theNextEvent.Get() == nil) {
 						// Slept the entire time.
 						DoIdle();
 					} else {
+						// Process the event.
 						Boolean processed = false;
 						theNextState = ProcessEvent(
 										theNextEvent.Get(), &processed );
@@ -265,16 +381,11 @@ TDCLServer::Run( void )
 		
 		if (theState != theNextState)
 		{
-			mStateMutex->Acquire();
-
-			// Verify that the state did not change behind our back.
+			std::lock_guard<std::mutex> lock( mStateMutex );
 			if (mState == theState)
 			{
-				// Update
 				mState = theNextState;
 			}
-	
-			mStateMutex->Release();
 		}
 	}
 
@@ -352,23 +463,22 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 void
 TDCLServer::HandleException( TDCLException* inException )
 {
-	mStateMutex->Acquire();
-
-	switch ( mState )
 	{
-		case kStopped:
-		case kStarting:
-		case kStopping:
-			mState = kStopped;
-			break;
-	
-		case kRunning:
-		default:
-			mState = kUnknown;
-			break;
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		switch ( mState )
+		{
+			case kStopped:
+			case kStarting:
+			case kStopping:
+				mState = kStopped;
+				break;
+
+			case kRunning:
+			default:
+				mState = kUnknown;
+				break;
+		}
 	}
-	
-	mStateMutex->Release();
 
 	mApplication->HandleServerException( this, inException );
 }
@@ -376,25 +486,21 @@ TDCLServer::HandleException( TDCLException* inException )
 // ------------------------------------------------------------------------- //
 //  * AcquireConfigurationLock( void )
 // ------------------------------------------------------------------------- //
-void
+std::unique_lock<std::mutex>
 TDCLServer::AcquireConfigurationLock( void )
 {
-	mStateMutex->Acquire();
+	std::unique_lock<std::mutex> lock( mStateMutex );
 
-	if (mHasStarted || (mState != kStopped))
+	if ( mHasStarted
+		|| ( mState != kStopped )
+		|| ( mKillThreadId != std::thread::id() )
+		|| ( mThreadId.load() != std::thread::id() )
+		|| mThread.joinable() )
 	{
-		mStateMutex->Release();
 		throw DCLBadStateError;
 	}
-}
 
-// ------------------------------------------------------------------------- //
-//  * ReleaseConfigurationLock( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLServer::ReleaseConfigurationLock( void )
-{
-	mStateMutex->Release();
+	return lock;
 }
 
 // ================================================ //

@@ -19,6 +19,11 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
+// C++
+#include <condition_variable>
+#include <memory>
+#include <mutex>
+
 // DCL - Tests
 #include "TTestApplication.h"
 #include "TTestServer.h"
@@ -65,6 +70,10 @@ public:
 	///
 	static void TestServerConfiguration( void );
 
+	///
+	/// Cooperative cancellation test for sockets and POSIX serial ports.
+	///
+	static void CancelCommLayers( void );
 private:
 
 	///
@@ -125,13 +134,7 @@ private:
 			public TTestApplication
 	{
 	public:
-		///
-		/// Constructeur à partir d'une interface pour les processus légers.
-		/// Les informations sont envoyées sur stdout.
-		///
-		/// \param inThreadsIntf	interface pour les processus légers.
-		///
-		TCADApplication( IDCLThreads* inThreadsIntf );
+		TCADApplication( void );
 
 		///
 		/// Destructeur.
@@ -185,7 +188,9 @@ private:
 		TCADApplication& operator = ( const TCADApplication& inCopy );
 
 	private:
-		IDCLThreads::ISemaphore*	mWaitMutex;		///< Sémaphore pour attendre la fin des tests.
+		std::mutex				mWaitMutex;
+		std::condition_variable	mWaitCV;
+		bool					mDone;
 	};
 
 	///
@@ -196,13 +201,7 @@ private:
 			public TTestApplication
 	{
 	public:
-		///
-		/// Constructeur à partir d'une interface pour les processus légers.
-		/// Les informations sont envoyées sur stdout.
-		///
-		/// \param inThreadsIntf	interface pour les processus légers.
-		///
-		TSASTApplication( IDCLThreads* inThreadsIntf );
+		TSASTApplication( void );
 
 		///
 		/// Destructeur.
@@ -261,7 +260,9 @@ private:
 		TSASTApplication& operator = ( const TSASTApplication& inCopy );
 
 	private:
-		IDCLThreads::ISemaphore*	mWaitMutex;		///< Sémaphore pour attendre la fin des tests.
+		std::mutex				mWaitMutex;
+		std::condition_variable	mWaitCV;
+		bool					mDone;
 	};
 
 	///
@@ -273,8 +274,8 @@ private:
 	/// \param inApplication	application pour le test.
 	///
 	static void ConnectAndDisconnect(
-					TDCLCommLayer*		inCommLayer,
-					TCADApplication*	inApplication  );
+					std::unique_ptr<TDCLCommLayer>	inCommLayer,
+					TCADApplication*				inApplication  );
 
 	///
 	/// Test "Start & Stop Twice"

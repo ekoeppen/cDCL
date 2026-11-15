@@ -42,6 +42,7 @@
 
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
+#include <DCL/Interfaces/TStoppable.h>
 
 // Pré-déclarations.
 class TDCLPipeProxy;
@@ -57,7 +58,8 @@ class TDCLLink;
 ///
 class TDCLPipe
 	:
-		public TDCLStream
+		public TDCLStream,
+		public TStoppable
 {
 public:
 	///
@@ -196,12 +198,21 @@ public:
 	///
 	virtual	Boolean		PeerDisconnected( void ) { return false; }
 
+	///
+	/// Indique si l'appelant s'exécute sur le processus léger interne du pipe.
+	///
+	virtual	bool		IsCurrentThread( void ) const noexcept
+		{
+			return false;
+		}
+
 protected:
 	///
 	/// Le constructeur de la classe mandataire a besoin d'accéder à la couche
 	/// de communication.
 	///
 	friend class TDCLPipeProxy;
+	friend class TDCLLink;
 
 	///
 	/// Accesseur sur la couche de communication.

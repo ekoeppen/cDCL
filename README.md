@@ -20,7 +20,8 @@ The repository consists of two main libraries:
 
 The codebase targets **C++20** (`-std=c++20`) using standard primitives
 (`std::thread`, `std::mutex`, `std::condition_variable`, `<atomic>`, and
-`<chrono>`).
+`<chrono>`), implementing a [multithreaded](Documentation/Threading.md)
+connectivity framework.
 
 ### Streamlined Platform Strategy
 

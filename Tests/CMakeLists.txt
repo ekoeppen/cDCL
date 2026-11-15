@@ -12,11 +12,12 @@ Tests/UTestCommLayers.cpp
 Tests/UTestNS.cpp
 Tests/UTestNSOF.cpp
 Tests/UTestPkg.cpp
-Tests/UTestThreads.cpp
 Tests/UTestKThreads.cpp
 Tests/UTestKMappedFile.cpp
 	Tests/UTestKStreamsAndBuffers.cpp
 Tests/UTestTime.cpp
+Tests/UTestEventQueue.cpp
+Tests/UTestWakeableWait.cpp
 Tests/UTestXML.cpp
 )
 
@@ -34,6 +35,10 @@ if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     -g         # generate debug info
     --coverage # sets all required flags
   )
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(DCLTests PRIVATE -fprofile-update=atomic)
+    target_compile_options(DCL PRIVATE -fprofile-update=atomic)
+  endif()
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
     target_link_options(DCL PRIVATE --coverage)
     target_link_options(DCLTests PRIVATE --coverage)
