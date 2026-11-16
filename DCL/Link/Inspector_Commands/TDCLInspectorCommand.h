@@ -17,11 +17,11 @@
 //
 // The Original Code is TDCLInspectorCommand.h.
 //
-// The Initial Developer of the Original Code is Eckhart Köppen
+// The Initial Developer of the Original Code is Eckhart KÃ¶ppen
 // Copyright (C) 2007 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
-//   Eckhart Köppen <eck@users.sourceforce.net> (original author)
+//   Eckhart KÃ¶ppen <eck@users.sourceforce.net> (original author)
 //
 // ***** END LICENSE BLOCK *****
 // ===========

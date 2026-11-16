@@ -3,7 +3,7 @@
 // Projet:			K/XML
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			4/2/2004
+// Cr√©√© le:			4/2/2004
 // Tabulation:		4 espaces
 // 
 // ***** BEGIN LICENSE BLOCK *****
@@ -42,18 +42,18 @@
 #include <expat.h>
 
 ///
-/// Classe pour des utilitaires relatifs à expat.
+/// Classe pour des utilitaires relatifs √† expat.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.1 $
 ///
-/// \test	aucun test défini.
+/// \test	aucun test d√©fini.
 ///
 class UExpatUtils
 {
 public:
 	///
-	/// Récupère la valeur d'un attribut à partir
+	/// R√©cup√®re la valeur d'un attribut √† partir
 	/// de son nom.
 	///
 	/// \param inAttributes		tableau des attributs

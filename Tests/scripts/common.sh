@@ -4,12 +4,12 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# CrŽŽ le:			2/5/2003
+# CrÃ©Ã© le:			2/5/2003
 # Tabulation:		4 espaces
 #
-# Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits rŽservŽs pour tous pays.
-# Licence:			Licence RŽflexive Kallisys
+# Copyright:		Â© 2003 by Paul Guyot.
+# 					Tous droits rÃ©servÃ©s pour tous pays.
+# Licence:			Licence RÃ©flexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: common.sh,v 1.8 2003/06/21 15:58:37 paul Exp $
@@ -24,34 +24,34 @@ fi
 LC_CTYPE=
 LANG=
 
-# DŽtermination de la racine de la DCL ˆ partir de PWD.
-# Comme ce script est appelŽ par . common.sh dans les diffŽrents scripts des
+# DÃ©termination de la racine de la DCL Ã  partir de PWD.
+# Comme ce script est appelÃ© par . common.sh dans les diffÃ©rents scripts des
 # tests, on peut supposer que PWD est le dossier des scripts.
 DCL="$PWD/../../"
 
-# ExŽcutable pour faire les tests.
+# ExÃ©cutable pour faire les tests.
 DCLTESTS="$1"
 
-# RŽpertoire pour les fichiers temporaires.
+# RÃ©pertoire pour les fichiers temporaires.
 TMPDIR=/tmp
 
-# Fichier ma”tre
+# Fichier maÃ®tre
 MASTERFILE=$TMPDIR/dcl-tests-$$-master
 
 # Fichier de sortie
 OUTFILE=$TMPDIR/dcl-tests-$$-out
 
-# Test dŽsactivŽ.
+# Test dÃ©sactivÃ©.
 NOTAVAILFILE=$TMPDIR/dcl-tests-$$-notavail
 
-# Nettoyage des fichiers prŽcŽdents (pour les Žchecs prŽcŽdents).
+# Nettoyage des fichiers prÃ©cÃ©dents (pour les Ã©checs prÃ©cÃ©dents).
 rm -f $TMPDIR/dcl-tests-*
 
 cat > $NOTAVAILFILE << ENDNOTAVAIL
 Test not available for this platform
 ENDNOTAVAIL
 
-# MŽthode pour comparer.
+# MÃ©thode pour comparer.
 compare() {
 	if [ `diff -u $NOTAVAILFILE $OUTFILE | wc -l` -ne "0" ]
 	then

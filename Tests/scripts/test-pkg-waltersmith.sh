@@ -4,19 +4,19 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# Créé le:			28/2/2003
+# Cr√©√© le:			28/2/2003
 # Tabulation:		4 espaces
 #
-# Copyright:		© 2004 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
+# Copyright:		¬© 2004 by Paul Guyot.
+# 					Tous droits r√©serv√©s pour tous pays.
+# Licence:			Licence R√©flexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: test-pkg-waltersmith.sh,v 1.1 2004/02/28 12:46:34 paul Exp $
 # ===========
 
 #
-# Le décodage de notre binaire est le suivant:
+# Le d√©codage de notre binaire est le suivant:
 # obj1: 0x00
 # 0x000	00001041	// tableau racine, 0x10 octets.
 # 0x004	00000000

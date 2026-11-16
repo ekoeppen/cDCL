@@ -4,12 +4,12 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 # 
-# Créé le:			21/6/2003
+# Cr√©√© le:			21/6/2003
 # Tabulation:		4 espaces
 # 
-# Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
+# Copyright:		¬© 2003 by Paul Guyot.
+# 					Tous droits r√©serv√©s pour tous pays.
+# Licence:			Licence R√©flexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: test-cl-sast-bsd.sh,v 1.1 2003/06/21 08:37:21 paul Exp $

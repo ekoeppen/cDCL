@@ -3,12 +3,12 @@
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			17/6/2003
+// Cr√©√© le:			17/6/2003
 // Tabulation:		4 espaces
 // 
-// Copyright:		© 2003 by Paul Guyot.
-// 					Tous droits réservés pour tous pays.
-// Licence:			Licence Réflexive Kallisys
+// Copyright:		¬© 2003 by Paul Guyot.
+// 					Tous droits r√©serv√©s pour tous pays.
+// Licence:			Licence R√©flexive Kallisys
 // 					http://www.kallisys.org/reflexive/
 // ===========
 // $Id: TTestEmptyFilesIntf.h,v 1.6 2003/12/28 07:04:50 paul Exp $
@@ -21,8 +21,8 @@
 #include <DCL/Interfaces/IDCLFiles.h>
 
 ///
-/// Classe pour indiquer le type de système de fichier.
-/// La méthode \c GetRootFolder lance une exception.
+/// Classe pour indiquer le type de syst√®me de fichier.
+/// La m√©thode \c GetRootFolder lance une exception.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.6 $
@@ -33,7 +33,7 @@ class TTestEmptyFilesIntf
 {
 public:
 	///
-	/// Retourne le code du type de la plateforme tel qu'il sera indiqué au Newton
+	/// Retourne le code du type de la plateforme tel qu'il sera indiqu√© au Newton
 	/// (Mac ou Windows).
 	/// Cette classe de test renvoie \c TDCLDockCommand::kMac_DType
 	///
@@ -42,17 +42,17 @@ public:
 	virtual KUInt32	GetKind( void );
 
 	///
-	/// Détermine le dossier bureau ou le dossier racine pour un disque donné.
+	/// D√©termine le dossier bureau ou le dossier racine pour un disque donn√©.
 	///
 	/// \param inRootName	nom du disque (pour "Windows", si le Newton croit
-	///						que nous sommes un Mac, ce paramètre sera \c nil)
+	///						que nous sommes un Mac, ce param√®tre sera \c nil)
 	/// \return rien du tout
 	/// \throws DCLNotImplementedError dans tous les cas.
 	///
 	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
 
 	///
-	/// Détermine le nombre de dossiers racine.
+	/// D√©termine le nombre de dossiers racine.
 	///
 	/// \return rien du tout
 	/// \throws DCLNotImplementedError dans tous les cas.
@@ -60,8 +60,8 @@ public:
 	virtual KUInt32			CountRootFolders( void ) const;
 
 	///
-	/// Récupère le nom du n-ième dossier racine.
-	/// Le nom appartient à l'objet IDCLFiles.
+	/// R√©cup√®re le nom du n-i√®me dossier racine.
+	/// Le nom appartient √† l'objet IDCLFiles.
 	///
 	/// \param inFolderIndex	un indice de dossier racine, entre 0 et
 	///							CountRootFolders() - 1.

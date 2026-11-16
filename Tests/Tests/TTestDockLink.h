@@ -3,12 +3,12 @@
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			17/6/2003
+// Cr√©√© le:			17/6/2003
 // Tabulation:		4 espaces
 // 
-// Copyright:		© 2003 by Paul Guyot.
-// 					Tous droits réservés pour tous pays.
-// Licence:			Licence Réflexive Kallisys
+// Copyright:		¬© 2003 by Paul Guyot.
+// 					Tous droits r√©serv√©s pour tous pays.
+// Licence:			Licence R√©flexive Kallisys
 // 					http://www.kallisys.org/reflexive/
 // ===========
 // $Id: TTestDockLink.h,v 1.3 2003/09/17 10:43:48 paul Exp $
@@ -21,7 +21,7 @@
 #include <DCL/Link/TDCLDockLink.h>
 
 ///
-/// Classe qui dérive de TDCLDockLink et c'est tout.
+/// Classe qui d√©rive de TDCLDockLink et c'est tout.
 /// Permet d'avoir un DockLink dans un test.
 ///
 /// \author Paul Guyot <pguyot@kallisys.net>
@@ -33,7 +33,7 @@ class TTestDockLink
 {
 public:
 	///
-	/// Constructeur à partir de l'application.
+	/// Constructeur √† partir de l'application.
 	///
 	TTestDockLink( TDCLApplication* inApplication );
 };

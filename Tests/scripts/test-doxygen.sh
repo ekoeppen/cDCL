@@ -4,12 +4,12 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# Créé le:			2/5/2003
+# Cr√©√© le:			2/5/2003
 # Tabulation:		4 espaces
 #
-# Copyright:		© 2003-2004 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
+# Copyright:		¬© 2003-2004 by Paul Guyot.
+# 					Tous droits r√©serv√©s pour tous pays.
+# Licence:			Licence R√©flexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: test-doxygen.sh,v 1.9 2004/05/11 21:28:54 paul Exp $
@@ -18,7 +18,7 @@
 . common.sh $*
 
 # Test pour doxygen.
-# Requiert que doxygen soit installé et correctement configuré.
+# Requiert que doxygen soit install√© et correctement configur√©.
 
 if [ -e DoxyOutput ] ; then
 	rm -f DoxyOutput/doxywarnings.txt
