@@ -4,29 +4,29 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# Créé le:			2/5/2003
+# CrÈÈ le:			2/5/2003
 # Tabulation:		4 espaces
 #
 # Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
+# 					Tous droits rÈservÈs pour tous pays.
+# Licence:			Licence RÈflexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: test-nsof-waltersmith.sh,v 1.6 2003/06/21 08:37:22 paul Exp $
 # ===========
 
 #
-# Il y a une légère différence avec le NSOF de l'ami Walter.
+# Il y a une lÈgËre diffÈrence avec le NSOF de l'ami Walter.
 # 02060607046E616D650704636174730706626F756E6473070575636861720706
 # 70686F6E657307096E616D65416761696E081A00570061006C00740065007200
 # 200053006D006900740068000000080B0E0A64280220220502081A0034003000
 # 38002D003900390036002D00310030003100300000031A070866617850686F6E
 # 65003400300038002D003900370034002D003900300039003400000907
 #
-# Nos éléments sont dans un autre ordre parce que nous trions les
-# clés automatiquement lorsqu'elles sont ajoutées par la méthode Set.
+# Nos ÈlÈments sont dans un autre ordre parce que nous trions les
+# clÈs automatiquement lorsqu'elles sont ajoutÈes par la mÈthode Set.
 #
-# Note: le Newton non plus ne trie pas les éléments pour un si petit
+# Note: le Newton non plus ne trie pas les ÈlÈments pour un si petit
 # exemple.
 # x := {name: "Walter Smith",
 #	cats: 2,
@@ -37,9 +37,9 @@
 # x.nameAgain := x.name;
 # StrHexDump(Translate(x, 'flattener, GetStores()[0], nil), 32);
 #
-# Cf NewtonFormats pour le décodage du binaire NSOF de Walter Smith.
+# Cf NewtonFormats pour le dÈcodage du binaire NSOF de Walter Smith.
 #
-# Le décodage de notre binaire est le suivant:
+# Le dÈcodage de notre binaire est le suivant:
 # 02-version
 # 06-kFrame
 # 06-length, 6 slots

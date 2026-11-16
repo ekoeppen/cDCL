@@ -4,12 +4,12 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# CrŽŽ le:			2/5/2003
+# Créé le:			2/5/2003
 # Tabulation:		4 espaces
 #
 # Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits rŽservŽs pour tous pays.
-# Licence:			Licence RŽflexive Kallisys
+# 					Tous droits réservés pour tous pays.
+# Licence:			Licence Réflexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: common.sh,v 1.8 2003/06/21 15:58:37 paul Exp $
@@ -24,34 +24,34 @@ fi
 LC_CTYPE=
 LANG=
 
-# DŽtermination de la racine de la DCL ˆ partir de PWD.
-# Comme ce script est appelŽ par . common.sh dans les diffŽrents scripts des
+# Détermination de la racine de la DCL à partir de PWD.
+# Comme ce script est appelé par . common.sh dans les différents scripts des
 # tests, on peut supposer que PWD est le dossier des scripts.
 DCL="$PWD/../../"
 
-# ExŽcutable pour faire les tests.
+# Exécutable pour faire les tests.
 DCLTESTS="$1"
 
-# RŽpertoire pour les fichiers temporaires.
+# Répertoire pour les fichiers temporaires.
 TMPDIR=/tmp
 
-# Fichier ma”tre
+# Fichier maître
 MASTERFILE=$TMPDIR/dcl-tests-$$-master
 
 # Fichier de sortie
 OUTFILE=$TMPDIR/dcl-tests-$$-out
 
-# Test dŽsactivŽ.
+# Test désactivé.
 NOTAVAILFILE=$TMPDIR/dcl-tests-$$-notavail
 
-# Nettoyage des fichiers prŽcŽdents (pour les Žchecs prŽcŽdents).
+# Nettoyage des fichiers précédents (pour les échecs précédents).
 rm -f $TMPDIR/dcl-tests-*
 
 cat > $NOTAVAILFILE << ENDNOTAVAIL
 Test not available for this platform
 ENDNOTAVAIL
 
-# MŽthode pour comparer.
+# Méthode pour comparer.
 compare() {
 	if [ `diff -u $NOTAVAILFILE $OUTFILE | wc -l` -ne "0" ]
 	then

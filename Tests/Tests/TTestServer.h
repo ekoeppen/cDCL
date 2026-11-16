@@ -3,12 +3,12 @@
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// Créé le:			17/6/2003
+// CrÈÈ le:			17/6/2003
 // Tabulation:		4 espaces
 // 
 // Copyright:		© 2003 by Paul Guyot.
-// 					Tous droits réservés pour tous pays.
-// Licence:			Licence Réflexive Kallisys
+// 					Tous droits rÈservÈs pour tous pays.
+// Licence:			Licence RÈflexive Kallisys
 // 					http://www.kallisys.org/reflexive/
 // ===========
 // $Id: TTestServer.h,v 1.5 2003/09/17 10:43:49 paul Exp $
@@ -37,21 +37,21 @@ class TTestServer
 {
 public:
 	///
-	/// Constructeur à partir d'une référence sur l'application.
+	/// Constructeur ‡ partir d'une rÈfÈrence sur l'application.
 	///
-	/// \param inApplication	interface avec le système hôte.
+	/// \param inApplication	interface avec le systËme hÙte.
 	///
 	TTestServer( TDCLLogApplication* inApplication );
 
 	///
-	/// Commence à écouter.
-	/// Cette méthode est appelée lorsque le serveur est démarré (depuis
-	/// le processus léger du serveur).
+	/// Commence ‡ Ècouter.
+	/// Cette mÈthode est appelÈe lorsque le serveur est dÈmarrÈ (depuis
+	/// le processus lÈger du serveur).
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête le serveur.
+	/// ArrÍte le serveur.
 	///
 	virtual	void		DoStop( void );
 	
@@ -61,28 +61,28 @@ public:
 	virtual	void		DoKill( void );
 
 	///
-	/// Gère l'arrivée d'une nouvelle connexion.
+	/// GËre l'arrivÈe d'une nouvelle connexion.
 	///
-	/// \param inCommLayer	interface de communication qui a reçu la requête.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inCommLayer	interface de communication qui a reÁu la requÍte.
+	/// \return le nouvel Ètat du serveur.
+	/// \throws TDCLException si un problËme est survenu.
 	///
 	virtual EState		HandleIncomingConnection(
 								TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée dans le processus léger du serveur pour indiquer
-	/// qu'un lien a été déconnecté et qu'il faut fermer l'interface de
+	/// MÈthode appelÈe dans le processus lÈger du serveur pour indiquer
+	/// qu'un lien a ÈtÈ dÈconnectÈ et qu'il faut fermer l'interface de
 	/// communication.
 	///
-	/// \param inLink	le lien qui a été déconnecté.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inLink	le lien qui a ÈtÈ dÈconnectÈ.
+	/// \return le nouvel Ètat du serveur.
+	/// \throws TDCLException si un problËme est survenu.
 	///
 	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée par le serveur lorsque rien ne se passe.
+	/// MÈthode appelÈe par le serveur lorsque rien ne se passe.
 	/// Elle permet d'appeler Idle sur les interfaces de communication qui en
 	/// ont besoin.
 	///
