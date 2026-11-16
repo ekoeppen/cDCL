@@ -47,11 +47,6 @@ public:
 	static void ConnectAndDisconnectFDSerialPort( const char* inDevPath );
 
 	///
-	/// Le même, pour X ADSP.
-	///
-	static void ConnectAndDisconnectXADSP( void );
-
-	///
 	/// Test "Start & Stop Twice" pour les sockets BSD
 	/// Lance le serveur puis l'arrête deux fois.
 	///
@@ -63,11 +58,6 @@ public:
 	/// \param inDevPath	chemin pour le port série
 	///
 	static void StartAndStopTwiceFDSerialPort( const char* inDevPath );
-
-	///
-	/// Le même, pour X ADSP.
-	///
-	static void StartAndStopTwiceXADSP( void );
 
 private:
 

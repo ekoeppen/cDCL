@@ -40,11 +40,6 @@ typedef TDCLPThreads TDCLPlatformThreads;
 #include <DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h>
 #endif
 
-#if TARGET_OS_OPENSTEP && !TARGET_OS_OPENSTEP_AMD64 && !TARGET_OS_OPENSTEP_ARM64
-#include <DCL/Communication_Layers/MacOS_X/TDCLXADSP.h>
-#include <DCL/Interfaces/POSIX/TDCLPThreads.h>
-#endif
-
 // DCL - Tests
 #include "TTestDockLink.h"
 
@@ -95,29 +90,6 @@ UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ConnectAndDisconnectXADSP( void )
-// ------------------------------------------------------------------------- //
-void
-UTestCommLayers::ConnectAndDisconnectXADSP( void )
-{
-#if !TARGET_OS_OPENSTEP || TARGET_OS_OPENSTEP_AMD64 || TARGET_OS_OPENSTEP_ARM64
-	(void)::printf( "Test not available for this platform\n" );
-#else
-	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
-
-	// Création de l'application.
-	TCADApplication theApplication( theThreadsIntf );
-
-	// Création de la couche de communication
-	TDCLXADSP theCommLayer( theThreadsIntf );
-
-	// Test à proprement parler.
-	ConnectAndDisconnect( (TDCLCommLayer*)&theCommLayer, &theApplication );
-#endif
-}
-
-// ------------------------------------------------------------------------- //
 //  * StartAndStopTwiceBSDSocket( void )
 // ------------------------------------------------------------------------- //
 void
@@ -157,29 +129,6 @@ UTestCommLayers::StartAndStopTwiceFDSerialPort( const char* inDevPath )
 
 	// Création de la couche de communication
 	TDCLFDSerialPort theCommLayer( theThreadsIntf, inDevPath );
-
-	// Test à proprement parler.
-	StartAndStopTwice( (TDCLCommLayer*)&theCommLayer, &theApplication );
-#endif
-}
-
-// ------------------------------------------------------------------------- //
-//  * StartAndStopTwiceXADSP( void )
-// ------------------------------------------------------------------------- //
-void
-UTestCommLayers::StartAndStopTwiceXADSP( void )
-{
-#if !TARGET_OS_OPENSTEP || TARGET_OS_OPENSTEP_AMD64 || TARGET_OS_OPENSTEP_ARM64
-	(void)::printf( "Test not available for this platform\n" );
-#else
-	// Interface pour les processus légers (supprimée par ~TDCLApplication)
-	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
-
-	// Création de l'application.
-	TSASTApplication theApplication( theThreadsIntf );
-
-	// Création de la couche de communication
-	TDCLXADSP theCommLayer( theThreadsIntf );
 
 	// Test à proprement parler.
 	StartAndStopTwice( (TDCLCommLayer*)&theCommLayer, &theApplication );

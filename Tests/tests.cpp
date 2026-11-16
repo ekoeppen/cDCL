@@ -72,14 +72,10 @@ test( const char* inTestName, const char* inArgument )
 			UTestCommLayers::ConnectAndDisconnectBSDSocket();
 		} else if (::strcmp(inTestName, "cl-cad-fdserial") == 0) {
 			UTestCommLayers::ConnectAndDisconnectFDSerialPort( inArgument );
-		} else if (::strcmp(inTestName, "cl-cad-xadsp") == 0) {
-			UTestCommLayers::ConnectAndDisconnectXADSP();
 		} else if (::strcmp(inTestName, "cl-sast-bsd") == 0) {
 			UTestCommLayers::StartAndStopTwiceBSDSocket();
 		} else if (::strcmp(inTestName, "cl-sast-fdserial") == 0) {
 			UTestCommLayers::StartAndStopTwiceFDSerialPort( inArgument );
-		} else if (::strcmp(inTestName, "cl-sast-xadsp") == 0) {
-			UTestCommLayers::StartAndStopTwiceXADSP();
 		} else if (::strcmp(inTestName, "ns-arraysandframes") == 0) {
 			UTestNS::ArraysAndFrames();
 		} else if (::strcmp(inTestName, "ns-framekeyssort") == 0) {

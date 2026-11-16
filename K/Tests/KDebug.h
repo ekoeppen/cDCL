@@ -39,19 +39,6 @@
 // K Defines
 #include <K/Defines/KDefinitions.h>
 
-#if TARGET_OS_MACOS
-	#include <K/Misc/UPStrings.h>
-	#ifdef __MWERKS__
-		#pragma	warn_resultnotused	off
-	#endif
-	#include <OSUtils.h>
-	#include <stdio.h>
-
-	#ifdef __MWERKS__
-		#pragma	warn_resultnotused	on
-	#endif
-#endif
-
 #if TARGET_OS_OPENSTEP
 	#include <stdio.h>
 	#include <syslog.h>
@@ -280,14 +267,6 @@
 						"DebugStr - %s (%s:%i)",			\
 						cstr, __FILE__, __LINE__ );			\
 				(void) ::kill( ::getpid(), SIGINT );		\
-			}
-	#elif TARGET_OS_MAC
-		// DebugStr existe mais prend une PStr.
-		#define KDEBUGSTR( cstr ) 							\
-			{												\
-				Str255 theDebugStr;							\
-				UPStrings::C2PStrCopy( theDebugStr, cstr );	\
-				::DebugStr( theDebugStr );					\
 			}
 	#elif TARGET_OS_WIN32
 		// DebugStr n'existe pas. On utilise fprintf
