@@ -4,12 +4,12 @@
 # Projet:			(Desktop Connection Library)
 # Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 #
-# CrŽŽ le:			2/5/2003
+# Créé le:			2/5/2003
 # Tabulation:		4 espaces
 #
 # Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits rŽservŽs pour tous pays.
-# Licence:			Licence RŽflexive Kallisys
+# 					Tous droits réservés pour tous pays.
+# Licence:			Licence Réflexive Kallisys
 # 					http://www.kallisys.org/reflexive/
 # ===========
 # $Id: test-ns-arraysandframes.sh,v 1.1 2004/03/21 16:09:30 paul Exp $

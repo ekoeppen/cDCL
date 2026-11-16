@@ -3,12 +3,12 @@
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// CrŽŽ le:			17/6/2003
+// Créé le:			17/6/2003
 // Tabulation:		4 espaces
 // 
 // Copyright:		© 2003 by Paul Guyot.
-// 					Tous droits rŽservŽs pour tous pays.
-// Licence:			Licence RŽflexive Kallisys
+// 					Tous droits réservés pour tous pays.
+// Licence:			Licence Réflexive Kallisys
 // 					http://www.kallisys.org/reflexive/
 // ===========
 // $Id: TTestApplication.cp,v 1.4 2004/05/01 21:40:54 paul Exp $

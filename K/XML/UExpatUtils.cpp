@@ -3,7 +3,7 @@
 // Projet:			K/XML
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
-// CrŽŽ le:			4/2/2004
+// Créé le:			4/2/2004
 // Tabulation:		4 espaces
 //
 // ***** BEGIN LICENSE BLOCK *****
@@ -54,7 +54,7 @@ UExpatUtils::GetAttrValue(
 	const XML_Char* theResult = nil;
 	const XML_Char** theAttributes = inAttributes;
 	
-	// ItŽration dans la liste.
+	// Itération dans la liste.
 	while (*theAttributes != nil)
 	{
 		if (::strcmp( *theAttributes, inAttrName ) == 0)
