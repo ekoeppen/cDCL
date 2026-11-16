@@ -98,7 +98,14 @@ public:
 		kSendString 		= FOUR_CHAR_CODE('kbds'),	///< Commande pour envoyer une chaîne.
 										///< Le paramètre est une chaîne.
 										///< L'objet doit être un TDCLAppKbdString
-		kSynchronize	 	= FOUR_CHAR_CODE('sync')	///< Commande pour synchroniser.
+		kSynchronize	 	= FOUR_CHAR_CODE('sync'),	///< Commande pour synchroniser.
+
+		// Bus / session transport events.
+		kSessionAccepted	= FOUR_CHAR_CODE('sacc'),	///< Accepted transport session (server).
+		kLinkDisconnected	= FOUR_CHAR_CODE('ldsc'),	///< Link disconnected notification (server).
+		kBytesReceived		= FOUR_CHAR_CODE('bytr'),	///< Inbound raw bytes for a session (link).
+		kSessionClosed		= FOUR_CHAR_CODE('scls'),	///< Transport closed cleanly (link).
+		kTransportError		= FOUR_CHAR_CODE('terr')	///< Transport failure with exception (link).
 	};
 
 	///

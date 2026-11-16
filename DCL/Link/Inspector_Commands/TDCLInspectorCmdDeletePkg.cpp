@@ -38,7 +38,6 @@
 #include <K/Unicode/UUTF16CStr.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNoData.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdGeneric.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>

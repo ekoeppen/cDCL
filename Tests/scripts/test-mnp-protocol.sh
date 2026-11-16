@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test TDCLMNPPipe's private MNP protocol state machine and codec
+# Test TMNPProtocol state machine and codec
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 

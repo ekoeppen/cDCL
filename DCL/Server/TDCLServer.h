@@ -20,19 +20,11 @@
 //
 // The Original Code is TDCLServer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
-// Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
-//
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLServer.h,v 1.4 2004/11/24 14:09:08 paul Exp $
-// ===========
 
 #ifndef __TDCLSERVER__
 #define __TDCLSERVER__
@@ -42,13 +34,16 @@
 // C++
 #include <atomic>
 #include <condition_variable>
+#include <memory>
 #include <mutex>
+#include <stop_token>
 #include <thread>
 
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
+#include <DCL/Interfaces/TDCLEventBus.h>
 #include <DCL/Interfaces/TDCLEventQueue.h>
 
 class TDCLLink;
@@ -93,8 +88,7 @@ public:
 	/// Destructor.
 	/// Kills the server if it is running.
 	///
-	virtual	~TDCLServer( void );
-
+	virtual ~TDCLServer( void );
 
 	///
 	/// Server states.
@@ -105,7 +99,7 @@ public:
 		kRunning,	///< State once DoStart has finished.
 		kStopping,	///< Stopping.
 		kUnknown	///< Unknown state (in case of exception)
-	};	
+	};
 
 	///
 	/// Starts the server.
@@ -134,7 +128,7 @@ public:
 	/// Returns immediately with \c false if called from inside the server worker itself.
 	///
 	bool				Wait( void );
-	
+
 	///
 	/// Forcefully terminates all connections (synchronous operation).
 	/// Does nothing if the server is not running.
@@ -188,9 +182,12 @@ public:
 	/// \param inException	the exception if it is a TDCLException,
 	///			\c nil otherwise.
 	///
-	virtual void 		HandleCommLayerException(
+	virtual void		HandleCommLayerException(
 							TDCLCommLayer* inCommLayer,
 							TDCLException* inException );
+
+	TDCLSessionBus*					GetSessionBus( void ) noexcept { return mSessionBus.get(); }
+	const std::shared_ptr<TDCLSessionBus>& GetSharedSessionBus( void ) const noexcept { return mSessionBus; }
 
 protected:
 	///
@@ -205,9 +202,7 @@ protected:
 	///			will be thrown.
 	/// \return the new state of the server.
 	///
-	virtual EState		ProcessEvent(
-							TDCLEvent* inEvent,
-							Boolean* outProcessed );
+	virtual EState		ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed );
 
 	///
 	/// Method called when an exception is uncaught.
@@ -216,7 +211,7 @@ protected:
 	/// \param inException	the exception if it is a TDCLException,
 	///			\c nil otherwise.
 	///
-	virtual void 		HandleException( TDCLException* inException );
+	virtual void		HandleException( TDCLException* inException );
 
 	/// \name Server execution
 
@@ -228,19 +223,19 @@ protected:
 	virtual void		Run( void );
 
 	/// \name TDCLServer interface
-	
+
 	///
 	/// Starts listening.
 	/// This method is called when the server is started (from the server
 	/// thread).
 	///
-	virtual	void		DoStartListening( void ) = 0;
+	virtual void		DoStartListening( void ) = 0;
 
 	///
 	/// Stops the server.
 	///
-	virtual	void		DoStop( void ) = 0;
-	
+	virtual void		DoStop( void ) = 0;
+
 	///
 	/// Requests cooperative stop of objects managed by the subclass
 	/// before joining the server thread.
@@ -255,7 +250,7 @@ protected:
 	///
 	/// Forcefully closes all connections.
 	///
-	virtual	void		DoKill( void ) = 0;
+	virtual void		DoKill( void ) = 0;
 
 	///
 	/// Handles the arrival of a new connection.
@@ -264,8 +259,7 @@ protected:
 	/// \return the new state of the server.
 	/// \throws TDCLException if a problem occurred.
 	///
-	virtual EState		HandleIncomingConnection(
-								TDCLCommLayer* inCommLayer ) = 0;
+	virtual EState		HandleIncomingConnection( TDCLCommLayer* inCommLayer ) = 0;
 
 	///
 	/// Method called on the server thread to indicate that a link has been
@@ -275,13 +269,13 @@ protected:
 	/// \return the new state of the server.
 	/// \throws TDCLException if a problem occurred.
 	///
-	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink ) = 0;
+	virtual EState		HandleLinkDisconnection( TDCLLink* inLink ) = 0;
 
 	///
 	/// Method called by the server when nothing is happening.
 	/// It allows calling Idle on communication interfaces that need it.
 	///
-	virtual	void		DoIdle( void ) = 0;
+	virtual void		DoIdle( void ) = 0;
 
 	///
 	/// Acquires the server state mutex and checks that Start() has never been
@@ -293,49 +287,30 @@ protected:
 	///
 	[[nodiscard]] std::unique_lock<std::mutex>	AcquireConfigurationLock( void );
 
-	inline	TDCLApplication*	GetApplication( void )
-			{
-				return mApplication;
-			}
-	
-private:
-	///
-	/// Copy constructor intentionally unavailable.
-	///
-	/// \param inCopy		object to copy
-	///
-	TDCLServer( const TDCLServer& inCopy );
+	inline TDCLApplication*	GetApplication( void ) { return mApplication; }
 
-	///
-	/// Assignment operator intentionally unavailable.
-	///
-	/// \param inCopy		object to copy
-	///
-	TDCLServer& operator = ( const TDCLServer& inCopy );
+private:
+	TDCLServer( const TDCLServer& inCopy ) = delete;
+	TDCLServer& operator = ( const TDCLServer& inCopy ) = delete;
 
 	void				ThreadEntry( std::stop_token inStopToken );
 
 	/// \name Member variables
 
-	TDCLApplication*			mApplication;	///< Reference to the
-											///< application.
-	TDCLEventQueue				mEventQueue;	///< Server event queue.
-	std::mutex					mStateMutex;	///< Mutex protecting the state.
-	std::condition_variable		mKillCV;		///< Start/Kill synchronization.
-	std::mutex					mJoinMutex;		///< Mutex for Wait().
-	std::atomic<std::thread::id> mThreadId;		///< Active thread identifier.
-	std::thread::id				mKillThreadId;	///< Thread executing Kill().
-	std::jthread				mThread;		///< Server thread.
-	std::stop_token				mWorkerStopToken; ///< Current worker token.
-	EState						mState;			///< State.
-	bool						mHasStarted;	///< Whether Start() has been called.
+	TDCLApplication*				mApplication;	///< Reference to the application.
+	std::shared_ptr<TDCLSessionBus>	mSessionBus;
+	TDCLEventQueue					mEventQueue;	///< Server event queue.
+	std::mutex						mStateMutex;	///< Mutex protecting the state.
+	std::condition_variable			mKillCV;		///< Start/Kill synchronization.
+	std::mutex						mJoinMutex;		///< Mutex for Wait().
+	std::atomic<std::thread::id>	mThreadId;		///< Active thread identifier.
+	std::thread::id					mKillThreadId;	///< Thread executing Kill().
+	std::stop_source				mStopSource;
+	std::jthread					mThread;		///< Server thread.
+	std::stop_token					mWorkerStopToken; ///< Current worker token.
+	EState							mState;			///< State.
+	bool							mHasStarted;	///< Whether Start() has been called.
 };
 
 #endif
-		// __TDCLSERVER__
-
-// ============================================================= //
-// APL is a natural extension of assembler language programming; //
-// ...and is best for educational purposes.                      //
-//                 -- A. Perlis                                  //
-// ============================================================= //
+// __TDCLSERVER__

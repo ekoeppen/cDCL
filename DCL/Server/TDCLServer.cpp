@@ -1,5 +1,5 @@
 // ==============================
-// File:			TDCLServer.cp
+// File:			TDCLServer.cpp
 // Project:			Desktop Connection Library
 //
 // Created:			14/1/2002
@@ -18,21 +18,13 @@
 // for the specific language governing rights and limitations under the
 // License.
 //
-// The Original Code is TDCLServer.cp.
+// The Original Code is TDCLServer.cpp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
-// Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
-//
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLServer.cp,v 1.4 2004/11/24 14:09:08 paul Exp $
-// ===========
 
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Server/TDCLServer.h>
@@ -47,30 +39,21 @@
 #include <DCL/Interfaces/TDCLEvent.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
-// ------------------------------------------------------------------------- //
-//  * TDCLServer( TDCLApplication* )
-// ------------------------------------------------------------------------- //
 TDCLServer::TDCLServer( TDCLApplication* inApplication )
 	:
 		mApplication( inApplication ),
+		mSessionBus( std::make_shared<TDCLSessionBus>() ),
 		mThreadId(),
 		mKillThreadId(),
+		mStopSource(),
 		mState( kStopped ),
 		mHasStarted( false )
 {
 }
 
-// ------------------------------------------------------------------------- //
-//  * ~TDCLServer( void )
-// ------------------------------------------------------------------------- //
 TDCLServer::~TDCLServer( void )
 {
-	std::stop_source theStopSource;
-	{
-		std::lock_guard<std::mutex> lock( mStateMutex );
-		theStopSource = mThread.get_stop_source();
-	}
-	(void) theStopSource.request_stop();
+	(void) mStopSource.request_stop();
 	(void) Wait();
 }
 
@@ -112,9 +95,6 @@ TDCLServer::Wait( void )
 	return true;
 }
 
-// ------------------------------------------------------------------------- //
-//  * Start( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::Start( void )
 {
@@ -170,12 +150,14 @@ TDCLServer::Start( void )
 
 			mState = kStarting;
 			mEventQueue.Clear();
+			mStopSource = std::stop_source{};
+			std::stop_token token = mStopSource.get_token();
 
 			try {
 				mThread = std::jthread(
-					[ this ]( std::stop_token inStopToken )
+					[ this, token ]( std::stop_token )
 					{
-						ThreadEntry( std::move( inStopToken ) );
+						ThreadEntry( token );
 					} );
 				mHasStarted = true;
 			} catch ( ... ) {
@@ -187,9 +169,6 @@ TDCLServer::Start( void )
 	}
 }
 
-// ------------------------------------------------------------------------- //
-//  * Stop( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::Stop( void )
 {
@@ -199,12 +178,9 @@ TDCLServer::Stop( void )
 	{
 		mEventQueue.PostEvent(
 			new TDCLEvent( TDCLEvent::kServerEvent, TDCLEvent::kStopServer ) );
-	} // else: do nothing
+	}
 }
 
-// ------------------------------------------------------------------------- //
-//  * Kill( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::Kill( void )
 {
@@ -218,11 +194,10 @@ TDCLServer::Kill( void )
 	{
 		mState = kStopped;
 		mKillThreadId = std::this_thread::get_id();
-		std::stop_source theStopSource = mThread.get_stop_source();
 		lock.unlock();
 
 		try {
-			(void) theStopSource.request_stop();
+			(void) mStopSource.request_stop();
 			DoRequestStop();
 			(void) Wait();
 			DoKill();
@@ -231,7 +206,7 @@ TDCLServer::Kill( void )
 			mKillThreadId = std::thread::id();
 			mState = kUnknown;
 			mKillCV.notify_all();
-			throw;	// Rethrow.
+			throw;
 		}
 
 		std::lock_guard<std::mutex> doneLock( mStateMutex );
@@ -243,26 +218,17 @@ TDCLServer::Kill( void )
 	}
 }
 
-// ------------------------------------------------------------------------- //
-//  * DoRequestStop( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::DoRequestStop( void )
 {
 }
 
-// ------------------------------------------------------------------------- //
-//  * IsShutdownWorkerThread( void ) const
-// ------------------------------------------------------------------------- //
 bool
 TDCLServer::IsShutdownWorkerThread( void ) const
 {
 	return std::this_thread::get_id() == mThreadId.load();
 }
 
-// ------------------------------------------------------------------------- //
-//  * GetState( void )
-// ------------------------------------------------------------------------- //
 TDCLServer::EState
 TDCLServer::GetState( void )
 {
@@ -270,9 +236,6 @@ TDCLServer::GetState( void )
 	return mState;
 }
 
-// ------------------------------------------------------------------------- //
-//  * RequestPresent( TDCLCommLayer* )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
 {
@@ -282,9 +245,6 @@ TDCLServer::RequestPresent( TDCLCommLayer* inCommLayer )
 						inCommLayer ) );
 }
 
-// ------------------------------------------------------------------------- //
-//  * WaitingConnection( TDCLCommLayer* )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
 {
@@ -294,9 +254,6 @@ TDCLServer::WaitingConnection( TDCLCommLayer* inCommLayer )
 						 inCommLayer ) );
 }
 
-// ------------------------------------------------------------------------- //
-//  * Disconnected( TDCLLink* )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::Disconnected( TDCLLink* inLink )
 {
@@ -306,9 +263,6 @@ TDCLServer::Disconnected( TDCLLink* inLink )
 						inLink ) );
 }
 
-// ------------------------------------------------------------------------- //
-//  * Run( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::Run( void )
 {
@@ -326,13 +280,13 @@ TDCLServer::Run( void )
 			theState = mState;
 		}
 		theNextState = theState;
-		
+
 		switch ( theState )
 		{
 			case kStarting:
 				// Tell subclasses to start listening.
 				DoStartListening();
-				
+
 				// Next step is to actually wait.
 				theNextState = theStopToken.stop_requested() ? kStopped : kRunning;
 				break;
@@ -348,7 +302,7 @@ TDCLServer::Run( void )
 										TDCLEvent::kServerEventMask,
 										TDCLEventQueue::kForever,
 										theStopToken );
-					
+
 					if (theStopToken.stop_requested())
 					{
 						theNextState = kStopped;
@@ -360,7 +314,7 @@ TDCLServer::Run( void )
 						Boolean processed = false;
 						theNextState = ProcessEvent(
 										theNextEvent.Get(), &processed );
-						
+
 						if (!processed)
 						{
 							throw DCLBadParamError;
@@ -371,14 +325,14 @@ TDCLServer::Run( void )
 
 			case kStopping:
 				DoStop();
-			
-			case kStopped:	
-			case kUnknown:	
+
+			case kStopped:
+			case kUnknown:
 				theNextState = kStopped;
 				keepLooping = false;
 				break;
 		}
-		
+
 		if (theState != theNextState)
 		{
 			std::lock_guard<std::mutex> lock( mStateMutex );
@@ -393,9 +347,6 @@ TDCLServer::Run( void )
 	GetApplication()->ServerIsDown( this );
 }
 
-// ------------------------------------------------------------------------- //
-//  * HandleCommLayerException( TDCLCommLayer*, TDCLException* )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::HandleCommLayerException(
 							TDCLCommLayer* inCommLayer,
@@ -404,14 +355,11 @@ TDCLServer::HandleCommLayerException(
 	mApplication->HandleCommLayerException( inCommLayer, inException );
 }
 
-// ------------------------------------------------------------------------- //
-//  * ProcessEvent( TDCLEvent*, Boolean* )
-// ------------------------------------------------------------------------- //
 TDCLServer::EState
 TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 {
 	EState theNextState = kRunning;
-	
+
 	// What event did we receive?
 	TDCLEvent::EEventID theEventID = inEvent->GetEventID();
 
@@ -437,7 +385,7 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 			// A link was disconnected.
 			TDCLLink* theLink = (TDCLLink*) (inEvent->GetEventData());
 			theNextState = HandleLinkDisconnection( theLink );
-			
+
 			// Notify the application that the link is disconnected.
 			mApplication->Disconnected( theLink );
 			*outProcessed = true;
@@ -449,17 +397,14 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 			theNextState = kStopping;
 			*outProcessed = true;
 			break;
-		
+
 		default:
 			*outProcessed = false;
 	}
-	
+
 	return theNextState;
 }
 
-// ------------------------------------------------------------------------- //
-//  * HandleException( TDCLException* )
-// ------------------------------------------------------------------------- //
 void
 TDCLServer::HandleException( TDCLException* inException )
 {

@@ -9,15 +9,14 @@
 //
 // ===========
 //
-// Focused pure-protocol tests for TDCLMNPPipe's wire codec, parameter/frame
+// Focused pure-protocol tests for TMNPProtocol's wire codec, parameter/frame
 // validation matrices, 8-bit sequence wraparound, and hardware trace replay.
 // Blocking transport, timeout/stall, keepalive, and disconnect facade behavior
-// are covered through the public API in UTestMNPPipe and UTestMNPLinkLayer.
+// are covered through the public API in UTestMNPLinkLayer.
 
 #include "UTestMNPProtocol.h"
 
-#include <DCL/Communication_Layers/TDCLMNPPipe.h>
-#include "TTestMemoryPipe.h"
+#include <DCL/Communication_Layers/TMNPProtocol.h>
 
 #include <algorithm>
 #include <cstdint>
@@ -26,49 +25,24 @@
 #include <utility>
 #include <vector>
 
-// Minimal test-only access for pure event/codec verification without timers or threads.
-class TMNPPipeTestAccess : private TDCLMNPPipe
+// Direct test adapter for pure TMNPProtocol verification without timers or threads.
+class TMNPPipeTestAccess : public TMNPProtocol
 {
 public:
-	using TDCLMNPPipe::Bytes;
-	using TDCLMNPPipe::CanSubmit;
-	using TDCLMNPPipe::EFrameResult;
-	using TDCLMNPPipe::EncodeFrame;
-	using TDCLMNPPipe::EState;
-	using TDCLMNPPipe::kAwaitingPeerDisconnect;
-	using TDCLMNPPipe::kConnected;
-	using TDCLMNPPipe::kDisconnected;
-	using TDCLMNPPipe::kFailed;
-	using TDCLMNPPipe::kInFlight;
-	using TDCLMNPPipe::kListening;
-	using TDCLMNPPipe::kMaxFrameBodySize;
-	using TDCLMNPPipe::kReasonNegotiation;
-	using TDCLMNPPipe::kReasonProtocol;
-	using TDCLMNPPipe::kThrottled;
-	using TDCLMNPPipe::OnFrame;
-	using TDCLMNPPipe::PushByte;
-
-	TMNPPipeTestAccess( void ) : TDCLMNPPipe( new TUnusedPipe )
-	{
-	}
+	TMNPPipeTestAccess( void ) = default;
 
 	void
-	Start( void )
+	Disconnect( void )
 	{
-		Enter( kListening );
-	}
-	void
-	Disconnect( void ) override
-	{
-		Dispatch( kDisconnect );
+		RequestDisconnect();
 	}
 	void
 	Submit( const std::uint8_t* inData, std::size_t inSize )
 	{
-		mOutputBuffer.clear();
+		OutputBuffer().clear();
 		if ( inSize != 0 )
 		{
-			mOutputBuffer.assign( inData, inData + inSize );
+			OutputBuffer().assign( inData, inData + inSize );
 		}
 		SubmitOutputPayload();
 	}
@@ -80,76 +54,28 @@ public:
 	bool
 	TakeOutbound( Bytes& outFrame )
 	{
-		if ( mOutputFrames.empty() )
-		{
-			return false;
-		}
-		outFrame = std::move( mOutputFrames.front() );
-		mOutputFrames.pop_front();
-		return true;
+		return TakeOutboundFrame( outFrame );
 	}
 	EState
 	State( void ) const
 	{
-		return mState;
+		return GetState();
 	}
 	std::size_t
 	Available( void ) const
 	{
-		return mInputBuffer.size();
+		return AvailableInput();
 	}
 	std::uint8_t
 	LocalReason( void ) const
 	{
-		return mLocalReason;
+		return GetLocalReason();
 	}
 	const Bytes&
 	DecodedFrame( void ) const
 	{
-		return mFrameBody;
+		return GetDecodedFrame();
 	}
-
-private:
-	// Any accidental transport access makes the deterministic suite fail.
-	class TUnusedPipe : public TTestMemoryPipe
-	{
-	public:
-		void
-		Read( void*, KUInt32* ) override
-		{
-			std::abort();
-		}
-		void
-		Write( const void*, KUInt32* ) override
-		{
-			std::abort();
-		}
-		void
-		FlushOutput( void ) override
-		{
-			std::abort();
-		}
-		Boolean
-		BytesAvailable( void ) override
-		{
-			std::abort();
-		}
-		void
-		Disconnect( void ) override
-		{
-			std::abort();
-		}
-		long
-		GetTimeout( void ) override
-		{
-			std::abort();
-		}
-		TDCLCommLayer*
-		Connected( TDCLLink* ) override
-		{
-			std::abort();
-		}
-	};
 };
 
 namespace

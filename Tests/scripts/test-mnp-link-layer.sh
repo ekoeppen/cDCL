@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test TDCLLink over TDCLMNPPipe
+# Test TDCLLink over TMNPProtocol and TDCLSessionBus
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 

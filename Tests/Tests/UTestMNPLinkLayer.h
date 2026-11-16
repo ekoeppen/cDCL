@@ -13,8 +13,9 @@
 #define _UTESTMNPLINKLAYER_H
 
 ///
-/// Tests TDCLLink over a TDCLMNPPipe: a peer LD consumed while checking for
-/// data ends the link, and a protocol error reaches HandleLinkException.
+/// Tests TDCLLink over TMNPProtocol and TDCLSessionBus: handshake, stalls,
+/// keepalive, segmentation, credit throttling, clean disconnect, peer LD,
+/// cancellation, and protocol/transport error propagation.
 ///
 class UTestMNPLinkLayer
 {

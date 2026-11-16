@@ -27,7 +27,8 @@
 
 // DCL
 #include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
-#include <DCL/Communication_Layers/TDCLPipe.h>
+#include <DCL/Interfaces/TDCLEventBus.h>
+#include <DCL/Interfaces/TDCLEventQueue.h>
 #include <DCL/Exceptions/Errors/TDCLBadParamError.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/TDCLUserCancelledException.h>
@@ -242,7 +243,7 @@ public:
 		:
 			TDCLServer( inApp ),
 			mCommLayer( inCommLayer ),
-			mAcceptedPipe(),
+			mAcceptedSession(),
 			mRefuseCount( 0 ),
 			mRefusedCount( 0 )
 	{
@@ -263,21 +264,21 @@ public:
 		} );
 	}
 
-	std::unique_ptr<TDCLPipe> WaitForAcceptedPipe( void )
+	TDCLSessionId WaitForAcceptedSession( void )
 	{
 		std::unique_lock<std::mutex> lock( mMutex );
-		mCV.wait( lock, [this] { return mAcceptedPipe != nil; } );
-		return std::move( mAcceptedPipe );
+		mCV.wait( lock, [this] { return mAcceptedSession.IsValid(); } );
+		return std::exchange( mAcceptedSession, TDCLSessionId{} );
 	}
 
-	std::unique_ptr<TDCLPipe> WaitForAcceptedPipeFor( std::chrono::milliseconds inTimeout )
+	TDCLSessionId WaitForAcceptedSessionFor( std::chrono::milliseconds inTimeout )
 	{
 		std::unique_lock<std::mutex> lock( mMutex );
-		if (!mCV.wait_for( lock, inTimeout, [this] { return mAcceptedPipe != nil; } ))
+		if (!mCV.wait_for( lock, inTimeout, [this] { return mAcceptedSession.IsValid(); } ))
 		{
-			return nil;
+			return {};
 		}
-		return std::move( mAcceptedPipe );
+		return std::exchange( mAcceptedSession, TDCLSessionId{} );
 	}
 
 protected:
@@ -321,10 +322,10 @@ protected:
 			mCV.notify_all();
 			return GetState();
 		}
-		std::unique_ptr<TDCLPipe> thePipe = inCommLayer->Accept();
+		TDCLSessionId theSession = inCommLayer->AcceptSession();
 		{
 			std::lock_guard<std::mutex> lock( mMutex );
-			mAcceptedPipe = std::move( thePipe );
+			mAcceptedSession = theSession;
 		}
 		mCV.notify_all();
 		return GetState();
@@ -339,7 +340,7 @@ private:
 	TDCLCommLayer* mCommLayer;
 	std::mutex mMutex;
 	std::condition_variable mCV;
-	std::unique_ptr<TDCLPipe> mAcceptedPipe;
+	TDCLSessionId mAcceptedSession;
 	int mRefuseCount;
 	int mRefusedCount;
 };
@@ -608,32 +609,32 @@ UTestCommLayers::CancelCommLayers( void )
 			return;
 		}
 
-		std::unique_ptr<TDCLPipe> thePipe = theServer.WaitForAcceptedPipe();
-		thePipe->SetTimeout( 30 );
-		TDCLPipe* thePipePtr = thePipe.get();
-		std::thread canceller( [thePipePtr] {
+		TDCLSessionId sid = theServer.WaitForAcceptedSession();
+		TDCLEventQueue queue;
+		auto upstream = theServer.GetSessionBus()->BindUpstream( sid, &queue );
+		std::stop_source stopSource;
+		std::thread canceller( [&stopSource] {
 			std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
-			(void)thePipePtr->RequestStop();
+			(void)stopSource.request_stop();
 		} );
 
 		bool gotCancelled = false;
 		auto start = std::chrono::steady_clock::now();
-		try
-		{
-			char buf[16];
-			KUInt32 count = sizeof( buf );
-			thePipe->Read( buf, &count );
-		}
-		catch ( TDCLUserCancelledException& )
+		TDCLEvent* ev = queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds( 30000 ), stopSource.get_token() );
+		if ( ev == nullptr && stopSource.stop_requested() )
 		{
 			gotCancelled = true;
+		}
+		else
+		{
+			delete ev;
 		}
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
 			std::chrono::steady_clock::now() - start );
 		canceller.join();
 
-		thePipe->Disconnect();
-		thePipe.reset();
+		upstream.Reset();
+		theServer.GetSessionBus()->CloseSession( sid );
 #if TARGET_OS_WIN32
 		::closesocket( clientSock );
 #else
@@ -749,37 +750,36 @@ UTestCommLayers::CancelCommLayers( void )
 			const char triggerByte = 'A';
 			(void)::write( masterFD, &triggerByte, 1 );
 
-			std::unique_ptr<TDCLPipe> thePipe = theServer.WaitForAcceptedPipe();
-			char discard;
-			KUInt32 oneByte = 1;
-			thePipe->SetTimeout( 5 );
-			thePipe->Read( &discard, &oneByte );
+			TDCLSessionId sid = theServer.WaitForAcceptedSession();
+			TDCLEventQueue queue;
+			auto upstream = theServer.GetSessionBus()->BindUpstream( sid, &queue );
+			std::stop_source dummyStop;
+			std::unique_ptr<TDCLEvent> firstEv( queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds( 5000 ), dummyStop.get_token() ) );
+			(void)firstEv;
 
-			thePipe->SetTimeout( 30 );
-			TDCLPipe* thePipePtr = thePipe.get();
-			std::thread canceller( [thePipePtr] {
+			std::stop_source stopSource;
+			std::thread canceller( [&stopSource] {
 				std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
-				(void)thePipePtr->RequestStop();
+				(void)stopSource.request_stop();
 			} );
 
 			bool gotCancelled = false;
 			auto start = std::chrono::steady_clock::now();
-			try
-			{
-				char buf[16];
-				KUInt32 count = sizeof( buf );
-				thePipe->Read( buf, &count );
-			}
-			catch ( TDCLUserCancelledException& )
+			TDCLEvent* ev = queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds( 30000 ), stopSource.get_token() );
+			if ( ev == nullptr && stopSource.stop_requested() )
 			{
 				gotCancelled = true;
+			}
+			else
+			{
+				delete ev;
 			}
 			auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
 				std::chrono::steady_clock::now() - start );
 			canceller.join();
 
-			thePipe->Disconnect();
-			thePipe.reset();
+			upstream.Reset();
+			theServer.GetSessionBus()->CloseSession( sid );
 			theServer.Stop();
 			theApp.WaitUntilDown();
 
@@ -1007,39 +1007,44 @@ UTestCommLayers::CancelCommLayers( void )
 
 			// 8a. Call DoRefuse() -> Reset() while Select() is actively blocked in WaitReady().
 			std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
-			theSerial.DoRefuse();
+			theSerial.Refuse();
 
 			const char b1 = 'B';
 			(void)::write( masterFD, &b1, 1 );
-			std::unique_ptr<TDCLPipe> pipe1 = theServer.WaitForAcceptedPipeFor( std::chrono::milliseconds( 2000 ) );
-			if ( pipe1 )
+			auto readOneByte = [&]( TDCLSessionId sid, char& outByte ) -> bool {
+				TDCLEventQueue queue;
+				auto upstream = theServer.GetSessionBus()->BindUpstream( sid, &queue );
+				std::stop_source ss;
+				std::unique_ptr<TDCLEvent> ev( queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds( 2000 ), ss.get_token() ) );
+				bool ok = false;
+				if ( ev && ev->GetEventID() == TDCLEvent::kBytesReceived )
+				{
+					auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( ev.get() );
+					if ( !typed->GetPayload().bytes.empty() )
+					{
+						outByte = static_cast<char>( typed->GetPayload().bytes[0] );
+						ok = true;
+					}
+				}
+				upstream.Reset();
+				theServer.GetSessionBus()->CloseSession( sid );
+				return ok;
+			};
+
+			TDCLSessionId sid1 = theServer.WaitForAcceptedSessionFor( std::chrono::milliseconds( 2000 ) );
+			if ( sid1 )
 			{
 				char discard = 0;
-				KUInt32 oneByte = 1;
-				pipe1->SetTimeout( 5 );
-				pipe1->Read( &discard, &oneByte );
-				resetWhileSelectOK = ( discard == b1 );
-				// 8b. Disconnect() -> Disconnected() -> Reset() while server stays running.
-				TTestDockLink dummyLink( &theApp );
-				(void)pipe1->Connected( &dummyLink );
-				pipe1->Disconnect();
-				pipe1.reset();
+				resetWhileSelectOK = readOneByte( sid1, discard ) && ( discard == b1 );
 			}
 
 			const char b2 = 'C';
 			(void)::write( masterFD, &b2, 1 );
-			std::unique_ptr<TDCLPipe> pipe2 = theServer.WaitForAcceptedPipeFor( std::chrono::milliseconds( 2000 ) );
-			if ( pipe2 )
+			TDCLSessionId sid2 = theServer.WaitForAcceptedSessionFor( std::chrono::milliseconds( 2000 ) );
+			if ( sid2 )
 			{
 				char discard = 0;
-				KUInt32 oneByte = 1;
-				pipe2->SetTimeout( 5 );
-				pipe2->Read( &discard, &oneByte );
-				disconnectThenAcceptOK = ( discard == b2 );
-				TTestDockLink dummyLink( &theApp );
-				(void)pipe2->Connected( &dummyLink );
-				pipe2->Disconnect();
-				pipe2.reset();
+				disconnectThenAcceptOK = readOneByte( sid2, discard ) && ( discard == b2 );
 			}
 
 			// 8c. Refuse an incoming connection via inCommLayer->Refuse() -> Reset(), then accept next.
@@ -1050,18 +1055,11 @@ UTestCommLayers::CancelCommLayers( void )
 			std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
 			const char b4 = 'E';
 			(void)::write( masterFD, &b4, 1 );
-			std::unique_ptr<TDCLPipe> pipe3 = theServer.WaitForAcceptedPipeFor( std::chrono::milliseconds( 2000 ) );
-			if ( refused && pipe3 )
+			TDCLSessionId sid3 = theServer.WaitForAcceptedSessionFor( std::chrono::milliseconds( 2000 ) );
+			if ( refused && sid3 )
 			{
 				char discard = 0;
-				KUInt32 oneByte = 1;
-				pipe3->SetTimeout( 5 );
-				pipe3->Read( &discard, &oneByte );
-				refuseThenAcceptOK = ( discard == b4 );
-				TTestDockLink dummyLink( &theApp );
-				(void)pipe3->Connected( &dummyLink );
-				pipe3->Disconnect();
-				pipe3.reset();
+				refuseThenAcceptOK = readOneByte( sid3, discard ) && ( discard == b4 );
 			}
 
 			theServer.Stop();
@@ -1086,7 +1084,7 @@ UTestCommLayers::CancelCommLayers( void )
 				bool threw = false;
 				try
 				{
-					theSerial.DoRefuse();
+					theSerial.Refuse();
 				}
 				catch ( TDCLException& )
 				{

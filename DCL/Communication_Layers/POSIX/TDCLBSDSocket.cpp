@@ -84,6 +84,33 @@ TDCLBSDSocket::IsAvailable( void )
 	return theResult;
 }
 
+TDCLSocket::TSocketOps
+TDCLBSDSocket::GetSocketOps( void ) const
+{
+	return TSocketOps{
+		[]( dcl_socket_t s ) { (void)::close( s ); },
+		[]( void ) { return errno; },
+		[]( int err ) {
+			return ( err == EINTR ) || ( err == EAGAIN )
+#if ( EWOULDBLOCK != EAGAIN )
+			       || ( err == EWOULDBLOCK )
+#endif
+			    ;
+		},
+		[]( int err ) { return err == EINTR; },
+		[]( int err ) -> std::exception_ptr {
+			TDCLBSDSocket tmp( 0 );
+			try { tmp.ThrowRecvError( err ); } catch ( ... ) { return std::current_exception(); }
+			return nullptr;
+		},
+		[]( int err ) -> std::exception_ptr {
+			TDCLBSDSocket tmp( 0 );
+			try { tmp.ThrowSendError( err ); } catch ( ... ) { return std::current_exception(); }
+			return nullptr;
+		}
+	};
+}
+
 void
 TDCLBSDSocket::CloseSocket( dcl_socket_t inSocket )
 {

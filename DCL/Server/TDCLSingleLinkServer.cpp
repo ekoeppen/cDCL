@@ -17,8 +17,8 @@
 //
 // The Original Code is TDCLSingleLinkServer.cpp.
 //
-// The Initial Developer of the Original Code is Paul Guyot.
-// Portions created by the Initial Developer are Copyright (C) 2002-2004 the
+// The Initial Developers of the Original Code are Paul Guyot.
+// Portions created by the Initial Developers are Copyright (C) 2002-2004 the
 // Initial Developer. All Rights Reserved.
 //
 // Contributor(s):
@@ -32,7 +32,6 @@
 
 // DCL
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Link/TDCLLink.h>
 
@@ -45,6 +44,11 @@ TDCLSingleLinkServer::TDCLSingleLinkServer( TDCLApplication* inApplication )
 
 TDCLSingleLinkServer::~TDCLSingleLinkServer( void )
 {
+	if ( mLink )
+	{
+		(void)mLink->RequestStop();
+		(void)mLink->Wait();
+	}
 }
 
 TDCLLink*
@@ -112,25 +116,23 @@ TDCLSingleLinkServer::HandleIncomingConnection( TDCLCommLayer* inCommLayer )
 			(void)mLink->Wait();
 		}
 
-		std::unique_ptr<TDCLPipe> thePipe = inCommLayer->Accept();
-		if ( !thePipe )
+		const TDCLSessionId sessionId = inCommLayer->AcceptSession();
+		if ( !sessionId )
 		{
 			return kRunning;
 		}
 
 		if ( mLink )
 		{
-			if ( !mLink->Connect( std::move( thePipe ), this ) )
+			if ( !mLink->Connect( sessionId, this, inCommLayer ) )
 			{
+				GetSessionBus()->CloseSession( sessionId );
 				throw DCLBadStateError;
 			}
 		}
 		else
 		{
-			try {
-				thePipe->Disconnect();
-			} catch ( ... ) {
-			}
+			GetSessionBus()->CloseSession( sessionId );
 		}
 	}
 

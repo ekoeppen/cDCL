@@ -47,7 +47,6 @@
 #include <K/Tests/KDebug.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLException.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
@@ -227,7 +226,7 @@ TDCLFullDockLink::ProcessDockCommand(
 			{
 				// Envoi de la commande pour acquiescer
 				TDCLDockCmdNoData theAckCmd( TDCLDockCommand::kDOpCanceledAck );
-				theAckCmd.SendCommand( GetPipe() );
+				theAckCmd.SendCommand( GetOutputStream() );
 				processed = true;
 			}
 			break;
@@ -320,20 +319,16 @@ TDCLFullDockLink::ProcessAppCommand(
 						TDCLDockCmdNoData theRequestCmd(
 								TDCLDockCommand::kDStartKeyboardPassthrough );
 
-						theRequestCmd.SendCommand( GetPipe() );
+						theRequestCmd.SendCommand( GetOutputStream() );
 					}
 
 					// Il doit répondre par kDStartKeyboardPassthrough
-					TDCLDockCommand* theNewtMessage =
-							TDCLDockCommand::ReceiveCommand(
-										GetPipe() );
+					auto theNewtMessage = ReceiveCommand();
 					if (theNewtMessage->GetCommand()
 							== TDCLDockCommand::kDStartKeyboardPassthrough)
 					{
-						delete theNewtMessage;	// Plus besoin.
 					} else {
 						// Je ne m'attendais pas à cette commande. On dégage.
-						delete theNewtMessage;
 						throw DCLUnexpDockCmd;
 					}
 
@@ -530,7 +525,7 @@ TDCLFullDockLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	{
 		TDCLDockCmdSingleLong theResultCmd(
 										TDCLDockCommand::kDResult, (KUInt32) -28031 );
-		theResultCmd.SendCommand( GetPipe() );
+		theResultCmd.SendCommand( GetOutputStream() );
 	} else {
 		mCurrentEngine = theEngine;
 		theEngine->InstallPackage( inPackage );
@@ -550,7 +545,7 @@ TDCLFullDockLink::DoSynchronize( void )
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
-		theResultCmd.SendCommand( GetPipe() );
+		theResultCmd.SendCommand( GetOutputStream() );
 	} else {
 		mCurrentEngine = theEngine;
 		theEngine->StartSynchronizing();
@@ -569,7 +564,7 @@ TDCLFullDockLink::DoUseKeyboard( void )
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
-		theResultCmd.SendCommand( GetPipe() );
+		theResultCmd.SendCommand( GetOutputStream() );
 	} else {
 		mCurrentEngine = theEngine;
 		theEngine->StartUsingKeyboard();
@@ -586,11 +581,11 @@ TDCLFullDockLink::SendRequest( KUInt32 inRequest )
 	{
 		TDCLDockCmdNoData theRequestCmd( inRequest );
 
-		theRequestCmd.SendCommand( GetPipe() );
+		theRequestCmd.SendCommand( GetOutputStream() );
 	}
 
 	// Récupération du kDResult (je filtre les commandes "hello").
-	KSInt32 theResult = TDCLDockCommand::GetResultCmd( GetPipe() );
+	KSInt32 theResult = GetResultCmd();
 	if (theResult)
 	{
 		// On relance l'erreur reçue du Newton.
@@ -610,7 +605,7 @@ TDCLFullDockLink::DoBrowse( const TDCLNSRef& inFileTypes )
 	if (theEngine == nil)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
-		theResultCmd.SendCommand( GetPipe() );
+		theResultCmd.SendCommand( GetOutputStream() );
 	} else {
 		mCurrentEngine = theEngine;
 		theEngine->StartBrowsing( inFileTypes );

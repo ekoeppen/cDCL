@@ -123,6 +123,27 @@ TDCLWin32Socket::SetListenSocketOptions( dcl_socket_t inSocket )
 	                     sizeof( theExclusiveFlag ) );
 }
 
+TDCLSocket::TSocketOps
+TDCLWin32Socket::GetSocketOps( void ) const
+{
+	return TSocketOps{
+		[]( dcl_socket_t s ) { ::closesocket( s ); },
+		[]( void ) { return ::WSAGetLastError(); },
+		[]( int err ) { return ( err == WSAEINTR ) || ( err == WSAEWOULDBLOCK ); },
+		[]( int err ) { return err == WSAEINTR; },
+		[]( int err ) -> std::exception_ptr {
+			TDCLWin32Socket tmp( 0 );
+			try { tmp.ThrowRecvError( err ); } catch ( ... ) { return std::current_exception(); }
+			return nullptr;
+		},
+		[]( int err ) -> std::exception_ptr {
+			TDCLWin32Socket tmp( 0 );
+			try { tmp.ThrowSendError( err ); } catch ( ... ) { return std::current_exception(); }
+			return nullptr;
+		}
+	};
+}
+
 void
 TDCLWin32Socket::CloseSocket( dcl_socket_t inSocket )
 {

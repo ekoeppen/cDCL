@@ -13,8 +13,8 @@
 #define _UTESTMNPPROTOCOL_H
 
 ///
-/// Deterministic tests of TDCLMNPPipe's private MNP state machine and codec,
-/// one per spec scenario, through the test-only friend access helper.
+/// Deterministic tests of TMNPProtocol's MNP state machine and wire codec,
+/// one per spec scenario.
 ///
 class UTestMNPProtocol
 {

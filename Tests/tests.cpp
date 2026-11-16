@@ -26,6 +26,7 @@
 // Tests
 #include "tests.h"
 #include "UTestCommLayers.h"
+#include "UTestEventBus.h"
 #include "UTestEventQueue.h"
 #include "UTestNS.h"
 #include "UTestNSOF.h"
@@ -37,7 +38,6 @@
 #include "UTestWakeableWait.h"
 #include "UTestXML.h"
 #include "UTestMNPProtocol.h"
-#include "UTestMNPPipe.h"
 #include "UTestMNPLinkLayer.h"
 
 // ------------------------------------------------------------------------- //
@@ -112,6 +112,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestPkg::IdemPotent();
 		} else if (::strcmp(inTestName, "threads-kthreads") == 0) {
 			UTestKThreads::RunTests();
+		} else if (::strcmp(inTestName, "event-bus") == 0) {
+			UTestEventBus::Run();
 		} else if (::strcmp(inTestName, "event-queue") == 0) {
 			UTestEventQueue::Run();
 		} else if (::strcmp(inTestName, "kmappedfile") == 0) {
@@ -128,8 +130,6 @@ test( const char* inTestName, const char* inArgument )
 			UTestXML::Classes();
 		} else if (::strcmp(inTestName, "mnp-protocol") == 0) {
 			UTestMNPProtocol::Run();
-		} else if (::strcmp(inTestName, "mnp-pipe") == 0) {
-			UTestMNPPipe::Run();
 		} else if (::strcmp(inTestName, "mnp-link-layer") == 0) {
 			UTestMNPLinkLayer::Run();
 		} else {

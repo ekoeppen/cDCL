@@ -16,13 +16,12 @@ Tests/UTestKThreads.cpp
 Tests/UTestKMappedFile.cpp
 	Tests/UTestKStreamsAndBuffers.cpp
 Tests/UTestTime.cpp
-Tests/UTestEventQueue.cpp
+Tests/UTestEventBus.cpp
+	Tests/UTestEventQueue.cpp
 Tests/UTestWakeableWait.cpp
 Tests/UTestXML.cpp
 Tests/UTestMNPProtocol.cpp
-Tests/UTestMNPPipe.cpp
 Tests/UTestMNPLinkLayer.cpp
-Tests/TTestMemoryPipe.cpp
 )
 
 # Code Coverage Configuration

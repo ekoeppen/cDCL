@@ -46,7 +46,6 @@
 #include <K/Tests/KDebug.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
@@ -141,7 +140,7 @@ TDCLSyncEngine::StartSynchronizing( void )
 	KTRACE( "StartSynchronizing" );
 
 	TDCLDockCmdNoData theGetSyncOptionCmd( TDCLDockCommand::kDGetSyncOptions );
-	theGetSyncOptionCmd.SendCommand( GetLink()->GetPipe() );
+	theGetSyncOptionCmd.SendCommand( GetLink()->GetOutputStream() );
 	
 	// Début.
 	mInterrupted = false;
@@ -311,7 +310,7 @@ TDCLSyncEngine::TransitionFromWFOptions(
 			// On demande le temps pour connaître l'heure du Newton.
 			TDCLDockCmdSingleLong theGetSyncTimeCmd(
 										TDCLDockCommand::kDLastSyncTime, 0 );
-			theGetSyncTimeCmd.SendCommand( GetLink()->GetPipe() );
+			theGetSyncTimeCmd.SendCommand( GetLink()->GetOutputStream() );
 			
 			theResult = kWFPreliminaryTime;
 			KTRACE( " -> kWFPreliminaryTime" );
@@ -330,7 +329,7 @@ TDCLSyncEngine::TransitionFromWFOptions(
 			// Demande de la liste des magasins.
 			TDCLDockCmdNoData theGetStoreNamesCmd(
 					TDCLDockCommand::kDGetStoreNames );
-			theGetStoreNamesCmd.SendCommand( GetLink()->GetPipe() );
+			theGetStoreNamesCmd.SendCommand( GetLink()->GetOutputStream() );
 
 			theResult = kWFStoreNames;
 			KTRACE( " -> kWFStoreNames" );
@@ -367,7 +366,7 @@ TDCLSyncEngine::TransitionFromWFStoreNames(
 		// On demande le temps pour connaître l'heure du Newton.
 		TDCLDockCmdSingleLong theGetSyncTimeCmd(
 									TDCLDockCommand::kDLastSyncTime, 0 );
-		theGetSyncTimeCmd.SendCommand( GetLink()->GetPipe() );
+		theGetSyncTimeCmd.SendCommand( GetLink()->GetOutputStream() );
 		
 		theResult = kWFPreliminaryTime;
 		KTRACE( " -> kWFPreliminaryTime" );
@@ -407,7 +406,7 @@ TDCLSyncEngine::TransitionFromWFPreliminaryTime(
 			TDCLDockCmdNSObject theSetStoreCmd(
 									TDCLDockCommand::kDSetCurrentStore,
 									mStores->Get( mStoreIndex ));
-			theSetStoreCmd.SendCommand( GetLink()->GetPipe() );
+			theSetStoreCmd.SendCommand( GetLink()->GetOutputStream() );
 			
 			theResult = kWFSetStoreResult;
 			KTRACE( " -> kWFSetStoreResult" );
@@ -453,7 +452,7 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult(
 			
 			// Récupération des informations sur les paquets.
 			TDCLDockCmdNoData theGetPacakageIDsCmd( TDCLDockCommand::kDGetPackageIDs );
-			theGetPacakageIDsCmd.SendCommand( GetLink()->GetPipe() );
+			theGetPacakageIDsCmd.SendCommand( GetLink()->GetOutputStream() );
 			theResult = kWFPackageIDs;
 			KTRACE( " -> kWFPackageIDs" );
 		}
@@ -534,7 +533,7 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 					TDCLDockCommand::kDLastSyncTime,
 					theLastSyncDate
 					 );
-			theGetSyncTimeCmd.SendCommand( GetLink()->GetPipe() );
+			theGetSyncTimeCmd.SendCommand( GetLink()->GetOutputStream() );
 			
 			theResult = kWFStoreSyncTime;
 			KTRACE( " -> kWFStoreSyncTime" );
@@ -597,7 +596,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 				TDCLDockCmdNSObject theAddEntryCmd(
 							TDCLDockCommand::kDAddEntry,
 							theNewEntry );
-				theAddEntryCmd.SendCommand( GetLink()->GetPipe() );
+				theAddEntryCmd.SendCommand( GetLink()->GetOutputStream() );
 				theResult = kWFAddedID;
 				KTRACE( " -> kWFAddedID" );
 			}
@@ -637,7 +636,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 			
 			// On demande la liste des entrées au Newton.
 			TDCLDockCmdNoData theGetSoupsCmd( TDCLDockCommand::kDGetSoupIDs );
-			theGetSoupsCmd.SendCommand( GetLink()->GetPipe() );
+			theGetSoupsCmd.SendCommand( GetLink()->GetOutputStream() );
 
 			theResult = kWFSoupIDs;
 			KTRACE( " -> kWFSoupIDs" );
@@ -685,7 +684,7 @@ TDCLSyncEngine::TransitionFromWFSoupIDs(
 		{
 			// On demande la liste des entrées qui ont changé.
 			TDCLDockCmdNoData theGetSoupsCmd( TDCLDockCommand::kDGetChangedIDs );
-			theGetSoupsCmd.SendCommand( GetLink()->GetPipe() );
+			theGetSoupsCmd.SendCommand( GetLink()->GetOutputStream() );
 
 			theResult = kWFChangedIDs;
 			KTRACE( " -> kWFChangedIDs" );
@@ -888,7 +887,7 @@ TDCLSyncEngine::TransitionFromWFAddedID(
 			TDCLDockCmdNSObject theAddEntryCmd(
 						TDCLDockCommand::kDAddEntry,
 						theNewEntry );
-			theAddEntryCmd.SendCommand( GetLink()->GetPipe() );
+			theAddEntryCmd.SendCommand( GetLink()->GetOutputStream() );
 			theResult = kWFAddedID;
 			KTRACE( " -> kWFAddedID" );
 		}
@@ -915,7 +914,7 @@ TDCLSyncEngine::TransitionFromInterrupted(
 	KTRACE( "Transition: kInterrupted ->" );
 	
 	TDCLDockCmdNoData theOpCompleteCmd( TDCLDockCommand::kDOperationDone );
-	theOpCompleteCmd.SendCommand( GetLink()->GetPipe() );
+	theOpCompleteCmd.SendCommand( GetLink()->GetOutputStream() );
 	KTRACE( " -> kEnd" );
 
 	return kEnd;
@@ -997,7 +996,7 @@ TDCLSyncEngine::SyncNextSource( void )
 			// la commande kDSyncResults, donc on envoie kDOperationDone.
 			TDCLDockCmdNoData theOpCompleteCmd(
 									TDCLDockCommand::kDOperationDone );
-			theOpCompleteCmd.SendCommand( GetLink()->GetPipe() );
+			theOpCompleteCmd.SendCommand( GetLink()->GetOutputStream() );
 			break;
 		}
 		
@@ -1069,7 +1068,7 @@ TDCLSyncEngine::SyncNextSource( void )
 				TDCLDockCmdNSObject theSetStoreCmd(
 										TDCLDockCommand::kDSetCurrentStore,
 										mStores->Get( mStoreIndex ));
-				theSetStoreCmd.SendCommand( GetLink()->GetPipe() );
+				theSetStoreCmd.SendCommand( GetLink()->GetOutputStream() );
 				
 				theResult = kWFSetStoreResult2;
 				KTRACE( " -> kWFSetStoreResult2" );
@@ -1101,7 +1100,7 @@ TDCLSyncEngine::SyncNextSoup( void )
 		// On synchronise cette soupe.
 		TDCLDockCmdCString theSetSoupGetInfoCmd(
 				TDCLDockCommand::kDSetSoupGetInfo, theSoupName );
-		theSetSoupGetInfoCmd.SendCommand( GetLink()->GetPipe() );
+		theSetSoupGetInfoCmd.SendCommand( GetLink()->GetOutputStream() );
 	
 		theResult = kWFSoupInfo;
 		KTRACE( " -> kWFSoupInfo" );
@@ -1124,7 +1123,7 @@ TDCLSyncEngine::SyncNextSoup( void )
 				TDCLDockCmdNSObject theSetStoreCmd(
 									TDCLDockCommand::kDSetCurrentStore,
 									mStores->Get( mStoreIndex ));
-				theSetStoreCmd.SendCommand( GetLink()->GetPipe() );
+				theSetStoreCmd.SendCommand( GetLink()->GetOutputStream() );
 			
 				theResult = kWFSetStoreResult2;
 				KTRACE( " -> kWFSetStoreResult2" );
@@ -1133,7 +1132,7 @@ TDCLSyncEngine::SyncNextSoup( void )
 				mAddingEntries = true;
 				TDCLDockCmdNoData theSetStoreCmd(
 									TDCLDockCommand::kDSetStoreToDefault );
-				theSetStoreCmd.SendCommand( GetLink()->GetPipe() );
+				theSetStoreCmd.SendCommand( GetLink()->GetOutputStream() );
 			
 				theResult = kWFSetStoreToDefaultResult;
 				KTRACE( " -> kWFSetStoreToDefaultResult" );
@@ -1172,7 +1171,7 @@ TDCLSyncEngine::FetchNextEntry( void )
 			TDCLDockCmdSingleLong theReturnEntryCmd(
 							TDCLDockCommand::kDReturnEntry,
 							(KUInt32) theID );
-			theReturnEntryCmd.SendCommand( GetLink()->GetPipe() );
+			theReturnEntryCmd.SendCommand( GetLink()->GetOutputStream() );
 			theResult = kWFEntry;
 			KTRACE( " -> kWFEntry" );
 			break;
@@ -1272,7 +1271,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 							TDCLDockCmdNSObject theChangedCmd(
 										TDCLDockCommand::kDChangedEntry,
 										theEntry );
-							theChangedCmd.SendCommand( GetLink()->GetPipe() );
+							theChangedCmd.SendCommand( GetLink()->GetOutputStream() );
 							theResult = kWFModifiedResult;
 							KTRACE( " -> kWFModifiedResult" );
 							stateChanged = true;
@@ -1290,7 +1289,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 							TDCLDockCmdArray theDeleteCommand(
 								TDCLDockCommand::kDDeleteEntries, &theID, 1 );
 							theDeleteCommand.SendCommand(
-								GetLink()->GetPipe() );
+								GetLink()->GetOutputStream() );
 							theResult = kWFModifiedResult;
 							KTRACE( " -> kWFModifiedResult" );
 							stateChanged = true;

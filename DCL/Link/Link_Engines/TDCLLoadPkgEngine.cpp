@@ -38,7 +38,6 @@
 #include <DCL/Link/Link_Engines/TDCLLoadPkgEngine.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Link/TDCLFullDockLink.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdLoadPkg.h>
@@ -70,7 +69,7 @@ TDCLLoadPkgEngine::InstallPackage(
 		TDCLDockCmdLoadPkg theLoadPackageMessage( inPackage );
 
 		theLoadPackageMessage.SendCommand(
-									GetLink()->GetPipe(), ProgressFunc, this );
+									GetLink()->GetOutputStream(), ProgressFunc, this );
 	}
 }
 

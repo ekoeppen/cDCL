@@ -47,7 +47,6 @@
 #include <K/Misc/TSmartPtr.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLBadDockCmdException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
@@ -86,7 +85,7 @@ TDCLDockLink::DoConnect( void )
 	TDCLLink::DoConnect();
 	
 	// Ouverture de la session.
-	TSmartPtr<TDCLDockCommand> theNewtMessage;
+	std::unique_ptr<TDCLDockCommand> theNewtMessage;
 	
 	KUInt32 theChallenge[2];
 
@@ -137,14 +136,14 @@ TDCLDockLink::DoConnect( void )
 																->GetKind() );
 		
 		// Envoi.
-		theDesktopInfoMessage.SendCommand( GetPipe() );
+		theDesktopInfoMessage.SendCommand( GetOutputStream() );
 	}
 	
 	KUInt32 theNewtonChallenge[2];
 	
 	// Réception de kDNewtonInfo
 	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
+		theNewtMessage = ReceiveCommand();
 
 		// Vérification que c'est bien une commande kDNewtonName.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDNewtonInfo)
@@ -159,14 +158,13 @@ TDCLDockLink::DoConnect( void )
 
 		// C'est bien une structure TDCLDockCmdNewtonInfo
 		TDCLDockCmdNewtonInfo* theNewtonInfo =
-			(TDCLDockCmdNewtonInfo*) theNewtMessage.Get();
+			(TDCLDockCmdNewtonInfo*) theNewtMessage.get();
 		
 		// Je sauvegarde la clef pour le DES.
 		theNewtonChallenge[0] = theNewtonInfo->GetChallenge()[0];
 		theNewtonChallenge[1] = theNewtonInfo->GetChallenge()[1];
 		
 		// Libération du message.
-		theNewtMessage.Delete();
 	}
 
 	// Envoi de kDWhichIcons.
@@ -176,12 +174,12 @@ TDCLDockLink::DoConnect( void )
 			TDCLDockCommand::kDWhichIcons, mIcons );
 
 		// Envoi.
-		theWhichIconMessage.SendCommand( GetPipe() );
+		theWhichIconMessage.SendCommand( GetOutputStream() );
 	}
 	
 	// Réception de kDResult.
 	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
+		theNewtMessage = ReceiveCommand();
 
 		// Vérification que c'est bien une commande kDResult.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDResult)
@@ -192,7 +190,7 @@ TDCLDockLink::DoConnect( void )
 
 		// C'est bien une structure	TDCLDockCmdSingleLong
 		TDCLDockCmdSingleLong* theResult =
-			(TDCLDockCmdSingleLong*) theNewtMessage.Get();
+			(TDCLDockCmdSingleLong*) theNewtMessage.get();
 		
 		// On lève une exception si le code n'est pas 0.
 		KSInt32 theResultInt = (KSInt32) theResult->GetLong();
@@ -202,14 +200,13 @@ TDCLDockLink::DoConnect( void )
 		}
 		
 		// Libération.
-		theNewtMessage.Delete();
 	}
 
 	// Envoi de kDSetTimeout.
 	{
 		// Récupération de la temporisation de l'interface de
 		// communication.
-		long theTimeout = GetPipe()->GetTimeout();
+		long theTimeout = GetTimeout();
 		if (theTimeout < 0)
 		{
 			// Valeur par défaut.
@@ -221,7 +218,7 @@ TDCLDockLink::DoConnect( void )
 			TDCLDockCommand::kDSetTimeout, (KUInt32) theTimeout );
 
 		// Envoi.
-		theSetTimeoutMessage.SendCommand( GetPipe() );
+		theSetTimeoutMessage.SendCommand( GetOutputStream() );
 	}
 	
 	// Récupération de la commande kDPassword.
@@ -231,7 +228,7 @@ TDCLDockLink::DoConnect( void )
 		
 		for (indexAttempts = 0; indexAttempts < 3; indexAttempts++)
 		{
-			theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
+			theNewtMessage = ReceiveCommand();
 
 			// Vérification que c'est bien une commande kDPassword.
 			if (theNewtMessage->GetCommand() != TDCLDockCommand::kDPassword)
@@ -241,12 +238,11 @@ TDCLDockLink::DoConnect( void )
 
 			// C'est bien une structure TDCLDockCmdPassword.
 			TDCLDockCmdPassword* thePassword =
-				(TDCLDockCmdPassword*) theNewtMessage.Get();
+				(TDCLDockCmdPassword*) theNewtMessage.get();
 		
 			// Je vérifie le mot de passe.
 			Boolean correct =
 				thePassword->VerifyPassword( theChallenge, GetPassword() );
-			theNewtMessage.Delete();	// Libération.
 			
 			if (correct)
 			{
@@ -261,14 +257,14 @@ TDCLDockLink::DoConnect( void )
 										TDCLDockCommand::kDResult,
 										TDCLDockCommand::kRetryPassword_Err );
 
-				theRetryPasswordCmd.SendCommand( GetPipe() );
+				theRetryPasswordCmd.SendCommand( GetOutputStream() );
 			} else {
 				// Envoi de kBadPassword_Err
 				TDCLDockCmdSingleLong theRetryPasswordCmd(
 										TDCLDockCommand::kDResult,
 										TDCLDockCommand::kBadPassword_Err );
 
-				theRetryPasswordCmd.SendCommand( GetPipe() );
+				theRetryPasswordCmd.SendCommand( GetOutputStream() );
 
 #warning fix this?
 				throw DCLBadDockCmd;
@@ -281,7 +277,7 @@ TDCLDockLink::DoConnect( void )
 		TDCLDockCmdPassword thePasswordCmd(
 										theNewtonChallenge, GetPassword() );
 
-		thePasswordCmd.SendCommand( GetPipe() );
+		thePasswordCmd.SendCommand( GetOutputStream() );
 	}
 }
 

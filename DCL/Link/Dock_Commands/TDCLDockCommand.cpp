@@ -46,7 +46,6 @@
 #include <K/Tests/KDebug.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdArray.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdGeneric.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNewtonInfo.h>
@@ -326,47 +325,6 @@ TDCLDockCommand::ReceiveCommand(
 	} // if (thePaddedLength == 0) ... else
 	
 	return theCommandObject;
-}
-
-// ------------------------------------------------------------------------- //
-//  * GetResultCmd( TDCLPipe* )
-// ------------------------------------------------------------------------- //
-KSInt32
-TDCLDockCommand::GetResultCmd( TDCLPipe* inPipe )
-{
-	KSInt32 theResult = 0;
-	
-	do	// Loop to grab all incoming commands.
-	{
-		// Get command.
-		TDCLDockCommand* theNewtMessage = ReceiveCommand( inPipe );
-
-		if (theNewtMessage->GetCommand() == TDCLDockCommand::kDHello)
-		{
-			// It's a kDHello, continue.
-			delete theNewtMessage;	// I no longer need it.
-			
-		} else if (theNewtMessage->GetCommand() == TDCLDockCommand::kDResult) {
-		
-			// It's a kDResult, process it and get out.
-			TDCLDockCmdSingleLong* theResultCmd =
-						(TDCLDockCmdSingleLong*) theNewtMessage;
-			theResult = (KSInt32) theResultCmd->GetLong();
-		
-			delete theNewtMessage;	// I no longer need it.
-			break;	// Get out of the loop.
-			
-		} else {
-			// It's not what I expected. Get out.
-	
-			delete theNewtMessage;
-			throw DCLUnexpDockCmd;
-		}
-		
-		// Do I have any command left?
-	} while( inPipe->BytesAvailable() );
-	
-	return theResult;
 }
 
 // ------------------------------------------------------------------------- //

@@ -41,7 +41,6 @@
 #include <K/Unicode/UUTF16CStr.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Link/TDCLFullDockLink.h>
 #include <DCL/Link/App_Commands/TDCLAppCommand.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdGeneric.h>
@@ -75,7 +74,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 				// Envoi de la commande pour arrêter
 				TDCLDockCmdNoData theCancelCmd(
 									TDCLDockCommand::kDOperationCanceled );
-				theCancelCmd.SendCommand( GetLink()->GetPipe() );
+				theCancelCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}
 			break;
@@ -90,7 +89,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 				TDCLDockCmdSingleLong theStringCmd(
 							TDCLDockCommand::kDKeyboardChar,
 							(KUInt32) (theChar[0] << 16) | theChar[1] );
-				theStringCmd.SendCommand( GetLink()->GetPipe() );
+				theStringCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}
 			break;
@@ -106,7 +105,7 @@ TDCLKeyboardEngine::ProcessAppCommand(
 				TDCLDockCmdGeneric theStringCmd(
 							TDCLDockCommand::kDKeyboardString,
 							theSize, theString );
-				theStringCmd.SendCommand( GetLink()->GetPipe() );
+				theStringCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}
 			break;

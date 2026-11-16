@@ -1,9 +1,6 @@
 // ==============================
-// Fichier:			TDCLLink.cp
-// Projet:			Desktop Connection Library
-//
-// Créé le:			28/06/2000
-// Tabulation:		4 espaces
+// File:			TDCLLink.cpp
+// Project:			Desktop Connection Library
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -18,131 +15,120 @@
 // for the specific language governing rights and limitations under the
 // License.
 //
-// The Original Code is TDCLLink.cp.
+// The Original Code is TDCLLink.cpp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
-// Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
-//
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLLink.cp,v 1.7 2004/11/24 14:09:03 paul Exp $
-// ===========
 
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Link/TDCLLink.h>
 
 // ANSI C
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
 
 // C++
+#include <algorithm>
 #include <chrono>
-#include <optional>
+#include <memory>
 #include <thread>
+#include <utility>
 
 // K
 #include <K/Misc/TSmartPtr.h>
 #include <K/Tests/KDebug.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
+#include <DCL/Communication_Layers/TMNPProtocol.h>
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/Errors/TDCLMemError.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
+#include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLBadAppCmdException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
 #include <DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
-#include <DCL/Interfaces/TStoppable.h>
 #include <DCL/Link/App_Commands/TDCLAppCommand.h>
-#include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
-#include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNewtonName.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdNoData.h>
+#include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>
+#include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 #include <DCL/Server/TDCLServer.h>
 
-// ------------------------------------------------------------------------- //
-//  * Déverminage
-// ------------------------------------------------------------------------- //
-
 #undef KERROR_ENABLED
-#if defined(error_TDCLLink) && error_TDCLLink
-#define KERROR_ENABLED 1
-#else
 #define KERROR_ENABLED 0
-#endif
-
 #undef KTRACE_ENABLED
-#if defined(trace_TDCLLink) && trace_TDCLLink
-#define KTRACE_ENABLED 1
-#else
 #define KTRACE_ENABLED 0
-#endif
-
 #undef KDEBUG_ENABLED
-#if defined(debug_TDCLLink) && debug_TDCLLink
-#define KDEBUG_ENABLED 1
-#else
 #define KDEBUG_ENABLED 0
-#endif
 
-// --------------------------------------------------------------------------------	//
-//  * TDCLLink( TDCLApplication*, TDCLPipe*, KUInt32 )
-// --------------------------------------------------------------------------------	//
+namespace
+{
+constexpr std::chrono::milliseconds kMNPStallTimeout{ 6000 };
+} // namespace
+
 TDCLLink::TDCLLink(
-					TDCLApplication* inApplication,
-					KUInt32 inType /* = TDCLDockCommand::kNone_SType */,
-					KUInt32 inIdlePeriod /* = kDefaultIdlePeriod */)
-	:
-		mPipe( nil ),
-		mServer( nil ),
-		mApplication( inApplication ),
-		mThreadId(),
-		mState( kDisconnected ),
-		mType( inType ),
-		mIdlePeriod( inIdlePeriod ),
-		mIsBusy( false ),
-		mNewtonName( nil ),
-		mNewtonID( 0 ),
-		mManufacturer( 0 ),
-		mROMVersion( 0 ),
-		mROMStage( 0 ),
-		mRAMSize( 0 ),
-		mScreenHeight( 0 ),
-		mScreenWidth( 0 ),
-		mSystemUpdate( 0 ),
-		mNOSVersion( 0 ),
-		mInternalStoreSig( 0 ),
-		mVertScreenRes( 0 ),
-		mHoriScreenRes( 0 ),
-		mScreenDepth( 0 )
+	TDCLApplication* inApplication,
+	KUInt32 inType /* = TDCLDockCommand::kNone_SType */,
+	KUInt32 inIdlePeriod /* = kDefaultIdlePeriod */ )
+	: mServer( nil ),
+	  mCommLayer( nil ),
+	  mApplication( inApplication ),
+	  mSessionBus(),
+	  mSessionId(),
+	  mUpstreamGuard(),
+	  mUseMNP( false ),
+	  mMNPKeepAlive( false ),
+	  mPeerDisconnected( false ),
+	  mCloseOnExit( false ),
+	  mTimeout( TDCLCommLayer::kDefaultTimeout ),
+	  mMNPStallTimeout( kMNPStallTimeout ),
+	  mMNPStallActive( false ),
+	  mMNPStallProgress( 0 ),
+	  mMNPStallDeadline(),
+	  mMNPProtocol(),
+	  mCommandFramer( TDCLCommandFramer::EMode::kDock ),
+	  mOutputStream( [this]( std::vector<std::uint8_t>&& inChunk ) { SendRawBytes( std::move( inChunk ) ); } ),
+	  mThreadId(),
+	  mStopSource(),
+	  mState( kDisconnected ),
+	  mType( inType ),
+	  mIdlePeriod( inIdlePeriod ),
+	  mIsBusy( false ),
+	  mNewtonName( nil ),
+	  mNewtonID( 0 ),
+	  mManufacturer( 0 ),
+	  mMachineType( 0 ),
+	  mROMVersion( 0 ),
+	  mROMStage( 0 ),
+	  mRAMSize( 0 ),
+	  mScreenHeight( 0 ),
+	  mScreenWidth( 0 ),
+	  mSystemUpdate( 0 ),
+	  mNOSVersion( 0 ),
+	  mInternalStoreSig( 0 ),
+	  mVertScreenRes( 0 ),
+	  mHoriScreenRes( 0 ),
+	  mScreenDepth( 0 )
 {
 }
 
-// --------------------------------------------------------------------------------	//
-//  * ~TDCLLink( void )
-// --------------------------------------------------------------------------------	//
 TDCLLink::~TDCLLink( void )
 {
-	(void) RequestStop();
-	(void) Wait();
-
-	if (mPipe)
+	(void)RequestStop();
+	(void)Wait();
+	mUpstreamGuard.Reset();
+	CloseSessionTransport();
+	if ( mNewtonName )
 	{
-		try {
-			mPipe->Disconnect();
-		} catch ( ... ) {
-		}
-		mPipe.reset();
+		::free( (void*)mNewtonName );
+		mNewtonName = nil;
 	}
 }
 
@@ -151,50 +137,46 @@ TDCLLink::ThreadEntry( std::stop_token inStopToken )
 {
 	mThreadId.store( std::this_thread::get_id() );
 	mWorkerStopToken = std::move( inStopToken );
-	try {
+	try
+	{
 		Run();
-	} catch ( TDCLException& inException ) {
-		try {
+	}
+	catch ( TDCLException& inException )
+	{
+		try
+		{
 			HandleException( &inException );
-		} catch ( ... ) {
 		}
-	} catch ( ... ) {
-		try {
+		catch ( ... )
+		{
+		}
+	}
+	catch ( ... )
+	{
+		try
+		{
 			HandleException( nil );
-		} catch ( ... ) {
+		}
+		catch ( ... )
+		{
 		}
 	}
 	mWorkerStopToken = std::stop_token();
 	mThreadId.store( std::thread::id() );
 }
 
-// --------------------------------------------------------------------------------	//
-//  * RequestStop( void )
-// --------------------------------------------------------------------------------	//
 bool
 TDCLLink::RequestStop( void )
 {
-	std::stop_source theStopSource;
-	{
-		std::lock_guard<std::mutex> lock( mStateMutex );
-		theStopSource = mThread.get_stop_source();
-	}
-	return theStopSource.request_stop();
+	return mStopSource.request_stop();
 }
 
-// --------------------------------------------------------------------------------	//
-//  * StopRequested( void )
-// --------------------------------------------------------------------------------	//
 bool
 TDCLLink::StopRequested( void ) const noexcept
 {
-	std::lock_guard<std::mutex> lock( mStateMutex );
-	return mThread.get_stop_token().stop_requested();
+	return mStopSource.stop_requested();
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Wait( void )
-// --------------------------------------------------------------------------------	//
 bool
 TDCLLink::Wait( void )
 {
@@ -211,18 +193,30 @@ TDCLLink::Wait( void )
 	return true;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Connect( TDCLPipe*, TDCLServer* )
-// --------------------------------------------------------------------------------	//
 Boolean
-TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
+TDCLLink::Connect( TDCLSessionId inSessionId, TDCLServer* inServer, TDCLCommLayer* inCommLayer )
+{
+	mServer = inServer;
+	mCommLayer = inCommLayer;
+	auto bus = inServer ? inServer->GetSharedSessionBus() : nullptr;
+	const bool useMNP = inCommLayer ? inCommLayer->UsesMNP() : false;
+	const long timeout = inCommLayer ? inCommLayer->GetTimeout() : TDCLCommLayer::kDefaultTimeout;
+	return Connect( inSessionId, std::move( bus ), useMNP, timeout );
+}
+
+Boolean
+TDCLLink::Connect(
+	TDCLSessionId inSessionId,
+	std::shared_ptr<TDCLSessionBus> inBus,
+	bool inUseMNP /* = false */,
+	long inTimeout /* = TDCLCommLayer::kDefaultTimeout */ )
 {
 	Boolean theResult = false;
-	
+
 	{
 		std::unique_lock<std::mutex> lock( mStateMutex );
 
-		if (mState == kDisconnected)
+		if ( mState == kDisconnected )
 		{
 			if ( std::this_thread::get_id() == mThreadId.load() )
 			{
@@ -234,14 +228,11 @@ TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 			std::unique_lock<std::mutex> joinLock( mJoinMutex );
 			lock.lock();
 
-			if ( mState == kDisconnected )
+			if ( mState == kDisconnected && mThread.joinable() )
 			{
-				if ( mThread.joinable() )
-				{
-					lock.unlock();
-					mThread.join();
-					lock.lock();
-				}
+				lock.unlock();
+				mThread.join();
+				lock.lock();
 			}
 
 			if ( mState == kDisconnected )
@@ -253,378 +244,625 @@ TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 
 				theResult = true;
 				mState = kConnecting;
-				mPipe = std::move( inPipe );
-				mServer = inServer;
+				mSessionBus = std::move( inBus );
+				mSessionId = inSessionId;
+				mUseMNP = inUseMNP;
+				mTimeout = inTimeout;
+				mPeerDisconnected = false;
+				mCloseOnExit = false;
+				mCommandFramer.Reset();
 				mEventQueue.Clear();
 
-				try {
+				ResetMNPStallTracking();
+				if ( mUseMNP )
+				{
+					mMNPProtocol = std::make_unique<TMNPProtocol>();
+					mMNPProtocol->SetKeepAlive( mMNPKeepAlive );
+					mMNPProtocol->Start();
+				}
+				else
+				{
+					mMNPProtocol.reset();
+				}
+
+				if ( mSessionBus && mSessionId )
+				{
+					mUpstreamGuard = mSessionBus->BindUpstream( mSessionId, &mEventQueue );
+				}
+
+				mStopSource = std::stop_source{};
+				const std::stop_token token = mStopSource.get_token();
+
+				try
+				{
 					mThread = std::jthread(
-						[ this ]( std::stop_token inStopToken )
-						{
-							ThreadEntry( std::move( inStopToken ) );
-						} );
-				} catch ( ... ) {
+					    [this, token]( std::stop_token ) { ThreadEntry( token ); } );
+				}
+				catch ( ... )
+				{
 					mState = kDisconnected;
-					if ( mPipe )
-					{
-						try {
-							mPipe->Disconnect();
-						} catch ( ... ) {
-						}
-						mPipe.reset();
-					}
+					mUpstreamGuard.Reset();
+					CloseSessionTransport();
 					mServer = nil;
+					mCommLayer = nil;
 					throw;
 				}
 			}
 		}
 	}
 
-	if ( !theResult && inPipe )
+	if ( !theResult && inBus && inSessionId )
 	{
-		try {
-			inPipe->Disconnect();
-		} catch ( ... ) {
-		}
+		inBus->CloseSession( inSessionId );
 	}
-	
+
 	return theResult;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Disconnect( void )
-// --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::Disconnect( void )
 {
 	Boolean theResult = false;
-	
 	{
 		std::lock_guard<std::mutex> lock( mStateMutex );
-		if ((mState != kDisconnected) && (mState != kDisconnecting))
+		if ( ( mState != kDisconnected ) && ( mState != kDisconnecting ) )
 		{
 			theResult = true;
 		}
 	}
-	
-	// On envoie un événement si le processus tourne toujours.
-	if (theResult)
+	if ( theResult )
 	{
-		PostEvent( new TDCLEvent(
-							 TDCLEvent::kLinkEvent,
-							 TDCLEvent::kDisconnectLink) );
+		PostEvent( new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kDisconnectLink ) );
 	}
-	
 	return theResult;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * PostAppCommand( TDCLAppCommand* )
-// --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 {
 	Boolean theResult = false;
-	
 	{
 		std::lock_guard<std::mutex> lock( mStateMutex );
-		if ((mState != kDisconnected) && (mState != kDisconnecting))
+		if ( ( mState != kDisconnected ) && ( mState != kDisconnecting ) )
 		{
 			theResult = true;
 		}
 	}
-	
-	// On envoie un événement si le processus tourne toujours.
-	if (theResult)
+	if ( theResult )
 	{
 		PostEvent( inCommand );
 	}
-	
 	return theResult;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Close( void )
-// --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::Close( void )
 {
 	Boolean theResult = IsConnected();
-	
-	// On envoie un événement si on est connecté.
-	if (theResult)
+	if ( theResult )
 	{
 		PostEvent( new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kCloseLink ) );
 	}
-	
 	return theResult;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * IsConnected( void )
-// --------------------------------------------------------------------------------	//
 Boolean
 TDCLLink::IsConnected( void )
 {
 	std::lock_guard<std::mutex> lock( mStateMutex );
-	return (mState != kDisconnected);
+	return ( mState != kDisconnected );
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Disconnected( void )
-// --------------------------------------------------------------------------------	//
+void
+TDCLLink::SetCommandMode( TDCLCommandFramer::EMode inMode ) noexcept
+{
+	mCommandFramer.SetMode( inMode );
+}
+
+void
+TDCLLink::SetMNPKeepAlive( bool inKeepAlive ) noexcept
+{
+	mMNPKeepAlive = inKeepAlive;
+	if ( mMNPProtocol )
+	{
+		mMNPProtocol->SetKeepAlive( inKeepAlive );
+	}
+}
+
+void
+TDCLLink::SetMNPStallTimeout( std::chrono::milliseconds inTimeout ) noexcept
+{
+	mMNPStallTimeout = ( inTimeout.count() > 0 ) ? inTimeout : std::chrono::milliseconds( 1 );
+}
+
+void
+TDCLLink::ResetMNPStallTracking( void ) noexcept
+{
+	mMNPStallActive = false;
+	mMNPStallProgress = 0;
+	mMNPStallDeadline = std::chrono::steady_clock::time_point{};
+}
+
+void
+TDCLLink::RefreshMNPStallDeadline( void ) noexcept
+{
+	if ( !mUseMNP || !mMNPProtocol || !mMNPProtocol->IsStallable() )
+	{
+		mMNPStallActive = false;
+		return;
+	}
+	const std::uint32_t progress = mMNPProtocol->GetProgress();
+	if ( !mMNPStallActive || progress != mMNPStallProgress )
+	{
+		mMNPStallActive = true;
+		mMNPStallProgress = progress;
+		mMNPStallDeadline = std::chrono::steady_clock::now() + mMNPStallTimeout;
+	}
+}
+
+void
+TDCLLink::HandleMNPStall( void )
+{
+	if ( mUseMNP && mMNPProtocol && mMNPProtocol->IsStallable() )
+	{
+		mMNPProtocol->OnStall();
+		FlushMNPOutbound();
+		RefreshMNPStallDeadline();
+		if ( mMNPProtocol->GetState() == TMNPProtocol::kFailed )
+		{
+			throw DCLMNPProtocolError( mMNPProtocol->GetLocalReason() );
+		}
+		if ( mMNPProtocol->PeerDisconnected() || mMNPProtocol->IsTerminal() )
+		{
+			mPeerDisconnected = true;
+		}
+	}
+}
+
+void
+TDCLLink::SendCommand(
+	TDCLDockCommand* inCommand,
+	ProgressFuncPtr inProgressFuncPtr /* = nil */,
+	void* inRefCon /* = nil */ )
+{
+	if ( inCommand )
+	{
+		inCommand->SendCommand( &mOutputStream, inProgressFuncPtr, inRefCon );
+	}
+}
+
+void
+TDCLLink::FlushOutput( void )
+{
+	mOutputStream.FlushOutput();
+}
+
+void
+TDCLLink::SendRawBytes( std::vector<std::uint8_t>&& inBytes )
+{
+	if ( inBytes.empty() )
+	{
+		return;
+	}
+	if ( mUseMNP && mMNPProtocol )
+	{
+		mMNPProtocol->QueueOutboundBytes( inBytes.data(), inBytes.size() );
+		FlushMNPOutbound();
+	}
+	else if ( mSessionBus && mSessionId )
+	{
+		(void)mSessionBus->SendBytes( mSessionId, std::move( inBytes ) );
+	}
+}
+
+void
+TDCLLink::FlushMNPOutbound( void )
+{
+	if ( !mMNPProtocol || !mSessionBus || !mSessionId )
+	{
+		return;
+	}
+	auto wire = mMNPProtocol->TakeAllOutboundWireBytes();
+	if ( !wire.empty() )
+	{
+		(void)mSessionBus->SendBytes( mSessionId, std::move( wire ) );
+	}
+}
+
+void
+TDCLLink::ProcessInboundBytes( const std::vector<std::uint8_t>& inBytes )
+{
+	if ( inBytes.empty() )
+	{
+		return;
+	}
+
+	if ( mUseMNP && mMNPProtocol )
+	{
+		mMNPProtocol->PushWireBytes( inBytes.data(), inBytes.size() );
+		FlushMNPOutbound();
+
+		auto payload = mMNPProtocol->TakeAllInput();
+		if ( !payload.empty() )
+		{
+			(void)mCommandFramer.Feed( payload.data(), payload.size() );
+		}
+
+		if ( mMNPProtocol->GetState() == TMNPProtocol::kFailed )
+		{
+			throw DCLMNPProtocolError( mMNPProtocol->GetLocalReason() );
+		}
+		if ( mMNPProtocol->PeerDisconnected() )
+		{
+			mPeerDisconnected = true;
+		}
+	}
+	else
+	{
+		(void)mCommandFramer.Feed( inBytes.data(), inBytes.size() );
+	}
+}
+
+void
+TDCLLink::EnsureMNPConnected( void )
+{
+	if ( !mUseMNP || !mMNPProtocol )
+	{
+		return;
+	}
+
+	using Clock = std::chrono::steady_clock;
+	std::uint32_t seenProgress = mMNPProtocol->GetProgress();
+	Clock::time_point deadline = Clock::now() + mMNPStallTimeout;
+
+	while ( !mMNPProtocol->IsConnected() && !mMNPProtocol->IsTerminal() )
+	{
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			throw DCLUserCancelled;
+		}
+		if ( mMNPProtocol->GetProgress() != seenProgress )
+		{
+			seenProgress = mMNPProtocol->GetProgress();
+			deadline = Clock::now() + mMNPStallTimeout;
+		}
+
+		const auto now = Clock::now();
+		if ( now >= deadline )
+		{
+			if ( mMNPProtocol->IsStallable() )
+			{
+				mMNPProtocol->OnStall();
+				FlushMNPOutbound();
+				continue;
+			}
+			break;
+		}
+
+		const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>( deadline - now );
+		std::unique_ptr<TDCLEvent> ev(
+		    mEventQueue.WaitNextEvent( TDCLEvent::kLinkEvent, remaining, mWorkerStopToken ) );
+
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			throw DCLUserCancelled;
+		}
+		if ( !ev )
+		{
+			continue;
+		}
+
+		switch ( ev->GetEventID() )
+		{
+		case TDCLEvent::kBytesReceived:
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( ev.get() );
+			ProcessInboundBytes( typed->GetPayload().bytes );
+			break;
+		}
+		case TDCLEvent::kSessionClosed:
+			mPeerDisconnected = true;
+			throw DCLEOF;
+		case TDCLEvent::kTransportError:
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLTransportErrorPayload>*>( ev.get() );
+			if ( typed->GetPayload().error )
+			{
+				std::rethrow_exception( typed->GetPayload().error );
+			}
+			throw DCLEOF;
+		}
+		case TDCLEvent::kCloseLink:
+			mCloseOnExit = true;
+			throw DCLEOF;
+		case TDCLEvent::kDisconnectLink:
+			throw DCLEOF;
+		default:
+			break;
+		}
+	}
+
+	if ( mMNPProtocol->GetState() == TMNPProtocol::kFailed )
+	{
+		throw DCLMNPProtocolError( mMNPProtocol->GetLocalReason() );
+	}
+	if ( mMNPProtocol->PeerDisconnected() || mMNPProtocol->IsTerminal() )
+	{
+		mPeerDisconnected = true;
+		throw DCLEOF;
+	}
+}
+
+void
+TDCLLink::DrainMNPAndDisconnect( void )
+{
+	if ( !mUseMNP || !mMNPProtocol || mMNPProtocol->IsTerminal() || mPeerDisconnected )
+	{
+		return;
+	}
+
+	using Clock = std::chrono::steady_clock;
+	std::uint32_t seenProgress = mMNPProtocol->GetProgress();
+	Clock::time_point deadline = Clock::now() + mMNPStallTimeout;
+
+	// First flush any pending queued LTs before sending LD.
+	while ( mMNPProtocol->HasPendingOutbound() && !mMNPProtocol->IsTerminal() && !mPeerDisconnected )
+	{
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			return;
+		}
+		if ( mMNPProtocol->GetProgress() != seenProgress )
+		{
+			seenProgress = mMNPProtocol->GetProgress();
+			deadline = Clock::now() + mMNPStallTimeout;
+		}
+		const auto now = Clock::now();
+		if ( now >= deadline )
+		{
+			if ( mMNPProtocol->IsStallable() )
+			{
+				mMNPProtocol->OnStall();
+				FlushMNPOutbound();
+			}
+			break;
+		}
+		const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>( deadline - now );
+		std::unique_ptr<TDCLEvent> ev(
+		    mEventQueue.WaitNextEvent( TDCLEvent::kLinkEvent, remaining, mWorkerStopToken ) );
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			return;
+		}
+		if ( !ev )
+		{
+			continue;
+		}
+		if ( ev->GetEventID() == TDCLEvent::kBytesReceived )
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( ev.get() );
+			ProcessInboundBytes( typed->GetPayload().bytes );
+		}
+		else if ( ev->GetEventID() == TDCLEvent::kSessionClosed || ev->GetEventID() == TDCLEvent::kCloseLink )
+		{
+			mPeerDisconnected = true;
+			return;
+		}
+	}
+
+	mMNPProtocol->RequestDisconnect();
+	FlushMNPOutbound();
+
+	deadline = Clock::now() + mMNPStallTimeout;
+	seenProgress = mMNPProtocol->GetProgress();
+	while ( mMNPProtocol->IsDisconnecting() && !mMNPProtocol->IsTerminal() && !mPeerDisconnected )
+	{
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			return;
+		}
+		if ( mMNPProtocol->GetProgress() != seenProgress )
+		{
+			seenProgress = mMNPProtocol->GetProgress();
+			deadline = Clock::now() + mMNPStallTimeout;
+		}
+		const auto now = Clock::now();
+		if ( now >= deadline )
+		{
+			if ( mMNPProtocol->IsStallable() )
+			{
+				mMNPProtocol->OnStall();
+				FlushMNPOutbound();
+			}
+			continue;
+		}
+		const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>( deadline - now );
+		std::unique_ptr<TDCLEvent> ev(
+		    mEventQueue.WaitNextEvent( TDCLEvent::kLinkEvent, remaining, mWorkerStopToken ) );
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			return;
+		}
+		if ( !ev )
+		{
+			continue;
+		}
+		if ( ev->GetEventID() == TDCLEvent::kBytesReceived )
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( ev.get() );
+			ProcessInboundBytes( typed->GetPayload().bytes );
+		}
+		else if ( ev->GetEventID() == TDCLEvent::kSessionClosed || ev->GetEventID() == TDCLEvent::kCloseLink )
+		{
+			mPeerDisconnected = true;
+			return;
+		}
+	}
+}
+
+void
+TDCLLink::CloseSessionTransport( void ) noexcept
+{
+	if ( mSessionBus && mSessionId )
+	{
+		mSessionBus->CloseSession( mSessionId );
+		mSessionId = TDCLSessionId{};
+	}
+}
+
+void
+TDCLLink::NotifyConnected( void )
+{
+	GetApplication()->Connected( this, mCommLayer );
+}
+
 void
 TDCLLink::Disconnected( void )
 {
-	if (mPipe)
-	{
-		try {
-			mPipe->Disconnect();
-		} catch ( ... ) {
-		}
-		mPipe.reset();	// Je ne suis plus connecté.
-	}
+	mUpstreamGuard.Reset();
+	CloseSessionTransport();
 
-	// On indique au serveur qu'on est déconnecté.
-	if (mServer)
+	if ( mServer )
 	{
 		mServer->Disconnected( this );
 	}
-		
-	if (mNewtonName)
+
+	if ( mNewtonName )
 	{
-		delete [] (char*) mNewtonName;
+		::free( (void*)mNewtonName );
 		mNewtonName = nil;
 	}
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Connected( void )
-// --------------------------------------------------------------------------------	//
 void
 TDCLLink::Connected( void )
 {
-	// Je transmets le nom à l'application.
 	mApplication->ConnectedToNewtonDevice( this, mNewtonName );
 }
 
-// --------------------------------------------------------------------------------	//
-//  * DoConnect( void )
-// --------------------------------------------------------------------------------	//
 void
 TDCLLink::DoConnect( void )
 {
-	// On dit à l'application que le lien est connecté. Ainsi elle pourra lui envoyer
-	// des messages.
-	// On dit aussi à la connexion que le lien va l'utiliser. (idem)
-	mApplication->Connected( this, mPipe->Connected( this ) );	
+	NotifyConnected();
 
-	if (StopRequested())
+	if ( StopRequested() )
 	{
 		throw DCLUserCancelled;
 	}
-	
-	// Discussion avec le Newton.
-	TSmartPtr<TDCLDockCommand> theNewtMessage;
 
-	//	I read the kDRequestToDock message from the Newton.
+	// Read kDRequestToDock
 	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe.get() );
-
-	// I check it's a kDRequestToDock command.
-		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDRequestToDock)
+		auto theNewtMessage = ReceiveCommand();
+		if ( theNewtMessage->GetCommand() != TDCLDockCommand::kDRequestToDock )
 		{
-			// Duh!
 			throw DCLUnexpDockCmd;
 		}
-		theNewtMessage.Delete();
 	}
-	
-	//	I say kDInitiateDocking
-	{
-		TDCLDockCmdSingleLong theInitiateDockingMessage(
-			TDCLDockCommand::kDInitiateDocking, mType );
 
-		theInitiateDockingMessage.SendCommand( mPipe.get() );
+	// Send kDInitiateDocking
+	{
+		TDCLDockCmdSingleLong theInitiateDockingMessage( TDCLDockCommand::kDInitiateDocking, mType );
+		SendCommand( &theInitiateDockingMessage );
 	}
-	
-	// I read the kDNewtonName message from the Newton.
-	{
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( mPipe.get() );
 
-		// I check it's a kDNewtonName command.
-		if (theNewtMessage.Get()->GetCommand() != TDCLDockCommand::kDNewtonName)
+	// Read kDNewtonName
+	{
+		auto theNewtMessage = ReceiveCommand();
+		if ( theNewtMessage->GetCommand() != TDCLDockCommand::kDNewtonName )
 		{
-			// Duh!
-			
-			// Je devrait regarder si ce n'est pas un message d'erreur venant du Newton
-			// (on ne sait jamais)
-			
 			throw DCLUnexpDockCmd;
 		}
 
-		// I cast the object to TDCLDockCmdNewtonName since it's a TDCLDockCmdNewtonName.
-		TDCLDockCmdNewtonName* theNewtonName =
-			(TDCLDockCmdNewtonName*) theNewtMessage.Get();
-		
-		// I then copy the fields of the command object to my own variable members.
-		mNewtonID			= theNewtonName->GetNewtonUniqueID();
-		mManufacturer		= theNewtonName->GetManufacturer();
-		mMachineType		= theNewtonName->GetMachineType();
-		mROMVersion			= theNewtonName->GetROMVersion();
-		mROMStage			= theNewtonName->GetROMStage();
-		mRAMSize			= theNewtonName->GetRAMSize();
-		mScreenHeight		= theNewtonName->GetScreenHeight();
-		mScreenWidth		= theNewtonName->GetScreenWidth();
-		mSystemUpdate		= theNewtonName->GetSystemUpdate();
-		mNOSVersion			= theNewtonName->GetNOSVersion();
-		mInternalStoreSig	= theNewtonName->GetInternalStoreSig();
-		mVertScreenRes		= theNewtonName->GetVertScreenRes();
-		mHoriScreenRes 		= theNewtonName->GetHoriScreenRes();
-		mScreenDepth 		= theNewtonName->GetScreenDepth();
+		auto* theNewtonName = static_cast<TDCLDockCmdNewtonName*>( theNewtMessage.get() );
+		mNewtonID = theNewtonName->GetNewtonUniqueID();
+		mManufacturer = theNewtonName->GetManufacturer();
+		mMachineType = theNewtonName->GetMachineType();
+		mROMVersion = theNewtonName->GetROMVersion();
+		mROMStage = theNewtonName->GetROMStage();
+		mRAMSize = theNewtonName->GetRAMSize();
+		mScreenHeight = theNewtonName->GetScreenHeight();
+		mScreenWidth = theNewtonName->GetScreenWidth();
+		mSystemUpdate = theNewtonName->GetSystemUpdate();
+		mNOSVersion = theNewtonName->GetNOSVersion();
+		mInternalStoreSig = theNewtonName->GetInternalStoreSig();
+		mVertScreenRes = theNewtonName->GetVertScreenRes();
+		mHoriScreenRes = theNewtonName->GetHoriScreenRes();
+		mScreenDepth = theNewtonName->GetScreenDepth();
 
-		// I copy the Newton Name.
-		// I get the size.
-		KUInt32 theSize = theNewtonName->GetNameLength() + 1;	// I also copy the zero.
-		theSize *= sizeof( KUInt16 );
-
-		// then I allocate the name.
-		mNewtonName = (KUInt16*) ::malloc( theSize );
-
-		if (mNewtonName == nil)
+		KUInt32 theSize = ( theNewtonName->GetNameLength() + 1 ) * sizeof( KUInt16 );
+		KUInt16* copiedName = static_cast<KUInt16*>( ::malloc( theSize ) );
+		if ( copiedName == nil )
 		{
 			throw DCLMemError;
 		}
-
-		// and finally, I copy it.
-	
-		(void) ::memcpy( (void*) mNewtonName, theNewtonName->GetNewtonName(), theSize );
-
-		// I get rid of the message.
-		theNewtMessage.Delete();
+		(void)::memcpy( copiedName, theNewtonName->GetNewtonName(), theSize );
+		mNewtonName = copiedName;
 	}
 }
 
-// --------------------------------------------------------------------------------	//
-//  * DoDisconnect( void )
-// --------------------------------------------------------------------------------	//
 void
 TDCLLink::DoDisconnect( void )
 {
-	if (mPipe)
+	mApplication->Disconnecting( this );
+
+	if ( StopRequested() || mPeerDisconnected )
 	{
-		// Je dis à l'application que je déconnecte.
-		mApplication->Disconnecting( this );
+		return;
+	}
 
-		if (StopRequested())
+	{
+		TDCLDockCmdNoData theDisconnectMessage( TDCLDockCommand::kDDisconnect );
+		SendCommand( &theDisconnectMessage );
+	}
+
+	try
+	{
+		if ( mUseMNP && mMNPProtocol )
 		{
-			return;
+			DrainMNPAndDisconnect();
 		}
-
-		// If the Newton already closed the link (e.g. MNP LD), there is
-		// nobody left to talk to (V.42 A.7.2): just let the server close it.
-		if (mPipe->PeerDisconnected())
+		else
 		{
-			return;
-		}
-		// Then, I send the disconnect command.
-		{
-			TDCLDockCmdNoData theDisconnectMessage( TDCLDockCommand::kDDisconnect );
-
-			theDisconnectMessage.SendCommand( mPipe.get() );
-			mPipe->FlushOutput();
-		}
-
-		// Récupération du résultat.
-		Boolean gotResult = false;
-		
-		try {
-			while ((gotResult == false) && mPipe->BytesAvailable())
+			// Consume any already-buffered result/hello commands.
+			while ( mCommandFramer.HasCommand() )
 			{
-				TSmartPtr<TDCLDockCommand> theNewtMessage;
-				theNewtMessage =
-					TDCLDockCommand::ReceiveCommand( mPipe.get() );
-				switch (theNewtMessage->GetCommand())
+				auto cmd = mCommandFramer.TakeCommand();
+				if ( cmd->GetCommand() == TDCLDockCommand::kDResult )
 				{
-					case TDCLDockCommand::kDResult:
+					auto* res = static_cast<TDCLDockCmdSingleLong*>( cmd.get() );
+					const KSInt32 err = static_cast<KSInt32>( res->GetLong() );
+					if ( err )
 					{
-						// It's a kDResult, process it.
-						TDCLDockCmdSingleLong* theResultCmd =
-							(TDCLDockCmdSingleLong*) theNewtMessage.Get();
-						KSInt32 theResult = (KSInt32) theResultCmd->GetLong();
-						theNewtMessage.Delete();	// I no longer need it.
-						if (theResult)
-						{
-						// Throw the error that the Newton sent.
-							throw DCLNewton( theResult );
-						}
-						
-						// On sort.
-						gotResult = true;
-						break;
+						throw DCLNewton( err );
 					}
-
-					case TDCLDockCommand::kDHello:
-						// On ignore les bonjours qui trainent.
-						break;
-
-					default:
-						// Commande non prévue.
-						throw DCLUnexpDockCmd;
+					break;
+				}
+				else if ( cmd->GetCommand() != TDCLDockCommand::kDHello )
+				{
+					throw DCLUnexpDockCmd;
 				}
 			}
-			
-			// Si la connexion ne gère pas flush, on attend 5 secondes.
-
-			if (!mPipe->FlushAvailable())
-			{
-				time_t now = ::time(NULL);
-				while( !StopRequested() && ((::time(NULL) - now) < kClosingTimeout) )
-				{
-					mPipe->Idle();				// Give time to the pipe,
-						  // in case its implementation requires it.
-					if (!StopRequested())
-					{
-						std::this_thread::sleep_for(
-							std::chrono::milliseconds( 10 ) );
-					}
-				}
-			}
-		} catch (TDCLEOFException& anException) {
-			// On ignore une exception EOF (déconnexion de l'autre côté).
 		}
-		
-		// Le serveur va gérer la déconnexion dans HandleLinkDisconnection
-		// mPipe sera mis à nil au prochain passage dans la boucle.
-	} else {
-		throw DCLBadStateError;
+	}
+	catch ( TDCLEOFException& )
+	{
 	}
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Run( void )
-// --------------------------------------------------------------------------------	//
 void
 TDCLLink::Run( void )
 {
 	const std::stop_token theStopToken = mWorkerStopToken;
-
-	std::optional<TStopForwarder> theForwarder;
-	if (mPipe)
-	{
-		theForwarder.emplace( theStopToken, *mPipe );
-	}
-
-	// Boucle principale du lien.
 	Boolean keepLooping = true;
-	while( keepLooping )
+
+	while ( keepLooping )
 	{
 		EState theState;
 		EState theNextState;
 
 		{
 			std::lock_guard<std::mutex> lock( mStateMutex );
-			if (theStopToken.stop_requested())
+			if ( theStopToken.stop_requested() )
 			{
 				mState = kDisconnected;
 			}
@@ -632,55 +870,60 @@ TDCLLink::Run( void )
 		}
 		theNextState = theState;
 
-		try {
+		try
+		{
 			switch ( theState )
 			{
-				case kConnecting:
-					DoConnect();
-					theNextState = kConnected;
-					break;
+			case kConnecting:
+				if ( mUseMNP )
+				{
+					EnsureMNPConnected();
+				}
+				DoConnect();
+				theNextState = kConnected;
+				break;
 
-				case kConnected:
-					Connected();
-					theNextState = kRunning;
-					// On attend des données (ou un événement de l'application).
-					mPipe->ClearDataPresent();
-					break;
-				
-				case kRunning:
-					theNextState = TransitionFromRunning();
-					break;
+			case kConnected:
+				Connected();
+				theNextState = kRunning;
+				break;
 
-				case kDisconnecting:
+			case kRunning:
+				theNextState = TransitionFromRunning();
+				break;
+
+			case kDisconnecting:
+				if ( !theStopToken.stop_requested() && !mCloseOnExit )
+				{
 					DoDisconnect();
-					theNextState = kDisconnected;
-					break;
-				
-				default:	// kDisconnected, kUnknown
-					theForwarder.reset();
-					Disconnected();
-					keepLooping = false;
-					theNextState = kDisconnected;
-					break;
+				}
+				theNextState = kDisconnected;
+				break;
+
+			default: // kDisconnected, kUnknown
+				Disconnected();
+				keepLooping = false;
+				theNextState = kDisconnected;
+				break;
 			}
-		} catch (TDCLEOFException& inException) {
-			// On a été déconnecté (le Newton a probablement coupé).
-			theForwarder.reset();
-			Disconnected();
-			keepLooping = false;
-			theNextState = kDisconnected;
-		} catch (TDCLUserCancelledException& inException) {
-			// Cooperative stop requested during blocking I/O.
-			theForwarder.reset();
+		}
+		catch ( TDCLEOFException& )
+		{
 			Disconnected();
 			keepLooping = false;
 			theNextState = kDisconnected;
 		}
-		
-		if (theState != theNextState)
+		catch ( TDCLUserCancelledException& )
+		{
+			Disconnected();
+			keepLooping = false;
+			theNextState = kDisconnected;
+		}
+
+		if ( theState != theNextState )
 		{
 			std::lock_guard<std::mutex> lock( mStateMutex );
-			if (mState == theState)
+			if ( mState == theState )
 			{
 				mState = theNextState;
 			}
@@ -688,213 +931,245 @@ TDCLLink::Run( void )
 	}
 }
 
-// --------------------------------------------------------------------------------	//
-//  * TransitionFromRunning( void )
-// --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::TransitionFromRunning( void )
 {
-	if (StopRequested())
+	if ( StopRequested() )
 	{
 		return kDisconnected;
+	}
+
+	auto dispatchCommand = [this]( TDCLDockCommand* inCmd ) -> EState {
+		Boolean outProcessed = false;
+		EState next = ProcessDockCommand( inCmd, &outProcessed );
+		if ( !outProcessed )
+		{
+			TDCLDockCmdSingleLong unknownCmd( TDCLDockCommand::kDUnknownCommand, inCmd->GetCommand() );
+			SendCommand( &unknownCmd );
+		}
+		return next;
+	};
+
+	// Drain any commands already buffered by the framer from an earlier chunk.
+	while ( mCommandFramer.HasCommand() )
+	{
+		mIsBusy = true;
+		try
+		{
+			auto cmd = mCommandFramer.TakeCommand();
+			EState next = dispatchCommand( cmd.get() );
+			mIsBusy = false;
+			if ( next != kRunning )
+			{
+				return next;
+			}
+		}
+		catch ( ... )
+		{
+			mIsBusy = false;
+			throw;
+		}
+	}
+
+	if ( mCommandFramer.HasError() )
+	{
+		std::rethrow_exception( mCommandFramer.GetError() );
+	}
+	if ( mPeerDisconnected || mCommandFramer.IsEOF() )
+	{
+		return kDisconnected;
+	}
+	if ( mUseMNP && mMNPProtocol && mMNPProtocol->IsTerminal() )
+	{
+		if ( mMNPProtocol->GetState() == TMNPProtocol::kFailed )
+		{
+			throw DCLMNPProtocolError( mMNPProtocol->GetLocalReason() );
+		}
+		return kDisconnected;
+	}
+
+	KUInt32 theEventMask = TDCLEvent::kLinkEvent | ( GetAppCommandMask() & TDCLEvent::kAnyAppCommandMask );
+	std::chrono::milliseconds waitTimeout =
+	    ( mIdlePeriod == 0 ) ? TDCLEventQueue::kForever : std::chrono::milliseconds( mIdlePeriod );
+
+	using Clock = std::chrono::steady_clock;
+	RefreshMNPStallDeadline();
+	bool mnpStallBounded = false;
+	if ( mMNPStallActive )
+	{
+		const auto now = Clock::now();
+		if ( now >= mMNPStallDeadline )
+		{
+			HandleMNPStall();
+			if ( mPeerDisconnected )
+			{
+				return kDisconnected;
+			}
+			RefreshMNPStallDeadline();
+		}
+		if ( mMNPStallActive )
+		{
+			const auto mnpRemaining =
+			    std::chrono::duration_cast<std::chrono::milliseconds>( mMNPStallDeadline - Clock::now() );
+			const auto clamped = ( mnpRemaining.count() > 0 ) ? mnpRemaining : std::chrono::milliseconds( 0 );
+			if ( waitTimeout == TDCLEventQueue::kForever || clamped <= waitTimeout )
+			{
+				waitTimeout = clamped;
+				mnpStallBounded = true;
+			}
+		}
+	}
+
+	std::unique_ptr<TDCLEvent> theNextEvent(
+	    mEventQueue.WaitNextEvent( theEventMask, waitTimeout, mWorkerStopToken ) );
+
+	if ( StopRequested() )
+	{
+		return kDisconnected;
+	}
+
+	if ( !theNextEvent )
+	{
+		if ( mnpStallBounded && mMNPStallActive && Clock::now() >= mMNPStallDeadline )
+		{
+			HandleMNPStall();
+			if ( mPeerDisconnected )
+			{
+				return kDisconnected;
+			}
+		}
+		return Idle();
 	}
 
 	EState theNextState = kRunning;
-	
-	// On attend le prochain événement.
-	TDCLEvent* theNextEvent;
-	KUInt32 theEventMask =
-			TDCLEvent::kLinkEvent
-			| (GetAppCommandMask() & TDCLEvent::kAnyAppCommandMask);
-	const std::chrono::milliseconds theIdleTimeout =
-		(mIdlePeriod == 0)
-			? TDCLEventQueue::kForever
-			: std::chrono::milliseconds( mIdlePeriod );
-	theNextEvent = mEventQueue.WaitNextEvent(
-					theEventMask,
-					theIdleTimeout,
-					mWorkerStopToken );
-	
-	if (StopRequested())
+	mIsBusy = true;
+	try
 	{
-		if (theNextEvent)
+		if ( theNextEvent->GetEventKind() & TDCLEvent::kAnyAppCommandMask )
 		{
-			delete theNextEvent;
-		}
-		return kDisconnected;
-	}
-
-	if (theNextEvent == nil)
-	{
-		// On a dormi tout le temps.
-		theNextState = Idle();
-	} else {
-		// On est occupé.
-		mIsBusy = true;
-		try {
-			// L'événement est-il une commande de l'application?
-			// Si on a un événement de l'application, on le gère.
-			Boolean outProcessed = false;
-			if (theNextEvent->GetEventKind() & TDCLEvent::kAnyAppCommandMask)
+			auto* appCmd = static_cast<TDCLAppCommand*>( theNextEvent.get() );
+			try
 			{
-				try {
-					mApplication->AppCommandBeingProcessed(
-							this,
-							(TDCLAppCommand*) theNextEvent );
-
-					theNextState =
-						ProcessAppCommand(
-							(TDCLAppCommand*) theNextEvent, &outProcessed );
-
-					if (!outProcessed)
-					{
-						throw DCLBadAppCmd;
-					}
-
-					mApplication->AppCommandProcessed(
-							this,
-							(TDCLAppCommand*) theNextEvent, nil );
-				} catch( TDCLException& inException ) {
-					mApplication->AppCommandProcessed(
-							this,
-							(TDCLAppCommand*) theNextEvent,
-							&inException );
-				}
-				
-				delete theNextEvent;
-				theNextEvent = nil;
-			} else {
-				TDCLEvent::EEventID theEventID = theNextEvent->GetEventID();
-
-				// Sinon, on regarde si le Newton a envoyé des données.
-				if (theEventID == TDCLEvent::kBytesAvailable)
+				Boolean outProcessed = false;
+				mApplication->AppCommandBeingProcessed( this, appCmd );
+				theNextState = ProcessAppCommand( appCmd, &outProcessed );
+				if ( !outProcessed )
 				{
-					// Nous avons été réveillés par des données. Cependant,
-					// il est possible que nous ayions déjà lu ces données.
-					// On vérifie s'il en reste.
-					if (mPipe->BytesAvailable())
-					{
-						TSmartPtr< TDCLDockCommand > theNewtMessage;
-						theNewtMessage = ReceiveCommand();
-
-						theNextState =
-							ProcessDockCommand(
-								theNewtMessage.Get(),
-								&outProcessed );
-
-						if (!outProcessed)
-						{
-							KDEBUG1( "Unknown command: %.8X\n",
-								(unsigned int)
-									theNewtMessage.Get()->GetCommand() );
-
-							// On envoie une commande unknown command.
-							TDCLDockCmdSingleLong theUnknownCmdMsg(
-									TDCLDockCommand::kDUnknownCommand,
-									theNewtMessage.Get()->GetCommand() );
-							theUnknownCmdMsg.SendCommand( mPipe.get() );
-						}
-					}
-					
-					// A pipe can consume a peer LD while checking for data and
-					// return false without delivering a command (e.g. MNP). The
-					// transport has then closed: do not wait for another data
-					// event that will never come. A protocol failure is thrown
-					// by BytesAvailable instead and goes to HandleException.
-					if (theNextState == kRunning && mPipe->PeerDisconnected()
-						&& !mPipe->BytesAvailable())
-					{
-						theNextState = kDisconnected;
-					}
-
-					// On attend à nouveau des données.
-					if (theNextState == kRunning)
-					{
-						mPipe->ClearDataPresent();
-					}
-				} else if (theEventID == TDCLEvent::kDisconnectLink) {
-					// Il faut se déconnecter.
-					theNextState = kDisconnecting;
-				} else if (theEventID == TDCLEvent::kCloseLink) {
-					// On est déconnecté.
-					theNextState = kDisconnected;
-				} // if (theEventID == kBytesAvailable) ... else if ...
+					throw DCLBadAppCmd;
+				}
+				mApplication->AppCommandProcessed( this, appCmd, nil );
 			}
-		} catch( ... ) {
-			// Nettoyage
-			if (theNextEvent)
+			catch ( TDCLException& inException )
 			{
-				delete theNextEvent;
-				theNextEvent = nil;
+				mApplication->AppCommandProcessed( this, appCmd, &inException );
 			}
-			
-			// On n'est plus occupé.
-			mIsBusy = false;
-			throw;	// On relance.
 		}
-		// On n'est plus occupé.
-		mIsBusy = false;
-		
-		if (theNextEvent)
+		else
 		{
-			delete theNextEvent;
+			switch ( theNextEvent->GetEventID() )
+			{
+			case TDCLEvent::kBytesReceived:
+			{
+				auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( theNextEvent.get() );
+				ProcessInboundBytes( typed->GetPayload().bytes );
+				while ( mCommandFramer.HasCommand() )
+				{
+					auto cmd = mCommandFramer.TakeCommand();
+					theNextState = dispatchCommand( cmd.get() );
+					if ( theNextState != kRunning )
+					{
+						break;
+					}
+				}
+				if ( theNextState == kRunning && mCommandFramer.HasError() )
+				{
+					std::rethrow_exception( mCommandFramer.GetError() );
+				}
+				if ( theNextState == kRunning && ( mPeerDisconnected || mCommandFramer.IsEOF() ) )
+				{
+					theNextState = kDisconnected;
+				}
+				break;
+			}
+			case TDCLEvent::kSessionClosed:
+				mPeerDisconnected = true;
+				theNextState = kDisconnected;
+				break;
+			case TDCLEvent::kTransportError:
+			{
+				auto* typed = static_cast<TDCLPayloadEvent<TDCLTransportErrorPayload>*>( theNextEvent.get() );
+				if ( typed->GetPayload().error )
+				{
+					std::rethrow_exception( typed->GetPayload().error );
+				}
+				theNextState = kDisconnected;
+				break;
+			}
+			case TDCLEvent::kDisconnectLink:
+				theNextState = kDisconnecting;
+				break;
+			case TDCLEvent::kCloseLink:
+				theNextState = kDisconnected;
+				break;
+			default:
+				break;
+			}
 		}
 	}
-	
+	catch ( ... )
+	{
+		mIsBusy = false;
+		throw;
+	}
+
+	mIsBusy = false;
 	return theNextState;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * HandleException( TDCLException* )
-// --------------------------------------------------------------------------------	//
 void
 TDCLLink::HandleException( TDCLException* inException )
 {
 	EState theFinalState;
 	{
 		std::lock_guard<std::mutex> lock( mStateMutex );
-
 		switch ( mState )
 		{
-			case kDisconnected:
-			case kConnecting:
-			case kDisconnecting:
-				mState = kDisconnecting;
-				theFinalState = kDisconnected;
-				break;
-		
-			case kConnected:
-			case kRunning:
-			default:
-				mState = kUnknown;
-				theFinalState = kUnknown;
-				break;
+		case kDisconnected:
+		case kConnecting:
+		case kDisconnecting:
+			mState = kDisconnecting;
+			theFinalState = kDisconnected;
+			break;
+		case kConnected:
+		case kRunning:
+		default:
+			mState = kUnknown;
+			theFinalState = kUnknown;
+			break;
 		}
 	}
 
-	auto cleanup = [ this, theFinalState ]()
-	{
-		if (mPipe)
+	auto cleanup = [this, theFinalState]() {
+		mUpstreamGuard.Reset();
+		CloseSessionTransport();
+		if ( mNewtonName )
 		{
-			try {
-				mPipe->Disconnect();
-			} catch ( ... ) {
-			}
-			mPipe.reset();
+			::free( (void*)mNewtonName );
+			mNewtonName = nil;
 		}
-
+		std::lock_guard<std::mutex> lock( mStateMutex );
+		if ( mState == kDisconnecting )
 		{
-			std::lock_guard<std::mutex> lock( mStateMutex );
-			if ( mState == kDisconnecting )
-			{
-				mState = theFinalState;
-			}
+			mState = theFinalState;
 		}
 	};
 
-	try {
+	try
+	{
 		mApplication->HandleLinkException( this, inException );
-	} catch ( ... ) {
+	}
+	catch ( ... )
+	{
 		cleanup();
 		throw;
 	}
@@ -902,69 +1177,164 @@ TDCLLink::HandleException( TDCLException* inException )
 	cleanup();
 }
 
-// --------------------------------------------------------------------------------	//
-//  * Idle( void )
-// --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::Idle( void )
 {
 	return kRunning;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
-// --------------------------------------------------------------------------------	//
 TDCLLink::EState
-TDCLLink::ProcessAppCommand(
-					TDCLAppCommand* /* inCommand */,
-					Boolean* outProcessed )
+TDCLLink::ProcessAppCommand( TDCLAppCommand* /* inCommand */, Boolean* outProcessed )
 {
-	// On ne fait rien par défaut.
 	*outProcessed = false;
 	return kRunning;
 }
 
-// --------------------------------------------------------------------------------	//
-//  * DataPresent( void )
-// --------------------------------------------------------------------------------	//
-void
-TDCLLink::DataPresent( void )
-{
-	PostEvent( new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kBytesAvailable ) );
-}
-
-// --------------------------------------------------------------------------------	//
-//  * GetAppCommandMask( void )
-// --------------------------------------------------------------------------------	//
 KUInt32
 TDCLLink::GetAppCommandMask( void )
 {
-	return (KUInt32) TDCLEvent::kAnyAppCommandMask;
+	return static_cast<KUInt32>( TDCLEvent::kAnyAppCommandMask );
 }
 
-// --------------------------------------------------------------------------------	//
-//  * ReceiveCommand( void )
-// --------------------------------------------------------------------------------	//
-TDCLDockCommand*
+std::unique_ptr<TDCLDockCommand>
 TDCLLink::ReceiveCommand( void )
 {
-	return TDCLDockCommand::ReceiveCommand( mPipe.get() );
+	using Clock = std::chrono::steady_clock;
+	const bool hasOverallTimeout = ( mTimeout > 0 );
+	const Clock::time_point overallDeadline =
+	    hasOverallTimeout ? ( Clock::now() + std::chrono::seconds( mTimeout ) ) : Clock::time_point{};
+
+	for ( ;; )
+	{
+		if ( auto cmd = mCommandFramer.TakeCommand() )
+		{
+			return cmd;
+		}
+		if ( mCommandFramer.HasError() )
+		{
+			std::rethrow_exception( mCommandFramer.GetError() );
+		}
+		if ( mPeerDisconnected || mCommandFramer.IsEOF() )
+		{
+			throw DCLEOF;
+		}
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			throw DCLUserCancelled;
+		}
+
+		RefreshMNPStallDeadline();
+		std::chrono::milliseconds waitTimeout = TDCLEventQueue::kForever;
+		bool mnpStallBounded = false;
+
+		if ( hasOverallTimeout )
+		{
+			const auto now = Clock::now();
+			if ( now >= overallDeadline )
+			{
+				throw DCLTimeout;
+			}
+			waitTimeout = std::chrono::duration_cast<std::chrono::milliseconds>( overallDeadline - now );
+		}
+
+		if ( mMNPStallActive )
+		{
+			const auto now = Clock::now();
+			if ( now >= mMNPStallDeadline )
+			{
+				HandleMNPStall();
+				if ( mPeerDisconnected )
+				{
+					throw DCLEOF;
+				}
+				continue;
+			}
+			const auto mnpRemaining =
+			    std::chrono::duration_cast<std::chrono::milliseconds>( mMNPStallDeadline - now );
+			const auto clamped = ( mnpRemaining.count() > 0 ) ? mnpRemaining : std::chrono::milliseconds( 0 );
+			if ( waitTimeout == TDCLEventQueue::kForever || clamped <= waitTimeout )
+			{
+				waitTimeout = clamped;
+				mnpStallBounded = true;
+			}
+		}
+
+		std::unique_ptr<TDCLEvent> ev(
+		    mEventQueue.WaitNextEvent( TDCLEvent::kLinkEvent, waitTimeout, mWorkerStopToken ) );
+
+		if ( mWorkerStopToken.stop_requested() )
+		{
+			throw DCLUserCancelled;
+		}
+		if ( !ev )
+		{
+			if ( mnpStallBounded && mMNPProtocol && mMNPProtocol->IsStallable() && Clock::now() >= mMNPStallDeadline )
+			{
+				HandleMNPStall();
+				if ( mPeerDisconnected )
+				{
+					throw DCLEOF;
+				}
+				continue;
+			}
+			throw DCLTimeout;
+		}
+
+		switch ( ev->GetEventID() )
+		{
+		case TDCLEvent::kBytesReceived:
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLBytesPayload>*>( ev.get() );
+			ProcessInboundBytes( typed->GetPayload().bytes );
+			break;
+		}
+		case TDCLEvent::kSessionClosed:
+			mPeerDisconnected = true;
+			throw DCLEOF;
+		case TDCLEvent::kTransportError:
+		{
+			auto* typed = static_cast<TDCLPayloadEvent<TDCLTransportErrorPayload>*>( ev.get() );
+			if ( typed->GetPayload().error )
+			{
+				std::rethrow_exception( typed->GetPayload().error );
+			}
+			throw DCLEOF;
+		}
+		case TDCLEvent::kCloseLink:
+		case TDCLEvent::kDisconnectLink:
+			throw DCLEOF;
+		default:
+			break;
+		}
+	}
 }
 
-// ============================================================================= //
-// **** IMPORTANT ****  ALL USERS PLEASE NOTE ****                               //
-//                                                                               //
-// Due to a recent systems overload error your recent disk files have been       //
-// erased.  Therefore, in accordance with the UNIX Basic Manual, University of   //
-// Washington Geophysics Manual, and Bylaw 9(c), Section XII of the Revised      //
-// Federal Communications Act, you are being granted Temporary Disk Space,       //
-// valid for three months from this date, subject to the restrictions set forth  //
-// in Appendix II of the Federal Communications Handbook (18th edition) as well  //
-// as the references mentioned herein.  You may apply for more disk space at any //
-// time.  Disk usage in or above the eighth percentile will secure the removal   //
-// of all restrictions and you will immediately receive your permanent disk      //
-// space.  Disk usage in the sixth or seventh percentile will not effect the     //
-// validity of your temporary disk space, though its expiration date may be      //
-// extended for a period of up to three months.  A score in the fifth percentile //
-// or below will result in the withdrawal of your Temporary Disk space.          //
-// ============================================================================= //
+KSInt32
+TDCLLink::GetResultCmd( void )
+{
+	KSInt32 theResult = 0;
+
+	for ( ;; )
+	{
+		auto msg = ReceiveCommand();
+		if ( msg->GetCommand() == TDCLDockCommand::kDHello )
+		{
+			// Skip keepalive hello; continue if another command is already buffered.
+			if ( !mCommandFramer.HasCommand() )
+			{
+				// Wait for the actual kDResult command.
+				continue;
+			}
+			continue;
+		}
+		if ( msg->GetCommand() == TDCLDockCommand::kDResult )
+		{
+			auto* res = static_cast<TDCLDockCmdSingleLong*>( msg.get() );
+			theResult = static_cast<KSInt32>( res->GetLong() );
+			break;
+		}
+		throw DCLUnexpDockCmd;
+	}
+
+	return theResult;
+}

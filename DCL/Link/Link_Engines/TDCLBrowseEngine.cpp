@@ -47,7 +47,6 @@
 #include <K/Math/UTInt64.h>
 
 // DCL
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLBadDockCmdException.h>
 #include <DCL/Interfaces/TDCLApplication.h>
@@ -98,7 +97,7 @@ TDCLBrowseEngine::StartBrowsing( const TDCLNSRef& inFileTypes )
 	
 	// On envoie une commande kDResult au Newton.
 	TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, 0 );
-	theResultCmd.SendCommand( GetLink()->GetPipe() );
+	theResultCmd.SendCommand( GetLink()->GetOutputStream() );
 }
 
 // -------------------------------------------------------------------------- //
@@ -111,7 +110,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 {
 	Boolean theResult = true;
 	
-	TDCLPipe* thePipe = GetLink()->GetPipe();
+	TDCLStream* thePipe = GetLink()->GetOutputStream();
 
 	switch ( inCommand->GetCommand() )
 	{
@@ -148,7 +147,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 				// Envoi du chemin.
 				TDCLDockCmdNSObject thePathCmd(
 					TDCLDockCommand::kDPath, mCurrentFolder->GetPath() );
-				thePathCmd.SendCommand( GetLink()->GetPipe() );
+				thePathCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}	
 		break;
@@ -164,7 +163,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 				// Envoi de la commande.
 				TDCLDockCmdNSObject theFileInfoCmd(
 					TDCLDockCommand::kDFileInfo, theInfo );
-				theFileInfoCmd.SendCommand( GetLink()->GetPipe() );
+				theFileInfoCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}
 		break;
@@ -211,7 +210,7 @@ TDCLBrowseEngine::ProcessDockCommand(
 
 				TDCLDockCmdNSObject theDevicesCmd(
 					TDCLDockCommand::kDDevices, TDCLNSRef( theArray ) );
-				theDevicesCmd.SendCommand( GetLink()->GetPipe() );
+				theDevicesCmd.SendCommand( GetLink()->GetOutputStream() );
 				*outProcessed = true;
 			}
 		break;

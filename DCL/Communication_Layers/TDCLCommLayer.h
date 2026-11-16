@@ -1,9 +1,6 @@
 // ==============================
-// Fichier:			TDCLCommLayer.h
-// Projet:			Desktop Connection Library
-//
-// Créé le:			23/08/2000
-// Tabulation:		4 espaces
+// File:			TDCLCommLayer.h
+// Project:			Desktop Connection Library
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -20,19 +17,11 @@
 //
 // The Original Code is TDCLCommLayer.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
-// Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
-//
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLCommLayer.h,v 1.4 2004/11/24 14:08:53 paul Exp $
-// ===========
 
 #ifndef __TDCLCOMMLAYER__
 #define __TDCLCOMMLAYER__
@@ -44,32 +33,15 @@
 
 // DCL
 #include <DCL/Exceptions/TDCLException.h>
+#include <DCL/Interfaces/TDCLSessionId.h>
 #include <DCL/Interfaces/TStoppable.h>
 
-// Pré-déclarations
-class TDCLPipe;
 class TDCLServer;
+class TDCLSessionBus;
 
 ///
-/// Classe abstraite pour les couches de communication.
-/// Ceci est la classe de base pour les couches asynchrones. Les couches
-/// synchrones doivent dériver de TDCLSyncCommLayer.
-///
-/// Les couches de communications comprennent:
-/// - des utilitaires concernant la couche (surtout une fonction pour
-///		détermine si la couche est disponible)
-/// - un serveur qui gère une ou plusieurs connexions.
-///
-/// Par asynchrone, j'entends qu'il y a un mécanisme de rappel de la part
-/// du système. Exemple typique: OpenTransport avec la fonction 'Notify'.
-/// Par synchrone, j'entends qu'il n'y a pas de tel mécanisme. Exemple typique:
-/// bsd sockets. Dans ce cas, le mieux est d'utiliser les appels bloquants.
-///
-/// \author	Paul Guyot <pguyot@kallisys.net>
-/// \version $Revision: 1.4 $
-///
-/// \todo	revoir les temporisations.
-/// \test	UTestCommLayers
+/// Abstract base class for communication layers (listeners/transports) that
+/// accept connections into session-bus endpoints without exposing TDCLPipe.
 ///
 class TDCLCommLayer
 	:
@@ -77,240 +49,70 @@ class TDCLCommLayer
 {
 public:
 	enum {
-		kDefaultPipeCount	=	0	///< nombre maximal de connexions par
-									///< défaut. 0 veut dire pas de limite.
+		kDefaultPipeCount	=	0
 	};
-	
-	/// Constantes pour le délai de temporisation.
+
 	enum {
-		kNoTimeout			=	-1, ///< pas de temporisation
-		kDefaultTimeout		=	0	///< temporisation par défaut (dépend de la
-									///< couche de communication)
+		kNoTimeout			=	-1,
+		kDefaultTimeout		=	0
 	};
 
-	///
-	/// Constructeur.
-	///
-	/// Enregistre le nombre maximum de connexion dans \c mMaxPipeCount.
-	/// Enregistre aussi \p inFlushAvailable et \p inTimeout dans les champs
-	/// privés correspondants.
-	///
-	/// \remark ce constructeur est public, mais la classe est abstraite.
-	///
-	/// \param inFlushAvailable	si la couche de communication sait vider la
-	///							mémoire tampon de sortie.
-	///							Si la couche de communication ne sait pas le
-	///							faire, l'appelant devra attendre avant de
-	///							fermer la connexion.
-	/// \param inMaxPipeCount	nombre maximum de connexion simultanées.
-	///							0 signifie pas de limite.
-	///
-						TDCLCommLayer(
-								Boolean	inFlushAvailable = false,
-								KUInt32	inMaxPipeCount = kDefaultPipeCount
-							);
-	
-	///
-	/// Destructeur.
-	/// Celui-ci ne fait rien. Le destructeur des sous-classes ne doit pas
-	/// supprimer les connexions qui restent, c'est à l'appelant de le faire.
-	/// Cependant, l'appelant doit pouvoir fermer toutes les connexions,
-	/// supprimer la couche de communication et ne supprimer les objets
-	/// connexions qu'après.
-	///
-	virtual				~TDCLCommLayer( void ) {}
-	
-	/// \name interface serveur
+	TDCLCommLayer(
+		Boolean	inFlushAvailable = false,
+		KUInt32	inMaxPipeCount = kDefaultPipeCount );
 
-	///
-	/// Commence à écouter.
-	/// Cette méthode appelle DoStartListening (qui est la méthode à
-	/// surcharger).
-	///
-	/// \param inServer	serveur à prévenir lorsqu'une requête est arrivée.
-	/// \throws TDCLException si le serveur est déjà en train d'écouter.
-	///
-	virtual void		StartListening( TDCLServer* inServer );
+	virtual ~TDCLCommLayer( void ) = default;
 
-	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	/// Cette méthode appelle DoStopListening (qui est la méthode à
-	/// surcharger).
-	/// Ne fait rien si on n'est pas en train d'écouter.
-	///
-	virtual void		StopListening( void );
+	virtual void			StartListening( TDCLServer* inServer );
+	virtual void			StopListening( void );
 
-	///
-	/// Retourne un objet connexion représentant le canal de communication avec
-	/// le client ou \c nil s'il n'y a pas de requête de connexion présente.
-	/// C'est un objet créé avec \c new. L'appelant devra le supprimer.
-	///
-	/// \return un nouvel objet TDCLPipe représentant la
-	///			connexion ou \c nullptr.
-	///
-	virtual	std::unique_ptr<TDCLPipe>	Accept( void ) = 0;
-	
-	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
-	///
-	virtual	void		Refuse( void ) = 0;
+	/// Accepts a pending connection and returns a TDCLSessionId registered on
+	/// the server's TDCLSessionBus, or an invalid TDCLSessionId if none.
+	virtual TDCLSessionId	AcceptSession( void ) = 0;
 
-	///
-	/// Returns \c true if called from an internal worker thread owned by
-	/// this communication layer.
-	///
-	virtual	bool		IsCurrentThread( void ) const noexcept
-		{
-			return false;
-		}
+	/// Refuses the pending connection, if any.
+	virtual void			Refuse( void ) = 0;
 
-	///
-	/// Détermine si la couche de communication sait vider la mémoire tampon de
-	/// sortie.
-	///
-	/// Certaines couches de communication ne savent pas le faire.
-	///
-	/// \return \c true si la couche de communication sait le faire, \c false
-	/// sinon.
-	///
-	inline	Boolean		FlushAvailable( void )
-		{
-			return mFlushAvailable;
-		}
-	
-	///
-	/// Méthode appelée pour perdre du temps.
-	///
-	/// Elle est appelée (par l'implémentation par défaut de TDCLPipe::Idle par
-	/// exemple) à intervalles réguliers.
-	///
-	/// L'implémentation par défaut ne fait rien.
-	///
-	virtual	void		Idle( void );
+	/// Returns true if accepted sessions require MNP framing (e.g. serial MNP).
+	virtual bool			UsesMNP( void ) const noexcept { return false; }
 
-	///
-	/// Change la temporisation pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
-	///
-	/// \param inTimeout	nouvelle temporisation au format \c TDCLCommLayer
-	///
-	virtual	void		SetTimeout( long inTimeout ) = 0;
+	virtual bool			IsCurrentThread( void ) const noexcept { return false; }
 
-	///
-	/// Récupère la temporisation utilisée pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
-	///
-	/// \return la temporisation au format \c TDCLCommLayer
-	///
-	virtual	long		GetTimeout( void ) = 0;
+	inline Boolean			FlushAvailable( void ) const noexcept { return mFlushAvailable; }
+	virtual void			Idle( void );
 
-	///
-	/// Méthode appelée par TDCLPipe::Disconnect() pour indiquer qu'une
-	/// connexion a été fermée. Décrémente le compteur des connexions ouvertes.
-	///
-	/// \param inPipe	connexion qui a été fermée
-	///
-	virtual	void		Disconnected( TDCLPipe* inPipe ) = 0;
+	virtual void			SetTimeout( long inTimeout ) = 0;
+	virtual long			GetTimeout( void ) = 0;
 
 protected:
-	///
-	/// Commence effectivement à écouter.
-	///
-	virtual	void		DoStartListening( void ) = 0;
+	virtual void			DoStartListening( void ) = 0;
+	virtual void			DoStopListening( void ) = 0;
 
-	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	///
-	virtual	void		DoStopListening( void ) = 0;
+	inline void				SetFlushAvailable( Boolean inNewFlushAvailable ) noexcept
+	{
+		mFlushAvailable = inNewFlushAvailable;
+	}
 
+	inline KUInt32			GetMaxPipeCount( void ) const noexcept { return mMaxPipeCount; }
+	inline void				SetMaxPipeCount( KUInt32 inMaxPipeCount ) noexcept { mMaxPipeCount = inMaxPipeCount; }
 
-	///
-	/// Sélecteur sur mFlushAvailable.
-	///
-	/// \param inNewFlushAvailable	\c true pour dire que cette couche de
-	/// 							communication sait vider la mémoire tampon
-	///								de sortie, \c false sinon.
-	///
-	inline	void		SetFlushAvailable( Boolean inNewFlushAvailable )
-		{
-			mFlushAvailable = inNewFlushAvailable;
-		}
+	inline TDCLServer*		GetServer( void ) const noexcept { return mServer; }
+	inline void				SetServer( TDCLServer* inServer ) noexcept { mServer = inServer; }
 
-	///
-	/// Accesseur sur le nombre maximum de connexions ouvertes.
-	///
-	/// \return le nombre maximum de connexions que le serveur peut gérer à la
-	///			fois.
-	///
-	inline	KUInt32		GetMaxPipeCount( void ) const
-		{
-			return mMaxPipeCount;
-		}
-		
-	///
-	/// Sélecteur sur le nombre maximum de connexions ouvertes.
-	///
-	/// \param inMaxPipeCount	nombre maximum de connexions que le serveur
-	///							peut gérer à la fois.
-	///
-	inline	void		SetMaxPipeCount( KUInt32 inMaxPipeCount )
-		{
-			mMaxPipeCount = inMaxPipeCount;
-		}
-
-	///
-	/// Accesseur sur le serveur associé (\c nil lorsqu'on n'écoute pas).
-	///
-	/// \return le serveur associé à cette couche de communication.
-	///
-	inline	TDCLServer*	GetServer( void ) const
-		{
-			return mServer;
-		}
-		
-	///
-	/// Sélecteur sur le serveur associé.
-	/// (utilisé uniquement si StartListening est surchargée).
-	///
-	/// \param inServer	nouveau serveur
-	///
-	inline	void		SetServer( TDCLServer* inServer )
-		{
-			mServer = inServer;
-		}
+	inline const std::shared_ptr<TDCLSessionBus>& GetSessionBus( void ) const noexcept
+	{
+		return mSessionBus;
+	}
 
 private:
-	///
-	/// Constructeur par copie volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
-	///
-	TDCLCommLayer( const TDCLCommLayer& inCopy );
+	TDCLCommLayer( const TDCLCommLayer& inCopy ) = delete;
+	TDCLCommLayer& operator = ( const TDCLCommLayer& inCopy ) = delete;
 
-	///
-	/// Opérateur d'assignation volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
-	///
-	TDCLCommLayer& operator = ( const TDCLCommLayer& inCopy );
-
-	Boolean				mFlushAvailable;	///< Si cette couche de
-											///< communication sait vider la
-											///< mémoire tampon.
-	KUInt32				mMaxPipeCount;		///< Nombre maximum de connexion
-											///< que ce serveur peut gérer à la
-											///< fois.
-	TDCLServer*			mServer;			///< Serveur associé à l'interface
-											///< de communication.
+	Boolean							mFlushAvailable;
+	KUInt32							mMaxPipeCount;
+	TDCLServer*						mServer;
+	std::shared_ptr<TDCLSessionBus>	mSessionBus;
 };
 
 #endif
-		// __TDCLCOMMLAYER__
-
-// ====================================================================== //
-// Il y en a qui ne savent pas déballer leur ordinateur de la boîte       //
-// d'emballage. Faudrait aussi prévoir une doc là-dessus (parce que celle //
-// fournie avec la boîte, il y a plein de mots et pas beaucoup d'images)  //
-// -+- Jaco in Guide du Linuxien pervers - "[OUI] à fcol.deballage" -+-   //
-// ====================================================================== //
+// __TDCLCOMMLAYER__

@@ -49,7 +49,6 @@
 // DCL
 #include <DCL/Exceptions/TDCLNewtonException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
-#include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 #include <DCL/Interfaces/TDCLFile.h>
 #include <DCL/Link/App_Commands/TDCLAppCmdFile.h>
@@ -80,7 +79,7 @@ TDCLLoadPackageLink::DoConnect( void )
 
 	// Envoi de kDSetTimeout.
 	{	
-		long theTimeout = GetPipe()->GetTimeout();
+		long theTimeout = GetTimeout();
 		if (theTimeout < 0)
 		{
 			// Valeur par défaut.
@@ -92,14 +91,14 @@ TDCLLoadPackageLink::DoConnect( void )
 			TDCLDockCommand::kDSetTimeout, (KUInt32) theTimeout );
 
 		// Envoi
-		theSetTimeoutMessage.SendCommand( GetPipe() );
+		theSetTimeoutMessage.SendCommand( GetOutputStream() );
 	}
 	
 	// Réception de kDResult.
 	{
-		TSmartPtr<TDCLDockCommand> theNewtMessage;
+		std::unique_ptr<TDCLDockCommand> theNewtMessage;
 		
-		theNewtMessage = TDCLDockCommand::ReceiveCommand( GetPipe() );
+		theNewtMessage = ReceiveCommand();
 
 		// Vérification que c'est bien une commande kDResult.
 		if (theNewtMessage->GetCommand() != TDCLDockCommand::kDResult)
@@ -110,7 +109,7 @@ TDCLLoadPackageLink::DoConnect( void )
 
 		// C'est bien une structure	TDCLDockCmdSingleLong
 		TDCLDockCmdSingleLong* theResult =
-			(TDCLDockCmdSingleLong*) theNewtMessage.Get();
+			(TDCLDockCmdSingleLong*) theNewtMessage.get();
 		
 		// On lève une exception si le code n'est pas 0.
 		KSInt32 theResultInt = (KSInt32) theResult->GetLong();
@@ -120,7 +119,6 @@ TDCLLoadPackageLink::DoConnect( void )
 		}
 		
 		// Libération.
-		theNewtMessage.Delete();
 	}
 }
 
@@ -180,21 +178,19 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	{
 		TDCLDockCmdLoadPkg theLoadPackageMessage( inPackage );
 
-		theLoadPackageMessage.SendCommand( GetPipe(), ProgressFunc, this );
+		theLoadPackageMessage.SendCommand( GetOutputStream(), ProgressFunc, this );
 	}
 
 	// Je récupère le résultat.
 	{
-		TDCLDockCommand* theNewtMessage =
-				TDCLDockCommand::ReceiveCommand( GetPipe() );
+		auto theNewtMessage = ReceiveCommand();
 		KUInt32 theCmd = theNewtMessage->GetCommand();
 		if (theNewtMessage->GetCommand() == TDCLDockCommand::kDResult)
 		{
 			// It's a kDResult, process it.
 			TDCLDockCmdSingleLong* theResultCmd =
-					(TDCLDockCmdSingleLong*) theNewtMessage;
+					(TDCLDockCmdSingleLong*) theNewtMessage.get();
 			KSInt32 theResult = (KSInt32) theResultCmd->GetLong();
-			delete theNewtMessage;	// I no longer need it.
  			if (theResult == -28004 || theResult == -28020)
  			{
 				throw TDCLUserCancelledException( __FILE__, __LINE__ );
@@ -206,20 +202,16 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 			}
  		} else if (theCmd == TDCLDockCommand::kDOperationCanceled || theCmd == TDCLDockCommand::kDOperationCanceled2)
  		{
- 			delete theNewtMessage;
- 			TDCLDockCmdNoData ack( TDCLDockCommand::kDOpCanceledAck );
- 			ack.SendCommand( GetPipe() );
- 			GetPipe()->FlushOutput();
+ 	 			TDCLDockCmdNoData ack( TDCLDockCommand::kDOpCanceledAck );
+ 			ack.SendCommand( GetOutputStream() );
 			throw TDCLUserCancelledException( __FILE__, __LINE__ );
  		} else if (theCmd == TDCLDockCommand::kDDisconnect)
  		{
- 			delete theNewtMessage;
-			throw TDCLUserCancelledException( __FILE__, __LINE__ );
+ 				throw TDCLUserCancelledException( __FILE__, __LINE__ );
  		} else
  		{
 			// It's not what I expected. Get out.
-			delete theNewtMessage;
-			throw DCLUnexpDockCmd;
+				throw DCLUnexpDockCmd;
 		}
 	}
 }

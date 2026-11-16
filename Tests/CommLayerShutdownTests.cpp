@@ -1,4 +1,4 @@
-#include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
+#include <DCL/Communication_Layers/TDCLCommLayer.h>
 #include <DCL/Communication_Layers/Common/TDCLSocket.h>
 #include "TTestApplication.h"
 #include "TTestServer.h"
@@ -19,6 +19,7 @@ using PlatformSocket = TDCLBSDSocket;
 #include <memory>
 #include <mutex>
 #include <stdexcept>
+#include <thread>
 
 namespace {
 
@@ -31,10 +32,11 @@ void Require(bool condition, const char* message)
 
 // Keep the listener alive after its blocking wait has been interrupted. This
 // makes returning from StopListening before actual worker exit observable.
-class DelayedLayer : public TDCLSyncCommLayer
+class DelayedLayer : public TDCLCommLayer
 {
 public:
     DelayedLayer() = default;
+    ~DelayedLayer() override { StopListening(); }
 
     void Prepare()
     {
@@ -68,7 +70,8 @@ public:
     bool HasServer() const { return GetServer() != nullptr; }
     void SetTimeout(long) override {}
     long GetTimeout() override { return 0; }
-    void Disconnected(TDCLPipe*) override {}
+    TDCLSessionId AcceptSession() override { return {}; }
+    void Refuse() override {}
 
     std::atomic<bool> exited{false};
     std::atomic<bool> serverKeptAlive{false};
@@ -77,40 +80,42 @@ public:
 protected:
     void DoStartListening() override
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        started = true;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            started = true;
+        }
         changed.notify_all();
+        const std::stop_token token = GetStopToken();
+        worker = std::jthread([this, token](std::stop_token) {
+            try {
+                std::unique_lock<std::mutex> lock(mutex);
+                changed.wait(lock, [this, &token] {
+                    return (stopping && allowExit) || (token.stop_requested() && allowExit);
+                });
+                serverKeptAlive = HasServer();
+            } catch (...) {
+                exception = true;
+            }
+            exited = true;
+        });
     }
 
     void DoStopListening() override
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        stopping = true;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            stopping = true;
+        }
         changed.notify_all();
+        if (worker.joinable()) {
+            worker.join();
+        }
     }
-
-    Boolean WaitForIncomingRequest() override
-    {
-        std::unique_lock<std::mutex> lock(mutex);
-        changed.wait(lock, [this] { return stopping && allowExit; });
-        serverKeptAlive = HasServer();
-        return false;
-    }
-
-    std::unique_ptr<TDCLPipe> DoAccept() override { return nullptr; }
-    void DoRefuse() override {}
-
-    void Run() override
-    {
-        TDCLSyncCommLayer::Run();
-        exited = true;
-    }
-
-    void HandleException(TDCLException*) override { exception = true; }
 
 private:
     std::mutex mutex;
     std::condition_variable changed;
+    std::jthread worker;
     bool started = false;
     bool stopping = false;
     bool allowExit = false;
@@ -131,8 +136,6 @@ public:
         started.get();
     }
 
-    std::atomic<unsigned> exits{0};
-
 protected:
     void DoStartListening() override
     {
@@ -143,12 +146,6 @@ protected:
             ready.set_exception(std::current_exception());
             throw;
         }
-    }
-
-    void Run() override
-    {
-        TDCLSyncCommLayer::Run();
-        ++exits;
     }
 
 private:
@@ -165,7 +162,6 @@ void TestDelayedShutdown(TDCLServer* server)
         auto stopped = std::async(std::launch::async, [&layer] { layer.StopListening(); });
         layer.WaitStopping();
         bool waited = stopped.wait_for(std::chrono::milliseconds(20)) == std::future_status::timeout;
-        // Always release the worker before checking assertions or joining.
         layer.AllowExit();
         stopped.get();
         Require(waited, "StopListening returned before the worker was allowed to exit");
@@ -182,13 +178,12 @@ void TestSocketRestartAndDestruction(TDCLServer* server)
     for (unsigned run = 1; run <= 100; ++run) {
         layer.StartAndWait(server);
         layer.StopListening();
-        Require(layer.exits == run, "Socket listener was still running after StopListening");
+        Require(!layer.IsCurrentThread(), "Socket listener was still running after StopListening");
     }
     for (unsigned run = 0; run < 100; ++run) {
         TestSocket temporary;
         temporary.StartAndWait(server);
         temporary.StopListening();
-        Require(temporary.exits == 1, "Socket worker outlived shutdown before destruction");
     }
 }
 

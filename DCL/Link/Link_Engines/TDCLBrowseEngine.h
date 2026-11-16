@@ -47,7 +47,6 @@
 
 // Pré-déclarations
 class TDCLFolder;
-class TDCLPipe;
 class IDCLFiles;
 
 ///

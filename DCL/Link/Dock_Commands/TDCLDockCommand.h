@@ -44,7 +44,6 @@
 
 // Pré-déclarations
 class TDCLStream;
-class TDCLPipe;
 
 ///
 /// Type d'une fonction pour savoir l'évolution de l'envoi ou de la réception
@@ -118,7 +117,6 @@ public:
 	/// \param inPipe				connexion pour lire la commande.
 	/// \return le code d'erreur de la commande kDResult qui a été lue
 	///
-	static	KSInt32				GetResultCmd( TDCLPipe* inPipe );
 
 	///
 	/// Envoie la commande.

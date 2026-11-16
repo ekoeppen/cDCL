@@ -63,6 +63,7 @@ public:
 	static Boolean IsAvailable( void );
 
 protected:
+	virtual TSocketOps GetSocketOps( void ) const override;
 	virtual void CloseSocket( dcl_socket_t inSocket ) override;
 	virtual int SetNonBlocking( dcl_socket_t inSocket, bool inNonBlocking ) override;
 	virtual int GetSocketError( void ) const override;
@@ -71,8 +72,8 @@ protected:
 	virtual bool IsAbortedAcceptError( int inErr ) const override;
 	virtual void ThrowSocketError( int inErr ) const override;
 	virtual void ThrowSelectError( int inErr ) const override;
-	virtual void ThrowRecvError( int inErr ) const override;
-	virtual void ThrowSendError( int inErr ) const override;
+	virtual void ThrowRecvError( int inErr ) const;
+	virtual void ThrowSendError( int inErr ) const;
 
 private:
 	TDCLBSDSocket( const TDCLBSDSocket& inCopy );

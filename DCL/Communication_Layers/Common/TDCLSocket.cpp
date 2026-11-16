@@ -1,9 +1,6 @@
 // ==============================
-// Fichier:			TDCLSocket.cpp
-// Projet:			Desktop Connection Library
-//
-// Créé le:			29/3/2003
-// Tabulation:		4 espaces
+// File:			TDCLSocket.cpp
+// Project:			Desktop Connection Library
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -20,50 +17,358 @@
 //
 // The Original Code is TDCLSocket.cpp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2002-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vacik <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLSocket.cp,v 1.11 2004/11/24 18:10:56 paul Exp $
-// ===========
 
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/Common/TDCLSocket.h>
 
+// ISO C++
+#include <algorithm>
 #include <chrono>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <cstdint>
+#include <cstring>
+#include <deque>
+#include <utility>
 
 #if !TARGET_OS_WIN32
 #include <netinet/tcp.h>
 #include <unistd.h>
 #endif
 
-#include <K/Tests/KDebug.h>
-#include <DCL/Communication_Layers/TDCLBufferedPipe.h>
+// DCL
 #include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
+#include <DCL/Server/TDCLServer.h>
+
+class TDCLSocket::TSocketSession
+{
+public:
+	TSocketSession(
+		dcl_socket_t inSocket,
+		TSocketOps inOps,
+		std::shared_ptr<TDCLSessionBus> inBus,
+		std::shared_ptr<std::atomic<KUInt32>> inActiveCount )
+		: mSocket( inSocket ),
+		  mOps( inOps ),
+		  mBus( std::move( inBus ) ),
+		  mActiveCount( std::move( inActiveCount ) )
+	{
+	}
+
+	~TSocketSession( void )
+	{
+		StopAndJoin();
+	}
+
+	TDCLSessionId Start( void )
+	{
+		(void) mWakeWait.EnsureOpen();
+		mActiveCount->fetch_add( 1, std::memory_order_relaxed );
+
+		mDownstreamGuard = mBus->CreateSession(
+		    [this]( std::vector<std::uint8_t> inBytes ) {
+			    return QueueOutbound( std::move( inBytes ) );
+		    },
+		    [this]( void ) {
+			    RequestClose();
+		    } );
+
+		const TDCLSessionId id = mDownstreamGuard.GetSessionId();
+		mSessionId = id;
+		mStopSource = std::stop_source{};
+		const std::stop_token token = mStopSource.get_token();
+		mThread = std::jthread( [this, token]( std::stop_token ) { WorkerLoop( token ); } );
+		return id;
+	}
+
+	void StopAndJoin( void ) noexcept
+	{
+		{
+			std::lock_guard<std::mutex> lock( mMutex );
+			mCloseRequested = true;
+			mCancelRequested = true;
+			if ( mIterStopSource )
+			{
+				(void) mIterStopSource->request_stop();
+			}
+		}
+		(void) mStopSource.request_stop();
+		mWakeWait.Trigger();
+
+		if ( mThread.joinable() )
+		{
+			if ( std::this_thread::get_id() == mThread.get_id() )
+			{
+				// Never self-join; detach not needed because StopAndJoin is called
+				// externally from Destroy()/CloseAllSessions().
+				return;
+			}
+			mThread.join();
+		}
+
+		mDownstreamGuard.Reset();
+		mWakeWait.Close();
+		if ( mSocket != kInvalidSocket )
+		{
+			mOps.closeSocket( mSocket );
+			mSocket = kInvalidSocket;
+		}
+		if ( mCounted.exchange( false ) )
+		{
+			mActiveCount->fetch_sub( 1, std::memory_order_relaxed );
+		}
+	}
+
+	bool IsFinished( void ) const noexcept
+	{
+		return mFinished.load( std::memory_order_acquire );
+	}
+
+private:
+	bool QueueOutbound( std::vector<std::uint8_t>&& inBytes )
+	{
+		std::lock_guard<std::mutex> lock( mMutex );
+		if ( mCloseRequested || mCancelRequested )
+		{
+			return false;
+		}
+		if ( !inBytes.empty() )
+		{
+			mOutboundQueue.push_back( std::move( inBytes ) );
+			if ( mIterStopSource )
+			{
+				(void) mIterStopSource->request_stop();
+			}
+		}
+		return true;
+	}
+
+	void RequestClose( void )
+	{
+		std::lock_guard<std::mutex> lock( mMutex );
+		mCloseRequested = true;
+		if ( mIterStopSource )
+		{
+			(void) mIterStopSource->request_stop();
+		}
+	}
+
+	void WorkerLoop( std::stop_token inStopToken )
+	{
+		std::vector<std::uint8_t> readBuf( 8192 );
+		std::size_t frontOffset = 0;
+
+		while ( !inStopToken.stop_requested() )
+		{
+			// 1. Drain outbound queue.
+			bool writeBlocked = false;
+			for ( ;; )
+			{
+				std::vector<std::uint8_t> chunk;
+				std::size_t offset = 0;
+				{
+					std::lock_guard<std::mutex> lock( mMutex );
+					if ( mCancelRequested || mOutboundQueue.empty() )
+					{
+						break;
+					}
+					chunk = std::move( mOutboundQueue.front() );
+					offset = frontOffset;
+				}
+
+				while ( offset < chunk.size() && !inStopToken.stop_requested() )
+				{
+#if TARGET_OS_WIN32
+					int toSend = static_cast<int>( chunk.size() - offset );
+					int sent = ::send( mSocket, reinterpret_cast<const char*>( chunk.data() + offset ), toSend, 0 );
+#else
+					std::size_t toSend = chunk.size() - offset;
+					ssize_t sent = ::send( mSocket, chunk.data() + offset, toSend, 0 );
+#endif
+					if ( sent > 0 )
+					{
+						offset += static_cast<std::size_t>( sent );
+					}
+					else
+					{
+						const int err = mOps.getSocketError();
+						if ( mOps.isInterrupted( err ) )
+						{
+							continue;
+						}
+						if ( mOps.isWouldBlock( err ) )
+						{
+							writeBlocked = true;
+							break;
+						}
+						mBus->PublishError( mSessionId, mOps.makeSendError( err ) );
+						goto done;
+					}
+				}
+
+				std::lock_guard<std::mutex> lock( mMutex );
+				if ( offset >= chunk.size() )
+				{
+					mOutboundQueue.pop_front();
+					frontOffset = 0;
+				}
+				else
+				{
+					mOutboundQueue.front() = std::move( chunk );
+					frontOffset = offset;
+					break;
+				}
+			}
+
+			// 2. Check close request after outbound flush.
+			{
+				std::lock_guard<std::mutex> lock( mMutex );
+				if ( mCloseRequested && ( mCancelRequested || mOutboundQueue.empty() ) )
+				{
+					goto done;
+				}
+			}
+
+			// 3. Read all currently available bytes.
+			std::vector<std::uint8_t> inbound;
+			for ( ;; )
+			{
+#if TARGET_OS_WIN32
+				int n = ::recv( mSocket, reinterpret_cast<char*>( readBuf.data() ), static_cast<int>( readBuf.size() ), 0 );
+#else
+				ssize_t n = ::recv( mSocket, readBuf.data(), readBuf.size(), 0 );
+#endif
+				if ( n > 0 )
+				{
+					inbound.insert( inbound.end(), readBuf.data(), readBuf.data() + n );
+				}
+				else if ( n == 0 )
+				{
+					if ( !inbound.empty() )
+					{
+						mBus->PublishBytes( mSessionId, std::move( inbound ) );
+					}
+					mBus->PublishClosed( mSessionId );
+					goto done;
+				}
+				else
+				{
+					const int err = mOps.getSocketError();
+					if ( mOps.isInterrupted( err ) )
+					{
+						continue;
+					}
+					if ( mOps.isWouldBlock( err ) )
+					{
+						break;
+					}
+					if ( !inbound.empty() )
+					{
+						mBus->PublishBytes( mSessionId, std::move( inbound ) );
+					}
+					mBus->PublishError( mSessionId, mOps.makeRecvError( err ) );
+					goto done;
+				}
+			}
+
+			if ( !inbound.empty() )
+			{
+				mBus->PublishBytes( mSessionId, std::move( inbound ) );
+			}
+
+			// 4. Wait for socket readiness or outbound/close wake.
+			std::stop_source iterStop;
+			std::stop_token iterToken = iterStop.get_token();
+			{
+				std::lock_guard<std::mutex> lock( mMutex );
+				if ( mCancelRequested || ( mCloseRequested && mOutboundQueue.empty() ) || ( !writeBlocked && !mOutboundQueue.empty() ) )
+				{
+					continue;
+				}
+				mIterStopSource = &iterStop;
+			}
+
+			std::stop_callback cb( inStopToken, [&iterStop]() { (void)iterStop.request_stop(); } );
+			int waitErr = 0;
+			const auto dir = writeBlocked ? TDCLWakeableWait::EDirection::kWrite : TDCLWakeableWait::EDirection::kRead;
+			const auto res = mWakeWait.WaitReady(
+			    (dcl_wait_handle_t)mSocket,
+			    dir,
+			    writeBlocked ? std::chrono::milliseconds( 50 ) : std::chrono::milliseconds( -1 ),
+			    iterToken,
+			    &waitErr );
+
+			{
+				std::lock_guard<std::mutex> lock( mMutex );
+				mIterStopSource = nullptr;
+			}
+
+			if ( res == TDCLWakeableWait::EResult::kError )
+			{
+				mBus->PublishError( mSessionId, mOps.makeRecvError( waitErr ) );
+				break;
+			}
+		}
+
+	done:
+		mDownstreamGuard.Reset();
+		mWakeWait.Close();
+		if ( mSocket != kInvalidSocket )
+		{
+			mOps.closeSocket( mSocket );
+			mSocket = kInvalidSocket;
+		}
+		if ( mCounted.exchange( false ) )
+		{
+			mActiveCount->fetch_sub( 1, std::memory_order_relaxed );
+		}
+		mFinished.store( true, std::memory_order_release );
+	}
+
+	dcl_socket_t mSocket;
+	TSocketOps mOps;
+	std::shared_ptr<TDCLSessionBus> mBus;
+	std::shared_ptr<std::atomic<KUInt32>> mActiveCount;
+	std::atomic<bool> mCounted{ true };
+	std::atomic<bool> mFinished{ false };
+
+	TDCLSessionId mSessionId;
+	TDCLSessionBus::DownstreamGuard mDownstreamGuard;
+	TDCLWakeableWait mWakeWait;
+
+	std::mutex mMutex;
+	std::deque<std::vector<std::uint8_t>> mOutboundQueue;
+	bool mCloseRequested = false;
+	bool mCancelRequested = false;
+	std::stop_source* mIterStopSource = nullptr;
+
+	std::stop_source mStopSource;
+	std::jthread mThread;
+};
 
 TDCLSocket::TDCLSocket( unsigned short inPort /* = kIANAAssignedPort */,
-                        KUInt32 inMaxPipeCount /* = kDefaultPipeCount */, long inTimeout /* = kDefaultTimeout */ )
-    : TDCLSyncCommLayer( false /* inFlushAvailable */, inMaxPipeCount ),
+                        KUInt32 inMaxPipeCount /* = kDefaultPipeCount */,
+                        long inTimeout /* = kDefaultTimeout */ )
+    : TDCLCommLayer( false /* inFlushAvailable */, inMaxPipeCount ),
       mServerSocket( kInvalidSocket ),
-      mCurrentPipeCount( 0 ),
+      mActiveSessionCount( std::make_shared<std::atomic<KUInt32>>( 0 ) ),
       mBackLogSize( 0 ),
       mTimeout( inTimeout ),
       mWakeWait(),
       mSocketsAreClosed( true ),
-      mPort( inPort )
+      mPort( inPort ),
+      mRequestPending( false )
 {
 	if ( ( inMaxPipeCount == 0 ) || ( inMaxPipeCount > kMaxSocketBackLog ) )
 	{
@@ -99,7 +404,7 @@ TDCLSocket::CloseListenSockets( void )
 void
 TDCLSocket::StopListening( void )
 {
-	TDCLSyncCommLayer::StopListening();
+	TDCLCommLayer::StopListening();
 	CloseListenSockets();
 }
 
@@ -107,6 +412,36 @@ void
 TDCLSocket::Destroy( void )
 {
 	StopListening();
+	CloseAllSessions();
+}
+
+void
+TDCLSocket::CloseAllSessions( void )
+{
+	std::vector<std::shared_ptr<TSocketSession>> sessions;
+	{
+		std::lock_guard<std::mutex> lock( mSessionsMutex );
+		sessions.swap( mSessions );
+	}
+	for ( auto& s : sessions )
+	{
+		s->StopAndJoin();
+	}
+}
+
+void
+TDCLSocket::PruneFinishedSessionsLocked( void )
+{
+	mSessions.erase(
+	    std::remove_if( mSessions.begin(), mSessions.end(),
+	                    []( const std::shared_ptr<TSocketSession>& s ) { return !s || s->IsFinished(); } ),
+	    mSessions.end() );
+}
+
+bool
+TDCLSocket::IsCurrentThread( void ) const noexcept
+{
+	return std::this_thread::get_id() == mListenThreadId.load();
 }
 
 void
@@ -121,19 +456,9 @@ TDCLSocket::GetTimeout( void )
 	return mTimeout;
 }
 
-void
-TDCLSocket::Disconnected( TDCLPipe* /* inPipe */ )
-{
-	if ( mCurrentPipeCount > 0 )
-	{
-		mCurrentPipeCount--;
-	}
-}
-
 int
 TDCLSocket::SetListenSocketOptions( dcl_socket_t inSocket )
 {
-	// Allow rebinding while old connections are in TIME_WAIT.
 	int theReuseFlag = 1;
 	return ::setsockopt( inSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&theReuseFlag, sizeof( theReuseFlag ) );
 }
@@ -213,12 +538,95 @@ TDCLSocket::DoStartListening( void )
 			throw;
 		}
 	}
+
+	StartListenThread();
+}
+
+void
+TDCLSocket::StartListenThread( void )
+{
+	{
+		std::lock_guard<std::mutex> lock( mListenMutex );
+		mRequestPending = false;
+	}
+	const std::stop_token token = GetStopToken();
+	mListenThread = std::jthread( [this, token]( std::stop_token ) { ListenWorkerEntry( token ); } );
+}
+
+void
+TDCLSocket::ClearRequestPending( void )
+{
+	{
+		std::lock_guard<std::mutex> lock( mListenMutex );
+		mRequestPending = false;
+	}
+	mListenCV.notify_all();
 }
 
 void
 TDCLSocket::DoStopListening( void )
 {
 	mWakeWait.Trigger();
+	{
+		std::lock_guard<std::mutex> lock( mListenMutex );
+		mRequestPending = false;
+	}
+	mListenCV.notify_all();
+	if ( mListenThread.joinable() && !IsCurrentThread() )
+	{
+		mListenThread.join();
+	}
+}
+
+void
+TDCLSocket::ListenWorkerEntry( std::stop_token inStopToken )
+{
+	mListenThreadId.store( std::this_thread::get_id() );
+	try
+	{
+		while ( !inStopToken.stop_requested() )
+		{
+			{
+				std::unique_lock<std::mutex> lock( mListenMutex );
+				mListenCV.wait( lock, [this, &inStopToken]() {
+					return !mRequestPending || inStopToken.stop_requested();
+				} );
+			}
+			if ( inStopToken.stop_requested() )
+			{
+				break;
+			}
+			if ( WaitForIncomingRequest() )
+			{
+				{
+					std::lock_guard<std::mutex> lock( mListenMutex );
+					mRequestPending = true;
+				}
+				if ( TDCLServer* srv = GetServer() )
+				{
+					srv->RequestPresent( this );
+				}
+			}
+		}
+	}
+	catch ( TDCLUserCancelledException& )
+	{
+	}
+	catch ( TDCLException& ex )
+	{
+		if ( TDCLServer* srv = GetServer() )
+		{
+			srv->HandleCommLayerException( this, &ex );
+		}
+	}
+	catch ( ... )
+	{
+		if ( TDCLServer* srv = GetServer() )
+		{
+			srv->HandleCommLayerException( this, nil );
+		}
+	}
+	mListenThreadId.store( std::thread::id() );
 }
 
 Boolean
@@ -245,12 +653,47 @@ TDCLSocket::WaitForIncomingRequest( void )
 	return false;
 }
 
-std::unique_ptr<TDCLPipe>
-TDCLSocket::DoAccept( void )
+TDCLSessionId
+TDCLSocket::CreateSessionFromSocket( dcl_socket_t inSocket )
 {
-	std::unique_ptr<TDCLPipe> thePipe;
-	dcl_socket_t theSocket = kInvalidSocket;
+	auto bus = GetSessionBus();
+	if ( !bus )
+	{
+		CloseSocket( inSocket );
+		return {};
+	}
 
+	auto session = std::make_shared<TSocketSession>(
+	    inSocket,
+	    GetSocketOps(),
+	    std::move( bus ),
+	    mActiveSessionCount );
+	const TDCLSessionId id = session->Start();
+
+	std::lock_guard<std::mutex> lock( mSessionsMutex );
+	PruneFinishedSessionsLocked();
+	mSessions.push_back( std::move( session ) );
+	return id;
+}
+
+TDCLSessionId
+TDCLSocket::AcceptSession( void )
+{
+	auto clearPending = [this]() {
+		{
+			std::lock_guard<std::mutex> lock( mListenMutex );
+			mRequestPending = false;
+		}
+		mListenCV.notify_all();
+	};
+
+	if ( mServerSocket == kInvalidSocket )
+	{
+		clearPending();
+		return {};
+	}
+
+	dcl_socket_t theSocket = kInvalidSocket;
 	for ( ;; )
 	{
 		struct sockaddr_in clientAddress;
@@ -265,23 +708,24 @@ TDCLSocket::DoAccept( void )
 		int theErr = GetSocketError();
 		if ( IsInterruptedError( theErr ) )
 		{
-			// Interrupted: retry.
 			continue;
 		}
 
 		if ( IsWouldBlockError( theErr ) || IsAbortedAcceptError( theErr ) )
 		{
-			// No pending connection (the client left before being
-			// accepted): no connection, not an error.
-			return nullptr;
+			clearPending();
+			return {};
 		}
 
+		clearPending();
 		ThrowSocketError( theErr );
-		return nullptr;
+		return {};
 	}
 
+	clearPending();
+
 	KUInt32 theMaxPipeCount = GetMaxPipeCount();
-	if ( ( theMaxPipeCount == 0 ) || ( mCurrentPipeCount < theMaxPipeCount ) )
+	if ( ( theMaxPipeCount == 0 ) || ( mActiveSessionCount->load( std::memory_order_relaxed ) < theMaxPipeCount ) )
 	{
 		int theTCPFlag = 1;
 		int theResult =
@@ -298,20 +742,18 @@ TDCLSocket::DoAccept( void )
 			ThrowSocketError( theErr );
 		}
 
-		thePipe = std::make_unique<TDCLBufferedPipe>( CreateSocketPipe( theSocket, mTimeout ) );
-		mCurrentPipeCount++;
-	}
-	else
-	{
-		CloseSocket( theSocket );
+		return CreateSessionFromSocket( theSocket );
 	}
 
-	return thePipe;
+	CloseSocket( theSocket );
+	return {};
 }
 
 void
-TDCLSocket::DoRefuse( void )
+TDCLSocket::Refuse( void )
 {
+	if ( mServerSocket != kInvalidSocket )
+	{
 	struct sockaddr_in clientAddress;
 	socklen_t nameSize = sizeof( clientAddress );
 	dcl_socket_t theSocket = ::accept( mServerSocket, (struct sockaddr*)&clientAddress, &nameSize );
@@ -320,351 +762,11 @@ TDCLSocket::DoRefuse( void )
 	{
 		CloseSocket( theSocket );
 	}
-}
-
-TDCLPipe*
-TDCLSocket::CreateSocketPipe( dcl_socket_t inSocket, long inTimeout )
-{
-	return new TSocketPipe( this, inSocket, inTimeout );
-}
-
-// ------------------------------------------------------------------------- //
-// TSocketPipe Implementation
-// ------------------------------------------------------------------------- //
-
-// Pipes may outlive their communication layer after disconnecting.
-static void
-ClosePipeSocket( dcl_socket_t inSocket )
-{
-#if TARGET_OS_WIN32
-	(void)::closesocket( inSocket );
-#else
-	(void)::close( inSocket );
-#endif
-}
-
-TDCLSocket::TSocketPipe::TSocketPipe( TDCLSocket* inCommLayer, dcl_socket_t inClientSocket, long inTimeout )
-    : TSyncPipe( inCommLayer ),
-      mSocketCommLayer( inCommLayer ),
-      mClientSocket( inClientSocket ),
-      mTimeout( inTimeout ),
-      mDataWakeWait(),
-      mIOWakeWait(),
-      mClientSocketIsClosed( false )
-{
-	SetTimeout( inTimeout );
-
-	if ( mSocketCommLayer->SetNonBlocking( mClientSocket, true ) != 0 )
-	{
-		mSocketCommLayer->ThrowSocketError( mSocketCommLayer->GetSocketError() );
-	}
-}
-
-TDCLSocket::TSocketPipe::~TSocketPipe( void )
-{
-	if ( !mClientSocketIsClosed )
-	{
-		if ( mClientSocket != kInvalidSocket )
-		{
-			(void)Disconnect();
-		}
 	}
 
-	mDataWakeWait.Close();
-	mIOWakeWait.Close();
-}
-
-void
-TDCLSocket::TSocketPipe::Disconnect( void )
-{
-	// Keep the client socket valid until the worker has left WaitReady().
-	TSyncPipe::Disconnect();
-
-	if ( mClientSocket != kInvalidSocket )
 	{
-		ClosePipeSocket( mClientSocket );
-		mClientSocket = kInvalidSocket;
+		std::lock_guard<std::mutex> lock( mListenMutex );
+		mRequestPending = false;
 	}
-	mDataWakeWait.Close();
-	mIOWakeWait.Close();
-	mClientSocketIsClosed = true;
-}
-
-Boolean
-TDCLSocket::TSocketPipe::BytesAvailable( void )
-{
-	if ( mClientSocket == kInvalidSocket )
-	{
-		return false;
-	}
-
-	int theErr = 0;
-	TDCLWakeableWait::EResult theRes = TDCLWakeableWait::PollNow(
-	    (dcl_wait_handle_t)mClientSocket,
-	    TDCLWakeableWait::EDirection::kRead,
-	    &theErr );
-
-	if ( theRes == TDCLWakeableWait::EResult::kError )
-	{
-		mSocketCommLayer->ThrowSelectError( theErr );
-	}
-
-	return ( theRes == TDCLWakeableWait::EResult::kReady );
-}
-
-long
-TDCLSocket::TSocketPipe::GetTimeout( void )
-{
-	return mTimeout;
-}
-
-void
-TDCLSocket::TSocketPipe::SetTimeout( long inTimeout )
-{
-	mTimeout = inTimeout;
-}
-
-Boolean
-TDCLSocket::TSocketPipe::WaitForIncomingData( void )
-{
-	int theErr = 0;
-	TDCLWakeableWait::EResult theRes = mDataWakeWait.WaitReady(
-	    (dcl_wait_handle_t)mClientSocket,
-	    TDCLWakeableWait::EDirection::kRead,
-	    std::chrono::milliseconds( -1 ),
-	    GetStopToken(),
-	    &theErr );
-
-	if ( theRes == TDCLWakeableWait::EResult::kReady )
-	{
-		return true;
-	}
-
-	if ( theRes == TDCLWakeableWait::EResult::kError )
-	{
-		mSocketCommLayer->ThrowSelectError( theErr );
-	}
-
-	return false;
-}
-
-void
-TDCLSocket::TSocketPipe::DoDisconnect( void )
-{
-	mDataWakeWait.Trigger();
-	mIOWakeWait.Trigger();
-}
-
-void
-TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
-{
-	size_t toRead = (size_t)*ioCount;
-	char* theBuffer = (char*)outBuffer;
-	long timeoutInSecs = mTimeout;
-	if ( timeoutInSecs == kDefaultTimeout )
-	{
-		timeoutInSecs = kSocketDefaultTimeout;
-	}
-
-	const bool hasTimeout = ( timeoutInSecs != kNoTimeout );
-	auto deadline = hasTimeout
-	    ? ( std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs ) )
-	    : std::chrono::steady_clock::time_point{};
-
-	while ( toRead > 0 )
-	{
-		if ( StopRequested() )
-		{
-			*ioCount -= (KUInt32)toRead;
-			throw DCLUserCancelled;
-		}
-
-#if TARGET_OS_WIN32
-		int chunkSize = (int)std::min<size_t>( toRead, (size_t)INT_MAX );
-		int readBytes = ::recv( mClientSocket, theBuffer, chunkSize, 0 );
-#else
-		ssize_t readBytes = ::recv( mClientSocket, theBuffer, toRead, 0 );
-#endif
-		if ( readBytes > 0 )
-		{
-			toRead -= (size_t)readBytes;
-			theBuffer += readBytes;
-			if ( hasTimeout )
-			{
-				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs );
-			}
-			continue;
-		}
-
-		if ( readBytes == 0 )
-		{
-			*ioCount -= (KUInt32)toRead;
-			break;
-		}
-
-		int theErr = mSocketCommLayer->GetSocketError();
-		if ( !mSocketCommLayer->IsWouldBlockError( theErr ) )
-		{
-			try
-			{
-				mSocketCommLayer->ThrowRecvError( theErr );
-			}
-			catch ( ... )
-			{
-				*ioCount -= (KUInt32)toRead;
-				throw;
-			}
-		}
-
-		std::chrono::milliseconds waitTimeout( -1 );
-		if ( hasTimeout )
-		{
-			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
-			    deadline - std::chrono::steady_clock::now() );
-			if ( remaining <= std::chrono::milliseconds::zero() )
-			{
-				*ioCount -= (KUInt32)toRead;
-				throw DCLTimeout;
-			}
-			waitTimeout = remaining;
-		}
-
-		int waitErr = 0;
-		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
-		    (dcl_wait_handle_t)mClientSocket,
-		    TDCLWakeableWait::EDirection::kRead,
-		    waitTimeout,
-		    GetStopToken(),
-		    &waitErr );
-
-		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
-		{
-			*ioCount -= (KUInt32)toRead;
-			throw DCLUserCancelled;
-		}
-		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
-		{
-			*ioCount -= (KUInt32)toRead;
-			throw DCLTimeout;
-		}
-		if ( waitRes == TDCLWakeableWait::EResult::kError )
-		{
-			try
-			{
-				mSocketCommLayer->ThrowSelectError( waitErr );
-			}
-			catch ( ... )
-			{
-				*ioCount -= (KUInt32)toRead;
-				throw;
-			}
-		}
-	}
-}
-
-void
-TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
-{
-	size_t toWrite = (size_t)*ioCount;
-	const char* theBuffer = (const char*)inBuffer;
-	long timeoutInSecs = mTimeout;
-	if ( timeoutInSecs == kDefaultTimeout )
-	{
-		timeoutInSecs = kSocketDefaultTimeout;
-	}
-
-	const bool hasTimeout = ( timeoutInSecs != kNoTimeout );
-	auto deadline = hasTimeout
-	    ? ( std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs ) )
-	    : std::chrono::steady_clock::time_point{};
-
-	while ( toWrite > 0 )
-	{
-		if ( StopRequested() )
-		{
-			*ioCount -= (KUInt32)toWrite;
-			throw DCLUserCancelled;
-		}
-
-#if TARGET_OS_WIN32
-		int chunkSize = (int)std::min<size_t>( toWrite, (size_t)INT_MAX );
-		int sentBytes = ::send( mClientSocket, theBuffer, chunkSize, 0 );
-#else
-		ssize_t sentBytes = ::send( mClientSocket, theBuffer, toWrite, 0 );
-#endif
-		if ( sentBytes > 0 )
-		{
-			toWrite -= (size_t)sentBytes;
-			theBuffer += sentBytes;
-			if ( hasTimeout )
-			{
-				deadline = std::chrono::steady_clock::now() + std::chrono::seconds( timeoutInSecs );
-			}
-			continue;
-		}
-
-		if ( sentBytes == 0 )
-		{
-			*ioCount -= (KUInt32)toWrite;
-			throw DCLEOF;
-		}
-
-		int theErr = mSocketCommLayer->GetSocketError();
-		if ( !mSocketCommLayer->IsWouldBlockError( theErr ) )
-		{
-			try
-			{
-				mSocketCommLayer->ThrowSendError( theErr );
-			}
-			catch ( ... )
-			{
-				*ioCount -= (KUInt32)toWrite;
-				throw;
-			}
-		}
-
-		std::chrono::milliseconds waitTimeout( -1 );
-		if ( hasTimeout )
-		{
-			auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(
-			    deadline - std::chrono::steady_clock::now() );
-			if ( remaining <= std::chrono::milliseconds::zero() )
-			{
-				*ioCount -= (KUInt32)toWrite;
-				throw DCLTimeout;
-			}
-			waitTimeout = remaining;
-		}
-
-		int waitErr = 0;
-		TDCLWakeableWait::EResult waitRes = mIOWakeWait.WaitReady(
-		    (dcl_wait_handle_t)mClientSocket,
-		    TDCLWakeableWait::EDirection::kWrite,
-		    waitTimeout,
-		    GetStopToken(),
-		    &waitErr );
-
-		if ( waitRes == TDCLWakeableWait::EResult::kCancelled )
-		{
-			*ioCount -= (KUInt32)toWrite;
-			throw DCLUserCancelled;
-		}
-		if ( waitRes == TDCLWakeableWait::EResult::kTimeout )
-		{
-			*ioCount -= (KUInt32)toWrite;
-			throw DCLTimeout;
-		}
-		if ( waitRes == TDCLWakeableWait::EResult::kError )
-		{
-			try
-			{
-				mSocketCommLayer->ThrowSelectError( waitErr );
-			}
-			catch ( ... )
-			{
-				*ioCount -= (KUInt32)toWrite;
-				throw;
-			}
-		}
-	}
+	mListenCV.notify_all();
 }

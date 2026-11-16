@@ -1,9 +1,6 @@
 // ==============================
-// Fichier:			TDCLCommLayer.cp
-// Projet:			Desktop Connection Library
-//
-// Créé le:			23/08/2000
-// Tabulation:		4 espaces
+// File:			TDCLCommLayer.cpp
+// Project:			Desktop Connection Library
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -18,106 +15,73 @@
 // for the specific language governing rights and limitations under the
 // License.
 //
-// The Original Code is TDCLCommLayer.cp.
+// The Original Code is TDCLCommLayer.cpp.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2000-2004 the Initial Developers. All Rights Reserved.
 //
-// Contributor(s):
-//   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
-//   Nicolas Zinovieff <krugazor@poulet.org> (original author)
-//
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLCommLayer.cp,v 1.3 2004/11/24 14:08:53 paul Exp $
-// ===========
 
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 
-// ANSI C
-#include <stdlib.h>
-
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Interfaces/TDCLEventBus.h>
 #include <DCL/Server/TDCLServer.h>
 
-// ------------------------------------------------------------------------- //
-//  * TDCLCommLayer( Boolean, KUInt32 )
-// ------------------------------------------------------------------------- //
 TDCLCommLayer::TDCLCommLayer(
-					Boolean	inFlushAvailable /* = false */,
-					KUInt32	inMaxPipeCount /* = kDefaultPipeCount */
-				)
+	Boolean inFlushAvailable /* = false */,
+	KUInt32 inMaxPipeCount /* = kDefaultPipeCount */ )
 	:
 		mFlushAvailable( inFlushAvailable ),
 		mMaxPipeCount( inMaxPipeCount ),
-		mServer( nil )
+		mServer( nil ),
+		mSessionBus()
 {
-	// Défense de stationner.
 }
 
-// ------------------------------------------------------------------------- //
-//  * Idle( void )
-// ------------------------------------------------------------------------- //
 void
 TDCLCommLayer::Idle( void )
 {
-	// Sortie de véhicules.
 }
 
-// ------------------------------------------------------------------------- //
-//  * StartListening( TDCLServer* )
-// ------------------------------------------------------------------------- //
 void
 TDCLCommLayer::StartListening( TDCLServer* inServer )
 {
-	// Exception si on est déjà en train d'écouter.
-	if (mServer)
+	if ( mServer )
 	{
 		throw DCLBadStateError;
 	}
 
-	// On note le serveur.
 	mServer = inServer;
+	mSessionBus = inServer ? inServer->GetSharedSessionBus() : nullptr;
 
-	// Reset stop source for the new listening session.
 	ResetStopSource();
-
-	// Ensuite, on appelle la méthode qui fait vraiment le travail.
 	DoStartListening();
 
-	// Ayé, on écoute.
-	inServer->WaitingConnection( this );
-}
-
-// ------------------------------------------------------------------------- //
-//  * StopListening( void )
-// ------------------------------------------------------------------------- //
-void
-TDCLCommLayer::StopListening( void )
-{
-	// On ne fait rien si on n'est pas en train d'écouter.
-	if (mServer)
+	if ( inServer )
 	{
-		(void) RequestStop();
-
-		try {
-			// On appelle la méthode qui fait vraiment le travail.
-			DoStopListening();
-		} catch ( ... ) {
-			// Silence!
-		}
-
-		// On n'a plus besoin de référence sur le serveur.
-		mServer = nil;
+		inServer->WaitingConnection( this );
 	}
 }
 
-// ======================================================================== //
-// > X..., c'est un millefeuille avec une couche de crème patissière, une   //
-// > de sauce tomate et une de crème d'anchois... Mais c'est vrai que       //
-// > c'est un système ouvert: tu peux y rajouter des pépites de chocolat... //
-// -+- Ol in Guide du linuxien pervers - "Remettez m'en une couche !" -+-   //
-// ======================================================================== //
+void
+TDCLCommLayer::StopListening( void )
+{
+	if ( mServer )
+	{
+		(void) RequestStop();
+
+		try
+		{
+			DoStopListening();
+		}
+		catch ( ... )
+		{
+		}
+
+		mServer = nil;
+		mSessionBus.reset();
+	}
+}

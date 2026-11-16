@@ -1,9 +1,6 @@
 // ==============================
-// Fichier:			TDCLFDSerialPort.h
-// Projet:			Desktop Connection Library
-//
-// Créé le:			4/4/2003
-// Tabulation:		4 espaces
+// File:			TDCLFDSerialPort.h
+// Project:			Desktop Connection Library
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -20,368 +17,129 @@
 //
 // The Original Code is TDCLFDSerialPort.h.
 //
-// The Initial Developers of the Original Code are Paul Guyot, Michael Vacík,
+// The Initial Developers of the Original Code are Paul Guyot, Michael Vacik
 // and Nicolas Zinovieff. Portions created by the Initial Developers are
 // Copyright (C) 2003-2004 the Initial Developers. All Rights Reserved.
 //
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//   Michael Vacík <mici@metastasis.net> (original author)
+//   Michael Vacik <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
 //   Simon Stapleton <simon@tufty.co.uk>
 //   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
-// ===========
-// $Id: TDCLFDSerialPort.h,v 1.4 2004/11/24 14:08:55 paul Exp $
-// ===========
 
 #ifndef _TDCLFDSERIALPORT_H
 #define _TDCLFDSERIALPORT_H
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
+#include <DCL/Communication_Layers/TDCLCommLayer.h>
+#include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
+#include <DCL/Interfaces/TDCLEventBus.h>
 
 // C++
+#include <atomic>
 #include <condition_variable>
+#include <cstdint>
+#include <deque>
+#include <exception>
 #include <mutex>
 #include <stop_token>
+#include <thread>
+#include <vector>
 
 // POSIX
 #include <termios.h>
 
-// DCL
-#include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
-
 ///
-/// Classe pour une couche de communication à base d'un port série accédé
-/// via un descripteur de fichier. C'est un port série Unix (dans /dev/) qui
-/// répond aux appels classiques fctl & co.
-/// La communication sur ce port série se fait par défaut avec la compression
-/// MNP.
-///
-/// \author Paul Guyot <pguyot@kallisys.net>
-/// \version $Revision: 1.4 $
-///
-/// \test	UTestCommLayers
+/// POSIX serial-port communication layer with single-FD ownership on one
+/// worker thread alternating between Listening, PendingAccept, and Connected
+/// states and communicating via TDCLSessionBus.
 ///
 class TDCLFDSerialPort
 	:
-		public TDCLSyncCommLayer
+		public TDCLCommLayer
 {
 public:
-    /// Modes of the associated pipe
-    enum {
-        kModePlain,
-        kModeMNP,
-        kModeHammer
-    };
+	enum {
+		kModePlain,
+		kModeMNP,
+		kModeHammer
+	};
 
-	///
-	/// Unique constructeur à partir du chemin vers le port série.
-	/// Si ce chemin est \c nil, il devra être précisé dans la méthode
-	/// Init.
-	///
-	/// \param inDevPath		chemin vers le port série (copié)
-	/// \param inBaud			vitesse de la connexion (38400: vitesse par défaut
-	///							du Newton).
-	/// \param inMode			pipe mode
-	///
 	TDCLFDSerialPort(
-				const char* inDevPath,
-				long inBaud,
-				KUInt32 inMode );
+		const char* inDevPath,
+		long inBaud,
+		KUInt32 inMode );
 
-	///
-	/// Unique constructeur à partir du chemin vers le port série.
-	/// Si ce chemin est \c nil, il devra être précisé dans la méthode
-	/// Init.
-	///
-	/// \param inDevPath		chemin vers le port série (copié)
-	/// \param inBaud			vitesse de la connexion (38400: vitesse par défaut
-	///							du Newton).
-	/// \param inUseMNP			si on fait de la compression MNP.
-	///
 	TDCLFDSerialPort(
-				const char* inDevPath,
-				long inBaud = 38400,
-				Boolean inUseMNP = true );
+		const char* inDevPath,
+		long inBaud = 38400,
+		Boolean inUseMNP = true );
 
-	///
-	/// Destructeur.
-	/// Arrête le serveur.
-	///
 	virtual ~TDCLFDSerialPort( void );
 
-	///
-	/// Stops listening and closes the serial port if no connection is active.
-	///
-	virtual void		StopListening( void ) override;
-	
-	/// \name interface serveur
-
-	///
-	/// Retourne un objet connexion représentant le canal de communication
-	/// avec le client ou \c nil s'il n'y a pas de requête de connexion
-	/// présente.
-	/// Ce doit être un objet créé avec new. L'appelant devra le supprimer.
-	///
-	/// \return	un nouvel objet TPipe représentant la connexion
-	///			ou \c nullptr.
-	///
-	virtual	std::unique_ptr<TDCLPipe>	DoAccept( void ) override;
-
-	///
-	/// Refuse la première requête de connexion.
-	/// Ne fait rien si aucune connexion n'est présente.
-	///
-	virtual	void		DoRefuse( void ) override;
-
-	///
-	/// Change la temporisation pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
-	///
-	/// \param inTimeout	nouvelle temporisation au format \c TDCLCommLayer
-	///
-	virtual	void		SetTimeout( long inTimeout ) override;
-
-	///
-	/// Récupère la temporisation utilisée pour les nouvelles connexions.
-	/// La temporisation est exprimée au format TDCLCommLayer.
-	///
-	/// \return la temporisation au format \c TDCLCommLayer
-	///
-	virtual	long		GetTimeout( void ) override;
-
-	///
-	/// Méthode appelée par TPipe::Disconnect() pour indiquer qu'une connexion
-	/// a été fermée. Décrémente le compteur des connexions ouvertes.
-	///
-	/// \param inPipe	connexion qui a été fermée
-	///
-	virtual	void		Disconnected( TDCLPipe* inPipe ) override;
+	virtual void			StopListening( void ) override;
+	virtual TDCLSessionId	AcceptSession( void ) override;
+	virtual void			Refuse( void ) override;
+	virtual bool			UsesMNP( void ) const noexcept override { return mPipeMode == kModeMNP; }
+	virtual bool			IsCurrentThread( void ) const noexcept override;
+	virtual void			SetTimeout( long inTimeout ) override;
+	virtual long			GetTimeout( void ) override;
 
 protected:
-	///
-	/// Commence à écouter.
-	///
-	virtual	void		DoStartListening( void ) override;
+	virtual void			DoStartListening( void ) override;
+	virtual void			DoStopListening( void ) override;
 
-	///
-	/// Arrête d'écouter, i.e. arrête d'accepter les requêtes de connexions.
-	///
-	virtual	void		DoStopListening( void ) override;
-
-	///
-	/// Attend qu'une requête se présente.
-	///
-	/// \return \c true si une requête est présente, \c false si la méthode a été
-	/// interrompue.
-	///
-	virtual	Boolean		WaitForIncomingRequest( void ) override;
-
-	///
-	/// Accesseur sur l'interface de communication.
-	///
-	/// \return	la référence sur l'interface de communication.
-	///
-	inline int			GetSerialFD( void )
-		{
-			return mSerialFD;
-		}
-
-	///
-	/// Initialise l'interface de communication pour un chemin BSD donné.
-	/// Cette méthode permet de ne pas fournir le chemin dans le constructeur.
-	/// Elle ne doit pas être appelée plus d'une fois ou si un chemin a été
-	/// spécifié dans le constructeur.
-	///
-	void				Init( const char* inDevPath );
-
-	///
-	/// Attend des données (méthode bloquante).
-	///
-	/// \param inTimeoutMs	délai maximal en millisecondes, ou -1 pour
-	///						attendre indéfiniment.
-	/// \return \c true si des données sont présentes, \c false sinon
-	///			(délai expiré ou erreur).
-	///
-	Boolean				Select( long inTimeoutMs = -1 );
+	inline int				GetSerialFD( void ) const noexcept { return mSerialFD; }
+	void					Init( const char* inDevPath );
 
 private:
-	///
-	/// Constructeur par copie volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
-	///
-	TDCLFDSerialPort( const TDCLFDSerialPort& inCopy );
-
-	///
-	/// Opérateur d'assignation volontairement indisponible.
-	///
-	/// \param inCopy		objet à copier
-	///
-	TDCLFDSerialPort& operator = ( const TDCLFDSerialPort& inCopy );
-
-	///
-	/// Ouvre et configure le port série.
-	///
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void				OpenAndConfigure( void );
-
-	///
-	/// Clears exclusive mode (TIOCNXCL) and closes the descriptor.
-	///
-	/// \param inFD	descriptor of the serial port to close.
-	///
-	static void			CloseSerialFD( int inFD );
-
-	///
-	/// Ferme et rouvre le port série.
-	///
-	/// \throws TDCLIOException si un problème est survenu.
-	///
-	void				Reset( void );
-
-	///
-	/// On donne tous les droits a la classe fille.
-	///
-	class TFDSerialPortPipe;
-	friend class TFDSerialPortPipe;
-
-	///
-	/// Class pour les connexions.
-	///
-	class TFDSerialPortPipe
-		:
-			public TSyncPipe
+	enum class EPortState
 	{
-	public:
-		/// La classe mère est une amie.
-		friend class TDCLFDSerialPort;
-
-		///
-		/// Destructeur. Ferme la connexion si elle n'était pas déjà fermée.
-		///		
-		virtual				~TFDSerialPortPipe( void );
-
-		///
-		/// Lit des octets.
-		///
-		/// \param outBuffer	mémoire tampon pour les octets lus.
-		/// \param ioCount		nombre d'octets à lire en entrée, lus en sortie.
-		///						Cette valeur est mise à jour avant que 
-		///						l'exception ne soit lancée si un problème est
-		///						survenu.
-		/// \throws TDCLIOException	si un problème est survenu (autre que EOF)
-		///
-		virtual	void		Read( void* outBuffer, KUInt32* ioCount ) override;
-
-		///
-		/// Ecrit des octets.
-		///
-		/// \param inBuffer		mémoire tampon pour les octets à écrire.
-		/// \param ioCount		nombre d'octets à écrire en entrée, écris en
-		///						sortie. Cette valeur est mise à jour avant que
-		///						l'exception ne soit lancée si un problème est
-		///						survenu.
-		/// \throws TDCLIOException	si un problème est survenu.
-		///
-		virtual	void		Write( const void* inBuffer, KUInt32* ioCount ) override;
-		
-		///
-		/// Détermine quel est le nombre d'octets disponibles dans la mémoire tampon d'entrée.
-		///
-		/// \return le nombre d'octets disponibles.
-		///
-		virtual	Boolean		BytesAvailable( void ) override;
-
-		///
-		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt
-		/// de cette classe). Elle retourne si des données sont présentes ou si elle a été
-		/// interrompue par Disconnect.
-		///
-		/// \return \c true si une requête est présente, \c false si la méthode a été
-		/// interrompue.
-		///
-		virtual Boolean 	WaitForIncomingData( void ) override;
-
-		///
-		/// Déconnecte le canal de communication avec le client.
-		///
-		virtual	void		Disconnect( void ) override;
-
-		///
-		/// Actually disconnects the communication channel with the client.
-		///
-		virtual	void		DoDisconnect( void ) override;
-		
-		///
-		/// Récupère la temporisation pour cette connexion.
-		/// La temporisation est exprimée en secondes ou c'est une des constantes
-		/// de TDCLCommLayer (dit "format TDCLCommLayer").
-		///
-		/// \return la temporisation au format TDCLCommLayer.
-		///
-		virtual	long		GetTimeout( void ) override;
-
-		///
-		/// Change la temporisation pour cette connexion.
-		/// La temporisation est exprimée en secondes ou c'est une des constantes
-		/// de TDCLCommLayer.
-		///
-		/// \param inTimeout	temporisation au format TDCLCommLayer.
-		///
-		virtual	void		SetTimeout( long inTimeout ) override;
-
-	protected:
-		///
-		/// Constructeur.
-		/// Vous n'êtes pas supposés créer des TSocketPipe vous-mêmes.
-		///
-		/// \param inCommLayer		couche de communication à laquelle la connexion
-		///							appartient.
-		///
-		TFDSerialPortPipe(
-				TDCLFDSerialPort*	inCommLayer
-			);
-
-	private:
-		int						mSerialFD;					///< File descriptor of the connection
-															///< interface.
-		long					mTimeout;					///< Timeout for this interface.
-		Boolean					mDisconnected;				///< Whether the connection was closed by the client.
-		bool					mCancelledBeforeDisconnect;	///< Whether stop was requested before Disconnect().
-		TDCLWakeableWait		mDataWakeWait;				///< Wakeable wait for WaitForIncomingData().
-		TDCLWakeableWait		mIOWakeWait;				///< Wakeable wait for Read()/Write().
+		kStopped,
+		kListening,
+		kPendingAccept,
+		kConnected
 	};
-	
-	/// \name Variables
 
-	Boolean						mIsConnected;		///< Si une connexion est ouverte.
-	int							mSerialFD;			///< Descripteur de fichier de l'interface
-													///< de communication.
-	char*						mDevPath;			///< Chemin vers le fichier BSD.
-	long						mBaud;				///< Vitesse du lien en baud.
-	KUInt32						mPipeMode;			///< On utilise MNP?
-	struct termios				mOriginalOptions;	///< Options originales.
-	Boolean						mReset;				///< Si on est en train de réinitialiser
-													///< le fichier.
-	Boolean						mDisconnecting;		///< Si on est en train de se déconnecter.
-	Boolean						mRequestPresent;	///< Si une requête est présente.
-	bool						mInSelect;			///< Whether Select() is waiting on mSerialFD.
-	std::stop_source			mSelectStopSource;	///< Stop source waking Select() on reset or stop.
-	std::mutex					mStateMutex;		///< Mutex protecting layer state.
-	std::condition_variable_any	mStateCV;			///< Condition variable for mRequestPresent/mReset.
-	TDCLWakeableWait			mWakeWait;			///< Wakeable wait on mSerialFD.
-	long						mTimeout;			///< Temporisation pour cette
-													///< interface.
+	TDCLFDSerialPort( const TDCLFDSerialPort& inCopy ) = delete;
+	TDCLFDSerialPort& operator = ( const TDCLFDSerialPort& inCopy ) = delete;
+
+	void				WorkerEntry( std::stop_token inStopToken );
+	void				OpenAndConfigure( void );
+	static void			CloseSerialFD( int inFD );
+	void				CloseCurrentFD( bool inDrainOutput, bool inFlushInput );
+	void				ResetSerialFD( bool inDrainOutput, bool inFlushInput );
+	bool				QueueOutbound( TDCLSessionId inSessionId, std::vector<std::uint8_t>&& inBytes );
+	void				RequestCloseSession( TDCLSessionId inSessionId );
+
+	int							mSerialFD;
+	char*						mDevPath;
+	long						mBaud;
+	KUInt32						mPipeMode;
+	struct termios				mOriginalOptions;
+	long						mTimeout;
+	TDCLWakeableWait			mWakeWait;
+
+	std::mutex					mStateMutex;
+	std::condition_variable_any	mStateCV;
+	EPortState					mPortState;
+	bool						mRefuseRequested;
+	std::exception_ptr			mRefuseException;
+	bool						mCloseRequested;
+	bool						mCancelFlushRequested;
+	std::stop_source*			mIterStopSource;
+
+	TDCLSessionId				mActiveSessionId;
+	TDCLSessionBus::DownstreamGuard mDownstreamGuard;
+	std::deque<std::vector<std::uint8_t>> mOutboundQueue;
+	std::size_t					mOutboundFrontOffset;
+
+	std::jthread				mWorkerThread;
+	std::atomic<std::thread::id> mWorkerThreadId;
 };
 
 #endif
-		// _TDCLFDSERIALPORT_H
-
-// ================================================== //
-// The less time planning, the more time programming. //
-// ================================================== //
+// _TDCLFDSERIALPORT_H

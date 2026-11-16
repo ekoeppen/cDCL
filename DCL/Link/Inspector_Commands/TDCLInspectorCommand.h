@@ -38,7 +38,6 @@
 #include <DCL/Communication_Layers/TDCLCommLayer.h>
 
 class TDCLStream;
-class TDCLPipe;
 
 typedef void (*ProgressFuncPtr)(void* inRefCon, double inProgress);
 

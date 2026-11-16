@@ -101,13 +101,8 @@ if(APPLE)
 endif()
 
 add_library (DCL
-DCL/Communication_Layers/TDCLBufferedPipe.cpp
 DCL/Communication_Layers/TDCLCommLayer.cpp
-DCL/Communication_Layers/TDCLMNPPipe.cpp
-DCL/Communication_Layers/TDCLHammerPipe.cpp
-DCL/Communication_Layers/TDCLPipe.cpp
-DCL/Communication_Layers/TDCLPipeProxy.cpp
-DCL/Communication_Layers/TDCLSyncCommLayer.cpp
+DCL/Communication_Layers/TMNPProtocol.cpp
 DCL/Communication_Layers/Common/TDCLSocket.cpp
 DCL/Communication_Layers/Common/TDCLWakeableWait.cpp
 DCL/Data/Text/TDCLStyleRef.cpp
@@ -147,7 +142,8 @@ DCL/Exceptions/Thread_Exceptions/TDCLThreadStoppedException.cpp
 DCL/Interfaces/Common/TDCLLogApplication.cpp
 DCL/Interfaces/TDCLApplication.cpp
 DCL/Interfaces/TDCLEvent.cpp
-DCL/Interfaces/TDCLEventQueue.cpp
+DCL/Interfaces/TDCLEventBus.cpp
+	DCL/Interfaces/TDCLEventQueue.cpp
 DCL/Interfaces/TDCLFile.cpp
 DCL/Interfaces/TDCLFolder.cpp
 DCL/Interfaces/TDCLFSItem.cpp
@@ -191,7 +187,8 @@ DCL/Link/Link_Engines/TDCLKeyboardEngine.cpp
 DCL/Link/Link_Engines/TDCLLinkEngine.cpp
 DCL/Link/Link_Engines/TDCLLoadPkgEngine.cpp
 DCL/Link/Link_Engines/TDCLSyncEngine.cpp
-DCL/Link/TDCLDockLink.cpp
+DCL/Link/TDCLCommandFramer.cpp
+	DCL/Link/TDCLDockLink.cpp
 DCL/Link/TDCLFullDockLink.cpp
 DCL/Link/TDCLLink.cpp
 DCL/Link/TDCLLoadPackageLink.cpp
@@ -226,7 +223,8 @@ DCL/Server/TDCLOneLinkServer.cpp
 DCL/Server/TDCLServer.cpp
 DCL/Server/TDCLSimpleServer.cpp
 DCL/Server/TDCLSingleLinkServer.cpp
-DCL/Streams/TDCLMemStream.cpp
+DCL/Streams/TDCLChunkStream.cpp
+	DCL/Streams/TDCLMemStream.cpp
 DCL/Streams/TDCLStdStream.cpp
 DCL/Streams/TDCLStream.cpp
 )
@@ -320,13 +318,7 @@ DCL/Communication_Layers/Common/TDCLWakeableWait.h
 DCL/Communication_Layers/POSIX/TDCLBSDSocket.h
 DCL/Communication_Layers/Win32/TDCLWin32Socket.h
 DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h
-DCL/Communication_Layers/TDCLBufferedPipe.h
 DCL/Communication_Layers/TDCLCommLayer.h
-DCL/Communication_Layers/TDCLMNPPipe.h
-DCL/Communication_Layers/TDCLHammerPipe.h
-DCL/Communication_Layers/TDCLPipe.h
-DCL/Communication_Layers/TDCLPipeProxy.h
-DCL/Communication_Layers/TDCLSyncCommLayer.h
 DCL/Data/Picture/TDCLPicture.h
 DCL/Data/Text/TDCLClParagraph.h
 DCL/Data/Text/TDCLFontSpecification.h
