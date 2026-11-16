@@ -290,7 +290,6 @@ K/Misc/TNameServerSingleton.h
 K/Misc/TRefCounter.h
 K/Misc/TSmartPtr.h
 K/Misc/UBase64.h
-K/Misc/UPStrings.h
 K/Streams/TFileStream.h
 K/Streams/TMemoryStream.h
 K/Streams/TRandomAccessStream.h
@@ -315,11 +314,6 @@ K/XML/UExpatUtils.h
 
 set(DCL_HEADERS
 DCL/Communication_Layers/Common/TDCLSocket.h
-DCL/Communication_Layers/MacOS_X/at_proto.h
-DCL/Communication_Layers/MacOS_X/TDCLIOKitSerialPort.h
-DCL/Communication_Layers/MacOS_X/TDCLRendezVous.h
-DCL/Communication_Layers/MacOS_X/TDCLXADSP.h
-DCL/Communication_Layers/MacOS_X/TDCLXADSPSocket.h
 DCL/Communication_Layers/POSIX/TDCLBSDSocket.h
 DCL/Communication_Layers/Win32/TDCLWin32Socket.h
 DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h
@@ -366,28 +360,12 @@ DCL/Exceptions/Thread_Exceptions/TDCLThreadActiveException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadDeadLockException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadException.h
 DCL/Exceptions/Thread_Exceptions/TDCLThreadStoppedException.h
-DCL/Headers/DCLDebugOSXPrefix.h
 DCL/Headers/DCLDefinitions.h
 DCL/Headers/DCLErrorMessages.h
-DCL/Headers/DCLFinalOSXPrefix.h
 DCL/Headers/DCLStrings.h
-DCL/Headers/PrecompiledHeader.h
 DCL/Interfaces/Common/TDCLLogApplication.h
 DCL/Interfaces/IDCLFiles.h
 DCL/Interfaces/IDCLThreads.h
-DCL/Interfaces/MacOS/TDCLMacDesktopFolder.h
-DCL/Interfaces/MacOS/TDCLMacFile.h
-DCL/Interfaces/MacOS/TDCLMacFiles.h
-DCL/Interfaces/MacOS/TDCLMacFolder.h
-DCL/Interfaces/MacOS/TDCLMacGetPutFiles.h
-DCL/Interfaces/MacOS/UDCLMacMachineName.h
-DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonDesktopFolder.h
-DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonFile.h
-DCL/Interfaces/MacOS_X/Carbon_Files/TDCLMacCarbonFolder.h
-DCL/Interfaces/MacOS_X/DCLCocoaApplication.h
-DCL/Interfaces/MacOS_X/IDCLObjCApplication.h
-DCL/Interfaces/MacOS_X/TDCLObjCApplication.h
-DCL/Interfaces/MacOS_X/UDCLMacCarbonUtils.h
 DCL/Interfaces/POSIX/Compat/libgen.h
 DCL/Interfaces/POSIX/TDCLPOSIXDir.h
 DCL/Interfaces/POSIX/TDCLPOSIXDirBase.h
@@ -473,7 +451,6 @@ DCL/NS_Objects/Objects/TDCLNSRef.h
 DCL/NS_Objects/Objects/TDCLNSString.h
 DCL/NS_Objects/Objects/TDCLNSSymbol.h
 DCL/NS_Objects/Objects/TDCLNSWeakRef.h
-DCL/NS_Objects/Views/ObjC/DCLNSRef.h
 DCL/Package/KDCLPackageErrors.h
 DCL/Package/TDCLPackage.h
 DCL/Package/TDCLPkgNOSPart.h

@@ -1,9 +1,0 @@
-TTestServer::DoStartListening
-Waiting for connection \([A-F0-9]{8}-[A-F0-9]{8}\)\.
-TTestServer::DoStop
-End of server \([A-F0-9]{8}\)
-Second test
-TTestServer::DoStartListening
-Waiting for connection \([A-F0-9]{8}-[A-F0-9]{8}\)\.
-TTestServer::DoStop
-End of server \([A-F0-9]{8}\)
