@@ -34,13 +34,14 @@
 // $Id: TDCLLoadPackageLink.cp,v 1.4 2004/11/24 14:09:03 paul Exp $
 // ===========
 
+#include "Exceptions/TDCLUserCancelledException.h"
+#include "Link/Dock_Commands/TDCLDockCmdNoData.h"
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Link/TDCLLoadPackageLink.h>
 
 // ANSI C
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
 
 // K
 #include <K/Misc/TSmartPtr.h>
@@ -186,6 +187,7 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	{
 		TDCLDockCommand* theNewtMessage =
 				TDCLDockCommand::ReceiveCommand( GetPipe() );
+		KUInt32 theCmd = theNewtMessage->GetCommand();
 		if (theNewtMessage->GetCommand() == TDCLDockCommand::kDResult)
 		{
 			// It's a kDResult, process it.
@@ -193,12 +195,28 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 					(TDCLDockCmdSingleLong*) theNewtMessage;
 			KSInt32 theResult = (KSInt32) theResultCmd->GetLong();
 			delete theNewtMessage;	// I no longer need it.
-			if (theResult)
+ 			if (theResult == -28004 || theResult == -28020)
+ 			{
+				throw TDCLUserCancelledException( __FILE__, __LINE__ );
+ 			}
+ 			else if (theResult)
 			{
 				// Throw the error that the Newton sent.
 				throw DCLNewton( theResult );
 			}
-		} else {
+ 		} else if (theCmd == TDCLDockCommand::kDOperationCanceled || theCmd == TDCLDockCommand::kDOperationCanceled2)
+ 		{
+ 			delete theNewtMessage;
+ 			TDCLDockCmdNoData ack( TDCLDockCommand::kDOpCanceledAck );
+ 			ack.SendCommand( GetPipe() );
+ 			GetPipe()->FlushOutput();
+			throw TDCLUserCancelledException( __FILE__, __LINE__ );
+ 		} else if (theCmd == TDCLDockCommand::kDDisconnect)
+ 		{
+ 			delete theNewtMessage;
+			throw TDCLUserCancelledException( __FILE__, __LINE__ );
+ 		} else
+ 		{
 			// It's not what I expected. Get out.
 			delete theNewtMessage;
 			throw DCLUnexpDockCmd;
