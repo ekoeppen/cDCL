@@ -59,6 +59,12 @@ public:
 	///
 	static void StartAndStopTwiceFDSerialPort( const char* inDevPath );
 
+	///
+	/// Test pre-Start() configuration constraints on TDCLSimpleServer and
+	/// TDCLOneLinkServer.
+	///
+	static void TestServerConfiguration( void );
+
 private:
 
 	///

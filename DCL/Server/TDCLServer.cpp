@@ -1,9 +1,9 @@
 // ==============================
-// Fichier:			TDCLServer.cp
-// Projet:			Desktop Connection Library
+// File:			TDCLServer.cp
+// Project:			Desktop Connection Library
 //
-// Créé le:			14/1/2002
-// Tabulation:		4 espaces
+// Created:			14/1/2002
+// Tab width:		4 spaces
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -42,6 +42,7 @@
 
 // DCL
 #include <DCL/Exceptions/Errors/TDCLBadParamError.h>
+#include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Interfaces/TDCLEvent.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
@@ -53,7 +54,8 @@ TDCLServer::TDCLServer( TDCLApplication* inApplication )
 		TDCLThread( inApplication->GetThreadsIntf() ),
 		mApplication( inApplication ),
 		mStateMutex( nil ),
-		mState( kStopped )
+		mState( kStopped ),
+		mHasStarted( false )
 {
 	mStateMutex = GetThreadsIntf()->CreateSemaphore();
 }
@@ -75,7 +77,6 @@ TDCLServer::~TDCLServer( void )
 void
 TDCLServer::Start( void )
 {
-	// Acquisition
 	mStateMutex->Acquire();
 	
 	if (mState == kStopped)
@@ -83,19 +84,17 @@ TDCLServer::Start( void )
 		mState = kStarting;
 
 		try {
-			// On lance le processus léger.
 			TDCLThread::Start();
+			mHasStarted = true;
 		} catch ( ... ) {
 			// The state is still kStopped.
-
-			// Release the semaphore
+			mState = kStopped;
 			mStateMutex->Release();
 
 			throw;	// Rethrow.
 		}
 	} // else: do nothing
 	
-	// Libération
 	mStateMutex->Release();
 }
 
@@ -105,7 +104,6 @@ TDCLServer::Start( void )
 void
 TDCLServer::Stop( void )
 {
-	// Acquisition
 	mStateMutex->Acquire();
 	
 	if ((mState == kRunning) || (mState == kStarting))
@@ -114,7 +112,6 @@ TDCLServer::Stop( void )
 			new TDCLEvent( TDCLEvent::kServerEvent, TDCLEvent::kStopServer ) );
 	} // else: do nothing
 	
-	// Libération
 	mStateMutex->Release();
 }
 
@@ -124,7 +121,6 @@ TDCLServer::Stop( void )
 void
 TDCLServer::Kill( void )
 {
-	// Acquisition
 	mStateMutex->Acquire();
 	
 	if (mState != kStopped)
@@ -135,10 +131,8 @@ TDCLServer::Kill( void )
 			TDCLThread::Stop();
 		} catch ( ... ) {
 			// The state is now unknown
-
 			mState = kUnknown;
 			
-			// Release the semaphore
 			mStateMutex->Release();
 
 			throw;	// Rethrow.
@@ -148,7 +142,6 @@ TDCLServer::Kill( void )
 
 	} // else: do nothing
 	
-	// Libération
 	mStateMutex->Release();
 }
 
@@ -160,12 +153,10 @@ TDCLServer::GetState( void )
 {
 	EState theResult;
 	
-	// Acquisition
 	mStateMutex->Acquire();
 	
 	theResult = mState;
 	
-	// Libération
 	mStateMutex->Release();
 	
 	return theResult;
@@ -213,35 +204,32 @@ TDCLServer::Disconnected( TDCLLink* inLink )
 void
 TDCLServer::Run( void )
 {
-	// Boucle principale du serveur.
+	// Server main loop.
 	Boolean keepLooping = true;
 	while( keepLooping )
 	{
 		EState theState;
 		EState theNextState;
 
-		// Acquisition
 		mStateMutex->Acquire();
 
-		// Récupération.
 		theState = mState;
 		theNextState = theState;
 	
-		// Libération
 		mStateMutex->Release();
 		
 		switch ( theState )
 		{
 			case kStarting:
-				// On dit aux sous-classes de commencer à écouter.
+				// Tell subclasses to start listening.
 				DoStartListening();
 				
-				// L'étape suivante est d'attendre effectivement.
+				// Next step is to actually wait.
 				theNextState = kRunning;
 				break;
 
 			case kRunning:
-				// On attend un événement.
+				// Wait for an event.
 				{
 					TSmartPtr< TDCLEvent > theNextEvent;
 					theNextEvent = WaitNextEvent(
@@ -250,10 +238,9 @@ TDCLServer::Run( void )
 					
 					if (theNextEvent.Get() == nil)
 					{
-						// On a dormi tout le temps.
+						// Slept the entire time.
 						DoIdle();
 					} else {
-						// Traitement de l'événement.
 						Boolean processed = false;
 						theNextState = ProcessEvent(
 										theNextEvent.Get(), &processed );
@@ -278,23 +265,20 @@ TDCLServer::Run( void )
 		
 		if (theState != theNextState)
 		{
-			// Acquisition
 			mStateMutex->Acquire();
 
-			// Vérification que l'état n'a pas été changé pendant qu'on avait
-			// le dos tourné.
+			// Verify that the state did not change behind our back.
 			if (mState == theState)
 			{
-				// Changement
+				// Update
 				mState = theNextState;
 			}
 	
-			// Libération
 			mStateMutex->Release();
 		}
 	}
 
-	// Indication à l'application que le serveur est fermé.
+	// Notify the application that the server is down.
 	GetApplication()->ServerIsDown( this );
 }
 
@@ -317,13 +301,13 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 {
 	EState theNextState = kRunning;
 	
-	// Quel est cet événement que nous avons reçu?
+	// What event did we receive?
 	TDCLEvent::EEventID theEventID = inEvent->GetEventID();
 
 	switch( theEventID )
 	{
 		case TDCLEvent::kWaitingConnection:
-			// On attend le Newton.
+			// Waiting for the Newton.
 			GetApplication()->WaitConnection(
 					this,
 					(TDCLCommLayer*) (inEvent->GetEventData()) );
@@ -331,7 +315,7 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 			break;
 
 		case TDCLEvent::kIncomingRequest:
-			// Une connexion vient d'arriver.
+			// A connection has just arrived.
 			theNextState = HandleIncomingConnection(
 						(TDCLCommLayer*) (inEvent->GetEventData()) );
 			*outProcessed = true;
@@ -339,18 +323,18 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 
 		case TDCLEvent::kDisconnected:
 		{
-			// Un lien a été déconnecté.
+			// A link was disconnected.
 			TDCLLink* theLink = (TDCLLink*) (inEvent->GetEventData());
 			theNextState = HandleLinkDisconnection( theLink );
 			
-			// On indique à l'application que le lien est déconnecté.
+			// Notify the application that the link is disconnected.
 			mApplication->Disconnected( theLink );
 			*outProcessed = true;
 		}
 		break;
 
 		case TDCLEvent::kStopServer:
-			// Il faut se fermer.
+			// Need to shut down.
 			theNextState = kStopping;
 			*outProcessed = true;
 			break;
@@ -368,7 +352,6 @@ TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
 void
 TDCLServer::HandleException( TDCLException* inException )
 {
-	// Acquisition
 	mStateMutex->Acquire();
 
 	switch ( mState )
@@ -385,10 +368,33 @@ TDCLServer::HandleException( TDCLException* inException )
 			break;
 	}
 	
-	// Libération
 	mStateMutex->Release();
 
 	mApplication->HandleServerException( this, inException );
+}
+
+// ------------------------------------------------------------------------- //
+//  * AcquireConfigurationLock( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLServer::AcquireConfigurationLock( void )
+{
+	mStateMutex->Acquire();
+
+	if (mHasStarted || (mState != kStopped))
+	{
+		mStateMutex->Release();
+		throw DCLBadStateError;
+	}
+}
+
+// ------------------------------------------------------------------------- //
+//  * ReleaseConfigurationLock( void )
+// ------------------------------------------------------------------------- //
+void
+TDCLServer::ReleaseConfigurationLock( void )
+{
+	mStateMutex->Release();
 }
 
 // ================================================ //

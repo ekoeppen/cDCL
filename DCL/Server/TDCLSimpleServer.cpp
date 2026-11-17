@@ -1,9 +1,9 @@
 // ==============================
-// Fichier:			TDCLSimpleServer.cp
-// Projet:			Desktop Connection Library
+// File:			TDCLSimpleServer.cp
+// Project:			Desktop Connection Library
 //
-// Créé le:			15/1/2002
-// Tabulation:		4 espaces
+// Created:			15/1/2002
+// Tab width:		4 spaces
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -63,11 +63,22 @@ TDCLSimpleServer::TDCLSimpleServer(
 // -------------------------------------------------------------------------- //
 TDCLSimpleServer::~TDCLSimpleServer( void )
 {	
-	// Suppression de la connexion.
+	// Delete the connection.
 	if (mPipe)
 	{
 		delete mPipe;
 	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * SetLink( TDCLLink* )
+// -------------------------------------------------------------------------- //
+void
+TDCLSimpleServer::SetLink( TDCLLink* inLink )
+{
+	AcquireConfigurationLock();
+	mLink = inLink;
+	ReleaseConfigurationLock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -76,7 +87,6 @@ TDCLSimpleServer::~TDCLSimpleServer( void )
 void
 TDCLSimpleServer::DoStartListening( void )
 {
-	// On commence à écouter
 	mCommLayer->StartListening(this);
 }
 
@@ -86,18 +96,16 @@ TDCLSimpleServer::DoStartListening( void )
 void
 TDCLSimpleServer::DoStop( void )
 {
-	// Disconnect the link:
 	if ((mLink) && (mLink->IsConnected()))
 	{
 		try {
-			(void) mLink->Disconnect();	// On n'a pas besoin de savoir s'il
-										// était vraiment connecté.
+			(void) mLink->Disconnect();	// No need to know whether it was
+										// actually connected.
 		} catch (...) {
 			// Silently catch exceptions
 		}
 	}
 
-	// Fermeture du serveur.
 	mCommLayer->StopListening();
 }
 
@@ -112,21 +120,20 @@ TDCLSimpleServer::DoKill( void )
 		try {
 			mPipe->Disconnect();
 		} catch (...) {
-			// On fait le silence sur les exceptions.
+			// Silently catch exceptions.
 		}
 
-		// On dit au lien qu'il a été déconnecté.
+		// Tell the link it was disconnected.
 		if (mLink)
 		{
 			(void) mLink->Close();
 		}
 
-		// Suppression de l'interface.
+		// Delete the interface.
 		delete mPipe;
 		mPipe = nil;
 	}
 
-	// Fermeture du serveur.
 	mCommLayer->StopListening();
 }
 
@@ -136,27 +143,27 @@ TDCLSimpleServer::DoKill( void )
 TDCLServer::EState
 TDCLSimpleServer::HandleIncomingConnection( TDCLCommLayer* /* inCommLayer */ )
 {
-	// Si le lien est connecté, on refuse la connexion.
+	// If the link is connected, refuse the connection.
 	if ((mLink) && (mLink->IsConnected()))
 	{
 		mCommLayer->Refuse();
 	} else {
-		// Sinon, on l'accepte.
+		// Otherwise, accept it.
 
-		// Si un objet TDCLPipe était présent (d'un état inconnu), on le
-		// supprime ici.
+		// If a TDCLPipe object was present (from an unknown state), delete it
+		// here.
 		if (mPipe)
 		{
 			delete mPipe;
 		}
 
-		// On accepte la connexion.
+		// Accept the connection.
 		mPipe = mCommLayer->Accept();
 				
-		// On dit au lien de se connecter.
+		// Tell the link to connect.
 		if ((mLink) && (!mLink->Connect( mPipe, this )))
 		{
-			throw DCLBadStateError;	// Ne devrait pas arriver.
+			throw DCLBadStateError;	// Should not happen.
 		}
 	}
 	
@@ -173,11 +180,11 @@ TDCLSimpleServer::HandleLinkDisconnection( TDCLLink* /* inLink */ )
 	{	
 		mPipe->Disconnect();
 
-		// Suppression de l'interface de communication.
+		// Delete the communication interface.
 		delete mPipe;
 		mPipe = nil;
 	} else {
-		throw DCLBadStateError;	// Ne devrait pas arriver.
+		throw DCLBadStateError;	// Should not happen.
 	}
 
 	return kRunning;		

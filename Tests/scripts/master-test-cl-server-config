@@ -1,0 +1,14 @@
+PASS: TDCLSimpleServer SetLink pre-Start
+PASS: TDCLSimpleServer SetLink rejected while running
+PASS: TDCLSimpleServer SetLink rejected after Stop
+PASS: TDCLSimpleServer SetLink rejected after second Stop
+PASS: TDCLOneLinkServer AddCommLayer\(nil\) rejected
+PASS: TDCLOneLinkServer AddCommLayer does not start listening pre-Start
+PASS: TDCLOneLinkServer Start starts all registered layers
+PASS: TDCLOneLinkServer SetLink rejected while running
+PASS: TDCLOneLinkServer AddCommLayer rejected while running
+PASS: TDCLOneLinkServer SetLink rejected after Stop
+PASS: TDCLOneLinkServer AddCommLayer rejected after Stop
+PASS: TDCLOneLinkServer restart still starts registered layers
+PASS: TDCLOneLinkServer SetLink rejected after second Stop
+PASS: TDCLOneLinkServer AddCommLayer rejected after second Stop

@@ -76,6 +76,8 @@ test( const char* inTestName, const char* inArgument )
 			UTestCommLayers::StartAndStopTwiceBSDSocket();
 		} else if (::strcmp(inTestName, "cl-sast-fdserial") == 0) {
 			UTestCommLayers::StartAndStopTwiceFDSerialPort( inArgument );
+		} else if (::strcmp(inTestName, "cl-server-config") == 0) {
+			UTestCommLayers::TestServerConfiguration();
 		} else if (::strcmp(inTestName, "ns-arraysandframes") == 0) {
 			UTestNS::ArraysAndFrames();
 		} else if (::strcmp(inTestName, "ns-framekeyssort") == 0) {
