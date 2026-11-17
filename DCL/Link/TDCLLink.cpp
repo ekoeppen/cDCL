@@ -521,18 +521,25 @@ TDCLLink::DoDisconnect( void )
 			return;
 		}
 
+		// If the Newton already closed the link, there is
+		// nobody left to talk to, just let the server close it.
+		if (mPipe->PeerDisconnected())
+		{
+			return;
+		}
 		// Then, I send the disconnect command.
 		{
 			TDCLDockCmdNoData theDisconnectMessage( TDCLDockCommand::kDDisconnect );
 
 			theDisconnectMessage.SendCommand( mPipe.get() );
+			mPipe->FlushOutput();
 		}
 
 		// Récupération du résultat.
 		Boolean gotResult = false;
 		
 		try {
-			do
+			while ((gotResult == false) && mPipe->BytesAvailable())
 			{
 				TSmartPtr<TDCLDockCommand> theNewtMessage;
 				theNewtMessage =
@@ -565,7 +572,7 @@ TDCLLink::DoDisconnect( void )
 						// Commande non prévue.
 						throw DCLUnexpDockCmd;
 				}
-			} while ((gotResult == false) && mPipe->BytesAvailable());
+			}
 			
 			// Si la connexion ne gère pas flush, on attend 5 secondes.
 
@@ -789,8 +796,22 @@ TDCLLink::TransitionFromRunning( void )
 						}
 					}
 					
+					// A pipe can consume a peer LD while checking for data and
+					// return false without delivering a command (e.g. MNP). The
+					// transport has then closed: do not wait for another data
+					// event that will never come. A protocol failure is thrown
+					// by BytesAvailable instead and goes to HandleException.
+					if (theNextState == kRunning && mPipe->PeerDisconnected()
+						&& !mPipe->BytesAvailable())
+					{
+						theNextState = kDisconnected;
+					}
+
 					// On attend à nouveau des données.
-					mPipe->ClearDataPresent();
+					if (theNextState == kRunning)
+					{
+						mPipe->ClearDataPresent();
+					}
 				} else if (theEventID == TDCLEvent::kDisconnectLink) {
 					// Il faut se déconnecter.
 					theNextState = kDisconnecting;
