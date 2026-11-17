@@ -30,6 +30,7 @@
 //   Michael Vacík <mici@metastasis.net> (original author)
 //   Filip Zawadiak <philz@vyx.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 //

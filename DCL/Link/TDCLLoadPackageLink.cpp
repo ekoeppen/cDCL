@@ -28,6 +28,7 @@
 //   Paul Guyot <pguyot@kallisys.net> (original author)
 //   Michael Vacík <mici@metastasis.net> (original author)
 //   Nicolas Zinovieff <krugazor@poulet.org> (original author)
+//   Eckhart Koeppen <eck@40hz.org>
 //
 // ***** END LICENSE BLOCK *****
 // ===========

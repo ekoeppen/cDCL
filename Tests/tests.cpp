@@ -2,11 +2,13 @@
 // Fichier:			tests.cp
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
+// Modifié par:		Eckhart Koeppen (eck@40hz.org)
 //
 // Créé le:			02/02/2003
 // Tabulation:		4 espaces
 //
 // Copyright:		© 2003 by Paul Guyot, Michael Vacík & Nicolas Zinovieff.
+//					© 2026 by Eckhart Koeppen.
 // 					Tous droits réservés pour tous pays.
 // Licence:			Licence Réflexive Kallisys
 // 					http://www.kallisys.org/reflexive/
