@@ -1,9 +1,9 @@
 // ==============================
-// Fichier:			TDCLSimpleServer.h
-// Projet:			Desktop Connection Library
+// File:			TDCLSimpleServer.h
+// Project:			Desktop Connection Library
 //
-// Créé le:			15/1/2002
-// Tabulation:		4 espaces
+// Created:			15/1/2002
+// Tab width:		4 spaces
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -46,18 +46,17 @@
 class TDCLLink;
 
 ///
-/// Classe pour un serveur simple qui n'écoute que sur une seule
-/// interface de communication et qui ne sert qu'une seule connexion
-/// à la fois.
-/// C'est un serveur de type NPI/NTK.
+/// Class for a simple server that listens on only a single communication
+/// interface and serves only one connection at a time.
+/// This is an NPI/NTK-style server.
 ///
-/// Il faut d'abord créer le lien (parce que le lien suppose que le
-/// serveur pré-existe).
+/// The link must be created first (because the link assumes the server already
+/// exists).
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.5 $
 ///
-/// \test	aucun test défini.
+/// \test	no tests defined.
 ///
 class TDCLSimpleServer
 	:
@@ -65,11 +64,10 @@ class TDCLSimpleServer
 {
 public:
 	///
-	/// Créateur à partir d'une application et d'une couche de communication.
+	/// Constructor from an application and a communication layer.
 	///
-	/// \param inApplication	application prévenue de l'activité du serveur.
-	/// \param inCommLayer		couche de communication utilisée pour le
-	///							serveur.
+	/// \param inApplication	application notified of server activity.
+	/// \param inCommLayer		communication layer used for the server.
 	///
 	TDCLSimpleServer(
 			TDCLApplication* inApplication,
@@ -77,71 +75,70 @@ public:
 		);
 
 	///
-	/// Fixe le lien.
+	/// Sets the link.
+	/// This method may only be called before Start() has been called.
+	/// Calling it once Start() has been called (even after a subsequent Stop()
+	/// or Kill()) throws TDCLBadStateError.
 	///
-	/// \param inLink		lien à utiliser lorsqu'une connexion est établie.
+	/// \param inLink		link to use when a connection is established.
+	/// 	hrows TDCLBadStateError if Start() has already been called.
 	///
-	inline void			SetLink( TDCLLink* inLink )
-		{
-			mLink = inLink;
-		}
+	void				SetLink( TDCLLink* inLink );
 	
 	///
-	/// Destructeur.
+	/// Destructor.
 	///
 	virtual	~TDCLSimpleServer( void );
 	
 protected:
 
 	///
-	/// Commence à écouter.
-	/// Cette méthode est appelée lorsque le serveur est démarré (depuis
-	/// le processus léger du serveur).
+	/// Starts listening.
+	/// This method is called when the server is started (from the server
+	/// thread).
 	///
 	virtual	void		DoStartListening( void );
 
 	///
-	/// Arrête le serveur.
+	/// Stops the server.
 	///
 	virtual	void		DoStop( void );
 	
 	///
-	/// Ferme toutes les connexions brutalement.
+	/// Forcefully closes all connections.
 	///
 	virtual	void		DoKill( void );
 
 	///
-	/// Gère l'arrivée d'une nouvelle connexion.
+	/// Handles the arrival of a new connection.
 	///
-	/// \param inCommLayer	interface de communication qui a reçu la requête.
-	///						(ignoré)
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inCommLayer	communication interface that received the request.
+	///						(ignored)
+	/// \throws TDCLException if a problem occurred.
 	///
 	virtual EState		HandleIncomingConnection(
 								TDCLCommLayer* inCommLayer );
 
 	///
-	/// Méthode appelée dans le processus léger du serveur pour indiquer
-	/// qu'un lien a été déconnecté et qu'il faut fermer l'interface de
-	/// communication.
+	/// Method called on the server thread to indicate that a link has been
+	/// disconnected and the communication interface must be closed.
 	///
-	/// \param inLink	le lien qui a été déconnecté.
-	/// \return le nouvel état du serveur.
-	/// \throws TDCLException si un problème est survenu.
+	/// \param inLink	the link that was disconnected.
+	/// \return the new state of the server.
+	/// \throws TDCLException if a problem occurred.
 	///
 	virtual	EState		HandleLinkDisconnection( TDCLLink* inLink );
 
 	///
-	/// Méthode appelée par le serveur lorsque rien ne se passe.
-	/// Elle permet d'appeler Idle sur les interfaces de communication qui en
-	/// ont besoin.
+	/// Method called by the server when nothing is happening.
+	/// It allows calling Idle on communication interfaces that need it.
 	///
 	virtual	void		DoIdle( void );
 
 	///
-	/// Accesseur sur le lien.
+	/// Accessor for the link.
 	///
-	/// \return le lien à utiliser lorsqu'une connexion est établie.
+	/// \return the link to use when a connection is established.
 	///
 	inline TDCLLink*		GetLink( void )
 		{
@@ -149,26 +146,26 @@ protected:
 		}
 private:
 	///
-	/// Constructeur par copie volontairement indisponible.
+	/// Copy constructor intentionally unavailable.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		object to copy
 	///
 	TDCLSimpleServer( const TDCLSimpleServer& inCopy );
 
 	///
-	/// Opérateur d'assignation volontairement indisponible.
+	/// Assignment operator intentionally unavailable.
 	///
-	/// \param inCopy		objet à copier
+	/// \param inCopy		object to copy
 	///
 	TDCLSimpleServer& operator = ( const TDCLSimpleServer& inCopy );
 
-	/// \name Variables
+	/// \name Member variables
 
-	TDCLLink*			mLink;			///< Référence sur l'unique lien.
-	TDCLCommLayer*		mCommLayer;		///< Référence sur l'interface de
-										///< communication.
-	TDCLPipe*			mPipe;			///< Référence sur la connexion, \c nil
-										///< si on n'est pas connecté.
+	TDCLLink*			mLink;			///< Reference to the single link.
+	TDCLCommLayer*		mCommLayer;		///< Reference to the communication
+										///< interface.
+	TDCLPipe*			mPipe;			///< Reference to the connection, \c nil
+										///< if not connected.
 };
 
 #endif

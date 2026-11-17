@@ -18,10 +18,15 @@
 #include "UTestCommLayers.h"
 
 #include <chrono>
+#include <condition_variable>
+#include <mutex>
 #include <thread>
 
 // DCL
+#include <DCL/Exceptions/Errors/TDCLBadParamError.h>
+#include <DCL/Exceptions/Errors/TDCLBadStateError.h>
 #include <DCL/Exceptions/Errors/TDCLNotImplementedError.h>
+#include <DCL/Server/TDCLOneLinkServer.h>
 #include <DCL/Server/TDCLSimpleServer.h>
 
 #if TARGET_OS_WIN32
@@ -424,6 +429,255 @@ UTestCommLayers::TSASTApplication::ExceptionOccurred( void )
 	{
 		mWaitMutex->Release();
 		mWaitMutex = nil;
+	}
+}
+
+// ------------------------------------------------------------------------- //
+//  * TestServerConfiguration( void )
+// ------------------------------------------------------------------------- //
+namespace {
+
+class TConfigTestCommLayer : public TDCLCommLayer
+{
+public:
+	TConfigTestCommLayer( void )
+		: TDCLCommLayer( false, 0 ), mStartCount( 0 ), mStopCount( 0 ), mTimeout( kDefaultTimeout )
+	{
+	}
+
+	virtual TDCLPipe* Accept( void ) { return nil; }
+	virtual void Refuse( void ) {}
+	virtual void SetTimeout( long inTimeout ) { mTimeout = inTimeout; }
+	virtual long GetTimeout( void ) { return mTimeout; }
+	virtual void Disconnected( TDCLPipe* /* inPipe */ ) {}
+
+	int GetStartCount( void ) const { return mStartCount; }
+	int GetStopCount( void ) const { return mStopCount; }
+
+protected:
+	virtual void DoStartListening( void )
+	{
+		++mStartCount;
+	}
+
+	virtual void DoStopListening( void )
+	{
+		++mStopCount;
+	}
+
+private:
+	int mStartCount;
+	int mStopCount;
+	long mTimeout;
+};
+
+class TConfigTestApplication : public TTestApplication
+{
+public:
+	TConfigTestApplication( IDCLThreads* inThreadsIntf )
+		: TTestApplication( inThreadsIntf ),
+		  mWaitingCount( 0 ),
+		  mDownCount( 0 )
+	{
+	}
+
+	virtual void WaitConnection( TDCLServer* /* inServer */, TDCLCommLayer* /* inLayer */ )
+	{
+		{
+			std::lock_guard<std::mutex> lock( mMutex );
+			++mWaitingCount;
+		}
+		mCV.notify_all();
+	}
+
+	virtual void ServerIsDown( TDCLServer* /* inServer */ )
+	{
+		{
+			std::lock_guard<std::mutex> lock( mMutex );
+			++mDownCount;
+		}
+		mCV.notify_all();
+	}
+
+	void WaitForListening( int inExpectedCount = 1 )
+	{
+		std::unique_lock<std::mutex> lock( mMutex );
+		mCV.wait( lock, [&]() { return mWaitingCount >= inExpectedCount; } );
+		mWaitingCount -= inExpectedCount;
+	}
+
+	void WaitUntilServerIsDown( void )
+	{
+		std::unique_lock<std::mutex> lock( mMutex );
+		mCV.wait( lock, [&]() { return mDownCount >= 1; } );
+		--mDownCount;
+	}
+
+private:
+	std::mutex mMutex;
+	std::condition_variable mCV;
+	int mWaitingCount;
+	int mDownCount;
+};
+
+template <typename Fn>
+static bool
+ExpectBadState( Fn&& inFn )
+{
+	try
+	{
+		inFn();
+		return false;
+	}
+	catch ( const TDCLBadStateError& )
+	{
+		return true;
+	}
+	catch ( const TDCLException& anException )
+	{
+		return anException.GetExCode() == TDCLException::exBadStateError;
+	}
+}
+
+template <typename Fn>
+static bool
+ExpectBadParam( Fn&& inFn )
+{
+	try
+	{
+		inFn();
+		return false;
+	}
+	catch ( const TDCLBadParamError& )
+	{
+		return true;
+	}
+	catch ( const TDCLException& anException )
+	{
+		return anException.GetExCode() == TDCLException::exBadParamError;
+	}
+}
+
+static void
+Check( bool inCond, const char* inLabel )
+{
+	if ( inCond )
+	{
+		(void)::printf( "PASS: %s\n", inLabel );
+	}
+	else
+	{
+		(void)::printf( "FAIL: %s\n", inLabel );
+	}
+}
+
+} // namespace
+
+void
+UTestCommLayers::TestServerConfiguration( void )
+{
+	IDCLThreads* theThreadsIntf = new TDCLPlatformThreads();
+	TConfigTestApplication theApp( theThreadsIntf );
+
+	TTestDockLink theLink1( &theApp );
+	TTestDockLink theLink2( &theApp );
+
+	// 1. TDCLSimpleServer: SetLink allowed before Start(), rejected while running,
+	//    after Stop(), and across a subsequent Start()/Stop() cycle.
+	{
+		TConfigTestCommLayer theLayer;
+		TDCLSimpleServer theServer( &theApp, &theLayer );
+
+		theServer.SetLink( &theLink1 );
+		theServer.SetLink( &theLink2 );
+		Check( theLayer.GetStartCount() == 0, "TDCLSimpleServer SetLink pre-Start" );
+
+		theServer.Start();
+		theApp.WaitForListening();
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theLink1 ); } ),
+			"TDCLSimpleServer SetLink rejected while running" );
+
+		theServer.Stop();
+		theApp.WaitUntilServerIsDown();
+		while ( theServer.GetState() != TDCLServer::kStopped )
+		{
+			std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
+		}
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theLink1 ); } ),
+			"TDCLSimpleServer SetLink rejected after Stop" );
+
+		std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
+		theServer.Start();
+		theApp.WaitForListening();
+		theServer.Stop();
+		theApp.WaitUntilServerIsDown();
+		while ( theServer.GetState() != TDCLServer::kStopped )
+		{
+			std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
+		}
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theLink1 ); } ),
+			"TDCLSimpleServer SetLink rejected after second Stop" );
+		std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
+	}
+
+	// 2. TDCLOneLinkServer: SetLink & AddCommLayer pre-Start(), nil rejected,
+	//    and both rejected while running and after Stop().
+	{
+		TConfigTestApplication theOneApp( new TDCLPlatformThreads() );
+		TTestDockLink theOneLink1( &theOneApp );
+		TTestDockLink theOneLink2( &theOneApp );
+		TConfigTestCommLayer theLayer1;
+		TConfigTestCommLayer theLayer2;
+		TConfigTestCommLayer theLayer3;
+		TDCLOneLinkServer theServer( &theOneApp );
+
+		Check( ExpectBadParam( [&]() { theServer.AddCommLayer( nil ); } ),
+			"TDCLOneLinkServer AddCommLayer(nil) rejected" );
+
+		theServer.SetLink( &theOneLink1 );
+		theServer.SetLink( &theOneLink2 );
+		theServer.AddCommLayer( &theLayer1 );
+		theServer.AddCommLayer( &theLayer2 );
+		Check( (theLayer1.GetStartCount() == 0) && (theLayer2.GetStartCount() == 0),
+			"TDCLOneLinkServer AddCommLayer does not start listening pre-Start" );
+
+		theServer.Start();
+		theOneApp.WaitForListening( 2 );
+		Check( (theLayer1.GetStartCount() == 1) && (theLayer2.GetStartCount() == 1),
+			"TDCLOneLinkServer Start starts all registered layers" );
+
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theOneLink1 ); } ),
+			"TDCLOneLinkServer SetLink rejected while running" );
+		Check( ExpectBadState( [&]() { theServer.AddCommLayer( &theLayer3 ); } ),
+			"TDCLOneLinkServer AddCommLayer rejected while running" );
+
+		theServer.Stop();
+		theOneApp.WaitUntilServerIsDown();
+		while ( theServer.GetState() != TDCLServer::kStopped )
+		{
+			std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
+		}
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theOneLink1 ); } ),
+			"TDCLOneLinkServer SetLink rejected after Stop" );
+		Check( ExpectBadState( [&]() { theServer.AddCommLayer( &theLayer3 ); } ),
+			"TDCLOneLinkServer AddCommLayer rejected after Stop" );
+
+		std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
+		theServer.Start();
+		theOneApp.WaitForListening( 2 );
+		Check( (theLayer1.GetStartCount() == 2) && (theLayer2.GetStartCount() == 2),
+			"TDCLOneLinkServer restart still starts registered layers" );
+		theServer.Stop();
+		theOneApp.WaitUntilServerIsDown();
+		while ( theServer.GetState() != TDCLServer::kStopped )
+		{
+			std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
+		}
+		Check( ExpectBadState( [&]() { theServer.SetLink( &theOneLink1 ); } ),
+			"TDCLOneLinkServer SetLink rejected after second Stop" );
+		Check( ExpectBadState( [&]() { theServer.AddCommLayer( &theLayer3 ); } ),
+			"TDCLOneLinkServer AddCommLayer rejected after second Stop" );
+		std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
 	}
 }
 

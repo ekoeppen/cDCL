@@ -1,9 +1,9 @@
 // ==============================
-// Fichier:			TDCLOneLinkServer.cp
-// Projet:			Desktop Connection Library
+// File:			TDCLOneLinkServer.cp
+// Project:			Desktop Connection Library
 //
-// Créé le:			3/4/2003
-// Tabulation:		4 espaces
+// Created:			3/4/2003
+// Tab width:		4 spaces
 //
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
@@ -39,12 +39,13 @@
 
 // ANSI C
 #include <stdlib.h>
-#include <string.h>
 
 // DCL
 #include <DCL/Link/TDCLLink.h>
 #include <DCL/Communication_Layers/TDCLPipe.h>
+#include <DCL/Exceptions/Errors/TDCLBadParamError.h>
 #include <DCL/Exceptions/Errors/TDCLBadStateError.h>
+#include <DCL/Exceptions/Errors/TDCLMemError.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 
 // -------------------------------------------------------------------------- //
@@ -56,14 +57,9 @@ TDCLOneLinkServer::TDCLOneLinkServer( TDCLApplication* inApplication )
 			mLink( nil ),
 			mPipe( nil ),
 			mCommLayers( nil ),
-			mNbCommLayers( 0 ),
-			mListMutex( nil )
+			mNbCommLayers( 0 )
 {
-	// Allocation de la liste des interfaces de communication.
 	mCommLayers = ( TDCLCommLayer**  )::malloc( 0 * sizeof( TDCLCommLayer* ) );
-	
-	// Mutex sur cette liste.
-	mListMutex = inApplication->GetThreadsIntf()->CreateSemaphore();
 }
 
 // -------------------------------------------------------------------------- //
@@ -71,24 +67,28 @@ TDCLOneLinkServer::TDCLOneLinkServer( TDCLApplication* inApplication )
 // -------------------------------------------------------------------------- //
 TDCLOneLinkServer::~TDCLOneLinkServer( void )
 {	
-	// Suppression de la connexion.
 	if (mPipe)
 	{
 		delete mPipe;
 	}
-	
-	// Suppression du sémaphore.
-	if (mListMutex)
-	{
-		delete mListMutex;
-	}
 
-	// Suppression de la liste des interfaces de communication.
-	// Ces interfaces devront être supprimées par l'application.
+	// Delete the list of communication interfaces.
+	// These interfaces must be deleted by the application.
 	if (mCommLayers)
 	{
 		::free( mCommLayers );
 	}
+}
+
+// -------------------------------------------------------------------------- //
+//  * SetLink( TDCLLink* )
+// -------------------------------------------------------------------------- //
+void
+TDCLOneLinkServer::SetLink( TDCLLink* inLink )
+{
+	AcquireConfigurationLock();
+	mLink = inLink;
+	ReleaseConfigurationLock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -97,59 +97,28 @@ TDCLOneLinkServer::~TDCLOneLinkServer( void )
 void
 TDCLOneLinkServer::AddCommLayer( TDCLCommLayer* inLayer )
 {
-	// Acquisition
-	mListMutex->Acquire();
+	AcquireConfigurationLock();
 
-	// Redimensionnement de la liste.
-	KUInt32 indexNewCL = mNbCommLayers++;
-	mCommLayers = (TDCLCommLayer**) ::realloc(
-					mCommLayers, mNbCommLayers * sizeof( TDCLCommLayer* ) );
+	if (inLayer == nil)
+	{
+		ReleaseConfigurationLock();
+		throw DCLBadParamError;
+	}
 
-	// Ajout du nouvel élément.
+	KUInt32 indexNewCL = mNbCommLayers;
+	TDCLCommLayer** newLayers = (TDCLCommLayer**) ::realloc(
+					mCommLayers, (mNbCommLayers + 1) * sizeof( TDCLCommLayer* ) );
+	if (newLayers == nil)
+	{
+		ReleaseConfigurationLock();
+		throw DCLMemError;
+	}
+
+	mCommLayers = newLayers;
+	mNbCommLayers++;
 	mCommLayers[indexNewCL] = inLayer;
 
-	inLayer->StartListening(this);
-	
-	// Libération
-	mListMutex->Release();
-}
-
-// -------------------------------------------------------------------------- //
-//  * RemoveCommLayer( TDCLCommLayer* )
-// -------------------------------------------------------------------------- //
-void
-TDCLOneLinkServer::RemoveCommLayer( TDCLCommLayer* inLayer )
-{
-	// Acquisition
-	mListMutex->Acquire();
-
-	// Déterminons où se trouve l'élément dans la liste.
-	KUInt32 nbCL = mNbCommLayers;
-	KUInt32 indexCL;
-	for (indexCL = 0; indexCL < nbCL; indexCL++)
-	{
-		if (mCommLayers[indexCL] == inLayer)
-		{
-			// Trouvé.
-			inLayer->StopListening();
-			
-			// Copie des éléments qui suivent.
-			(void) ::memmove(
-						(void*) &mCommLayers[indexCL],
-						(const void*) &mCommLayers[indexCL+1],
-						(nbCL - indexCL - 1) * sizeof( TDCLCommLayer* ));
-			
-			// Redimensionnement
-			--mNbCommLayers;
-			mCommLayers = (TDCLCommLayer**) ::realloc(
-							mCommLayers,
-							mNbCommLayers * sizeof( TDCLCommLayer* ) );
-			break;
-		}
-	}
-	
-	// Libération
-	mListMutex->Release();
+	ReleaseConfigurationLock();
 }
 
 // -------------------------------------------------------------------------- //
@@ -158,19 +127,13 @@ TDCLOneLinkServer::RemoveCommLayer( TDCLCommLayer* inLayer )
 void
 TDCLOneLinkServer::DoStartListening( void )
 {
-	// On appelle StartListening sur chacune des interfaces de connexions.
-	// Acquisition
-	mListMutex->Acquire();
-	
+	// Call StartListening on each of the connection interfaces.
 	KUInt32 nbCL = mNbCommLayers;
 	KUInt32 indexCL;
 	for (indexCL = 0; indexCL < nbCL; indexCL++)
 	{
 		mCommLayers[indexCL]->StartListening(this);
 	}
-
-	// Libération
-	mListMutex->Release();
 }
 
 // -------------------------------------------------------------------------- //
@@ -179,12 +142,11 @@ TDCLOneLinkServer::DoStartListening( void )
 void
 TDCLOneLinkServer::DoStop( void )
 {
-	// Disconnect the link:
 	if ((mLink) && mLink->IsConnected())
 	{
 		try {
-			(void) mLink->Disconnect();	// On se fiche de savoir s'il était
-										// vraiment connecté.
+			(void) mLink->Disconnect();	// Don't care whether it was
+										// actually connected.
 		} catch (...) {
 			// Silently catch exceptions
 		}
@@ -209,16 +171,15 @@ TDCLOneLinkServer::DoKill( void )
 		try {
 			mPipe->Disconnect();
 		} catch (...) {
-			// On fait le silence sur les exceptions.
+			// Silently catch exceptions.
 		}
 
-		// On dit au lien qu'il a été déconnecté.
+		// Tell the link it was disconnected.
 		if (mLink)
 		{
 			(void) mLink->Close();
 		}
 
-		// Suppression de l'interface.
 		delete mPipe;
 		mPipe = nil;
 	}
@@ -237,27 +198,26 @@ TDCLOneLinkServer::DoKill( void )
 TDCLServer::EState
 TDCLOneLinkServer::HandleIncomingConnection( TDCLCommLayer* inCommLayer )
 {
-	// Si le lien est connecté, on refuse la connexion.
+	// If the link is connected, refuse the connection.
 	if ((mLink) && (mLink->IsConnected()))
 	{
 		inCommLayer->Refuse();
 	} else {
-		// Sinon, on l'accepte.
+		// Otherwise, accept it.
 
-		// Si un objet TDCLPipe était présent (d'un état inconnu), on le
-		// supprime ici.
+		// If a TDCLPipe object was present (from an unknown state), delete it
+		// here.
 		if (mPipe)
 		{
 			delete mPipe;
 		}
 
-		// On accepte la connexion.
 		mPipe = inCommLayer->Accept();
 				
-		// On dit au lien de se connecter.
+		// Tell the link to connect.
 		if ((mLink) && (!mLink->Connect( mPipe, this )))
 		{
-			throw DCLBadStateError;	// Ne devrait pas arriver.
+			throw DCLBadStateError;	// Should not happen.
 		}
 	}
 	
@@ -277,7 +237,7 @@ TDCLOneLinkServer::HandleLinkDisconnection( TDCLLink* /* inLink */ )
 		} catch ( ... ) {
 		}
 
-		// Suppression de l'interface de communication.
+		// Delete the communication interface.
 		delete mPipe;
 		mPipe = nil;
 	}
@@ -291,19 +251,13 @@ TDCLOneLinkServer::HandleLinkDisconnection( TDCLLink* /* inLink */ )
 void
 TDCLOneLinkServer::DoIdle( void )
 {
-	// On appelle Idle sur chacune des interfaces de connexions.
-	// Acquisition
-	mListMutex->Acquire();
-	
+	// Call Idle on each of the connection interfaces.
 	KUInt32 nbCL = mNbCommLayers;
 	KUInt32 indexCL;
 	for (indexCL = 0; indexCL < nbCL; indexCL++)
 	{
 		mCommLayers[indexCL]->Idle();
 	}
-
-	// Libération
-	mListMutex->Release();
 }
 
 // ========================================================================== //
