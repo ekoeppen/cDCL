@@ -18,7 +18,7 @@
 // The Original Code is TDCLEventQueue.h.
 //
 // The Initial Developer of the Original Code is Paul Guyot.
-// Portions created by the Initial Developer are Copyright (C) 2003-2026 the
+// Portions created by the Initial Developer are Copyright (C) 2003-2004 the
 // Initial Developer. All Rights Reserved.
 //
 // Contributor(s):
