@@ -40,15 +40,25 @@ if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(DCL PRIVATE -fprofile-update=atomic)
   endif()
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-    target_link_options(DCL PRIVATE --coverage)
+    target_link_options(DCL PUBLIC --coverage)
     target_link_options(DCLTests PRIVATE --coverage)
   else()
-    target_link_libraries(DCL PRIVATE --coverage)
+    target_link_libraries(DCL PUBLIC --coverage)
     target_link_libraries(DCLTests PRIVATE --coverage)
   endif()
 endif(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
 target_link_libraries (DCLTests PUBLIC DCL PRIVATE Threads::Threads)
+
+add_executable(CommLayerShutdownTests
+    CommLayerShutdownTests.cpp
+    Tests/TTestApplication.cpp
+    Tests/TTestEmptyFilesIntf.cpp
+    Tests/TTestServer.cpp
+)
+target_link_libraries(CommLayerShutdownTests PRIVATE DCL Threads::Threads)
+add_test(NAME comm-layer-shutdown COMMAND CommLayerShutdownTests)
+set_tests_properties(comm-layer-shutdown PROPERTIES TIMEOUT 30)
 
 file(GLOB TEST_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test-*.sh)
 foreach(TEST_SCRIPT ${TEST_SCRIPTS})

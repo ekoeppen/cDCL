@@ -148,10 +148,22 @@ TDCLPipeProxy::ClearDataPresent( void )
 	mSubPipe->ClearDataPresent();
 }
 
+// -------------------------------------------------------------------------- //
+//  * IsCurrentThread( void ) const noexcept
+// -------------------------------------------------------------------------- //
 bool
 TDCLPipeProxy::IsCurrentThread( void ) const noexcept
 {
 	return mSubPipe ? mSubPipe->IsCurrentThread() : false;
+}
+
+// -------------------------------------------------------------------------- //
+//  * PeerDisconnected( void )
+// -------------------------------------------------------------------------- //
+Boolean
+TDCLPipeProxy::PeerDisconnected( void )
+{
+	return mSubPipe->PeerDisconnected();
 }
 
 // ============================ //

@@ -40,19 +40,21 @@
 // ANSI C
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
 
 // K
 #include <K/Misc/TSmartPtr.h>
 
 // DCL
 #include <DCL/Exceptions/TDCLNewtonException.h>
+#include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/Link_Exceptions/TDCLUnexpDockCmdException.h>
+#include <DCL/Headers/DCLErrorMessages.h>
 #include <DCL/Communication_Layers/TDCLPipe.h>
 #include <DCL/Interfaces/TDCLApplication.h>
 #include <DCL/Interfaces/TDCLFile.h>
 #include <DCL/Link/App_Commands/TDCLAppCmdFile.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdLoadPkg.h>
+#include <DCL/Link/Dock_Commands/TDCLDockCmdNoData.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCmdSingleLong.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
@@ -186,6 +188,7 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	{
 		TDCLDockCommand* theNewtMessage =
 				TDCLDockCommand::ReceiveCommand( GetPipe() );
+		KUInt32 theCmd = theNewtMessage->GetCommand();
 		if (theNewtMessage->GetCommand() == TDCLDockCommand::kDResult)
 		{
 			// It's a kDResult, process it.
@@ -193,12 +196,28 @@ TDCLLoadPackageLink::DoInstallPackage( TDCLFSItemRef inPackage )
 					(TDCLDockCmdSingleLong*) theNewtMessage;
 			KSInt32 theResult = (KSInt32) theResultCmd->GetLong();
 			delete theNewtMessage;	// I no longer need it.
-			if (theResult)
+			if (theResult == kPDILAborted || theResult == kPDILDockingCanceled)
+			{
+				throw DCLPlatformUserCancelled( theResult );
+			}
+			else if (theResult)
 			{
 				// Throw the error that the Newton sent.
 				throw DCLNewton( theResult );
 			}
-		} else {
+		} else if (theCmd == TDCLDockCommand::kDOperationCanceled || theCmd == TDCLDockCommand::kDOperationCanceled2)
+		{
+			delete theNewtMessage;
+			TDCLDockCmdNoData ack( TDCLDockCommand::kDOpCanceledAck );
+			ack.SendCommand( GetPipe() );
+			GetPipe()->FlushOutput();
+			throw DCLUserCancelled;
+		} else if (theCmd == TDCLDockCommand::kDDisconnect)
+		{
+			delete theNewtMessage;
+			throw DCLUserCancelled;
+		} else
+		{
 			// It's not what I expected. Get out.
 			delete theNewtMessage;
 			throw DCLUnexpDockCmd;
