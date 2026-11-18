@@ -20,46 +20,11 @@
 // DCL
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
-///
-/// Classe pour les tests relatifs aux objets NewtonScript.
-///
-/// \author Paul Guyot <pguyot@kallisys.net>
-/// \version $Revision: 1.10 $
-///
 class UTestNS
 {
 public:
-	///
-	/// Retourne la structure Walter Smith.
-	///
 	static TDCLNSRef GetWalterSmith( void );
-
-	///
-	/// Test du tri des clés dans une structure NS: ajoute des
-	/// clés au hasard puis essaye de récupérer les valeurs
-	/// correctement.
-	///
-	static void FrameKeysSort( void );
-
-	///
-	/// Test de la concaténation de chaînes.
-	///
-	static void CatenateStrings( void );
-
-	///
-	/// Test sur les références sur les objets NS.
-	///
-	static void References( void );
-
-	///
-	/// Test d'opérations sur les tableaux et les structures.
-	///
-	static void ArraysAndFrames( void );
 };
 
 #endif
 		// __UTESTNS__
-
-// ====================== //
-// Send some filthy mail. //
-// ====================== //

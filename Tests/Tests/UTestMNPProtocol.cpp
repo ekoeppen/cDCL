@@ -32,15 +32,13 @@
 // Blocking transport, timeout/stall, keepalive, and disconnect facade behavior
 // are covered through the public API in UTestMNPPipe and UTestMNPLinkLayer.
 
-#include "UTestMNPProtocol.h"
-
 #include <DCL/Communication_Layers/TDCLMNPPipe.h>
 #include "TTestMemoryPipe.h"
 
+#include <doctest/doctest.h>
+
 #include <algorithm>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 #include <utility>
 #include <vector>
 
@@ -174,16 +172,6 @@ namespace
 {
 using Bytes = std::vector<std::uint8_t>;
 using L = TMNPPipeTestAccess;
-
-#define CHECK( cond )                                                         \
-	do                                                                        \
-	{                                                                         \
-		if ( !( cond ) )                                                      \
-		{                                                                     \
-			std::printf( "FAILED: %s (%s:%d)\n", #cond, __FILE__, __LINE__ ); \
-			std::exit( 1 );                                                   \
-		}                                                                     \
-	} while ( 0 )
 
 // Observed hardware LR (decoded body, 41 bytes).
 const Bytes kHardwareLR = { 0x26, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0xff, 0x02, 0x01, 0x02,
@@ -324,7 +312,8 @@ struct Harness
 	{
 		Submit( inData );
 		const std::vector<Bytes> frames = Take();
-		CHECK( frames.size() == 1 );
+		REQUIRE( frames.size() == 1 );
+		REQUIRE( frames[0].size() >= 3 );
 		Feed( LA( frames[0][2], 1 ) );
 		CHECK( link.State() == L::kConnected );
 	}
@@ -336,10 +325,11 @@ ExpectFatal( Harness& h, std::uint8_t inReason )
 	CHECK( h.link.State() == L::kFailed );
 	CHECK( h.link.LocalReason() == inReason );
 	const std::vector<Bytes> frames = h.Take();
-	CHECK( !frames.empty() );
+	REQUIRE( !frames.empty() );
 	CHECK( frames.back() == LD( inReason ) );
 	for ( const Bytes& f : frames )
 	{
+		REQUIRE( f.size() >= 2 );
 		CHECK( f[1] != 0x04 ); // no LT follows an anomaly
 	}
 	// Nothing further is emitted, whatever arrives.
@@ -453,7 +443,9 @@ TestA4_SequenceWrap( void )
 	// Outbound LT 0 follows LT 255 and is acknowledged by LA(0).
 	h.Submit( { 0xaa } );
 	const std::vector<Bytes> frames = h.Take();
-	CHECK( frames.size() == 1 && frames[0][2] == 0 );
+	REQUIRE( frames.size() == 1 );
+	REQUIRE( frames[0].size() >= 3 );
+	CHECK( frames[0][2] == 0 );
 	h.Feed( LA( 0, 1 ) );
 	CHECK( h.link.State() == L::kConnected );
 
@@ -615,7 +607,9 @@ TestE1_TraceReplay( void )
 	{
 		h.Submit( inChunk );
 		const std::vector<Bytes> frames = h.Take();
-		CHECK( frames.size() == 1 && frames[0][1] == 0x04 );
+		REQUIRE( frames.size() == 1 );
+		REQUIRE( frames[0].size() >= 3 );
+		CHECK( frames[0][1] == 0x04 );
 		++ltCount;
 		CHECK( frames[0][2] == static_cast<std::uint8_t>( ltCount ) );
 		fullCount += ( inChunk.size() == 253 );
@@ -654,7 +648,7 @@ TestE1_TraceReplay( void )
 	const Bytes disc = { 'n', 'e', 'w', 't', 'd', 'o', 'c', 'k', 'd', 'i', 's', 'c', 0, 0, 0, 0 };
 	h.Submit( disc );
 	std::vector<Bytes> frames = h.Take();
-	CHECK( frames.size() == 1 && frames[0] == LT( 0x3f, disc ) );
+	CHECK( ( frames.size() == 1 && frames[0] == LT( 0x3f, disc ) ) );
 	++ltCount;
 	h.Disconnect();
 	CHECK( h.Take().empty() );
@@ -830,26 +824,20 @@ TestFraming_ResynchronizesAfterFatalError( void )
 }
 } // namespace
 
-// ------------------------------------------------------------------------- //
-//  * Run( void )
-// ------------------------------------------------------------------------- //
-void
-UTestMNPProtocol::Run( void )
+TEST_SUITE("MNPProtocol")
 {
-	std::printf( "--- Testing MNP protocol ---\n" );
-	TestH2_AdditionalParameters();
-	TestH3_RejectedNegotiation();
-	TestWindowTwoUsesOneOutstandingLT();
-	TestA4_SequenceWrap();
-	TestA5_AcknowledgementsAcrossWrap();
-	TestX3_UnexpectedSequenceLA();
-	TestX4_OutOfSequenceLT();
-	TestX5_CreditOutOfWindow();
-	TestD1_InvalidPeerLD();
-	TestE1_TraceReplay();
-	TestFraming_Encode();
-	TestFraming_Decode();
-	TestFraming_Errors();
-	TestFraming_ResynchronizesAfterFatalError();
-	std::printf( "--- All MNP protocol tests passed! ---\n" );
+	TEST_CASE("H2: additional negotiation parameters") { TestH2_AdditionalParameters(); }
+	TEST_CASE("H3: rejected negotiation") { TestH3_RejectedNegotiation(); }
+	TEST_CASE("Window two uses one outstanding LT") { TestWindowTwoUsesOneOutstandingLT(); }
+	TEST_CASE("A4: 8-bit sequence wraparound") { TestA4_SequenceWrap(); }
+	TEST_CASE("A5: acknowledgements across wraparound") { TestA5_AcknowledgementsAcrossWrap(); }
+	TEST_CASE("X3: unexpected sequence LA") { TestX3_UnexpectedSequenceLA(); }
+	TEST_CASE("X4: out-of-sequence LT") { TestX4_OutOfSequenceLT(); }
+	TEST_CASE("X5: credit out of window") { TestX5_CreditOutOfWindow(); }
+	TEST_CASE("D1: invalid peer LD") { TestD1_InvalidPeerLD(); }
+	TEST_CASE("E1: end-to-end trace replay") { TestE1_TraceReplay(); }
+	TEST_CASE("Framing: encode") { TestFraming_Encode(); }
+	TEST_CASE("Framing: decode") { TestFraming_Decode(); }
+	TEST_CASE("Framing: errors") { TestFraming_Errors(); }
+	TEST_CASE("Framing: resynchronizes after fatal error") { TestFraming_ResynchronizesAfterFatalError(); }
 }

@@ -32,7 +32,6 @@
 // an independent wire codec. Stall waits use tens of milliseconds; a watchdog
 // bounds the suite. Scheduling happens inside BytesAvailable, without feeder races.
 
-#include "UTestMNPPipe.h"
 #include "TMNPPipeStatusTestAccess.h"
 #include "TTestMemoryPipe.h"
 
@@ -40,12 +39,12 @@
 #include <DCL/Exceptions/TDCLUserCancelledException.h>
 #include <DCL/Exceptions/IO_Exceptions/TDCLEOFException.h>
 
+#include <doctest/doctest.h>
+
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 #include <functional>
 #include <mutex>
 #include <stdexcept>
@@ -61,32 +60,6 @@ using Clock = std::chrono::steady_clock;
 using ms = std::chrono::milliseconds;
 constexpr ms kStall( 60 );
 static_assert( TDCLMNPPipe::kDefaultStallTimeout == ms( 6000 ), "default stall timeout is 6 s" );
-
-#define CHECK( cond )                                                         \
-	do                                                                        \
-	{                                                                         \
-		if ( !( cond ) )                                                      \
-		{                                                                     \
-			std::printf( "FAILED: %s (%s:%d)\n", #cond, __FILE__, __LINE__ ); \
-			std::exit( 1 );                                                   \
-		}                                                                     \
-	} while ( 0 )
-
-// Expects the statement to throw exactly type E.
-#define CHECK_THROWS( E, stmt ) \
-	do                          \
-	{                           \
-		bool thrown = false;    \
-		try                     \
-		{                       \
-			stmt;               \
-		}                       \
-		catch ( const E& )      \
-		{                       \
-			thrown = true;      \
-		}                       \
-		CHECK( thrown );        \
-	} while ( 0 )
 
 const Bytes kHardwareLR = { 0x26, 0x01, 0x02, 0x01, 0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0xff, 0x02, 0x01, 0x02,
                             0x03, 0x01, 0x08, 0x04, 0x02, 0x40, 0x00, 0x08, 0x01, 0x03, 0x09, 0x01, 0x01, 0x0e,
@@ -155,16 +128,17 @@ Decode( const Bytes& inWire )
 		{
 			break;
 		}
-		CHECK( i + 1 < inWire.size() && inWire[i] == 0x10 && inWire[i + 1] == 0x02 );
+		REQUIRE( i + 1 < inWire.size() );
+		CHECK( ( inWire[i] == 0x10 && inWire[i + 1] == 0x02 ) );
 		i += 2;
 		Bytes body;
 		for ( ;; )
 		{
-			CHECK( i < inWire.size() );
+			REQUIRE( i < inWire.size() );
 			std::uint8_t b = inWire[i++];
 			if ( b == 0x10 )
 			{
-				CHECK( i < inWire.size() );
+				REQUIRE( i < inWire.size() );
 				b = inWire[i++];
 				if ( b == 0x03 )
 				{
@@ -174,7 +148,7 @@ Decode( const Bytes& inWire )
 			}
 			body.push_back( b );
 		}
-		CHECK( i + 2 <= inWire.size() );
+		REQUIRE( i + 2 <= inWire.size() );
 		const std::uint16_t c = static_cast<std::uint16_t>( inWire[i] | ( inWire[i + 1] << 8 ) );
 		CHECK( c == CRC( body ) );
 		i += 2;
@@ -361,40 +335,6 @@ private:
 	Clock::time_point mStart{};
 };
 
-// A regression must fail instead of hanging in Read or a broken wait loop.
-class Watchdog
-{
-public:
-	Watchdog( void )
-	    : mThread(
-	          [this]
-	          {
-		          std::unique_lock<std::mutex> lock( mMutex );
-		          if ( !mCond.wait_for( lock, std::chrono::seconds( 20 ), [this] { return mDone; } ) )
-		          {
-			          std::fputs( "MNP pipe test watchdog expired\n", stderr );
-			          std::_Exit( 1 );
-		          }
-	          } )
-	{
-	}
-
-	~Watchdog( void )
-	{
-		{
-			std::lock_guard<std::mutex> lock( mMutex );
-			mDone = true;
-		}
-		mCond.notify_all();
-		mThread.join();
-	}
-
-private:
-	std::mutex mMutex;
-	std::condition_variable mCond;
-	bool mDone = false;
-	std::thread mThread;
-};
 
 struct Fixture
 {
@@ -514,10 +454,10 @@ ExpectFailureState( Fixture& f, std::uint8_t inReason )
 	CHECK( !f.pipe.PeerDisconnected() );
 	CHECK( f.sub->IsDisconnected() );
 	CHECK( f.sub->disconnectCalls == 1 );
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
-	CHECK_THROWS( TDCLMNPProtocolException, WriteAll( f.pipe, { 0x01 } ) );
-	CHECK_THROWS( TDCLMNPProtocolException, ReadN( f.pipe, 1 ) );
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+	CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
+	CHECK_THROWS_AS( WriteAll( f.pipe, { 0x01 } ) , TDCLMNPProtocolException );
+	CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLMNPProtocolException );
+	CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 	try
 	{
 		f.pipe.FlushOutput();
@@ -541,7 +481,7 @@ void
 ExpectFailed( Fixture& f, std::uint8_t inReason )
 {
 	const Frames frames = f.Written();
-	CHECK( !frames.empty() );
+	REQUIRE( !frames.empty() );
 	CHECK( frames.back() == LD( inReason ) );
 	ExpectFailureState( f, inReason );
 }
@@ -574,13 +514,13 @@ TestSingleSessionLifecycle( void )
 		// Even a complete second handshake must not reset an active session.
 		f.Feed( kHardwareLR );
 		f.Feed( LA( 0, 1 ) );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 		ExpectFailed( f, 0xfe );
 	}
 	{
 		Fixture f;
 		f.pipe.Disconnect();
-		CHECK_THROWS( TDCLEOFException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLEOFException );
 		CHECK( f.Written().empty() );
 		CHECK( f.sub->IsDisconnected() );
 	}
@@ -590,7 +530,7 @@ TestSingleSessionLifecycle( void )
 		f.pipe.Disconnect();
 		CHECK( TMNPPipeStatusTestAccess::IsCleanDisconnect( f.pipe ) );
 		CHECK( f.Written() == Frames{ LD( 0xff ) } );
-		CHECK_THROWS( TDCLEOFException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLEOFException );
 		CHECK( f.Written().empty() );
 	}
 	{
@@ -599,7 +539,7 @@ TestSingleSessionLifecycle( void )
 		f.Feed( LD( 0x05 ) );
 		CHECK( !f.pipe.BytesAvailable() );
 		CHECK( f.pipe.PeerDisconnected() );
-		CHECK_THROWS( TDCLEOFException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLEOFException );
 		CHECK( f.pipe.PeerDisconnected() );
 		CHECK( f.Written().empty() );
 	}
@@ -608,8 +548,8 @@ TestSingleSessionLifecycle( void )
 		Bytes lr = kHardwareLR;
 		lr[13] = 0x01;
 		f.Feed( lr );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 		ExpectFailed( f, 0x03 ); // Preserve the original failure, do not restart.
 	}
 }
@@ -621,7 +561,7 @@ TestH3_RejectedLR( void )
 	Bytes lr = kHardwareLR;
 	lr[13] = 0x01; // framing mode 1
 	f.Feed( lr );
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+	CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 	ExpectFailed( f, 0x03 );
 }
 
@@ -636,7 +576,7 @@ TestH4_HandshakeStall( void )
 			f.Feed( kHardwareLR );
 		}
 		const auto start = Clock::now();
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 		CHECK( Clock::now() - start >= kStall );
 		ExpectFailed( f, 0x01 );
 	}
@@ -661,7 +601,7 @@ TestHandshakePeerLD( void )
 	// Decision 1: an LD instead of the handshake is EOF, not an error.
 	Fixture f;
 	f.Feed( LD( 0x05 ) );
-	CHECK_THROWS( TDCLEOFException, f.pipe.Connected( nullptr ) );
+	CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLEOFException );
 	CHECK( f.pipe.PeerDisconnected() );
 	CHECK( f.Written().empty() );
 }
@@ -692,14 +632,15 @@ TestT1_Segmentation( void )
 	WriteAll( f.pipe, data );
 	f.pipe.FlushOutput();
 	const Frames frames = f.Written();
-	CHECK( frames.size() == 3 );
+	REQUIRE( frames.size() == 3 );
 	Bytes sent;
 	for ( std::size_t i = 0; i < frames.size(); ++i )
 	{
-		CHECK( IsLT( frames[i] ) && frames[i][2] == i + 1 );
+		REQUIRE( IsLT( frames[i] ) );
+		CHECK( frames[i][2] == i + 1 );
 		sent.insert( sent.end(), frames[i].begin() + 3, frames[i].end() );
 	}
-	CHECK( frames[0].size() == 3 + 253 && frames[2].size() == 3 + 94 );
+	CHECK( ( frames[0].size() == 3 + 253 && frames[2].size() == 3 + 94 ) );
 	CHECK( sent == data );
 
 	// A smaller configured output buffer is respected.
@@ -709,8 +650,8 @@ TestT1_Segmentation( void )
 	WriteAll( small.pipe, Pattern( 250, 1 ) );
 	small.pipe.FlushOutput();
 	const Frames smallFrames = small.Written();
-	CHECK( smallFrames.size() == 3 );
-	CHECK( smallFrames[0].size() == 103 && smallFrames[2].size() == 53 );
+	REQUIRE( smallFrames.size() == 3 );
+	CHECK( ( smallFrames[0].size() == 103 && smallFrames[2].size() == 53 ) );
 }
 
 void
@@ -748,10 +689,11 @@ TestT1_NoSecondLTBeforeAck( void )
 		f.Connect( credit );
 		WriteAll( f.pipe, Pattern( 300, 0 ) );
 		f.Feed( LA( 0, credit ) ); // Repeated ACK must not release LT(1).
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+		CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 		const Frames frames = f.Written();
-		CHECK( frames.size() == 2 );
-		CHECK( IsLT( frames[0] ) && frames[0][2] == 1 );
+		REQUIRE( frames.size() == 2 );
+		REQUIRE( IsLT( frames[0] ) );
+		CHECK( frames[0][2] == 1 );
 		CHECK( frames[1] == LD( 0x04 ) );
 	}
 }
@@ -827,7 +769,7 @@ TestA2_CreditStall( void )
 	f.pipe.FlushOutput();
 	WriteAll( f.pipe, { 0x02 } );
 	// Data stays in the facade; no second LT is submitted without credit.
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+	CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 	const Frames frames = f.Written();
 	CHECK( frames == ( Frames{ LT( 1, { 0x01 } ), LD( 0x04 ) } ) );
 }
@@ -842,7 +784,7 @@ TestA3_StallStartsAtBlockingCall( void )
 	CHECK( !PollFor( f.pipe, 3 * kStall ) );
 	WriteAll( f.pipe, { 0x02 } );
 	const auto start = Clock::now();
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+	CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 	CHECK( Clock::now() - start >= kStall ); // A fresh budget, not the LT's age.
 	CHECK( f.Written() == ( Frames{ LT( 1, { 0x01 } ), LD( 0x04 ) } ) );
 }
@@ -880,9 +822,9 @@ TestRead_TimeoutIsFatal( void )
 	KUInt8 data[2]{};
 	KUInt32 count = 2;
 	const auto start = Clock::now();
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Read( data, &count ) );
+	CHECK_THROWS_AS( f.pipe.Read( data, &count ) , TDCLMNPProtocolException );
 	CHECK( Clock::now() - start >= std::chrono::seconds( 1 ) );
-	CHECK( count == 1 && data[0] == 0x42 );
+	CHECK( ( count == 1 && data[0] == 0x42 ) );
 	ExpectFailed( f, 0x04 );
 }
 
@@ -920,7 +862,7 @@ TestX1_BadCRC( void )
 	Bytes wire = Wire( LT( 1, { 0x01 } ) );
 	wire.back() ^= 0x01;
 	f.sub->Feed( wire );
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+	CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 	ExpectFailed( f, 0xfe );
 }
 
@@ -948,7 +890,7 @@ TestX2_MalformedAndOversizedFrames( void )
 		Fixture f;
 		f.Connect();
 		f.Feed( body );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+		CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 		ExpectFailed( f, 0xfe );
 	}
 }
@@ -959,7 +901,7 @@ TestX6_MidSessionLR( void )
 	Fixture f;
 	f.Connect();
 	f.Feed( kHardwareLR );
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+	CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 	ExpectFailed( f, 0xfe );
 }
 
@@ -980,7 +922,7 @@ TestS1_HandshakeProgress( void )
 	{
 		Fixture f;
 		const auto start = f.sub->Schedule( { { gap, Wire( kHardwareLR ) } } );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 		CHECK( Clock::now() - start >= gap + kStall );
 		ExpectFailed( f, 0x01 );
 	}
@@ -1128,11 +1070,11 @@ TestS1_NonProgressCannotExtendWait( void )
 			}
 			else
 			{
-				CHECK_THROWS( TDCLMNPProtocolException, RunWait( f, phase ) );
+				CHECK_THROWS_AS( RunWait( f, phase ) , TDCLMNPProtocolException );
 			}
 			const auto elapsed = Clock::now() - start;
-			CHECK( elapsed >= kStall && elapsed < 3 * kStall );
-			CHECK( f.sub->Delivered() > 0 && f.sub->Delivered() < arrivals.size() );
+			CHECK( ( elapsed >= kStall && elapsed < 3 * kStall ) );
+			CHECK( ( f.sub->Delivered() > 0 && f.sub->Delivered() < arrivals.size() ) );
 			const auto reason = phase == WaitPhase::kCloseLD ? 0xff : 0x04;
 			CHECK( TMNPPipeStatusTestAccess::GetDisconnectReason( f.pipe ) == reason );
 			Frames expected( split ? 0 : f.sub->Delivered(), LA( 0, 1 ) );
@@ -1161,10 +1103,11 @@ TestS1_ContinuousLAStreamCannotStarveStall( void )
 	    } );
 	f.Feed( LA( 0, 1 ) );
 	const auto start = Clock::now();
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+	CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 	CHECK( Clock::now() - start >= kStall );
 	const Frames frames = f.Written();
-	CHECK( frames.size() > 1 && frames.back() == LD( 0x04 ) );
+	REQUIRE( frames.size() > 1 );
+	CHECK( frames.back() == LD( 0x04 ) );
 	for ( std::size_t i = 0; i + 1 < frames.size(); ++i )
 	{
 		CHECK( frames[i] == LA( 0, 1 ) );
@@ -1190,9 +1133,9 @@ TestS1_PartialHandshakeIsNotProgress( void )
 		}
 		f.sub->Schedule( arrivals );
 		const auto start = Clock::now();
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
-		CHECK( Clock::now() - start >= kStall && Clock::now() - start < 3 * kStall );
-		CHECK( f.sub->Delivered() > 0 && f.sub->Delivered() < arrivals.size() );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
+		CHECK( ( Clock::now() - start >= kStall && Clock::now() - start < 3 * kStall ) );
+		CHECK( ( f.sub->Delivered() > 0 && f.sub->Delivered() < arrivals.size() ) );
 		ExpectFailed( f, 0x01 ); // Waiting-state reason, not framing error fe.
 	}
 }
@@ -1213,7 +1156,7 @@ TestS3_NoTimerWhileIdle( void )
 		CHECK( TMNPPipeStatusTestAccess::GetDisconnectReason( f.pipe ) == 0 );
 		CHECK( !f.pipe.PeerDisconnected() );
 		f.Feed( { 0x07, 0x02, 0x01, 0x01, 0x05, 0x02, 0x01, 0x00, 0x00, 0x00 } );
-		CHECK_THROWS( TDCLEOFException, ReadN( f.pipe, 1 ) );
+		CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLEOFException );
 		CHECK( f.pipe.PeerDisconnected() );
 		CHECK( f.Written().empty() );
 		f.pipe.Disconnect();
@@ -1232,9 +1175,9 @@ TestD1_PeerLD( void )
 		f.Feed( { 0x07, 0x02, 0x01, 0x01, 0x05, 0x02, 0x01, 0x00, 0x00, 0x00 } );
 		CHECK( ReadN( f.pipe, 2 ) == Bytes( { 0x11, 0x22 } ) );
 		CHECK( f.pipe.PeerDisconnected() );
-		CHECK_THROWS( TDCLEOFException, ReadN( f.pipe, 1 ) );
-		CHECK_THROWS( TDCLEOFException, WriteAll( f.pipe, { 0x01 } ) );
-		CHECK_THROWS( TDCLEOFException, f.pipe.FlushOutput() );
+		CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLEOFException );
+		CHECK_THROWS_AS( WriteAll( f.pipe, { 0x01 } ) , TDCLEOFException );
+		CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLEOFException );
 		CHECK( !f.pipe.BytesAvailable() );
 		f.pipe.Disconnect();
 		CHECK( f.Written() == Frames{ LA( 1, 1 ) } ); // no outbound LD
@@ -1248,7 +1191,7 @@ TestD1_PeerLD( void )
 		WriteAll( f.pipe, { 0x01 } );
 		f.pipe.FlushOutput();
 		WriteAll( f.pipe, { 0x02 } );
-		CHECK_THROWS( TDCLEOFException, f.pipe.FlushOutput() );
+		CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLEOFException );
 		CHECK( f.pipe.PeerDisconnected() );
 		CHECK( f.Written() == Frames{ LT( 1, { 0x01 } ) } );
 	}
@@ -1374,7 +1317,7 @@ TestTransportReceiveErrors( void )
 		f.Connect();
 		f.Feed( LT( 1, { 0x42 } ) );
 		f.sub->fault = fault;
-		CHECK_THROWS( TDCLMNPProtocolException, ReadN( f.pipe, 1 ) );
+		CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLMNPProtocolException );
 		ExpectFailed( f, 0xfe );
 	}
 	{
@@ -1384,7 +1327,7 @@ TestTransportReceiveErrors( void )
 		f.Feed( LT( 1, { 0x42 } ) );
 		f.sub->fault = Fault::kPoll;
 		f.sub->pollsBeforeFailure = 1;
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+		CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 		ExpectFailed( f, 0xfe );
 	}
 	{
@@ -1392,7 +1335,7 @@ TestTransportReceiveErrors( void )
 		Fixture f;
 		f.Connect();
 		f.sub->fault = Fault::kPoll;
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+		CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 		ExpectFailed( f, 0xfe );
 	}
 }
@@ -1411,7 +1354,7 @@ TestTransportSendErrors( void )
 			f.sub->fault = fault;
 			f.sub->failDisconnect = cleanupFails;
 			const auto writes = f.sub->writeCalls;
-			CHECK_THROWS( TDCLMNPProtocolException, f.pipe.FlushOutput() );
+			CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLMNPProtocolException );
 			CHECK( f.sub->writeCalls == writes + 1 ); // No retry, not even LD.
 			const Frames frames = f.Written();
 			CHECK( frames == ( fault == Fault::kFlush ? Frames{ LT( 1, { 0x42 } ) } : Frames{} ) );
@@ -1455,7 +1398,7 @@ TestTerminalTransmissionErrors( void )
 			lr[13] = 0x01;
 			f.Feed( lr );
 			f.sub->fault = fault;
-			CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+			CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 			f.Written();
 			ExpectFailureState( f, 0x03 );
 		}
@@ -1484,7 +1427,7 @@ TestCleanupErrors( void )
 		f.Connect();
 		f.sub->failDisconnect = true;
 		f.Feed( LD( 0x05 ) );
-		CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+		CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 		ExpectFailureState( f, 0xfe );
 	}
 }
@@ -1496,7 +1439,7 @@ TestAttachmentFailure( void )
 	f.Feed( kHardwareLR );
 	f.Feed( LA( 0, 1 ) );
 	f.sub->fault = TScriptedPipe::Fault::kConnected;
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.Connected( nullptr ) );
+	CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLMNPProtocolException );
 	ExpectFailed( f, 0xfe );
 }
 
@@ -1522,7 +1465,7 @@ TestNormalOutcomes( void )
 		CHECK( f.sub->IsDisconnected() );
 		// Reading a closed session must not query the detached transport.
 		f.sub->fault = TScriptedPipe::Fault::kGetTimeout;
-		CHECK_THROWS( TDCLEOFException, ReadN( f.pipe, 1 ) );
+		CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLEOFException );
 		f.pipe.Disconnect();
 		CHECK( f.pipe.GetOutcome() == TDCLMNPPipe::EOutcome::kClosed );
 		CHECK( f.sub->disconnectCalls == 1 );
@@ -1540,7 +1483,7 @@ TestBufferedInputSurvivesFailure( void )
 	f.Connect();
 	f.Feed( LT( 1, { 0x42 } ) );
 	f.Feed( LA( 99, 1 ) ); // Fatal anomaly after valid payload.
-	CHECK_THROWS( TDCLMNPProtocolException, f.pipe.BytesAvailable() );
+	CHECK_THROWS_AS( f.pipe.BytesAvailable() , TDCLMNPProtocolException );
 	CHECK( f.pipe.GetOutcome() == TDCLMNPPipe::EOutcome::kFailed );
 	CHECK( f.sub->IsDisconnected() );
 	CHECK( f.pipe.BytesAvailable() );
@@ -1583,7 +1526,7 @@ TestCancel_Connected( void )
 		f.Feed( kHardwareLR );
 		f.Feed( LA( 0, 1 ) );
 		CHECK( f.pipe.RequestStop() );
-		CHECK_THROWS( TDCLUserCancelledException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLUserCancelledException );
 		CHECK( f.Written().empty() );
 		CHECK( f.sub->IsDisconnected() );
 		CHECK( f.sub->disconnectCalls == 1 );
@@ -1597,7 +1540,7 @@ TestCancel_Connected( void )
 		f.Feed( kHardwareLR );
 		f.sub->SetOnWrite( [&]( const Bytes& ) { (void)f.sub->RequestStop(); } );
 		const auto t0 = Clock::now();
-		CHECK_THROWS( TDCLUserCancelledException, f.pipe.Connected( nullptr ) );
+		CHECK_THROWS_AS( f.pipe.Connected( nullptr ) , TDCLUserCancelledException );
 		CHECK( Clock::now() - t0 < kStall );
 		CHECK( f.Written() == Frames{ kExpectedReply } );
 		CHECK( f.sub->IsDisconnected() );
@@ -1611,7 +1554,7 @@ TestCancel_Read( void )
 {
 	Fixture f;
 	f.Connect();
-	RequestStopFromPollingThread( f, [&] { CHECK_THROWS( TDCLUserCancelledException, ReadN( f.pipe, 1 ) ); } );
+	RequestStopFromPollingThread( f, [&] { CHECK_THROWS_AS( ReadN( f.pipe, 1 ) , TDCLUserCancelledException ); } );
 	CHECK( f.Written().empty() );
 	CHECK( f.sub->IsDisconnected() );
 	CHECK( f.sub->disconnectCalls == 1 );
@@ -1630,7 +1573,7 @@ TestCancel_WriteAndFlushOutput( void )
 		f.pipe.FlushOutput();
 		(void)f.Written();
 		WriteAll( f.pipe, { 0x42 } );
-		RequestStopFromPollingThread( f, [&] { CHECK_THROWS( TDCLUserCancelledException, f.pipe.FlushOutput() ); } );
+		RequestStopFromPollingThread( f, [&] { CHECK_THROWS_AS( f.pipe.FlushOutput() , TDCLUserCancelledException ); } );
 		CHECK( f.Written().empty() );
 		CHECK( f.sub->IsDisconnected() );
 		CHECK( f.sub->disconnectCalls == 1 );
@@ -1643,11 +1586,11 @@ TestCancel_WriteAndFlushOutput( void )
 		f.sub->SetOnWrite( [&]( const Bytes& ) { (void)f.pipe.RequestStop(); } );
 		const Bytes twoChunks( 253 * 2 + 1, 0x41 );
 		const auto t0 = Clock::now();
-		CHECK_THROWS( TDCLUserCancelledException, WriteAll( f.pipe, twoChunks ) );
+		CHECK_THROWS_AS( WriteAll( f.pipe, twoChunks ) , TDCLUserCancelledException );
 		CHECK( Clock::now() - t0 < kStall );
 		const Frames written = f.Written();
-		CHECK( written.size() == 1 );
-		CHECK( written[0].size() == 3 + 253 );
+		REQUIRE( written.size() == 1 );
+		REQUIRE( written[0].size() == 3 + 253 );
 		CHECK( written[0][1] == 0x04 );
 		CHECK( f.sub->IsDisconnected() );
 		CHECK( f.sub->disconnectCalls == 1 );
@@ -1658,7 +1601,7 @@ TestCancel_WriteAndFlushOutput( void )
 		Fixture f;
 		f.Connect();
 		CHECK( f.pipe.RequestStop() );
-		CHECK_THROWS( TDCLUserCancelledException, WriteAll( f.pipe, { 0x41 } ) );
+		CHECK_THROWS_AS( WriteAll( f.pipe, { 0x41 } ) , TDCLUserCancelledException );
 		CHECK( f.Written().empty() );
 		CHECK( f.sub->IsDisconnected() );
 		CHECK( f.pipe.GetOutcome() == TDCLMNPPipe::EOutcome::kClosed );
@@ -1697,60 +1640,53 @@ TestCancel_Disconnect( void )
 }
 } // namespace
 
-// ------------------------------------------------------------------------- //
-//  * Run( void )
-// ------------------------------------------------------------------------- //
-void
-UTestMNPPipe::Run( void )
+TEST_SUITE("MNPPipe")
 {
-	Watchdog watchdog;
-	std::printf( "--- Testing MNP pipe ---\n" );
-	TestH1_Handshake();
-	TestSingleSessionLifecycle();
-	TestH3_RejectedLR();
-	TestH4_HandshakeStall();
-	TestDisconnectBeforeConnected();
-	TestHandshakePeerLD();
-	TestH5_Escaping();
-	TestT1_Segmentation();
-	TestT1_FlushClearsOutput();
-	TestT1_NoSecondLTBeforeAck();
-	TestT2_InboundDelivery();
-	TestT3_InboundDuringSendWait();
-	TestT4_DuplicateLT();
-	TestA1_CreditZeroThenRestored();
-	TestA2_CreditStall();
-	TestA3_StallStartsAtBlockingCall();
-	TestRead_NoStallWhilePending();
-	TestRead_TimeoutIsFatal();
-	TestK1_KeepAlive();
-	TestX1_BadCRC();
-	TestX2_UnterminatedFrameHasNoDeadline();
-	TestX2_MalformedAndOversizedFrames();
-	TestX6_MidSessionLR();
-	TestS1_HandshakeProgress();
-	TestS1_InboundLTKeepsWaitAlive();
-	TestS1_NonProgressCannotExtendWait();
-	TestS1_ContinuousLAStreamCannotStarveStall();
-	TestS1_PartialHandshakeIsNotProgress();
-	TestS3_NoTimerWhileIdle();
-	TestD1_PeerLD();
-	TestD2_DisconnectAfterAck();
-	TestD2_NewtonClosesAfterDisc();
-	TestD2_DisconnectWithoutAck();
-	TestD2_DisconnectFlushesBufferedOutput();
-	TestD2_DisconnectFlushWaitsForCredit();
-	TestD3_Buffers();
-	TestTransportReceiveErrors();
-	TestTransportSendErrors();
-	TestTerminalTransmissionErrors();
-	TestCleanupErrors();
-	TestAttachmentFailure();
-	TestNormalOutcomes();
-	TestBufferedInputSurvivesFailure();
-	TestCancel_Connected();
-	TestCancel_Read();
-	TestCancel_WriteAndFlushOutput();
-	TestCancel_Disconnect();
-	std::printf( "--- All MNP pipe tests passed! ---\n" );
+	TEST_CASE("H1: handshake") { TestH1_Handshake(); }
+	TEST_CASE("Single session lifecycle") { TestSingleSessionLifecycle(); }
+	TEST_CASE("H3: rejected LR") { TestH3_RejectedLR(); }
+	TEST_CASE("H4: handshake stall") { TestH4_HandshakeStall(); }
+	TEST_CASE("Disconnect before connected") { TestDisconnectBeforeConnected(); }
+	TEST_CASE("Handshake peer LD") { TestHandshakePeerLD(); }
+	TEST_CASE("H5: escaping") { TestH5_Escaping(); }
+	TEST_CASE("T1: segmentation") { TestT1_Segmentation(); }
+	TEST_CASE("T1: flush clears output") { TestT1_FlushClearsOutput(); }
+	TEST_CASE("T1: no second LT before ack") { TestT1_NoSecondLTBeforeAck(); }
+	TEST_CASE("T2: inbound delivery") { TestT2_InboundDelivery(); }
+	TEST_CASE("T3: inbound during send wait") { TestT3_InboundDuringSendWait(); }
+	TEST_CASE("T4: duplicate LT") { TestT4_DuplicateLT(); }
+	TEST_CASE("A1: credit zero then restored") { TestA1_CreditZeroThenRestored(); }
+	TEST_CASE("A2: credit stall") { TestA2_CreditStall(); }
+	TEST_CASE("A3: stall starts at blocking call") { TestA3_StallStartsAtBlockingCall(); }
+	TEST_CASE("Read: no stall while pending") { TestRead_NoStallWhilePending(); }
+	TEST_CASE("Read: timeout is fatal") { TestRead_TimeoutIsFatal(); }
+	TEST_CASE("K1: keep-alive") { TestK1_KeepAlive(); }
+	TEST_CASE("X1: bad CRC") { TestX1_BadCRC(); }
+	TEST_CASE("X2: unterminated frame has no deadline") { TestX2_UnterminatedFrameHasNoDeadline(); }
+	TEST_CASE("X2: malformed and oversized frames") { TestX2_MalformedAndOversizedFrames(); }
+	TEST_CASE("X6: mid-session LR") { TestX6_MidSessionLR(); }
+	TEST_CASE("S1: handshake progress") { TestS1_HandshakeProgress(); }
+	TEST_CASE("S1: inbound LT keeps wait alive") { TestS1_InboundLTKeepsWaitAlive(); }
+	TEST_CASE("S1: non-progress cannot extend wait") { TestS1_NonProgressCannotExtendWait(); }
+	TEST_CASE("S1: continuous LA stream cannot starve stall") { TestS1_ContinuousLAStreamCannotStarveStall(); }
+	TEST_CASE("S1: partial handshake is not progress") { TestS1_PartialHandshakeIsNotProgress(); }
+	TEST_CASE("S3: no timer while idle") { TestS3_NoTimerWhileIdle(); }
+	TEST_CASE("D1: peer LD") { TestD1_PeerLD(); }
+	TEST_CASE("D2: disconnect after ack") { TestD2_DisconnectAfterAck(); }
+	TEST_CASE("D2: Newton closes after disc") { TestD2_NewtonClosesAfterDisc(); }
+	TEST_CASE("D2: disconnect without ack") { TestD2_DisconnectWithoutAck(); }
+	TEST_CASE("D2: disconnect flushes buffered output") { TestD2_DisconnectFlushesBufferedOutput(); }
+	TEST_CASE("D2: disconnect flush waits for credit") { TestD2_DisconnectFlushWaitsForCredit(); }
+	TEST_CASE("D3: buffers") { TestD3_Buffers(); }
+	TEST_CASE("Transport receive errors") { TestTransportReceiveErrors(); }
+	TEST_CASE("Transport send errors") { TestTransportSendErrors(); }
+	TEST_CASE("Terminal transmission errors") { TestTerminalTransmissionErrors(); }
+	TEST_CASE("Cleanup errors") { TestCleanupErrors(); }
+	TEST_CASE("Attachment failure") { TestAttachmentFailure(); }
+	TEST_CASE("Normal outcomes") { TestNormalOutcomes(); }
+	TEST_CASE("Buffered input survives failure") { TestBufferedInputSurvivesFailure(); }
+	TEST_CASE("Cancel: connected") { TestCancel_Connected(); }
+	TEST_CASE("Cancel: read") { TestCancel_Read(); }
+	TEST_CASE("Cancel: write and flush output") { TestCancel_WriteAndFlushOutput(); }
+	TEST_CASE("Cancel: disconnect") { TestCancel_Disconnect(); }
 }

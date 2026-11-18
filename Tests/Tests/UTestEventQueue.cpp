@@ -27,32 +27,17 @@
 // ***** END LICENSE BLOCK *****
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include "UTestEventQueue.h"
-
 #include <DCL/Interfaces/TDCLEventQueue.h>
 
+#include <doctest/doctest.h>
+
 #include <chrono>
-#include <cstdio>
 #include <stop_token>
 #include <thread>
 
-namespace
+TEST_SUITE("EventQueue")
 {
-#define CHECK( cond )                                                                  \
-	do                                                                                 \
-	{                                                                                  \
-		if ( !( cond ) )                                                               \
-		{                                                                              \
-			(void)::printf( "UTestEventQueue FAILED at line %d: %s\n", __LINE__, #cond ); \
-			return;                                                                    \
-		}                                                                              \
-	} while ( false )
-} // namespace
-
-void
-UTestEventQueue::Run( void )
-{
-	// 1. FIFO and bitmask filtering without losing skipped events
+	TEST_CASE("FIFO and bitmask filtering without losing skipped events")
 	{
 		TDCLEventQueue queue;
 		queue.PostEvent( new TDCLEvent( TDCLEvent::kIdleAppCommand, TDCLEvent::kInstallPackage ) );
@@ -60,24 +45,27 @@ UTestEventQueue::Run( void )
 		queue.PostEvent( new TDCLEvent( TDCLEvent::kIdleAppCommand, TDCLEvent::kSynchronize ) );
 
 		TDCLEvent* ev1 = queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds::zero() );
-		CHECK( ev1 != nil && ev1->GetEventID() == TDCLEvent::kBytesAvailable );
+		REQUIRE( ev1 != nil );
+		CHECK( ev1->GetEventID() == TDCLEvent::kBytesAvailable );
 		delete ev1;
 
 		TDCLEvent* ev2 = queue.WaitNextEvent( TDCLEvent::kLinkEvent, std::chrono::milliseconds::zero() );
 		CHECK( ev2 == nil );
 
 		TDCLEvent* ev3 = queue.WaitNextEvent( TDCLEvent::kIdleAppCommand, std::chrono::milliseconds::zero() );
-		CHECK( ev3 != nil && ev3->GetEventID() == TDCLEvent::kInstallPackage );
+		REQUIRE( ev3 != nil );
+		CHECK( ev3->GetEventID() == TDCLEvent::kInstallPackage );
 		delete ev3;
 
 		TDCLEvent* ev4 = queue.WaitNextEvent( TDCLEvent::kAnyEventMask, std::chrono::milliseconds::zero() );
-		CHECK( ev4 != nil && ev4->GetEventID() == TDCLEvent::kSynchronize );
+		REQUIRE( ev4 != nil );
+		CHECK( ev4->GetEventID() == TDCLEvent::kSynchronize );
 		delete ev4;
 
 		CHECK( queue.WaitNextEvent( TDCLEvent::kAnyEventMask, std::chrono::milliseconds::zero() ) == nil );
 	}
 
-	// 2. Finite timeout returns nil when no matching event arrives
+	TEST_CASE("Finite timeout returns nil when no matching event arrives")
 	{
 		TDCLEventQueue queue;
 		queue.PostEvent( new TDCLEvent( TDCLEvent::kIdleAppCommand, TDCLEvent::kInstallPackage ) );
@@ -85,7 +73,7 @@ UTestEventQueue::Run( void )
 		CHECK( ev == nil );
 	}
 
-	// 3. Producer wakes blocked WaitNextEvent with matching event (ignoring non-matching first)
+	TEST_CASE("Producer wakes blocked WaitNextEvent with matching event")
 	{
 		TDCLEventQueue queue;
 		TDCLEvent* received = nil;
@@ -99,11 +87,12 @@ UTestEventQueue::Run( void )
 		queue.PostEvent( new TDCLEvent( TDCLEvent::kLinkEvent, TDCLEvent::kDisconnectLink ) );
 		consumer.join();
 
-		CHECK( received != nil && received->GetEventID() == TDCLEvent::kDisconnectLink );
+		REQUIRE( received != nil );
+		CHECK( received->GetEventID() == TDCLEvent::kDisconnectLink );
 		delete received;
 	}
 
-	// 4. stop_token wakes infinite WaitNextEvent cleanly and leaves queued events owned by queue
+	TEST_CASE("stop_token wakes infinite WaitNextEvent cleanly")
 	{
 		TDCLEventQueue queue;
 		std::stop_source ss;
@@ -119,7 +108,7 @@ UTestEventQueue::Run( void )
 		CHECK( received == nil );
 	}
 
-	// 5. RemoveEvents deletes only matching mask + data pointer
+	TEST_CASE("RemoveEvents deletes only matching mask and data pointer")
 	{
 		TDCLEventQueue queue;
 		int tagA = 1;
@@ -132,15 +121,17 @@ UTestEventQueue::Run( void )
 		queue.RemoveEvents( TDCLEvent::kServerEventMask, &tagA );
 
 		TDCLEvent* ev1 = queue.WaitNextEvent( TDCLEvent::kAnyEventMask, std::chrono::milliseconds::zero() );
-		CHECK( ev1 != nil && ev1->GetEventID() == TDCLEvent::kWaitingConnection && ev1->GetEventData() == &tagB );
+		REQUIRE( ev1 != nil );
+		CHECK( ev1->GetEventID() == TDCLEvent::kWaitingConnection );
+		CHECK( ev1->GetEventData() == &tagB );
 		delete ev1;
 
 		TDCLEvent* ev2 = queue.WaitNextEvent( TDCLEvent::kAnyEventMask, std::chrono::milliseconds::zero() );
-		CHECK( ev2 != nil && ev2->GetEventID() == TDCLEvent::kBytesAvailable && ev2->GetEventData() == &tagA );
+		REQUIRE( ev2 != nil );
+		CHECK( ev2->GetEventID() == TDCLEvent::kBytesAvailable );
+		CHECK( ev2->GetEventData() == &tagA );
 		delete ev2;
 
 		CHECK( queue.WaitNextEvent( TDCLEvent::kAnyEventMask, std::chrono::milliseconds::zero() ) == nil );
 	}
-
-	(void)::printf( "UTestEventQueue passed\n" );
 }

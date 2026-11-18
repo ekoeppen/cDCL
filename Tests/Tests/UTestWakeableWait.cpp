@@ -27,13 +27,12 @@
 // ***** END LICENSE BLOCK *****
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include "UTestWakeableWait.h"
-
 #include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
+
+#include <doctest/doctest.h>
 
 #include <atomic>
 #include <chrono>
-#include <cstdio>
 #include <stop_token>
 #include <thread>
 
@@ -46,16 +45,6 @@
 
 namespace
 {
-#define CHECK( cond )                                                                      \
-	do                                                                                     \
-	{                                                                                      \
-		if ( !( cond ) )                                                                   \
-		{                                                                                  \
-			(void)::printf( "UTestWakeableWait FAILED at line %d: %s\n", __LINE__, #cond ); \
-			return;                                                                        \
-		}                                                                                  \
-	} while ( false )
-
 #if !TARGET_OS_WIN32
 struct TPipePair
 {
@@ -81,16 +70,17 @@ struct TPipePair
 #endif
 } // namespace
 
-void
-UTestWakeableWait::Run( void )
+TEST_SUITE("WakeableWait")
 {
 #if TARGET_OS_WIN32
-	int err = 0;
-	CHECK( TDCLWakeableWait::PollNow( INVALID_SOCKET, TDCLWakeableWait::EDirection::kRead, &err ) ==
-	       TDCLWakeableWait::EResult::kError );
-	(void)::printf( "UTestWakeableWait passed\n" );
+	TEST_CASE("Invalid socket returns kError")
+	{
+		int err = 0;
+		CHECK( TDCLWakeableWait::PollNow( INVALID_SOCKET, TDCLWakeableWait::EDirection::kRead, &err ) ==
+		       TDCLWakeableWait::EResult::kError );
+	}
 #else
-	// 1. Invalid handle
+	TEST_CASE("Invalid handle returns kError")
 	{
 		int err = 0;
 		CHECK( TDCLWakeableWait::PollNow( -1, TDCLWakeableWait::EDirection::kRead, &err ) ==
@@ -101,23 +91,26 @@ UTestWakeableWait::Run( void )
 		                       ss.get_token(), &err ) == TDCLWakeableWait::EResult::kError );
 	}
 
-	// 2. PollNow ready vs timeout
+	TEST_CASE("PollNow distinguishes ready vs timeout")
 	{
 		TPipePair p;
-		CHECK( p.fds[0] >= 0 && p.fds[1] >= 0 );
+		REQUIRE( p.fds[0] >= 0 );
+		REQUIRE( p.fds[1] >= 0 );
 		CHECK( TDCLWakeableWait::PollNow( p.fds[0], TDCLWakeableWait::EDirection::kRead ) ==
 		       TDCLWakeableWait::EResult::kTimeout );
 		CHECK( TDCLWakeableWait::PollNow( p.fds[1], TDCLWakeableWait::EDirection::kWrite ) ==
 		       TDCLWakeableWait::EResult::kReady );
 		const char b = 'x';
-		CHECK( ::write( p.fds[1], &b, 1 ) == 1 );
+		REQUIRE( ::write( p.fds[1], &b, 1 ) == 1 );
 		CHECK( TDCLWakeableWait::PollNow( p.fds[0], TDCLWakeableWait::EDirection::kRead ) ==
 		       TDCLWakeableWait::EResult::kReady );
 	}
 
-	// 3. Pre-cancelled stop_token returns immediately without blocking
+	TEST_CASE("Pre-cancelled stop_token returns immediately without blocking")
 	{
 		TPipePair p;
+		REQUIRE( p.fds[0] >= 0 );
+		REQUIRE( p.fds[1] >= 0 );
 		std::stop_source ss;
 		ss.request_stop();
 		TDCLWakeableWait wait;
@@ -128,18 +121,22 @@ UTestWakeableWait::Run( void )
 		CHECK( elapsed < std::chrono::milliseconds( 500 ) );
 	}
 
-	// 4. Timeout returns kTimeout
+	TEST_CASE("Timeout returns kTimeout")
 	{
 		TPipePair p;
+		REQUIRE( p.fds[0] >= 0 );
+		REQUIRE( p.fds[1] >= 0 );
 		std::stop_source ss;
 		TDCLWakeableWait wait;
 		CHECK( wait.WaitReady( p.fds[0], TDCLWakeableWait::EDirection::kRead, std::chrono::milliseconds( 20 ),
 		                       ss.get_token() ) == TDCLWakeableWait::EResult::kTimeout );
 	}
 
-	// 5. Concurrent request_stop wakes infinite WaitReady promptly
+	TEST_CASE("Concurrent request_stop wakes infinite WaitReady promptly")
 	{
 		TPipePair p;
+		REQUIRE( p.fds[0] >= 0 );
+		REQUIRE( p.fds[1] >= 0 );
 		std::stop_source ss;
 		TDCLWakeableWait wait;
 		std::atomic<TDCLWakeableWait::EResult> result{ TDCLWakeableWait::EResult::kTimeout };
@@ -155,12 +152,14 @@ UTestWakeableWait::Run( void )
 		CHECK( result.load() == TDCLWakeableWait::EResult::kCancelled );
 	}
 
-	// 6. Manual Trigger() drains and continues waiting without spurious cancellation
+	TEST_CASE("Manual Trigger drains and continues waiting without spurious cancellation")
 	{
 		TPipePair p;
+		REQUIRE( p.fds[0] >= 0 );
+		REQUIRE( p.fds[1] >= 0 );
 		std::stop_source ss;
 		TDCLWakeableWait wait;
-		CHECK( wait.EnsureOpen() == 0 );
+		REQUIRE( wait.EnsureOpen() == 0 );
 		std::atomic<TDCLWakeableWait::EResult> result{ TDCLWakeableWait::EResult::kTimeout };
 
 		std::jthread waiter( [ & ] {
@@ -172,11 +171,9 @@ UTestWakeableWait::Run( void )
 		wait.Trigger();
 		std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
 		const char b = 'y';
-		CHECK( ::write( p.fds[1], &b, 1 ) == 1 );
+		REQUIRE( ::write( p.fds[1], &b, 1 ) == 1 );
 		waiter.join();
 		CHECK( result.load() == TDCLWakeableWait::EResult::kReady );
 	}
-
-	(void)::printf( "UTestWakeableWait passed\n" );
 #endif
 }

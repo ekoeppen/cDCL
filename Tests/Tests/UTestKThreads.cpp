@@ -21,14 +21,15 @@
 // 
 // ***** END LICENSE BLOCK *****
 
-#include "UTestKThreads.h"
 #include <K/Threads/TMutex.h>
 #include <K/Threads/TCondVar.h>
 #include <K/Threads/TThread.h>
-#include <cstdio>
+
+#include <doctest/doctest.h>
+
 #include <atomic>
-#include <thread>
 #include <chrono>
+#include <thread>
 
 namespace {
 	class TTestWorker {
@@ -39,13 +40,11 @@ namespace {
 		void Run(void) {
 			*mStarted = true;
 			TThread* myThread = *mThreadSlot;
-			(void) ::printf("Worker: running\n");
 			// Sleep for 500 ms or until awakened
 			if (myThread) {
 				myThread->Sleep(500);
 			}
 			*mFinished = true;
-			(void) ::printf("Worker: finished\n");
 		}
 
 	private:
@@ -55,51 +54,86 @@ namespace {
 	};
 }
 
-void
-UTestKThreads::RunTests( void )
+TEST_SUITE("KThreads")
 {
-	(void) ::printf("UTestKThreads: starting\n");
-
-	// 1. Test TMutex basic functionality
-	TMutex theMutex;
-	theMutex.Lock();
-	(void) ::printf("Mutex: locked\n");
-	theMutex.Unlock();
-	(void) ::printf("Mutex: unlocked\n");
-	bool tryOk = theMutex.TryLock();
-	if (tryOk) {
-		(void) ::printf("Mutex: try_lock succeeded\n");
+	TEST_CASE("TMutex lock, unlock, and TryLock")
+	{
+		TMutex theMutex;
+		theMutex.Lock();
+		std::atomic<bool> contendedTry{true};
+		std::thread other([&] {
+			contendedTry = theMutex.TryLock();
+			if (contendedTry) {
+				theMutex.Unlock();
+			}
+		});
+		other.join();
+		CHECK_FALSE(contendedTry.load());
 		theMutex.Unlock();
+
+		bool tryOk = theMutex.TryLock();
+		CHECK(tryOk);
+		if (tryOk) {
+			theMutex.Unlock();
+		}
 	}
 
-	// 2. Test TCondVar timed wait
-	TCondVar theCond;
-	theMutex.Lock();
-	struct timespec relTime;
-	relTime.tv_sec = 0;
-	relTime.tv_nsec = 50 * 1000 * 1000; // 50 ms
-	bool waitRes = theCond.TimedWaitRelative(&theMutex, &relTime);
-	(void) ::printf("CondVar: relative wait timed out as expected (%s)\n", waitRes ? "false" : "true");
-	theMutex.Unlock();
+	TEST_CASE("TCondVar TimedWaitRelative times out and wakes on Signal")
+	{
+		TMutex theMutex;
+		TCondVar theCond;
 
-	// 3. Test TThread execution & wake up
-	std::atomic<bool> started(false);
-	std::atomic<bool> finished(false);
-	TThread* threadPtr = nullptr;
-	TTestWorker worker(&threadPtr, &started, &finished);
-	TThread thread(&worker);
-	threadPtr = &thread;
+		theMutex.Lock();
+		struct timespec relTime;
+		relTime.tv_sec = 0;
+		relTime.tv_nsec = 50 * 1000 * 1000; // 50 ms
+		bool waitRes = theCond.TimedWaitRelative(&theMutex, &relTime);
+		CHECK_FALSE(waitRes);
+		theMutex.Unlock();
 
-	while (!started.load()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::atomic<bool> waiting{false};
+		std::atomic<bool> signaled{false};
+		std::thread waiter([&] {
+			theMutex.Lock();
+			waiting = true;
+			struct timespec longWait = { 2, 0 };
+			signaled = theCond.TimedWaitRelative(&theMutex, &longWait);
+			theMutex.Unlock();
+		});
+		while (!waiting.load()) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		theMutex.Lock();
+		theCond.Signal();
+		theMutex.Unlock();
+		waiter.join();
+		CHECK(signaled.load());
 	}
-	(void) ::printf("Main: worker started\n");
 
-	// Wake up worker early
-	thread.WakeUp();
-	while (!finished.load()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	TEST_CASE("TThread WakeUp wakes sleeping worker before timeout")
+	{
+		std::atomic<bool> started(false);
+		std::atomic<bool> finished(false);
+		TThread* threadPtr = nullptr;
+		TTestWorker worker(&threadPtr, &started, &finished);
+		TThread thread(&worker);
+		threadPtr = &thread;
+
+		auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+		while (!started.load() && std::chrono::steady_clock::now() < deadline) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		}
+		REQUIRE(started.load());
+
+		auto t0 = std::chrono::steady_clock::now();
+		thread.WakeUp();
+		deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+		while (!finished.load() && std::chrono::steady_clock::now() < deadline) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		}
+		REQUIRE(finished.load());
+		auto elapsed = std::chrono::steady_clock::now() - t0;
+		CHECK(elapsed < std::chrono::milliseconds(400));
 	}
-	(void) ::printf("Main: worker joined/done\n");
-	(void) ::printf("UTestKThreads: complete\n");
 }

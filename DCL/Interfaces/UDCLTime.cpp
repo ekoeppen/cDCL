@@ -58,7 +58,7 @@ UDCLTime::TimeInSecondsSince1993( void )
 	january1st1993.tm_hour = 0;
 	january1st1993.tm_mday = 1;
 	january1st1993.tm_mon = 0;
-	january1st1993.tm_year = 1993;
+	january1st1993.tm_year = 93;
 	january1st1993.tm_wday = 0;
 	january1st1993.tm_yday = 0;
 	january1st1993.tm_isdst = 0;

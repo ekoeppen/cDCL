@@ -30,10 +30,10 @@
 // 
 // ***** END LICENSE BLOCK *****
 
-#include "UTestKMappedFile.h"
 #include <K/Misc/TMappedFile.h>
-#include <cassert>
-#include <cstdio>
+
+#include <doctest/doctest.h>
+
 #include <cstring>
 #include <fcntl.h>
 #include <filesystem>
@@ -41,144 +41,144 @@
 #include <system_error>
 #include <unistd.h>
 
-static const std::string& GetTestTempPath(void)
+namespace {
+
+struct TempFileGuard
 {
-	static const std::string sPath = []() {
+	std::string path;
+
+	explicit TempFileGuard(const char* inName)
+	{
 		std::error_code ec;
 		std::filesystem::path tempDir = std::filesystem::temp_directory_path(ec);
 		if (ec)
 		{
-			return std::string("cdcl_test_mappedfile.bin");
+			path = inName;
 		}
-		return (tempDir / "cdcl_test_mappedfile.bin").string();
-	}();
-	return sPath;
-}
+		else
+		{
+			path = (tempDir / inName).string();
+		}
+		std::filesystem::remove(path, ec);
+	}
 
-void
-UTestKMappedFile::Run(void)
+	~TempFileGuard()
+	{
+		std::error_code ec;
+		std::filesystem::remove(path, ec);
+	}
+
+	const char* c_str() const { return path.c_str(); }
+};
+
+} // namespace
+
+TEST_SUITE("KMappedFile")
 {
-	(void) ::printf("--- Testing TMappedFile ---\n");
-	TestMapAndGrow();
-	TestReadWriteSync();
-	TestReadOnly();
-	(void) ::printf("--- TMappedFile tests passed ---\n");
-}
-
-void
-UTestKMappedFile::TestMapAndGrow(void)
-{
-	(void) ::printf("Testing Map and Grow...\n");
-	(void) ::unlink(GetTestTempPath().c_str());
-
+	TEST_CASE("TMappedFile map and grow")
 	{
-		// Create a new mapped file with initial size 1024 bytes
-		TMappedFile mapped(GetTestTempPath().c_str(), 1024, O_RDWR | O_CREAT);
-		assert(mapped.GetBuffer() != nullptr);
-		assert(mapped.GetSize() == 1024);
-		assert(mapped.GetCreated() == true);
+		TempFileGuard tempFile("cdcl_test_mappedfile_grow.bin");
 
-		// Write known pattern
-		char* buf = (char*) mapped.GetBuffer();
-		for (size_t i = 0; i < 1024; ++i)
 		{
-			buf[i] = (char)(i & 0xFF);
-		}
-		mapped.Sync();
-	}
+			// Create a new mapped file with initial size 1024 bytes
+			TMappedFile mapped(tempFile.c_str(), 1024, O_RDWR | O_CREAT);
+			REQUIRE(mapped.GetBuffer() != nullptr);
+			CHECK(mapped.GetSize() == 1024);
+			CHECK(mapped.GetCreated() == true);
 
-	// Reopen and grow file to 2048 bytes
-	{
-		TMappedFile mapped;
-		int err = mapped.Map(GetTestTempPath().c_str(), 2048, O_RDWR);
-		assert(err == 0);
-		assert(mapped.GetBuffer() != nullptr);
-		assert(mapped.GetSize() == 2048);
-		assert(mapped.GetCreated() == true); // Grown
-
-		char* buf = (char*) mapped.GetBuffer();
-		// Verify original 1024 bytes
-		for (size_t i = 0; i < 1024; ++i)
-		{
-			assert(buf[i] == (char)(i & 0xFF));
+			// Write known pattern
+			char* buf = (char*) mapped.GetBuffer();
+			for (size_t i = 0; i < 1024; ++i)
+			{
+				buf[i] = (char) (i & 0xFF);
+			}
+			mapped.Sync();
 		}
 
-		// Write to second half
-		for (size_t i = 1024; i < 2048; ++i)
+		// Reopen and grow file to 2048 bytes
 		{
-			buf[i] = (char)((i ^ 0xAA) & 0xFF);
-		}
-		mapped.Sync();
-	}
+			TMappedFile mapped;
+			int err = mapped.Map(tempFile.c_str(), 2048, O_RDWR);
+			REQUIRE(err == 0);
+			REQUIRE(mapped.GetBuffer() != nullptr);
+			CHECK(mapped.GetSize() == 2048);
+			CHECK(mapped.GetCreated() == true); // Grown
 
-	(void) ::unlink(GetTestTempPath().c_str());
-}
+			char* buf = (char*) mapped.GetBuffer();
+			// Verify original 1024 bytes
+			for (size_t i = 0; i < 1024; ++i)
+			{
+				REQUIRE(buf[i] == (char) (i & 0xFF));
+			}
 
-void
-UTestKMappedFile::TestReadWriteSync(void)
-{
-	(void) ::printf("Testing Read/Write/Sync...\n");
-	(void) ::unlink(GetTestTempPath().c_str());
-
-	const size_t kSize = 4096;
-	{
-		TMappedFile mapped(GetTestTempPath().c_str(), kSize, O_RDWR | O_CREAT);
-		assert(mapped.GetBuffer() != nullptr);
-		assert(mapped.GetSize() == kSize);
-
-		char* buf = (char*) mapped.GetBuffer();
-		(void) ::memset(buf, 0x42, kSize);
-		mapped.Sync();
-		mapped.Unmap();
-		assert(mapped.GetBuffer() == nullptr);
-		assert(mapped.GetSize() == 0);
-	}
-
-	// Verify persisted contents directly via POSIX read
-	{
-		int fd = ::open(GetTestTempPath().c_str(), O_RDONLY);
-		assert(fd >= 0);
-		char readBuf[kSize];
-		ssize_t bytesRead = ::read(fd, readBuf, kSize);
-		assert(bytesRead == (ssize_t)kSize);
-		for (size_t i = 0; i < kSize; ++i)
-		{
-			assert(readBuf[i] == 0x42);
-		}
-		::close(fd);
-	}
-
-	(void) ::unlink(GetTestTempPath().c_str());
-}
-
-void
-UTestKMappedFile::TestReadOnly(void)
-{
-	(void) ::printf("Testing Read-Only mapping...\n");
-	(void) ::unlink(GetTestTempPath().c_str());
-
-	const size_t kSize = 512;
-	// Create file first
-	{
-		TMappedFile mapped(GetTestTempPath().c_str(), kSize, O_RDWR | O_CREAT);
-		char* buf = (char*) mapped.GetBuffer();
-		(void) ::memset(buf, 0x5A, kSize);
-		mapped.Sync();
-	}
-
-	// Open read-only with size 0 (map whole file)
-	{
-		TMappedFile mapped(GetTestTempPath().c_str(), 0, O_RDONLY);
-		assert(mapped.GetBuffer() != nullptr);
-		assert(mapped.GetSize() == kSize);
-		assert(mapped.GetCreated() == false);
-
-		const char* buf = (const char*) mapped.GetBuffer();
-		for (size_t i = 0; i < kSize; ++i)
-		{
-			assert(buf[i] == 0x5A);
+			// Write to second half
+			for (size_t i = 1024; i < 2048; ++i)
+			{
+				buf[i] = (char) ((i ^ 0xAA) & 0xFF);
+			}
+			mapped.Sync();
 		}
 	}
 
-	(void) ::unlink(GetTestTempPath().c_str());
+	TEST_CASE("TMappedFile read write sync")
+	{
+		TempFileGuard tempFile("cdcl_test_mappedfile_sync.bin");
+
+		const size_t kSize = 4096;
+		{
+			TMappedFile mapped(tempFile.c_str(), kSize, O_RDWR | O_CREAT);
+			REQUIRE(mapped.GetBuffer() != nullptr);
+			CHECK(mapped.GetSize() == kSize);
+
+			char* buf = (char*) mapped.GetBuffer();
+			(void) ::memset(buf, 0x42, kSize);
+			mapped.Sync();
+			mapped.Unmap();
+			CHECK(mapped.GetBuffer() == nullptr);
+			CHECK(mapped.GetSize() == 0);
+		}
+
+		// Verify persisted contents directly via POSIX read
+		{
+			int fd = ::open(tempFile.c_str(), O_RDONLY);
+			REQUIRE(fd >= 0);
+			char readBuf[kSize];
+			ssize_t bytesRead = ::read(fd, readBuf, kSize);
+			::close(fd);
+			REQUIRE(bytesRead == (ssize_t) kSize);
+			for (size_t i = 0; i < kSize; ++i)
+			{
+				REQUIRE(readBuf[i] == 0x42);
+			}
+		}
+	}
+
+	TEST_CASE("TMappedFile read only")
+	{
+		TempFileGuard tempFile("cdcl_test_mappedfile_ro.bin");
+
+		const size_t kSize = 512;
+		// Create file first
+		{
+			TMappedFile mapped(tempFile.c_str(), kSize, O_RDWR | O_CREAT);
+			REQUIRE(mapped.GetBuffer() != nullptr);
+			char* buf = (char*) mapped.GetBuffer();
+			(void) ::memset(buf, 0x5A, kSize);
+			mapped.Sync();
+		}
+
+		// Open read-only with size 0 (map whole file)
+		{
+			TMappedFile mapped(tempFile.c_str(), 0, O_RDONLY);
+			REQUIRE(mapped.GetBuffer() != nullptr);
+			CHECK(mapped.GetSize() == kSize);
+			CHECK(mapped.GetCreated() == false);
+
+			const char* buf = (const char*) mapped.GetBuffer();
+			for (size_t i = 0; i < kSize; ++i)
+			{
+				REQUIRE(buf[i] == 0x5A);
+			}
+		}
+	}
 }
