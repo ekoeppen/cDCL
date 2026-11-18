@@ -40,23 +40,16 @@ using PlatformSocket = TDCLWin32Socket;
 using PlatformSocket = TDCLBSDSocket;
 #endif
 
+#include <doctest/doctest.h>
+
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
-#include <cstdio>
 #include <future>
 #include <memory>
 #include <mutex>
-#include <stdexcept>
 
 namespace {
-
-void Require(bool condition, const char* message)
-{
-    if (!condition) {
-        throw std::runtime_error(message);
-    }
-}
 
 // Keep the listener alive after its blocking wait has been interrupted. This
 // makes returning from StopListening before actual worker exit observable.
@@ -181,58 +174,53 @@ private:
     std::promise<void> ready;
 };
 
-void TestDelayedShutdown(TDCLServer* server)
-{
-    DelayedLayer layer;
-    for (unsigned run = 0; run < 10; ++run) {
-        layer.Prepare();
-        layer.StartListening(server);
-        layer.WaitStarted();
-        auto stopped = std::async(std::launch::async, [&layer] { layer.StopListening(); });
-        layer.WaitStopping();
-        bool waited = stopped.wait_for(std::chrono::milliseconds(20)) == std::future_status::timeout;
-        // Always release the worker before checking assertions or joining.
-        layer.AllowExit();
-        stopped.get();
-        Require(waited, "StopListening returned before the worker was allowed to exit");
-        Require(layer.exited && !layer.exception, "StopListening did not wait for normal worker exit");
-        Require(layer.serverKeptAlive, "Server association was cleared while the worker was running");
-        Require(!layer.HasServer(), "Server association was not cleared after worker exit");
-        layer.StopListening(); // Stopping twice must remain harmless.
-    }
-}
-
-void TestSocketRestartAndDestruction(TDCLServer* server)
-{
-    TestSocket layer;
-    for (unsigned run = 1; run <= 100; ++run) {
-        layer.StartAndWait(server);
-        layer.StopListening();
-        Require(layer.exits == run, "Socket listener was still running after StopListening");
-    }
-    for (unsigned run = 0; run < 100; ++run) {
-        TestSocket temporary;
-        temporary.StartAndWait(server);
-        temporary.StopListening();
-        Require(temporary.exits == 1, "Socket worker outlived shutdown before destruction");
-    }
-}
-
 } // namespace
 
-int main()
+TEST_SUITE("CommLayerShutdown")
 {
-    try {
+    TEST_CASE("Delayed shutdown waits for worker exit")
+    {
         TTestApplication application;
         TTestServer server(&application);
-        TestDelayedShutdown(&server);
-        TestSocketRestartAndDestruction(&server);
-        std::puts("Communication layer shutdown tests passed");
-        return 0;
-    } catch (const std::exception& error) {
-        std::fprintf(stderr, "%s\n", error.what());
-    } catch (...) {
-        std::fputs("Unexpected shutdown test exception\n", stderr);
+        DelayedLayer layer;
+        for (unsigned run = 0; run < 10; ++run) {
+            layer.Prepare();
+            layer.StartListening(&server);
+            layer.WaitStarted();
+            auto stopped = std::async(std::launch::async, [&layer] { layer.StopListening(); });
+            layer.WaitStopping();
+            bool waited = stopped.wait_for(std::chrono::milliseconds(20)) == std::future_status::timeout;
+            // Always release the worker before checking assertions or joining.
+            layer.AllowExit();
+            stopped.get();
+            REQUIRE_MESSAGE(waited, "StopListening returned before the worker was allowed to exit");
+            REQUIRE_MESSAGE((layer.exited && !layer.exception),
+                            "StopListening did not wait for normal worker exit");
+            REQUIRE_MESSAGE(layer.serverKeptAlive,
+                            "Server association was cleared while the worker was running");
+            REQUIRE_MESSAGE(!layer.HasServer(),
+                            "Server association was not cleared after worker exit");
+            layer.StopListening(); // Stopping twice must remain harmless.
+        }
     }
-    return 1;
+
+    TEST_CASE("Socket restart and destruction")
+    {
+        TTestApplication application;
+        TTestServer server(&application);
+        TestSocket layer;
+        for (unsigned run = 1; run <= 100; ++run) {
+            layer.StartAndWait(&server);
+            layer.StopListening();
+            REQUIRE_MESSAGE(layer.exits == run,
+                            "Socket listener was still running after StopListening");
+        }
+        for (unsigned run = 0; run < 100; ++run) {
+            TestSocket temporary;
+            temporary.StartAndWait(&server);
+            temporary.StopListening();
+            REQUIRE_MESSAGE(temporary.exits == 1,
+                            "Socket worker outlived shutdown before destruction");
+        }
+    }
 }

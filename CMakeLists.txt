@@ -472,7 +472,9 @@ DCL/Streams/TDCLStream.h
 
 add_subdirectory (Sample_Code/ToolchainUtils)
 add_subdirectory (Sample_Code/PackageUtils)
-add_subdirectory (Tests)
+if (BUILD_TESTING)
+    add_subdirectory (Tests)
+endif()
 add_subdirectory (Sample_Code/NSOFtoXML)
 
 foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})

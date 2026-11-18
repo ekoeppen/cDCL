@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:			UTestNSOF.cp
+// Fichier:			UTestNSOF.cpp
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 //
@@ -14,11 +14,6 @@
 // $Id: UTestNSOF.cp,v 1.12 2004/03/13 08:51:22 paul Exp $
 // ===========
 
-#include "UTestNSOF.h"
-
-// ANSI C
-#include <stdio.h>
-
 // DCL
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
@@ -30,109 +25,70 @@
 // Tests
 #include "UTestNS.h"
 
-// ------------------------------------------------------------------------- //
-//  * WalterSmith( void )
-// ------------------------------------------------------------------------- //
-void
-UTestNSOF::WalterSmith( void )
+#include <doctest/doctest.h>
+
+#include <vector>
+
+namespace
 {
-	// Récupération de la structure Walter Smith
-	TDCLNSRef theWalterSmithFrameRef = UTestNS::GetWalterSmith();
-	TDCLNSFrame& theWalterSmithFrame = theWalterSmithFrameRef.ToFrame();
+const std::vector<KUInt8> kExpectedWalterSmithNSOF = {
+	0x02, 0x06, 0x06, 0x07, 0x09, 0x6E, 0x61, 0x6D, 0x65, 0x41, 0x67, 0x61, 0x69, 0x6E, 0x07, 0x05,
+	0x75, 0x63, 0x68, 0x61, 0x72, 0x07, 0x04, 0x6E, 0x61, 0x6D, 0x65, 0x07, 0x06, 0x62, 0x6F, 0x75,
+	0x6E, 0x64, 0x73, 0x07, 0x04, 0x63, 0x61, 0x74, 0x73, 0x07, 0x06, 0x70, 0x68, 0x6F, 0x6E, 0x65,
+	0x73, 0x08, 0x1A, 0x00, 0x57, 0x00, 0x61, 0x00, 0x6C, 0x00, 0x74, 0x00, 0x65, 0x00, 0x72, 0x00,
+	0x20, 0x00, 0x53, 0x00, 0x6D, 0x00, 0x69, 0x00, 0x74, 0x00, 0x68, 0x00, 0x00, 0x02, 0x20, 0x22,
+	0x09, 0x07, 0x0B, 0x0E, 0x0A, 0x64, 0x28, 0x00, 0x08, 0x05, 0x02, 0x08, 0x1A, 0x00, 0x34, 0x00,
+	0x30, 0x00, 0x38, 0x00, 0x2D, 0x00, 0x39, 0x00, 0x39, 0x00, 0x36, 0x00, 0x2D, 0x00, 0x31, 0x00,
+	0x30, 0x00, 0x31, 0x00, 0x30, 0x00, 0x00, 0x03, 0x1A, 0x07, 0x08, 0x66, 0x61, 0x78, 0x50, 0x68,
+	0x6F, 0x6E, 0x65, 0x00, 0x34, 0x00, 0x30, 0x00, 0x38, 0x00, 0x2D, 0x00, 0x39, 0x00, 0x37, 0x00,
+	0x34, 0x00, 0x2D, 0x00, 0x39, 0x00, 0x30, 0x00, 0x39, 0x00, 0x34, 0x00, 0x00
+};
+} // namespace
 
-	// Ensuite, encodage sur stdout.
-	TDCLMemStream theMemStream;
-	TDCLNSOFEncoder theEncoder( &theMemStream );
-	
-	theEncoder.AddObject( theWalterSmithFrameRef );
-	
-	// Affichage des données en hexa.
-	const KUInt8* theData = (const KUInt8*) theMemStream.GetBuffer();
-	KUInt32 theDataCount = theMemStream.GetBufferSize();
-	
-	KUInt32 indexData;
-	for ( indexData = 0; indexData < theDataCount; indexData++ )
+TEST_SUITE("NSOF")
+{
+	TEST_CASE("Walter Smith frame NSOF encode, decode, and re-encode")
 	{
-		(void) ::printf( "%.2X", theData[indexData] );
-		if (indexData % 16 == 15)
-		{
-			(void) ::printf( "\n" );
-		}
-	}
-	(void) ::printf( "\n" );
-	
-	// Vérification que le décodage se passe bien.
-	theMemStream.SetCursor( 0, TDCLMemStream::kFromStart );
+		TDCLNSRef theWalterSmithFrameRef = UTestNS::GetWalterSmith();
+		TDCLNSFrame& theWalterSmithFrame = theWalterSmithFrameRef.ToFrame();
 
-	TDCLNSOFDecoder theDecoder( &theMemStream );
-	TDCLNSRef theFrameDecodedRef = theDecoder.GetNextObject();
-	TDCLNSFrame& theFrameDecoded = theFrameDecodedRef.ToFrame();
-	
-	// Les deux structures doivent être identiques.
-	// Je vais juste vérifier que les clés et les classes/valeurs immédiates
-	// sont les mêmes
-	KUInt32 nbPairs = theFrameDecoded.GetLength();
-	if (nbPairs != theWalterSmithFrame.GetLength())
-	{
-		(void) ::printf(
-				"Error: sizes differ (%u != %u)\n",
-				(unsigned int) nbPairs,
-				(unsigned int) theWalterSmithFrame.GetLength());
-	} else {
-		KUInt32 indexPairs;
-		for (indexPairs = 0; indexPairs < nbPairs; indexPairs++)
+		TDCLMemStream theMemStream;
+		TDCLNSOFEncoder theEncoder( &theMemStream );
+		theEncoder.AddObject( theWalterSmithFrameRef );
+
+		const KUInt8* theData = (const KUInt8*) theMemStream.GetBuffer();
+		KUInt32 theDataCount = theMemStream.GetBufferSize();
+		std::vector<KUInt8> encoded( theData, theData + theDataCount );
+		CHECK( encoded == kExpectedWalterSmithNSOF );
+
+		theMemStream.SetCursor( 0, TDCLMemStream::kFromStart );
+		TDCLNSOFDecoder theDecoder( &theMemStream );
+		TDCLNSRef theFrameDecodedRef = theDecoder.GetNextObject();
+		TDCLNSFrame& theFrameDecoded = theFrameDecodedRef.ToFrame();
+
+		KUInt32 nbPairs = theFrameDecoded.GetLength();
+		REQUIRE( nbPairs == theWalterSmithFrame.GetLength() );
+		for (KUInt32 indexPairs = 0; indexPairs < nbPairs; indexPairs++)
 		{
 			TDCLNSSymbol& theKey =
 				theWalterSmithFrame.GetKey(indexPairs).ToSymbol();
-			if (!theFrameDecoded.HasSlot(theKey))
+			REQUIRE( theFrameDecoded.HasSlot(theKey) );
+			TDCLNSRef theWSValue = theWalterSmithFrame.Get(theKey);
+			TDCLNSRef theFDValue = theFrameDecoded.Get(theKey);
+			if (theWSValue != theFDValue)
 			{
-				(void) ::printf(
-						"Error: decoded structure missing key %s\n",
-						(const char*) theKey );
-			} else {
-				// Est-ce un immédiat?
-				TDCLNSRef theWSValue = theWalterSmithFrame.Get(theKey);
-				TDCLNSRef theFDValue = theFrameDecoded.Get(theKey);
-				
-				if (theWSValue != theFDValue)
-				{
-					if (theWSValue.ClassOf() != theFDValue.ClassOf())
-					{
-						(void) ::printf(
-							"Error: Key %s: value classes"
-							" differ\n",
-							theKey.GetString());
-					} else if (!theWSValue.IsPtr()) {
-						(void) ::printf(
-							"Error: Key %s: values differ\n",
-							theKey.GetString());
-					}
-				}
+				CHECK( theWSValue.ClassOf() == theFDValue.ClassOf() );
+				CHECK( theWSValue.IsPtr() );
 			}
 		}
-	}
 
-	// Encodage à nouveau sur stdout.
-	TDCLMemStream anotherMemStream;
-	TDCLNSOFEncoder anotherEncoder( &anotherMemStream );
-	
-	anotherEncoder.AddObject( theFrameDecodedRef );
-	
-	// Affichage des données en hexa.
-	theData = (const KUInt8*) anotherMemStream.GetBuffer();
-	theDataCount = anotherMemStream.GetBufferSize();
-	
-	for ( indexData = 0; indexData < theDataCount; indexData++ )
-	{
-		(void) ::printf( "%.2X", theData[indexData] );
-		if (indexData % 16 == 15)
-		{
-			(void) ::printf( "\n" );
-		}
+		TDCLMemStream anotherMemStream;
+		TDCLNSOFEncoder anotherEncoder( &anotherMemStream );
+		anotherEncoder.AddObject( theFrameDecodedRef );
+
+		const KUInt8* reData = (const KUInt8*) anotherMemStream.GetBuffer();
+		KUInt32 reDataCount = anotherMemStream.GetBufferSize();
+		std::vector<KUInt8> reencoded( reData, reData + reDataCount );
+		CHECK( reencoded == kExpectedWalterSmithNSOF );
 	}
-	(void) ::printf( "\n" );
 }
-
-// ===================================== //
-// Multics is security spelled sideways. //
-// ===================================== //

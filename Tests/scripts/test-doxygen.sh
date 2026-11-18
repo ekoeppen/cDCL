@@ -1,47 +1,17 @@
 #!/bin/bash
-# ==============================
-# Fichier:			test-doxygen.sh
-# Projet:			(Desktop Connection Library)
-# Ecrit par:		Paul Guyot (pguyot@kallisys.net)
-#
-# Créé le:			2/5/2003
-# Tabulation:		4 espaces
-#
-# Copyright:		© 2003-2004 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
-# 					http://www.kallisys.org/reflexive/
-# ===========
-# $Id: test-doxygen.sh,v 1.9 2004/05/11 21:28:54 paul Exp $
-# ===========
+# Doxygen warnings check (requires doxygen installed).
 
-. common.sh $*
+set -e
 
-# Test pour doxygen.
-# Requiert que doxygen soit installé et correctement configuré.
+rm -rf DoxyOutput
+mkdir -p DoxyOutput/html
 
-if [ -e DoxyOutput ] ; then
-	rm -f DoxyOutput/doxywarnings.txt
+doxygen > /dev/null 2>&1
+
+if [ -s DoxyOutput/doxywarnings.txt ]; then
+    cat DoxyOutput/doxywarnings.txt >&2
+    rm -rf DoxyOutput
+    exit 1
 fi
 
-mkdir -p DoxyOutput/html/
-
-doxygen 2>&1 > /dev/null
-cat DoxyOutput/doxywarnings.txt > $OUTFILE
-
-cat > $MASTERFILE <<ENDMASTER
-ENDMASTER
-
-compare
-
-# Nettoyage
-rm $OUTFILE
-rm $MASTERFILE
-rm -f DoxyOutput/doxywarnings.txt
-rm -rf DoxyOutput/
-
-## ====================================================================== ##
-## Documentation is like sex: when it is good, it is very, very good; and ##
-## when it is bad, it is better than nothing.                             ##
-##                 -- Dick Brandon                                        ##
-## ====================================================================== ##
+rm -rf DoxyOutput

@@ -1,27 +1,10 @@
 #!/bin/bash
-#==============================
-# Fichier:			testm-cl-cad-bsd.sh
-# Projet:			(Desktop Connection Library)
-# Ecrit par:		Paul Guyot (pguyot@kallisys.net)
-# 
-# Créé le:			14/6/2003
-# Tabulation:		4 espaces
-# 
-# Copyright:		© 2003 by Paul Guyot.
-# 					Tous droits réservés pour tous pays.
-# Licence:			Licence Réflexive Kallisys
-# 					http://www.kallisys.org/reflexive/
-# ===========
-# $Id: testm-cl-cad-bsd.sh,v 1.3 2004/01/03 18:56:46 paul Exp $
-# ===========
+# Manual test for BSD socket connect & disconnect.
 
-. common.sh $*
+if [ $# -ne 1 ]; then
+    echo "Syntax: $0 <path to DCLManualTests>"
+    exit 1
+fi
 
 echo "This is a manual test. The tester must evaluate whether the test passed."
-
-"$DCLTESTS" cl-cad-bsd
-
-## ====================================================== ##
-## No wonder Clairol makes so much money selling shampoo. ##
-## Lather, Rinse, Repeat is an infinite loop!             ##
-## ====================================================== ##
+"$1" cl-cad-bsd

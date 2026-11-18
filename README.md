@@ -46,7 +46,7 @@ smoothly without high churn:
   lightweight `using` aliases to standard `<cstdint>` types (`uint32_t`,
   `int16_t`) and `bool`.
 - Concurrency facades (`K::TThread`, `K::TMutex`, `K::TCondVar`) remain
-  available as thin wrappers encapsulating standard C++17 concurrency.
+  available as thin wrappers encapsulating standard C++20 concurrency.
 
 ## CMake Integration (Downstream Consumers)
 
@@ -96,7 +96,7 @@ namespaced includes or flat includes:
 
 ## Compilation
 
-Build with CMake (requires CMake 3.31+ and a C++17 compiler):
+Build with CMake (requires CMake 3.31+ and a C++20 compiler):
 
 ```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
@@ -121,7 +121,10 @@ cmake --build build
 
 ## Testing
 
-Tests are executed using `ctest` from the build directory:
+Tests use [doctest](https://github.com/doctest/doctest) (`KTests` for `K`,
+`DCLTests` for `DCL`, and `NSReferencesDeathTest` in `Debug` POSIX builds) and
+are executed using `ctest` from the build directory (works in both `Debug` and
+`Release`):
 
 ```sh
 ctest --test-dir build -C Debug --output-on-failure
@@ -133,6 +136,24 @@ installed:
 ```sh
 ctest --test-dir build -C Debug -LE optional
 ```
+
+Individual `doctest` runners can also be invoked directly with suite or case
+filters:
+
+```sh
+./build/Tests/KTests
+./build/Tests/DCLTests --test-suite=MNPPipe
+```
+
+Interactive hardware/serial tests are built separately in `DCLManualTests` and
+not run by `ctest`:
+
+```sh
+./build/Tests/DCLManualTests cl-cad-bsd
+./build/Tests/DCLManualTests cl-cad-fdserial /dev/ttyUSB0
+```
+
+Pass `-DBUILD_TESTING=OFF` to CMake to skip building the test suite.
 
 ## License and authors
 

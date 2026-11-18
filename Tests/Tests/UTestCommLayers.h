@@ -54,28 +54,12 @@ public:
 	static void ConnectAndDisconnectFDSerialPort( const char* inDevPath );
 
 	///
-	/// Test "Start & Stop Twice" pour les sockets BSD
-	/// Lance le serveur puis l'arrête deux fois.
-	///
-	static void StartAndStopTwiceBSDSocket( void );
-
-	///
 	/// Le même, pour FDSerial.
 	///
 	/// \param inDevPath	chemin pour le port série
 	///
 	static void StartAndStopTwiceFDSerialPort( const char* inDevPath );
 
-	///
-	/// Test pre-Start() configuration constraints on TDCLSimpleServer and
-	/// TDCLOneLinkServer.
-	///
-	static void TestServerConfiguration( void );
-
-	///
-	/// Cooperative cancellation test for sockets and POSIX serial ports.
-	///
-	static void CancelCommLayers( void );
 private:
 
 	///

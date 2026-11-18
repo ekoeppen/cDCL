@@ -1,5 +1,5 @@
 // ==============================
-// Fichier:			UTestTime.cp
+// Fichier:			UTestTime.cpp
 // Projet:			(Desktop Connection Library)
 // Ecrit par:		Paul Guyot (pguyot@kallisys.net)
 // 
@@ -15,57 +15,31 @@
 // ===========
 
 #include <DCL/Headers/DCLDefinitions.h>
-#include "UTestTime.h"
-
-// ANSI C
-#include <time.h>
-
-// DCL
 #include <DCL/Interfaces/UDCLTime.h>
 
-// -------------------------------------------------------------------------- //
-// Constantes
-// -------------------------------------------------------------------------- //
+#include <doctest/doctest.h>
 
-// -------------------------------------------------------------------------- //
-//  * CheckReturnValues( void )
-// -------------------------------------------------------------------------- //
-void
-UTestTime::CheckReturnValues( void )
+#include <ctime>
+
+TEST_SUITE("Time")
 {
-	// On vérifie que time(3) ne retourne pas -1.
-	if (::time(NULL) == (time_t) -1)
+	TEST_CASE("UDCLTime epochs and system time")
 	{
-		(void) ::printf( "time(3) returned -1\n" );
-	}
+		CHECK(::time(NULL) != (time_t) -1);
 
-	// On vérifie que l'heure en secondes depuis 1993 est supérieure à
-	// l'heure quand j'ai écrit ce test.
-	KUInt32 theTime = UDCLTime::TimeInSecondsSince1993();
-	if (theTime < ((KUInt32) 0x407E2400))
-	{
-		(void) ::printf(
-			"TimeInSecondsSince1993 seems incorrect! (%.8X)\n",
-			(unsigned int) theTime );
-	}
+		// 2004-04-15 in Newton epochs (seconds since 1993, seconds/minutes since 1904).
+		const KUInt32 sec1993Before = UDCLTime::TimeInSecondsSince1993();
+		const KUInt32 sec1904 = UDCLTime::TimeInSecondsSince1904();
+		const KUInt32 min1904 = UDCLTime::TimeInMinutesSince1904();
+		const KUInt32 sec1993After = UDCLTime::TimeInSecondsSince1993();
 
-	theTime = UDCLTime::TimeInSecondsSince1904();
-	if (theTime < ((KUInt32) 0xE7E75E00))
-	{
-		(void) ::printf(
-			"TimeInSecondsSince1904 seems incorrect! (%.8X)\n",
-			(unsigned int) theTime );
-	}
-
-	theTime = UDCLTime::TimeInMinutesSince1904();
-	if (theTime < ((KUInt32) 0x03DD74C4))
-	{
-		(void) ::printf(
-			"TimeInMinutesSince1904 seems incorrect! (%.8X)\n",
-			(unsigned int) theTime );
+		CHECK(sec1993Before >= (KUInt32) 0x153AA500);
+		CHECK(sec1993After >= sec1993Before);
+		CHECK(sec1904 >= (KUInt32) 0xBCA3DF00);
+		CHECK(min1904 >= (KUInt32) 0x0325B650);
+		CHECK(sec1904 >= sec1993Before + (KUInt32) 0xA7693A00);
+		CHECK(sec1904 <= sec1993After + (KUInt32) 0xA7693A00);
+		CHECK(min1904 >= (sec1993Before + (KUInt32) 0xA7693A00) / 60);
+		CHECK(min1904 <= (sec1993After + (KUInt32) 0xA7693A00) / 60);
 	}
 }
-
-// ====================== //
-// Equal bytes for women. //
-// ====================== //
