@@ -9,8 +9,8 @@ provide core streaming and serialization utilities.
 
 The repository consists of two main libraries:
 
-- **`DCL`**: Domain-specific implementation of the Newton Dock protocol, package
-  encoding/decoding, and object stores.
+- **`DCL`**: Domain-specific implementation of the [Newton Dock protocol](Documentation/Dante-Connection-Protocol.md),
+  [MNP over serial encoding](Documentation/MNP.md), package encoding/decoding, and object stores.
 - **`K`**: Foundational systems library providing binary streams, ring buffers,
   memory-mapped files, and endianness utilities.
 
