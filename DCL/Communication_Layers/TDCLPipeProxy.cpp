@@ -62,7 +62,7 @@ TDCLPipeProxy::~TDCLPipeProxy( void )
 // -------------------------------------------------------------------------- //
 //  * BytesAvailable( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPipeProxy::BytesAvailable( void )
 {
 	return mSubPipe->BytesAvailable();
@@ -163,7 +163,7 @@ TDCLPipeProxy::IsCurrentThread( void ) const noexcept
 // -------------------------------------------------------------------------- //
 //  * PeerDisconnected( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPipeProxy::PeerDisconnected( void )
 {
 	return mSubPipe->PeerDisconnected();

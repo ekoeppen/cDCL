@@ -325,7 +325,7 @@ public:
 	/// \param inFile	fichier à considérer.
 	/// \return \c true si le fichier semble être un paquet, \c false sinon.
 	///
-	static Boolean IsPackage( TDCLFile* inFile );
+	static bool IsPackage( TDCLFile* inFile );
 
 	///
 	/// Compile et écrit le paquet sur un flux.
@@ -346,7 +346,7 @@ public:
 	///
 	/// \return \c true si le paquet est compatible avec NOS 1.x.
 	///
-	inline Boolean		IsNOS1Compatible( void ) const
+	inline bool		IsNOS1Compatible( void ) const
 		{
 			return mNOS1Compatible;
 		}
@@ -356,7 +356,7 @@ public:
 	///
 	/// \param inNOS1Compatible		si le paquet est compatible NOS 1.x
 	///
-	inline void			SetNOS1Compatible( Boolean inNOS1Compatible )
+	inline void			SetNOS1Compatible( bool inNOS1Compatible )
 		{
 			mNOS1Compatible = inNOS1Compatible;
 		}
@@ -406,7 +406,7 @@ public:
 	///
 	/// \return \c true si le drapeau kDirAutoRemoveFlag est à un.
 	///
-	inline Boolean		GetAutoRemove( void ) const
+	inline bool		GetAutoRemove( void ) const
 		{
 			return ((GetPackageFlags() & kDirAutoRemoveFlag) != 0);
 		}
@@ -416,7 +416,7 @@ public:
 	///
 	/// \param inAutoRemove		nouvelle valeur du drapeau
 	///
-	inline void			SetAutoRemove( Boolean inAutoRemove )
+	inline void			SetAutoRemove( bool inAutoRemove )
 		{
 			SetPackageFlags(
 					inAutoRemove ?
@@ -429,7 +429,7 @@ public:
 	///
 	/// \return \c true si le drapeau kDirCopyProtectFlag est à un.
 	///
-	inline Boolean		GetCopyProtect( void ) const
+	inline bool		GetCopyProtect( void ) const
 		{
 			return ((GetPackageFlags() & kDirCopyProtectFlag) != 0);
 		}
@@ -439,7 +439,7 @@ public:
 	///
 	/// \param inCopyProtect	nouvelle valeur du drapeau
 	///
-	inline void			SetCopyProtect( Boolean inCopyProtect )
+	inline void			SetCopyProtect( bool inCopyProtect )
 		{
 			SetPackageFlags(
 					inCopyProtect ?
@@ -452,7 +452,7 @@ public:
 	///
 	/// \return \c true si le drapeau kDirNoCompressionFlag est à un.
 	///
-	inline Boolean		GetNoCompression( void ) const
+	inline bool		GetNoCompression( void ) const
 		{
 			return ((GetPackageFlags() & kDirNoCompressionFlag) != 0);
 		}
@@ -463,7 +463,7 @@ public:
 	///
 	/// \param inNoCompression	nouvelle valeur du drapeau
 	///
-	inline void			SetNoCompression( Boolean inNoCompression )
+	inline void			SetNoCompression( bool inNoCompression )
 		{
 			SetPackageFlags(
 					inNoCompression ?
@@ -477,7 +477,7 @@ public:
 	///
 	/// \return \c true si le drapeau kDirRelocationFlag est à un.
 	///
-	inline Boolean		GetRelocation( void ) const
+	inline bool		GetRelocation( void ) const
 		{
 			return ((GetPackageFlags() & kDirRelocationFlag) != 0);
 		}
@@ -487,7 +487,7 @@ public:
 	///
 	/// \return \c true si le drapeau kDirUseFasterCompressionFlag est à un.
 	///
-	inline Boolean		GetUseFasterCompression( void ) const
+	inline bool		GetUseFasterCompression( void ) const
 		{
 			return ((GetPackageFlags() & kDirUseFasterCompressionFlag) != 0);
 		}
@@ -499,7 +499,7 @@ public:
 	/// \param inUseFasterCompression	nouvelle valeur du drapeau
 	///
 	inline void			SetUseFasterCompression(
-											Boolean inUseFasterCompression )
+											bool inUseFasterCompression )
 		{
 			if (inUseFasterCompression)
 			{
@@ -822,7 +822,7 @@ private:
 	void			ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset = 0 );
 
 	/// \name Variables
-	Boolean			mNOS1Compatible;///< Si le paquet est compatible 1.x.
+	bool			mNOS1Compatible;///< Si le paquet est compatible 1.x.
 	KUInt32			mPackageID;		///< ID (e.g. kDefaultID).
 	KUInt32			mPackageFlags;	///< Drapeaux (e.g. kDirAutoRemoveFlag).
 	KUInt32			mVersion;		///< Nombre arbitraire pour la version.

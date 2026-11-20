@@ -171,7 +171,7 @@ public:
 	/// \return \c true si on peut optimiser la synchronisation en utilisant la date
 	///			de la dernière synchronisation.
 	///
-	virtual Boolean		HasModificationDate( void ) = 0;
+	virtual bool		HasModificationDate( void ) = 0;
 
 	///
 	/// Retourne les données de synchronisation telles que sauvegardées par
@@ -202,7 +202,7 @@ public:
 	/// \param inNewtonEntry	enregistrement de la soupe.
 	/// \return \c true si l'enregistrement doit être synchronisé.
 	///
-	virtual Boolean		FilterEntry(
+	virtual bool		FilterEntry(
 								const TDCLNSString& inSoupName,
 								const TDCLNSFrame& inNewtonEntry ) = 0;
 

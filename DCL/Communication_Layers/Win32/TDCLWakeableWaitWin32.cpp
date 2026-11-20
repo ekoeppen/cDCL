@@ -29,7 +29,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
 
-#if !TARGET_OS_WIN32
+#ifndef _WIN32
 #error TDCLWakeableWaitWin32 requires Win32
 #endif
 

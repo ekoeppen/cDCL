@@ -21,7 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Interfaces/POSIX/Compat/libgen.h>
@@ -91,8 +91,8 @@ void DumpPart(
                 TDCLPackage* inPackage,
                 KUInt32 inPartIndex,
                 const char* outPartFilePath,
-                Boolean inXMLize,
-                Boolean inNSOFize );
+                bool inXMLize,
+                bool inNSOFize );
 
 ///
 /// Point d'entrée.
@@ -147,8 +147,8 @@ DumpPart(
         TDCLPackage* inPackage,
         KUInt32 inPartIndex,
         const char* outPartFilePath,
-        Boolean inXMLize,
-        Boolean inNSOFize )
+        bool inXMLize,
+        bool inNSOFize )
 {
     TDCLStream* theOutputStream = nil;
     TDCLFile* theOutputFile = nil;
@@ -222,12 +222,12 @@ main( int inArgc, char** inArgv )
     int theResult = 0;
 
     char* theFilePath = nil;
-    Boolean wantOnePartOnly = false;
+    bool wantOnePartOnly = false;
     int partIndex = 0;
-    Boolean wantStdout = false;
+    bool wantStdout = false;
     char* theOutputPrefix = nil;
-    Boolean wantXML = false;
-    Boolean wantNSOF = false;
+    bool wantXML = false;
+    bool wantNSOF = false;
     KUInt32 theVAddr = 0;
 
     int theOptionChar;

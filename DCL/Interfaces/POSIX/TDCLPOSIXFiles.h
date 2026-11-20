@@ -41,7 +41,7 @@
 #include <DCL/Interfaces/IDCLFiles.h>
 #include <DCL/Interfaces/TDCLFile.h>
 
-#if !TARGET_OS_COMPAT_POSIX
+#ifdef _WIN32
 	#error TDCLPOSIXFiles requires POSIX compatibility
 #endif
 
@@ -66,7 +66,7 @@ public:
 	///
 	/// \param inFollowSymLinks		si on suit les liens symboliques.
 	///
-	TDCLPOSIXFiles( Boolean inFollowSymLinks = true );
+	TDCLPOSIXFiles( bool inFollowSymLinks = true );
 
 	///
 	/// Destructeur.
@@ -110,7 +110,7 @@ public:
 	/// Si on suit les liens symboliques (pour les dossiers seulement,
 	/// on suit tous les fichiers).
 	///
-	inline Boolean GetFollowSymLinks( void )
+	inline bool GetFollowSymLinks( void )
 		{
 			return mFollowSymLinks;
 		}
@@ -125,7 +125,7 @@ private:
 	/// \name variables privées
 	
 	TDCLFSItemRef			mRootFolder;		///< Dossier racine
-	Boolean					mFollowSymLinks;	///< Si on suit les liens symboliques.
+	bool					mFollowSymLinks;	///< Si on suit les liens symboliques.
 	static const KUInt16	kRootFolderName[3];	///< '/:'
 };
 

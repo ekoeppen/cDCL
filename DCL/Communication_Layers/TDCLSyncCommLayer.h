@@ -81,7 +81,7 @@ public:
 	///							0 signifie pas de limite.
 	///
 	TDCLSyncCommLayer(
-			Boolean	inFlushAvailable = false,
+			bool	inFlushAvailable = false,
 			KUInt32	inMaxPipeCount = kDefaultPipeCount
 			);
 
@@ -131,7 +131,7 @@ protected:
 	/// \return \c true si une requête est présente, \c false si la méthode a été
 	/// interrompue (ou si on n'écoute plus).
 	///
-	virtual Boolean 	WaitForIncomingRequest( void ) = 0;
+	virtual bool 	WaitForIncomingRequest( void ) = 0;
 
 	///
 	/// Retourne un objet connexion représentant le canal de communication avec le client
@@ -224,7 +224,7 @@ protected:
 		/// \return \c true si des données sont présentes, \c false si la méthode a été
 		/// interrompue.
 		///
-		virtual Boolean 	WaitForIncomingData( void ) = 0;
+		virtual bool 	WaitForIncomingData( void ) = 0;
 
 		///
 		/// Déconnecte le canal de communication avec le client.

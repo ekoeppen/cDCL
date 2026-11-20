@@ -667,7 +667,7 @@ UDES::CreateKey(
 			const KUInt16* inString,
 			KUInt64* outKey,
 			const KUInt64& inCreationKey,
-			Boolean inNewtonCompat )
+			bool inNewtonCompat )
 {
 	// Crée une clef à partir d'une chaîne de caractère unicode.
 	// La chaîne doit avoir un caractère nul comme terminateur.

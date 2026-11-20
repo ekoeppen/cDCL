@@ -54,7 +54,7 @@ TThread::~TThread( void )
 // -------------------------------------------------------------------------- //
 //  * IsCurrentThread( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TThread::IsCurrentThread( void ) const
 {
 	return (std::this_thread::get_id() == mThreadId);
@@ -116,12 +116,12 @@ TThread::Resume( void )
 // ------------------------------------------------------------------------- //
 //  * Sleep( KUInt32 )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 {
 	assert(IsCurrentThread());
-	Boolean theResult = false;
-	Boolean forever = (inMilliseconds == kForever);
+	bool theResult = false;
+	bool forever = (inMilliseconds == kForever);
 
 	std::unique_lock<std::mutex> lock(mMutex);
 

@@ -47,10 +47,10 @@
 #include <DCL/Server/TDCLServer.h>
 
 // -------------------------------------------------------------------------- //
-//  * TDCLSyncCommLayer( Boolean, KUInt32 )
+//  * TDCLSyncCommLayer( bool, KUInt32 )
 // -------------------------------------------------------------------------- //
 TDCLSyncCommLayer::TDCLSyncCommLayer(
-					Boolean	inFlushAvailable /* = false */,
+					bool	inFlushAvailable /* = false */,
 					KUInt32	inMaxPipeCount /* = kDefaultPipeCount */
 				)
 	:

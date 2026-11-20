@@ -44,7 +44,7 @@ basename(const char *path)
 
 	/* Strip trailing slashes */
 	endp = path + strlen(path) - 1;
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	while (endp > path && (*endp == '/' || *endp == '\\'))
 #else
 	while (endp > path && *endp == '/')
@@ -52,7 +52,7 @@ basename(const char *path)
 		endp--;
 
 	/* All slashes become "/" */
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	if (endp == path && (*endp == '/' || *endp == '\\')) {
 #else
 	if (endp == path && *endp == '/') {
@@ -63,7 +63,7 @@ basename(const char *path)
 
 	/* Find the start of the base */
 	startp = endp;
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	while (startp > path && *(startp - 1) != '/' && *(startp - 1) != '\\')
 #else
 	while (startp > path && *(startp - 1) != '/')

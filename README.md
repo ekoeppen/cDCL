@@ -25,28 +25,28 @@ connectivity framework.
 
 ### Streamlined Platform Strategy
 
-Builds target three platform tiers using built-in compiler macros (`__APPLE__`,
-`__linux__`, `_WIN32`):
+Builds rely on standard C++20 (`<bit>` `std::endian`) and built-in compiler
+macros (`_WIN32`, `__APPLE__`, `__linux__`, etc.) rather than custom
+`TARGET_OS_*` or `TARGET_RT_*` preprocessor definitions:
 
-- **macOS** (Clang / libc++)
-- **Linux** (GCC / Clang / libstdc++)
-- **Windows** (native Win32 via MinGW-w64)
+- **POSIX targets** (macOS, iOS, Linux, Android, BSD via Clang / GCC)
+- **Windows** (native Win32 via MinGW-w64; `K` also supports MSVC)
 
 Compared to the original [DCL](https://sourceforge.net/projects/newton-dcl/),
-legacy platforms (Cygwin, MSVC, Classic Mac OS 8/9, BeOS) are dropped. macOS and
-Linux share a unified POSIX implementation (`TARGET_OS_POSIX`), while Windows
-relies on native Win32 APIs (`TARGET_OS_WIN32`) via MinGW-w64.
+legacy platforms (Cygwin, Classic Mac OS 8/9, BeOS) and custom platform/boolean
+macros (`TARGET_OS_*`, `TARGET_RT_*`, `Boolean`) have been retired in favor of
+standard C++20 types (`bool`, `<cstdint>`) and compiler-provided macros.
 
 ### Compatibility Shims
 
 To permit downstream consumers (such as Einstein) and legacy tools to migrate
 smoothly without high churn:
 
-- Legacy types (`KUInt32`, `KSInt16`, `Boolean`, etc.) are provided as
-  lightweight `using` aliases to standard `<cstdint>` types (`uint32_t`,
-  `int16_t`) and `bool`.
-- Concurrency facades (`K::TThread`, `K::TMutex`, `K::TCondVar`) remain
-  available as thin wrappers encapsulating standard C++20 concurrency.
+- Legacy fixed-width aliases (`KUInt32`, `KSInt16`, etc.) are provided in
+  `K/Defines/KDefinitions.h` as lightweight `using` aliases to `<cstdint>`
+  types (`uint32_t`, `int16_t`).
+- Concurrency facades (`TThread`, `TMutex`, `TCondVar`) remain available as
+  thin wrappers encapsulating standard C++20 concurrency.
 
 ## CMake Integration (Downstream Consumers)
 
@@ -78,25 +78,30 @@ add_subdirectory(externals/cDCL)
 target_link_libraries(my_app PRIVATE cDCL::K cDCL::DCL)
 ```
 
+### Subproject Behavior (`FetchContent` / `add_subdirectory`)
+
+When `cDCL` is embedded as a subproject (`PROJECT_IS_TOP_LEVEL` is `FALSE`),
+samples, tests, install rules, RPATH settings, and the standalone
+`BUILD_SHARED_LIBS=ON` default are disabled automatically so `cDCL` follows the
+parent project's build configuration. Explicit override options are available:
+
+- `CDCL_BUILD_SAMPLES` (defaults to `ON` standalone, `OFF` when embedded)
+- `CDCL_BUILD_TESTS` (defaults to `ON` standalone, `OFF` when embedded)
+- `CDCL_INSTALL` (defaults to `ON` standalone, `OFF` when embedded)
+
 ### Header Include Conventions
 
-The include directories are configured so downstream consumers can use either
-namespaced includes or flat includes:
+Downstream consumers use namespaced includes relative to the repository root:
 
 ```cpp
-// Namespaced (preferred):
 #include <K/Misc/TCircleBuffer.h>
 #include <K/Defines/UByteSex.h>
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
-
-// Flat includes are also supported:
-#include "TCircleBuffer.h"
-#include "TDCLNSFrame.h"
 ```
 
 ## Compilation
 
-Build with CMake (requires CMake 3.31+ and a C++20 compiler):
+Build with CMake (requires CMake 3.21+ and a C++20 compiler):
 
 ```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
@@ -153,7 +158,7 @@ not run by `ctest`:
 ./build/Tests/DCLManualTests cl-cad-fdserial /dev/ttyUSB0
 ```
 
-Pass `-DBUILD_TESTING=OFF` to CMake to skip building the test suite.
+Pass `-DCDCL_BUILD_TESTS=OFF` (or `-DBUILD_TESTING=OFF`) to CMake to skip building the test suite.
 
 ## License and authors
 

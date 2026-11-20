@@ -102,14 +102,14 @@ TDCLBrowseEngine::StartBrowsing( const TDCLNSRef& inFileTypes )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLBrowseEngine::ProcessDockCommand(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
-	Boolean theResult = true;
+	bool theResult = true;
 	
 	TDCLPipe* thePipe = GetLink()->GetPipe();
 
@@ -266,9 +266,9 @@ TDCLBrowseEngine::ProcessDockCommand(
 TDCLNSRef
 TDCLBrowseEngine::GetFilesAndFolders( void )
 {
-	Boolean onlyImports = false;
-	Boolean onlyPackages = false;
-	Boolean onlySyncFiles = false;
+	bool onlyImports = false;
+	bool onlyPackages = false;
+	bool onlySyncFiles = false;
 	if (mFileTypes.IsSymbol())
 	{
 		if (mFileTypes == TDCLNSRef::MakeSymbol( "import" ))
@@ -390,7 +390,7 @@ TDCLBrowseEngine::SetPath( const TDCLNSRef& inPath )
 	{
 		// Vérifions qu'on a bien Desktop.
 		theElement = thePath.Get(0);
-		Boolean isDesktop = false;
+		bool isDesktop = false;
 		if (theElement.IsString())
 		{
 			isDesktop = theElement.ToString().StrEqual( "Desktop" );

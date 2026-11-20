@@ -7,26 +7,26 @@
 // 
 // ***** BEGIN LICENSE BLOCK *****
 // Version: MPL 1.1
-//
+// 
 // The contents of this file are subject to the Mozilla Public License Version
 // 1.1 (the "License"); you may not use this file except in compliance with
 // the License. You may obtain a copy of the License at
 // http://www.mozilla.org/MPL/
-//
+// 
 // Software distributed under the License is distributed on an "AS IS" basis,
 // WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 // for the specific language governing rights and limitations under the
 // License.
-//
+// 
 // The Original Code is UTInt64.cp.
-//
+// 
 // The Initial Developer of the Original Code is Paul Guyot.
 // Portions created by the Initial Developer are Copyright (C) 2003-2004
 // the Initial Developer. All Rights Reserved.
-//
+// 
 // Contributor(s):
 //   Paul Guyot <pguyot@kallisys.net> (original author)
-//
+// 
 // ***** END LICENSE BLOCK *****
 // ===========
 // $Id: UTInt64.cp,v 1.5 2005/02/24 06:49:58 pguyot Exp $
@@ -41,11 +41,7 @@
 KUInt32
 UTInt64::GetHi( const KUInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KUInt32) (in64BitsWord >> 32);
-	#else
-		return in64BitsWord.GetHi();
-	#endif
+	return (KUInt32) (in64BitsWord >> 32);
 }
 
 // -------------------------------------------------------------------------- //
@@ -54,11 +50,7 @@ UTInt64::GetHi( const KUInt64& in64BitsWord )
 KSInt32
 UTInt64::GetHi( const KSInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KSInt32) (in64BitsWord >> 32);
-	#else
-		return in64BitsWord.GetHi();
-	#endif
+	return (KSInt32) (in64BitsWord >> 32);
 }
 
 // -------------------------------------------------------------------------- //
@@ -67,11 +59,7 @@ UTInt64::GetHi( const KSInt64& in64BitsWord )
 KUInt32
 UTInt64::GetLo( const KUInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KUInt32) (in64BitsWord);
-	#else
-		return in64BitsWord.GetLo();
-	#endif
+	return (KUInt32) (in64BitsWord);
 }
 
 // -------------------------------------------------------------------------- //
@@ -80,11 +68,7 @@ UTInt64::GetLo( const KUInt64& in64BitsWord )
 KUInt32
 UTInt64::GetLo( const KSInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KUInt32) (in64BitsWord);
-	#else
-		return in64BitsWord.GetLo();
-	#endif
+	return (KUInt32) (in64BitsWord);
 }
 
 // -------------------------------------------------------------------------- //
@@ -93,11 +77,7 @@ UTInt64::GetLo( const KSInt64& in64BitsWord )
 KUInt32
 UTInt64::ToKUInt32( const KSInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KUInt32) in64BitsWord;
-	#else
-		return in64BitsWord.GetHi();
-	#endif
+	return (KUInt32) in64BitsWord;
 }
 
 // -------------------------------------------------------------------------- //
@@ -106,11 +86,7 @@ UTInt64::ToKUInt32( const KSInt64& in64BitsWord )
 KUInt32
 UTInt64::ToKUInt32( const KUInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KUInt32) in64BitsWord;
-	#else
-		return in64BitsWord.GetHi();
-	#endif
+	return (KUInt32) in64BitsWord;
 }
 
 // -------------------------------------------------------------------------- //
@@ -119,17 +95,7 @@ UTInt64::ToKUInt32( const KUInt64& in64BitsWord )
 KSInt32
 UTInt64::ToKSInt32( const KSInt64& in64BitsWord )
 {
-	#if HAS_C99_LONGLONG
-		return (KSInt32) in64BitsWord;
-	#else
-		KSInt32 theResult = (KSInt32) (in64BitsWord.GetLo() & 0x7FFFFFFF);
-		if (in64BitsWord.GetHi() & 0x80000000)
-		{
-			theResult |= 0x80000000;
-		}
-		
-		return theResult;
-	#endif
+	return (KSInt32) in64BitsWord;
 }
 
 // -------------------------------------------------------------------------- //
@@ -138,12 +104,8 @@ UTInt64::ToKSInt32( const KSInt64& in64BitsWord )
 void
 UTInt64::SetHi( KUInt64* io64BitsWord, const KUInt32 in32BitsValue )
 {
-	#if HAS_C99_LONGLONG
-		*io64BitsWord &= (KUInt64) 0x00000000FFFFFFFFLLU;
-		*io64BitsWord |= (((KUInt64) in32BitsValue) << 32);
-	#else
-		io64BitsWord->SetHi( in32BitsValue );
-	#endif
+	*io64BitsWord &= (KUInt64) 0x00000000FFFFFFFFLLU;
+	*io64BitsWord |= (((KUInt64) in32BitsValue) << 32);
 }
 
 // -------------------------------------------------------------------------- //
@@ -152,12 +114,8 @@ UTInt64::SetHi( KUInt64* io64BitsWord, const KUInt32 in32BitsValue )
 void
 UTInt64::SetHi( KSInt64* io64BitsWord, const KSInt32 in32BitsValue )
 {
-	#if HAS_C99_LONGLONG
-		*io64BitsWord &= (KSInt64) 0x00000000FFFFFFFFLLU;
-		*io64BitsWord |= (((KSInt64) in32BitsValue) << 32);
-	#else
-		io64BitsWord->SetHi( in32BitsValue );
-	#endif
+	*io64BitsWord &= (KSInt64) 0x00000000FFFFFFFFLLU;
+	*io64BitsWord |= (((KSInt64) in32BitsValue) << 32);
 }
 
 // -------------------------------------------------------------------------- //
@@ -166,12 +124,8 @@ UTInt64::SetHi( KSInt64* io64BitsWord, const KSInt32 in32BitsValue )
 void
 UTInt64::SetLo( KUInt64* io64BitsWord, const KUInt32 in32BitsValue )
 {
-	#if HAS_C99_LONGLONG
-		*io64BitsWord &= (KUInt64) 0xFFFFFFFF00000000LLU;
-		*io64BitsWord |= in32BitsValue;
-	#else
-		io64BitsWord->SetLo( in32BitsValue );
-	#endif
+	*io64BitsWord &= (KUInt64) 0xFFFFFFFF00000000LLU;
+	*io64BitsWord |= in32BitsValue;
 }
 
 // -------------------------------------------------------------------------- //
@@ -180,12 +134,8 @@ UTInt64::SetLo( KUInt64* io64BitsWord, const KUInt32 in32BitsValue )
 void
 UTInt64::SetLo( KSInt64* io64BitsWord, const KUInt32 in32BitsValue )
 {
-	#if HAS_C99_LONGLONG
-		*io64BitsWord &= (KUInt64) 0xFFFFFFFF00000000LLU;
-		*io64BitsWord |= in32BitsValue;
-	#else
-		io64BitsWord->SetLo( in32BitsValue );
-	#endif
+	*io64BitsWord &= (KUInt64) 0xFFFFFFFF00000000LLU;
+	*io64BitsWord |= in32BitsValue;
 }
 
 // -------------------------------------------------------------------------- //
@@ -197,12 +147,7 @@ UTInt64::Set(
 			const KUInt32 inHiHalf,
 			const KUInt32 inLoHalf )
 {
-	#if HAS_C99_LONGLONG
-		*out64BitsWord = (((KUInt64) inHiHalf) << 32) | inLoHalf;
-	#else
-		out64BitsWord->SetHi( inHiHalf );
-		out64BitsWord->SetLo( inLoHalf );
-	#endif
+	*out64BitsWord = (((KUInt64) inHiHalf) << 32) | inLoHalf;
 }
 
 // -------------------------------------------------------------------------- //
@@ -214,12 +159,7 @@ UTInt64::Set(
 			const KSInt32 inHiHalf,
 			const KUInt32 inLoHalf )
 {
-	#if HAS_C99_LONGLONG
-		*out64BitsWord = (((KSInt64) inHiHalf) << 32) | inLoHalf;
-	#else
-		out64BitsWord->SetHi( inHiHalf );
-		out64BitsWord->SetLo( inLoHalf );
-	#endif
+	*out64BitsWord = (((KSInt64) inHiHalf) << 32) | inLoHalf;
 }
 
 // -------------------------------------------------------------------------- //
@@ -228,11 +168,7 @@ UTInt64::Set(
 KUInt64
 UTInt64::CreateKUInt64( const KUInt32 inHiHalf, const KUInt32 inLoHalf )
 {
-	#if HAS_C99_LONGLONG
-		return (((KUInt64) inHiHalf) << 32) | inLoHalf;
-	#else
-		return TUInt64( inHiHalf, inLoHalf );
-	#endif
+	return (((KUInt64) inHiHalf) << 32) | inLoHalf;
 }
 
 // -------------------------------------------------------------------------- //
@@ -241,11 +177,7 @@ UTInt64::CreateKUInt64( const KUInt32 inHiHalf, const KUInt32 inLoHalf )
 KSInt64
 UTInt64::CreateKSInt64( const KSInt32 inHiHalf, const KUInt32 inLoHalf )
 {
-	#if HAS_C99_LONGLONG
-		return (((KSInt64) inHiHalf) << 32) | inLoHalf;
-	#else
-		return TSInt64( inHiHalf, inLoHalf );
-	#endif
+	return (((KSInt64) inHiHalf) << 32) | inLoHalf;
 }
 
 // --------------------------------------------------------------------	//
@@ -267,25 +199,17 @@ UTInt64::MultModulo(
 	while (theRightInt > 0)
 	{
 		// On divise theRightInt par deux
-#if HAS_C99_LONGLONG
 		bool theCarry = ((theRightInt & 0x0000000000000001LLU) != 0);
 		theRightInt >>= 1;
 		if (theCarry)
-#else
-		if (theRightInt.ShiftRight())
-#endif
 		{
 			// Gestion de l'overflow.
 			// theResult est < inModule
 			// theLeftInt est < inModule
 			// Donc theResult + theLeftInt est < 2 * inModule
 			// Si c'est >= inModule, je retranche inModule
-#if HAS_C99_LONGLONG
 			theResult += theLeftInt;
 			if ((theResult < theLeftInt) || (theResult >= inModule))
-#else
-			if (theResult.Add( theLeftInt ) || (theResult >= inModule))
-#endif
 			{
 				(void) (theResult -= inModule);
 			}
@@ -293,13 +217,9 @@ UTInt64::MultModulo(
 		// Et on multiplie l'entier de gauche par deux
 		// Comme theLeftInt est < inModule, 
 		// theLeftInt * 2 est < 2 * inModule
-#if HAS_C99_LONGLONG
 		theCarry = ((theLeftInt & 0x8000000000000000LLU) != 0);
 		theLeftInt <<= 1;
 		if (theCarry || (theLeftInt >= inModule))
-#else
-		if (theLeftInt.ShiftLeft() || (theLeftInt >= inModule))
-#endif
 		{
 			(void) (theLeftInt -= inModule);
 			// Gestion de l'overflow:
@@ -335,13 +255,9 @@ UTInt64::ExpModulo(
 	
 	while (theExponent != 0)
 	{
-#if HAS_C99_LONGLONG
 		bool theCarry = ((theExponent & 0x0000000000000001LLU) != 0);
 		theExponent >>= 1;
 		if (theCarry)
-#else
-		if (theExponent.ShiftRight())
-#endif
 		{
 			theResult =
 				MultModulo( basePuissance2KiReduite, theResult, inModule );
@@ -350,7 +266,7 @@ UTInt64::ExpModulo(
 		basePuissance2KiReduite =
 			MultModulo( basePuissance2KiReduite, basePuissance2KiReduite, inModule );
 	}
-	
+		
 	return theResult;
 }
 
@@ -364,13 +280,8 @@ UTInt64::EuclideanDivision(
 		const KUInt64& inDividend,
 		const KUInt64& inDivisor )
 {
-#if HAS_C99_LONGLONG
 	outQuotient = inDividend / inDivisor;
 	outRemainder = inDividend - (outQuotient * inDivisor);
-#else
-	TUInt64::EuclideanDivision(
-		outQuotient, outRemainder, inDividend, inDivisor );
-#endif
 }
 
 // =============================================== //

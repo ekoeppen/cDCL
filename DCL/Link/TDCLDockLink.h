@@ -122,7 +122,7 @@ protected:
 	///
 	virtual	EState		ProcessDockCommand(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	///	Méthode pour récupérer le mot de passe.

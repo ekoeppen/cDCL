@@ -7,7 +7,6 @@ TELFFile.cpp
 )
 
 target_link_libraries (ELFtoNTK PUBLIC DCL PRIVATE Threads::Threads)
-install(TARGETS ELFtoNTK RUNTIME DESTINATION bin)
 
 add_executable (ELFtoPKG
 ELFtoPKG.cpp
@@ -18,19 +17,25 @@ target_link_libraries (ELFtoPKG PUBLIC DCL PRIVATE Threads::Threads)
 if (NOT WIN32)
     target_link_libraries (ELFtoPKG PRIVATE pthread)
 endif()
-install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)
 
 add_executable (Rex
 Rex.cpp
 )
 
 target_link_libraries (Rex PUBLIC DCL PRIVATE Threads::Threads)
-install(TARGETS Rex RUNTIME DESTINATION bin)
 
-file(GLOB TEST_SRC_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff-*.src)
-foreach(TEST_SRC ${TEST_SRC_SCRIPTS})
-    add_test(NAME ${TEST_SRC}
-             CONFIGURATIONS Debug
-             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex
-             COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff.sh $<TARGET_FILE:Rex> ${TEST_SRC})
-endforeach(TEST_SRC ${TEST_SRC_SCRIPTS})
+if(CDCL_INSTALL)
+    install(TARGETS ELFtoNTK RUNTIME DESTINATION bin)
+    install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)
+    install(TARGETS Rex RUNTIME DESTINATION bin)
+endif()
+
+if(CDCL_BUILD_TESTS AND BUILD_TESTING)
+    file(GLOB TEST_SRC_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff-*.src)
+    foreach(TEST_SRC ${TEST_SRC_SCRIPTS})
+        add_test(NAME ${TEST_SRC}
+                 CONFIGURATIONS Debug
+                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex
+                 COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff.sh $<TARGET_FILE:Rex> ${TEST_SRC})
+    endforeach(TEST_SRC ${TEST_SRC_SCRIPTS})
+endif()

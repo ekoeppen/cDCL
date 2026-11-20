@@ -208,7 +208,7 @@ protected:
 	///
 	virtual EState		ProcessEvent(
 							TDCLEvent* inEvent,
-							Boolean* outProcessed );
+							bool* outProcessed );
 
 	///
 	/// Method called when an exception is uncaught.

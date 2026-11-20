@@ -12,7 +12,7 @@
 
 #include <DCL/Headers/DCLDefinitions.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 typedef TDCLWin32File TDCLPlatformFile;

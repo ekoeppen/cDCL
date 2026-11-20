@@ -115,7 +115,7 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset )
 		mParts( nil ),
 		mRelocationData( nil )
 {
-	Boolean wasOpen = false;
+	bool wasOpen = false;
 	KSInt64 theOldPosition = 0;
 	if (inFile->IsOpen())
 	{
@@ -540,12 +540,12 @@ TDCLPackage::WriteToStream( TDCLStream* inOutStream, KUInt32 loadAddr ) const
 // -------------------------------------------------------------------------- //
 //  * IsPackage( TDCLFile* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPackage::IsPackage( TDCLFile* inFile )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 
-	Boolean wasOpen = false;
+	bool wasOpen = false;
 	KSInt64 theOldPosition = 0;
 	if (inFile->IsOpen())
 	{

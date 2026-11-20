@@ -78,7 +78,7 @@ TString::TString( const char* inCString )
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
 	char theCharacter;
-	Boolean fitsOn7Bits = true;
+	bool fitsOn7Bits = true;
 	const char* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
@@ -126,7 +126,7 @@ TString::TString( const char* inCString, EEncoding inEncoding )
 	KUInt32 theSize = 0;
 	KUInt32 theHashCode = 0;
 	char theCharacter;
-	Boolean fitsOn7Bits = true;
+	bool fitsOn7Bits = true;
 	const char* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
@@ -175,7 +175,7 @@ TString::TString( const KUInt16* inCString )
 	KUInt32 theStringSize = 0;
 	KUInt32 theHashCode = 0;
 	KUInt16 theCharacter;
-	Boolean justHadDoubleChar = false;
+	bool justHadDoubleChar = false;
 	const KUInt16* theInputString = inCString;
 	do {
 		theCharacter = *theInputString++;	// Caractère courant.
@@ -222,7 +222,7 @@ TString::TString( const char* inChars, KUInt32 inSize )
 	
 	// Copie des caractères et calcul, dans la foulée, de la somme de contrôle.
 	KUInt32 theHashCode = 0;
-	Boolean fitsOn7Bits = true;
+	bool fitsOn7Bits = true;
 	const char* theInputString = inChars;
 	char* theBufferString = (char*) mString;
 	KUInt32 index = inSize;
@@ -290,7 +290,7 @@ TString::TString( const TString& inCopy )
 	
 	// Tant qu'à faire à copier les données, autant calculer la taille
 	// et la valeur de hachage.
-	Boolean hasHashableEncoding = false;
+	bool hasHashableEncoding = false;
 	if (!mHashCodeIsValid)
 	{
 		hasHashableEncoding = ((mEncoding == kUTF16)
@@ -355,10 +355,10 @@ TString::operator = ( const TString& inCopy )
 // -------------------------------------------------------------------------- //
 //  * operator == ( const TString& ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TString::operator == ( const TString& inAlter ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	do {
 		if ((mStringSizeIsValid && inAlter.mStringSizeIsValid)
 			&& (mStringSize != inAlter.mStringSize))
@@ -417,10 +417,10 @@ TString::operator == ( const TString& inAlter ) const
 // -------------------------------------------------------------------------- //
 //  * operator == ( TString& ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TString::operator == ( TString& inAlter ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	do {
 		if ((mStringSizeIsValid && inAlter.mStringSizeIsValid)
 			&& (mStringSize != inAlter.mStringSize))
@@ -479,7 +479,7 @@ TString::operator == ( TString& inAlter ) const
 // -------------------------------------------------------------------------- //
 //  * operator < ( TString& ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TString::operator < ( TString& inAlter ) const
 {
 	int theResult = 0;

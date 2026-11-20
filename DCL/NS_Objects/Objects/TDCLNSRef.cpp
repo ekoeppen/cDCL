@@ -198,10 +198,10 @@ TDCLNSRef::operator = ( TDCLNSObject& inObject )
 // ------------------------------------------------------------------------- //
 // 	* operator == ( const TDCLNSObject& ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSRef::operator == ( const TDCLNSRef& inAlter ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	if (inAlter.mRef == mRef)
 	{
@@ -271,10 +271,10 @@ TDCLNSRef::MakeChar( KUInt16 inChar )
 }
 
 // ------------------------------------------------------------------------- //
-// 	* MakeBoolean( Boolean )
+// 	* MakeBoolean( bool )
 // ------------------------------------------------------------------------- //
 TDCLNSRef
-TDCLNSRef::MakeBoolean( Boolean inBoolean )
+TDCLNSRef::MakeBoolean( bool inBoolean )
 {
 	if (inBoolean)
 	{

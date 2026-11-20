@@ -53,8 +53,8 @@ protected:
 	virtual TDCLDockCommand*	ReceiveCommand( void );
 
 private:
-	virtual	EState				ProcessDockCommand( TDCLDockCommand* inCommand, Boolean* outProcessed );
-	virtual	EState				ProcessAppCommand( TDCLAppCommand* inCommand, Boolean* outProcessed );
+	virtual	EState				ProcessDockCommand( TDCLDockCommand* inCommand, bool* outProcessed );
+	virtual	EState				ProcessAppCommand( TDCLAppCommand* inCommand, bool* outProcessed );
 };
 
 #endif // __TDCLINSPECTORLINK__

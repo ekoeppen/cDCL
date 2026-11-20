@@ -105,7 +105,7 @@ public:
 	TDCLFDSerialPort(
 				const char* inDevPath,
 				long inBaud = 38400,
-				Boolean inUseMNP = true );
+				bool inUseMNP = true );
 
 	///
 	/// Destructeur.
@@ -178,7 +178,7 @@ protected:
 	/// \return \c true si une requête est présente, \c false si la méthode a été
 	/// interrompue.
 	///
-	virtual	Boolean		WaitForIncomingRequest( void ) override;
+	virtual	bool		WaitForIncomingRequest( void ) override;
 
 	///
 	/// Accesseur sur l'interface de communication.
@@ -206,7 +206,7 @@ protected:
 	/// \return \c true si des données sont présentes, \c false sinon
 	///			(délai expiré ou erreur).
 	///
-	Boolean				Select( long inTimeoutMs = -1 );
+	bool				Select( long inTimeoutMs = -1 );
 
 private:
 	///
@@ -295,7 +295,7 @@ private:
 		///
 		/// \return le nombre d'octets disponibles.
 		///
-		virtual	Boolean		BytesAvailable( void ) override;
+		virtual	bool		BytesAvailable( void ) override;
 
 		///
 		/// Attend que des données se présentent. Cette méthode est synchrone (c'est l'intérêt
@@ -305,7 +305,7 @@ private:
 		/// \return \c true si une requête est présente, \c false si la méthode a été
 		/// interrompue.
 		///
-		virtual Boolean 	WaitForIncomingData( void ) override;
+		virtual bool 	WaitForIncomingData( void ) override;
 
 		///
 		/// Déconnecte le canal de communication avec le client.
@@ -351,7 +351,7 @@ private:
 		int						mSerialFD;					///< File descriptor of the connection
 															///< interface.
 		long					mTimeout;					///< Timeout for this interface.
-		Boolean					mDisconnected;				///< Whether the connection was closed by the client.
+		bool					mDisconnected;				///< Whether the connection was closed by the client.
 		bool					mCancelledBeforeDisconnect;	///< Whether stop was requested before Disconnect().
 		TDCLWakeableWait		mDataWakeWait;				///< Wakeable wait for WaitForIncomingData().
 		TDCLWakeableWait		mIOWakeWait;				///< Wakeable wait for Read()/Write().
@@ -359,17 +359,17 @@ private:
 	
 	/// \name Variables
 
-	Boolean						mIsConnected;		///< Si une connexion est ouverte.
+	bool						mIsConnected;		///< Si une connexion est ouverte.
 	int							mSerialFD;			///< Descripteur de fichier de l'interface
 													///< de communication.
 	char*						mDevPath;			///< Chemin vers le fichier BSD.
 	long						mBaud;				///< Vitesse du lien en baud.
 	KUInt32						mPipeMode;			///< On utilise MNP?
 	struct termios				mOriginalOptions;	///< Options originales.
-	Boolean						mReset;				///< Si on est en train de réinitialiser
+	bool						mReset;				///< Si on est en train de réinitialiser
 													///< le fichier.
-	Boolean						mDisconnecting;		///< Si on est en train de se déconnecter.
-	Boolean						mRequestPresent;	///< Si une requête est présente.
+	bool						mDisconnecting;		///< Si on est en train de se déconnecter.
+	bool						mRequestPresent;	///< Si une requête est présente.
 	bool						mInSelect;			///< Whether Select() is waiting on mSerialFD.
 	std::stop_source			mSelectStopSource;	///< Stop source waking Select() on reset or stop.
 	std::mutex					mStateMutex;		///< Mutex protecting layer state.

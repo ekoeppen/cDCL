@@ -86,7 +86,7 @@ TTestMemoryPipe::FlushOutput( void )
 {
 }
 
-Boolean
+bool
 TTestMemoryPipe::BytesAvailable( void )
 {
 	std::lock_guard<std::mutex> lock( mMutex );

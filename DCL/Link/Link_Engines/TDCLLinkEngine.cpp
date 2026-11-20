@@ -56,24 +56,24 @@ TDCLLinkEngine::~TDCLLinkEngine( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLLinkEngine::ProcessDockCommand(
 					TDCLDockCommand* /* inCommand */,
-					Boolean* outProcessed )
+					bool* outProcessed )
 {
 	*outProcessed = false;
 	return true;
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  * ProcessAppCommand( TDCLAppCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLLinkEngine::ProcessAppCommand(
 					TDCLAppCommand* /* inCommand */,
-					Boolean* outProcessed )
+					bool* outProcessed )
 {
 	*outProcessed = false;
 	return true;

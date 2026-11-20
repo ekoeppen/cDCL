@@ -266,7 +266,7 @@ private:
 					const KUInt16* inString,
 					KUInt64* outKey,
 					const KUInt64& inCreationKey,
-					Boolean inNewtonCompat );
+					bool inNewtonCompat );
 
 	/// \name Les tables
 

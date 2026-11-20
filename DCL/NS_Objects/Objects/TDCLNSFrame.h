@@ -98,14 +98,14 @@ public:
 	///
 	/// \return \c true
 	///
-	virtual Boolean 	IsFrame( void ) const;
+	virtual bool 	IsFrame( void ) const;
 
 	///
 	/// Détermine si cet objet est une fonction.
 	///
 	/// \return \c mIsFunction
 	///
-	virtual Boolean 	IsFunction( void ) const;
+	virtual bool 	IsFunction( void ) const;
 
 	///
 	/// Détermine si une clé existe dans le dictionnaire.
@@ -113,7 +113,7 @@ public:
 	/// \param inSymbol	clé à tester.
 	/// \return \c true si la clé existe, \c false sinon.
 	///
-	Boolean				HasSlot( const TDCLNSSymbol& inSymbol ) const;
+	bool				HasSlot( const TDCLNSSymbol& inSymbol ) const;
 
 	///
 	/// Détermine si une clé existe dans le dictionnaire.
@@ -121,7 +121,7 @@ public:
 	/// \param inSymbol	clé à tester, sous forme de chaîne ISO-8859-1.
 	/// \return \c true si la clé existe, \c false sinon.
 	///
-	inline Boolean		HasSlot( const char* inSymbol ) const
+	inline bool		HasSlot( const char* inSymbol ) const
 		{
 			return HasSlot( TDCLNSSymbol( inSymbol ) );
 		}
@@ -132,7 +132,7 @@ public:
 	/// \param inSymbol	clé à supprimer.
 	/// \return \c true si la clé existait, \c false sinon.
 	///
-	Boolean				RemoveSlot( const TDCLNSSymbol& inSymbol );
+	bool				RemoveSlot( const TDCLNSSymbol& inSymbol );
 
 	///
 	/// Supprime une clé du dictionnaire.
@@ -140,7 +140,7 @@ public:
 	/// \param inSymbol	clé à supprimer, sous forme de chaîne ISO-8859-1.
 	/// \return \c true si la clé existait, \c false sinon.
 	///
-	inline Boolean		RemoveSlot( const char* inSymbol )
+	inline bool		RemoveSlot( const char* inSymbol )
 		{
 			return RemoveSlot( TDCLNSSymbol( inSymbol ) );
 		}
@@ -297,7 +297,7 @@ protected:
 	///
 	/// \param inKeysAreSorted	si les clés sont triées.
 	///
-	inline void		SetKeysAreSorted( Boolean inKeysAreSorted )
+	inline void		SetKeysAreSorted( bool inKeysAreSorted )
 		{
 			mKeysAreSorted = inKeysAreSorted;
 		}
@@ -307,7 +307,7 @@ protected:
 	///
 	/// \param inIsFunction		si la structure est une fonction.
 	///
-	inline void		SetIsFunction( Boolean inIsFunction )
+	inline void		SetIsFunction( bool inIsFunction )
 		{
 			mIsFunction = inIsFunction;
 		}
@@ -338,7 +338,7 @@ private:
 	///						pas triée).
 	/// \return \c true si la clé a été trouvée, \c false sinon.
 	///
-	Boolean		GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) const;
+	bool		GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) const;
 
 	/// \name Interface IStreamable
 	// @{
@@ -393,8 +393,8 @@ private:
 	KUInt32					mCapacity;		///< Capacité des listes.
 	TDCLNSRef*				mKeys;			///< Liste des clés
 	TDCLNSRef*				mValues;		///< Liste des valeurs.
-	Boolean					mKeysAreSorted;	///< Indique que les clés sont triées.
-	Boolean					mIsFunction;	///< Si la structure est une fonction.
+	bool					mKeysAreSorted;	///< Indique que les clés sont triées.
+	bool					mIsFunction;	///< Si la structure est une fonction.
 };
 
 #endif

@@ -128,7 +128,7 @@ TDCLDockCmdPassword::CreateChallenge( KUInt32 outChallenge[2] )
 // ------------------------------------------------------------------------- //
 //  * VerifyPassword( const KUInt32[2], const KUInt16* )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLDockCmdPassword::VerifyPassword( const KUInt32 inChallenge[2],
 									const KUInt16* inPassword /* = nil */ )
 {

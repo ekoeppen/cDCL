@@ -190,7 +190,7 @@ TDCLNSArray::operator = ( const TDCLNSArray& inCopy )
 // ------------------------------------------------------------------------- //
 //  * IsArray( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSArray::IsArray( void ) const
 {
 	return true;
@@ -362,7 +362,7 @@ TDCLNSArray::SetClass( const TDCLNSRef& inClass )
 TDCLNSArray*
 TDCLNSArray::FromNSOF(
 				TDCLNSOFDecoder* inDecoder,
-				Boolean isPlain )
+				bool isPlain )
 {
 	TDCLStream* theStream = inDecoder->GetInputStream();
 	
@@ -439,7 +439,7 @@ TDCLNSArray::ToXML(
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 
 	// == est un comparateur de surface, sauf pour les symboles.	
-	Boolean isPlain = (mClass == KDCLSYM::kSYMarray);
+	bool isPlain = (mClass == KDCLSYM::kSYMarray);
 	
 	// Balise de début avec l'ID.
 	char theOutputStr[32]; 	// Suffisant.
@@ -484,7 +484,7 @@ TDCLNSArray::ToNSOF(
 	TDCLStream* theOutputStream = inEncoder->GetOutputStream();
 
 	// == est un comparateur de surface, sauf pour les symboles.	
-	Boolean isPlain = (mClass == KDCLSYM::kSYMarray);
+	bool isPlain = (mClass == KDCLSYM::kSYMarray);
 	
 	// Ecriture du type.
 	if (isPlain)

@@ -33,6 +33,7 @@
 // ***** END LICENSE BLOCK *****
 // ===========
 
+#include <windows.h>
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Interfaces/Win32/TDCLWin32DirBase.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Dir.h>
@@ -45,7 +46,6 @@
 #include <K/Unicode/UUTF16CStr.h>
 #include <string.h>
 #include <stdlib.h>
-#include <windows.h>
 #include <stdio.h>
 #include <new>
 

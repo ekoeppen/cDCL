@@ -71,10 +71,10 @@ TDCLBSDSocket::~TDCLBSDSocket( void )
 	Destroy();
 }
 
-Boolean
+bool
 TDCLBSDSocket::IsAvailable( void )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	int tmpsocket = ::socket( AF_INET, SOCK_STREAM, 0 );
 	if ( tmpsocket >= 0 )
 	{

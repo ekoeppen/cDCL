@@ -35,7 +35,7 @@
 #include <DCL/Server/TDCLOneLinkServer.h>
 #include <DCL/Server/TDCLSimpleServer.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Communication_Layers/Win32/TDCLWin32Socket.h>
 typedef TDCLWin32Socket TDCLPlatformSocket;
 #else
@@ -49,7 +49,7 @@ typedef TDCLWin32Socket TDCLPlatformSocket;
 typedef TDCLBSDSocket TDCLPlatformSocket;
 #endif
 
-#if TARGET_OS_COMPAT_POSIX
+#ifndef _WIN32
 #include <DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h>
 #endif
 
@@ -68,7 +68,7 @@ typedef TDCLBSDSocket TDCLPlatformSocket;
 #include <thread>
 #include <type_traits>
 
-#if TARGET_OS_COMPAT_POSIX || TARGET_OS_WIN32
+#if 1
 namespace
 {
 class TCancelProbeApp : public TTestApplication
@@ -345,7 +345,7 @@ private:
 
 void ClosePlatformSocket( dcl_socket_t inSock )
 {
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	::closesocket( inSock );
 #else
 	::close( inSock );
@@ -591,7 +591,7 @@ TEST_SUITE("CommLayerCancel")
 		CHECK( RunReconnectAfterHandshakeErrorCase<TDCLOneLinkServer>( true ) );
 	}
 
-#if TARGET_OS_COMPAT_POSIX
+#ifndef _WIN32
 	TEST_CASE("WakeableWait cancel write")
 	{
 		int pipeFDs[2];

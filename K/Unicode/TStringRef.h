@@ -151,7 +151,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est strictement inférieur à \c inAlter, \c false sinon.
 	///
-	inline Boolean operator < ( const TStringRef& inAlter ) const
+	inline bool operator < ( const TStringRef& inAlter ) const
 		{
 			return
 				((mString != inAlter.mString)
@@ -166,7 +166,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est strictement inférieur à \c inAlter, \c false sinon.
 	///
-	inline Boolean operator < ( const TMutableStringRef& inAlter ) const
+	inline bool operator < ( const TMutableStringRef& inAlter ) const
 		{
 			return
 				((mString != inAlter.GetString())
@@ -181,7 +181,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
 	///
-	inline Boolean operator == ( const TStringRef& inAlter ) const
+	inline bool operator == ( const TStringRef& inAlter ) const
 		{
 			return
 				((mString == inAlter.mString)
@@ -197,7 +197,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
 	///
-	inline Boolean operator == ( const TMutableStringRef& inAlter ) const
+	inline bool operator == ( const TMutableStringRef& inAlter ) const
 		{
 			return
 				((mString == inAlter.GetString())

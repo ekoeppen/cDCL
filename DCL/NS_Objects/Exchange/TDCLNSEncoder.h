@@ -99,7 +99,7 @@ public:
 	/// \param outObjectCookie	en sortie, biscuit associé à l'objet (idem).
 	/// \return \c true si l'objet a déjà été encodé.
 	///
-	Boolean WasObjectEncoded(
+	bool WasObjectEncoded(
 				TDCLNSObject* inObject,
 				KUInt32* outObjectID,
 				KUIntPtr* outObjectCookie );
@@ -152,7 +152,7 @@ protected:
 	/// \param inObject		objet considéré.
 	/// \return \c true si l'objet peut être référencé, \c false sinon.
 	///
-	virtual Boolean	CanHavePrecedentID( TDCLNSObject* inObject );
+	virtual bool	CanHavePrecedentID( TDCLNSObject* inObject );
 	
 private:
 	///

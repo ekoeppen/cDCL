@@ -93,7 +93,7 @@ TDCLPkgPart::~TDCLPkgPart( void )
 // -------------------------------------------------------------------------- //
 //  * IsNOSPart( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgPart::IsNOSPart( void ) const
 {
 	return false;
@@ -140,7 +140,7 @@ TDCLPkgPart::GetBuffer( KUInt32 inOffset )
 // -------------------------------------------------------------------------- //
 //  * IsOffsetDependant( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgPart::IsOffsetDependant( void ) const
 {
 	return false;
@@ -149,7 +149,7 @@ TDCLPkgPart::IsOffsetDependant( void ) const
 // -------------------------------------------------------------------------- //
 //  * IsDirty( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgPart::IsDirty( void ) const
 {
 	return false;

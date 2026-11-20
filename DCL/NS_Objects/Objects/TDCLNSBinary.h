@@ -122,14 +122,14 @@ public:
 	///
 	/// \return \c true
 	///
-	virtual Boolean IsBinary( void ) const;
+	virtual bool IsBinary( void ) const;
 
 	///
 	/// Détermine si cet objet est une chaîne.
 	///
 	/// \return \c true si la classe correspond.
 	///
-	virtual Boolean IsString( void ) const;
+	virtual bool IsString( void ) const;
 
 	///
 	/// Accesseur sur la taille du binaire.

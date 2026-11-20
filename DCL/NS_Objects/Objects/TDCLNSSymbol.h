@@ -136,7 +136,7 @@ public:
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsSymbol( void ) const;
+	virtual bool IsSymbol( void ) const;
 
 	///
 	/// Accesseur sur la valeur de hachage.
@@ -230,7 +230,7 @@ public:
 	///
 	/// \return une référence vers la classe primaire de ce symbole.
 	///
-	Boolean IsSubClass( const TDCLNSSymbol& inSuper ) const;
+	bool IsSubClass( const TDCLNSSymbol& inSuper ) const;
 
 	///
 	/// Change la classe de ce symbole.

@@ -150,7 +150,7 @@ TDCLNSString::FromNSOF( TDCLNSOFDecoder* inDecoder )
 // ------------------------------------------------------------------------- //
 //  * StrEqual( const char* ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSString::StrEqual( const char* inAlter ) const
 {
 	// Conversion de la chaîne ISO 8859-1 en unicode.
@@ -162,7 +162,7 @@ TDCLNSString::StrEqual( const char* inAlter ) const
 	UUTF16CStr::FromISO88591(
 			(const KUInt8*) inAlter, theStringInUCS2 );
 	
-	Boolean theResult = StrEqual( theStringInUCS2 );
+	bool theResult = StrEqual( theStringInUCS2 );
 	
 	// Libération.
 	::free( theStringInUCS2 );
@@ -173,10 +173,10 @@ TDCLNSString::StrEqual( const char* inAlter ) const
 // ------------------------------------------------------------------------- //
 //  * StrEqual( const KUInt16* ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSString::StrEqual( const KUInt16* inAlter ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	// Comparaison (puisque les deux chaînes sont terminées par des nuls).
 	KUInt32 indexStr;
@@ -204,7 +204,7 @@ TDCLNSString::StrEqual( const KUInt16* inAlter ) const
 // ------------------------------------------------------------------------- //
 //  * StrEqual( const TDCLNSString& ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSString::StrEqual( const TDCLNSString& inAlter ) const
 {
 	return StrEqual( inAlter.GetString() );

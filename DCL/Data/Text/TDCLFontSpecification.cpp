@@ -163,7 +163,7 @@ TDCLFontSpecification::SetFamily( const TDCLNSRef& inFamilyName )
 {
 	// Est-ce une des quatre polices de la ROM?
 	KUInt32 familyNumber = 0;
-	Boolean isROMFont = true;
+	bool isROMFont = true;
 	if (inFamilyName == KDCLSYM::kSYMespy)
 	{
 		familyNumber = ktsSystem;
@@ -281,7 +281,7 @@ TDCLFontSpecification::CreateFontSpec(
 {
 	// Est-ce une des quatre polices de la ROM?
 	KUInt32 familyNumber = 0;
-	Boolean isROMFont = true;
+	bool isROMFont = true;
 	if (inFontName == KDCLSYM::kSYMespy)
 	{
 		familyNumber = ktsSystem;

@@ -145,7 +145,7 @@ TDCLPkgRelocatablePart::GetRelocationPageCountEstimate( void ) const
 // -------------------------------------------------------------------------- //
 //  * IsOffsetDependant( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgRelocatablePart::IsOffsetDependant( void ) const
 {
     return mRelocationCount > 0;

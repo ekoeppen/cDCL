@@ -127,12 +127,12 @@ TDCLLoadPackageLink::DoConnect( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  * ProcessAppCommand( TDCLAppCommand*, bool* )
 // ------------------------------------------------------------------------- //
 TDCLLink::EState
 TDCLLoadPackageLink::ProcessAppCommand(
 				TDCLAppCommand* inCommand,
-				Boolean* outProcessed )
+				bool* outProcessed )
 {
 	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
 
@@ -150,7 +150,7 @@ TDCLLoadPackageLink::ProcessAppCommand(
 // ------------------------------------------------------------------------- //
 //  * IntallPackage( TDCLFSItemRef )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLLoadPackageLink::InstallPackage( TDCLFSItemRef inPackage )
 {
 	// Création de la commande à envoyer.
@@ -161,7 +161,7 @@ TDCLLoadPackageLink::InstallPackage( TDCLFSItemRef inPackage )
 				inPackage );
 	
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 	
 	if (!theResult)
 	{

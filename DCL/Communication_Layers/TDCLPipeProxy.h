@@ -79,7 +79,7 @@ public:
 	///
 	/// \return \c true s'il y a des octets disponibles, \c false sinon.
 	///
-	virtual	Boolean		BytesAvailable( void );
+	virtual	bool		BytesAvailable( void );
 
 	///
 	/// Requests cooperative stop of the pipe and forwards it to the underlying pipe.
@@ -155,7 +155,7 @@ public:
 	///
 	/// Whether the other side already closed the link.
 	///
-	virtual	Boolean		PeerDisconnected( void );
+	virtual	bool		PeerDisconnected( void );
 
 protected:
 	///

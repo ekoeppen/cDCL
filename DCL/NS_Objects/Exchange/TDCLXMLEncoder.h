@@ -151,7 +151,7 @@ protected:
 	/// \param inObject		objet considéré.
 	/// \return \c true si l'objet peut être référencé, \c false sinon.
 	///
-	virtual Boolean	CanHavePrecedentID( TDCLNSObject* inObject );
+	virtual bool	CanHavePrecedentID( TDCLNSObject* inObject );
 
 private:
 	KUInt32				mLevel;	///< Niveau (pour les tabulations)

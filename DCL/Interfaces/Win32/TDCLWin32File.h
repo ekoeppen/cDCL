@@ -49,11 +49,11 @@ public:
 	TDCLWin32File( IDCLFiles* inFilesIntf, const char* inPath );
 	virtual ~TDCLWin32File( void );
 
-	virtual void		Open( Boolean inReadOnly );	
+	virtual void		Open( bool inReadOnly );	
 	virtual void		Create( void );	
 	virtual void		Delete( void );	
-	virtual Boolean		IsOpen( void ) const;
-	virtual Boolean		IsReadOnly( void ) const;
+	virtual bool		IsOpen( void ) const;
+	virtual bool		IsReadOnly( void ) const;
 	virtual KUInt64		GetLength( void );
 	virtual void		Close( void );
 	virtual void		Read( void* outBuffer, KUInt32* ioCount );
@@ -74,7 +74,7 @@ public:
 private:
 	char*				mPath;
 	FILE*				mFile;
-	Boolean				mReadOnly;
+	bool				mReadOnly;
 };
 
 #endif

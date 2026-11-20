@@ -22,7 +22,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Interfaces/POSIX/Compat/libgen.h>
@@ -134,7 +134,7 @@ void BuildPackage(
 			const TDCLNSRef& inPackageFrame,
 			const char* outPkgFilePath,
 			const TDCLNSRef& inPackageSym,
-			Boolean inNOS1Compatible );
+			bool inNOS1Compatible );
 
 ///
 /// Point d'entrée.
@@ -379,7 +379,7 @@ BuildPackage(
 			const TDCLNSRef& inPackageFrame,
 			const char* outPkgFilePath,
 			const TDCLNSRef& inPackageSym,
-			Boolean inNOS1Compatible )
+			bool inNOS1Compatible )
 {
 	TDCLStream* theOutputStream = nil;
 	TDCLFile* theOutputFile = nil;
@@ -453,19 +453,19 @@ main( int inArgc, char** inArgv )
 	int theResult = 0;
 
 	char* theFilePath = nil;
-	Boolean wantStdout = false;
+	bool wantStdout = false;
 	char* theOutputPath = nil;
-	Boolean theOutputPathWasAllocated = false;
+	bool theOutputPathWasAllocated = false;
 	char* thePackageName = nil;
-	Boolean thePackageNameWasAllocated = false;
+	bool thePackageNameWasAllocated = false;
 	char* theBookTitle = nil;
 	char* theFontFamily = nil;
 	int theFontSize = 9;
 	UDCLPaperback::EEncoding theEncoding = UDCLPaperback::kISO88591;
 	char* theTemplatePath = nil;
 	char* tocLinesPrefix = nil;
-	Boolean suppressTocLines = false;
-	Boolean newtonOS1xCompatible = false;
+	bool suppressTocLines = false;
+	bool newtonOS1xCompatible = false;
 
 	int theOptionChar;
 	while ((theOptionChar =

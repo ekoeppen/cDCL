@@ -312,7 +312,7 @@ public:
 	///
 	/// \param inAlter		référence à comparer.
 	///
-	Boolean operator == ( const TDCLNSRef& inAlter ) const;
+	bool operator == ( const TDCLNSRef& inAlter ) const;
 
 	///
 	/// Opérateur d'inégalité.
@@ -320,7 +320,7 @@ public:
 	///
 	/// \param inAlter		référence à comparer.
 	///
-	inline Boolean operator != ( const TDCLNSRef& inAlter ) const
+	inline bool operator != ( const TDCLNSRef& inAlter ) const
 		{
 			return !(*this == inAlter);
 		}
@@ -399,7 +399,7 @@ public:
 	/// \param inBoolean	booléen.
 	/// \return un nouvel objet TDCLNSRef représentant ce booléen.
 	///
-	static TDCLNSRef MakeBoolean( Boolean inBoolean );
+	static TDCLNSRef MakeBoolean( bool inBoolean );
 
 	///
 	/// Créateur pour un pointeur magique.
@@ -521,7 +521,7 @@ public:
 	///
 	/// \return \c true si c'est un entier, \c false sinon.
 	///
-	inline Boolean IsInt( void ) const
+	inline bool IsInt( void ) const
 		{
 			return (mRef & kTagMask) == kIntegerTag;
 		}
@@ -531,7 +531,7 @@ public:
 	///
 	/// \return \c true si c'est un caractère, \c false sinon.
 	///
-	inline Boolean IsChar( void ) const
+	inline bool IsChar( void ) const
 		{
 			return (mRef & (kTagMask | kImmedBitsMask)) == (kImmedTag | kImmedChar);
 		}
@@ -541,7 +541,7 @@ public:
 	///
 	/// \return \c true si c'est un booléen, \c false sinon.
 	///
-	inline Boolean IsBoolean( void ) const
+	inline bool IsBoolean( void ) const
 		{
 			return (mRef == kNILRefValue) || (mRef == kTRUERefValue);
 		}
@@ -551,7 +551,7 @@ public:
 	///
 	/// \return \c true si c'est NIL, \c false sinon.
 	///
-	inline Boolean IsNIL( void ) const
+	inline bool IsNIL( void ) const
 		{
 			return (mRef == kNILRefValue);
 		}
@@ -561,7 +561,7 @@ public:
 	///
 	/// \return \c true si c'est TRUE, \c false sinon.
 	///
-	inline Boolean IsTRUE( void ) const
+	inline bool IsTRUE( void ) const
 		{
 			return (mRef == kTRUERefValue);
 		}
@@ -571,7 +571,7 @@ public:
 	///
 	/// \return \c true si c'est un pointeur, \c false sinon.
 	///
-	inline Boolean IsPtr( void ) const
+	inline bool IsPtr( void ) const
 		{
 			return IsRealPtr() || IsMagicPtr();
 		}
@@ -581,7 +581,7 @@ public:
 	///
 	/// \return \c true si c'est un pointeur magique, \c false sinon.
 	///
-	inline Boolean IsMagicPtr( void ) const
+	inline bool IsMagicPtr( void ) const
 		{
 			return (mRef & kTagMask) == kMagicPtrTag;
 		}
@@ -591,7 +591,7 @@ public:
 	///
 	/// \return \c true si c'est un pointeur normal, \c false sinon.
 	///
-	inline Boolean IsRealPtr( void ) const
+	inline bool IsRealPtr( void ) const
 		{
 			return (mRef & kTagMask) == kPointerTag;
 		}
@@ -601,7 +601,7 @@ public:
 	///
 	/// \return \c true si c'est un symbole, \c false sinon.
 	///
-	inline Boolean IsSymbol( void ) const
+	inline bool IsSymbol( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsSymbol();
 		}
@@ -611,7 +611,7 @@ public:
 	///
 	/// \return \c true si c'est une structure, \c false sinon.
 	///
-	inline Boolean IsFrame( void ) const
+	inline bool IsFrame( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsFrame();
 		}
@@ -621,7 +621,7 @@ public:
 	///
 	/// \return \c true si c'est un tableau, \c false sinon.
 	///
-	inline Boolean IsArray( void ) const
+	inline bool IsArray( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsArray();
 		}
@@ -631,7 +631,7 @@ public:
 	///
 	/// \return \c true si c'est un binaire, \c false sinon.
 	///
-	inline Boolean IsBinary( void ) const
+	inline bool IsBinary( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsBinary();
 		}
@@ -641,7 +641,7 @@ public:
 	///
 	/// \return \c true si c'est une chaîne, \c false sinon.
 	///
-	inline Boolean IsString( void ) const
+	inline bool IsString( void ) const
 		{
 			return IsRealPtr() && GetPointer()->IsString();
 		}
@@ -979,7 +979,7 @@ private:
 		kImmedReserved	= 0xC,		// 0b1100
 		
 		kNILRefValue	= 0x2,		// Immed, Special, 0
-		kTRUERefValue	= 0x1A,		// Immed, Boolean, 1
+		kTRUERefValue	= 0x1A,		// Immed, bool, 1
 
 		kMagicPtrTShift	= 12,		// En plus des 2 bits pour le type.
 		kMagicPtrIMask	= 0xFFF		// 0b1111 1111 1111

@@ -38,7 +38,7 @@
 #include <DCL/Link/App_Commands/TDCLAppCmdKbdChar.h>
 
 // -------------------------------------------------------------------------- //
-//  * TDCLAppCmdKbdChar( KUInt16, Boolean )
+//  * TDCLAppCmdKbdChar( KUInt16, bool )
 // -------------------------------------------------------------------------- //
 TDCLAppCmdKbdChar::TDCLAppCmdKbdChar(
 				KUInt16 inChar,

@@ -220,7 +220,7 @@ TDCLNSBinary::operator = ( const TDCLNSBinary& inCopy )
 // ------------------------------------------------------------------------- //
 //  * IsBinary( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSBinary::IsBinary( void ) const
 {
 	return true;
@@ -229,10 +229,10 @@ TDCLNSBinary::IsBinary( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsString( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSBinary::IsString( void ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	if ((mClass == KDCLSYM::kSYMstring) || (mClass == KDCLSYM::kSYMname))
 	{
 		theResult = true;
@@ -317,9 +317,9 @@ TDCLNSBinary::ToXML(
 							// (c'est pour les balises).
 
 	// S'agit-il d'une chaîne?
-	Boolean isString = false;
+	bool isString = false;
 	// Dois-je inclure la classe?
-	Boolean putClass = true;
+	bool putClass = true;
 	
 	if (mClass == KDCLSYM::kSYMstring)
 	{

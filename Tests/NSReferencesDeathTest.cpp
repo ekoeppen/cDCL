@@ -6,7 +6,7 @@
 #include <DCL/NS_Objects/Objects/TDCLNSFrame.h>
 #include <DCL/NS_Objects/Objects/TDCLNSRef.h>
 
-#if TARGET_OS_COMPAT_POSIX
+#ifndef _WIN32
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -22,7 +22,7 @@ int main(void)
 		} // no assertion
 	}
 
-#if TARGET_OS_COMPAT_POSIX && !NDEBUG
+#if !defined(_WIN32) && !NDEBUG
 	const pid_t pid = ::fork();
 	if (pid < 0)
 	{

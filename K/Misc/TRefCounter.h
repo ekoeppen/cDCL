@@ -95,7 +95,7 @@ protected:
 	/// \return \c true si on doit supprimer l'objet,
 	///			\c false sinon.
 	///
-	Boolean DecrementRef( void );
+	bool DecrementRef( void );
 
 private:
 	///
@@ -105,7 +105,7 @@ private:
 	///
 	TRefCounter& operator = ( const TRefCounter& inCopy );
 
-	Boolean		mIsNotOnStack;	///< Si l'objet est sur la pile.
+	bool		mIsNotOnStack;	///< Si l'objet est sur la pile.
 	KSInt32		mRefCount;		///< Compteur de références.
 };
 

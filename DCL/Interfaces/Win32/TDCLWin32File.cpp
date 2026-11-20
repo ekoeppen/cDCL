@@ -33,6 +33,7 @@
 // ***** END LICENSE BLOCK *****
 // ===========
 
+#include <windows.h>
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Dir.h>
@@ -49,7 +50,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <windows.h>
 
 // Minutes between 1904 (Newton epoch) and 1970 (Unix/Windows epoch)
 const KUInt32 kMinutesBetween1904and1970 = 34714080;
@@ -68,7 +68,7 @@ TDCLWin32File::~TDCLWin32File()
 	::free(mPath);
 }
 
-void TDCLWin32File::Open( Boolean inReadOnly )
+void TDCLWin32File::Open( bool inReadOnly )
 {
 	mFile = ::fopen(mPath, inReadOnly ? "rb" : "r+b");
 	if (mFile == nil)
@@ -140,12 +140,12 @@ void TDCLWin32File::Delete()
 	}
 }
 
-Boolean TDCLWin32File::IsOpen() const
+bool TDCLWin32File::IsOpen() const
 {
 	return mFile != NULL;
 }
 
-Boolean TDCLWin32File::IsReadOnly() const
+bool TDCLWin32File::IsReadOnly() const
 {
 	return (mFile != nil) && mReadOnly;
 }

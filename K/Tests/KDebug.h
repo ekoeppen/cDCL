@@ -39,19 +39,14 @@
 // K Defines
 #include <K/Defines/KDefinitions.h>
 
-#if TARGET_OS_OPENSTEP
-	#include <stdio.h>
+#include <stdio.h>
+#include <stdarg.h>
+
+#ifdef __APPLE__
 	#include <syslog.h>
-	#include <stdarg.h>
 #endif
 
-#if TARGET_OS_WIN32
-	#include <stdio.h>
-	#include <stdarg.h>
-#endif
-
-#if TARGET_OS_COMPAT_POSIX
-	#include <stdio.h>
+#ifndef _WIN32
 	#include <sys/types.h>
 	#include <unistd.h>
 	#include <signal.h>
@@ -121,119 +116,46 @@
 // ---- détermine si on veut le déverminage ----
 
 #ifndef KDebugOn
-	// Sur Newton: forDebug
-	#if TARGET_OS_NEWTON
-		#if forDebug
-			#define KDebugOn 1
-		#else
-			#define KDebugOn 0
-		#endif
+	#ifdef NDEBUG
+		#define KDebugOn 0
 	#else
-		// On regarde NDEBUG
-		#if NDEBUG
-			#define KDebugOn 0
-		#else
-			#define KDebugOn 1
-		#endif
+		#define KDebugOn 1
 	#endif
 #endif
 
-// ---- snprintf n'est pas forcément disponible. ----
 #ifndef KSNPRINTF
-	#if HAS_C99_SNPRINTF
-		#define KSNPRINTF( output, size, format )						\
-			(void) ::snprintf( (output), (size), (format) )
-		#define KSNPRINTF1( output, size, format, arg1 )				\
-			(void) ::snprintf( (output), (size), (format), (arg1) )
-		#define KSNPRINTF2( output, size, format, arg1, arg2 )			\
-			(void) ::snprintf( (output), (size), (format), (arg1), (arg2) )
-		#define KSNPRINTF3( output, size, format, arg1, arg2, arg3 )	\
-			(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3) )
-		#define KSNPRINTF4( output, size, format, arg1, arg2, arg3, arg4 )	\
-			(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3), (arg4) )
-		#define KSNPRINTF5( output, size, format, arg1, arg2, arg3, arg4, arg5 )	\
-			(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3), (arg4), (arg5) )
-	#else
-		#define KSNPRINTF( output, size, format )						\
-			(void) ::sprintf( (output), (format) )
-		#define KSNPRINTF1( output, size, format, arg1 )				\
-			(void) ::sprintf( (output), (format), (arg1) )
-		#define KSNPRINTF2( output, size, format, arg1, arg2 )			\
-			(void) ::sprintf( (output), (format), (arg1), (arg2) )
-		#define KSNPRINTF3( output, size, format, arg1, arg2, arg3 )	\
-			(void) ::sprintf( (output), (format), (arg1), (arg2), (arg3) )
-		#define KSNPRINTF4( output, size, format, arg1, arg2, arg3, arg4 )	\
-			(void) ::sprintf( (output), (format), (arg1), (arg2), (arg3), (arg4) )
-		#define KSNPRINTF5( output, size, format, arg1, arg2, arg3, arg4, arg5 )	\
-			(void) ::sprintf( (output), (format), (arg1), (arg2), (arg3), (arg4), (arg5) )
-	#endif
+	#define KSNPRINTF( output, size, format )						\
+		(void) ::snprintf( (output), (size), (format) )
+	#define KSNPRINTF1( output, size, format, arg1 )				\
+		(void) ::snprintf( (output), (size), (format), (arg1) )
+	#define KSNPRINTF2( output, size, format, arg1, arg2 )			\
+		(void) ::snprintf( (output), (size), (format), (arg1), (arg2) )
+	#define KSNPRINTF3( output, size, format, arg1, arg2, arg3 )	\
+		(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3) )
+	#define KSNPRINTF4( output, size, format, arg1, arg2, arg3, arg4 )	\
+		(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3), (arg4) )
+	#define KSNPRINTF5( output, size, format, arg1, arg2, arg3, arg4, arg5 )	\
+		(void) ::snprintf( (output), (size), (format), (arg1), (arg2), (arg3), (arg4), (arg5) )
 #endif
 
 // ---- Valeurs par défaut de KDEBUGSTR et KDPRINTF ----
 #ifndef KDPRINTF
-	#if TARGET_OS_NEWTON
-		// KDPRINTF va sur stdout
+	#if !defined(_WIN32) && defined(KD_CONSOLE_LOGLEVEL) && defined(__APPLE__)
+		// KDPRINTF va sur la console.
 		#define KDPRINTF( str )								\
-						(void) ::printf( (str) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str) )
 		#define KDPRINTF1( str, arg1 )						\
-						(void) ::printf( (str), (arg1) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1) )
 		#define KDPRINTF2( str, arg1, arg2 )				\
-						(void) ::printf( (str), (arg1), (arg2) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2) )
 		#define KDPRINTF3( str, arg1, arg2, arg3 )			\
-						(void) ::printf( (str), (arg1), (arg2), (arg3) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3) )
 		#define KDPRINTF4( str, arg1, arg2, arg3, arg4 )	\
-						(void) ::printf( (str), (arg1), (arg2), (arg3), (arg4) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3), (arg4) )
 		#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
-						(void) ::printf( (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
+						::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
 		#define KDPRINTF_SETUP
-	#elif TARGET_OS_MACOS
-		// KDPRINTF va sur stdout (pas top)
-		#define KDPRINTF( str )								\
-						(void) ::printf( (str) )
-		#define KDPRINTF1( str, arg1 )						\
-						(void) ::printf( (str), (arg1) )
-		#define KDPRINTF2( str, arg1, arg2 )				\
-						(void) ::printf( (str), (arg1), (arg2) )
-		#define KDPRINTF3( str, arg1, arg2, arg3 )			\
-						(void) ::printf( (str), (arg1), (arg2), (arg3) )
-		#define KDPRINTF4( str, arg1, arg2, arg3, arg4 )	\
-						(void) ::printf( (str), (arg1), (arg2), (arg3), (arg4) )
-		#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
-						(void) ::printf( (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
-		#define KDPRINTF_SETUP
-	#elif TARGET_OS_COMPAT_POSIX
-		#ifdef KD_CONSOLE_LOGLEVEL
-			// KDPRINTF va sur la console.
-			#define KDPRINTF( str )								\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str) )
-			#define KDPRINTF1( str, arg1 )						\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1) )
-			#define KDPRINTF2( str, arg1, arg2 )				\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2) )
-			#define KDPRINTF3( str, arg1, arg2, arg3 )			\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3) )
-			#define KDPRINTF4( str, arg1, arg2, arg3, arg4 )	\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3), (arg4) )
-			#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
-							::syslog( KD_CONSOLE_LOGLEVEL, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
-			#define KDPRINTF_SETUP
-		#else
-			// KDPRINTF va sur stderr
-			#define KDPRINTF( str )								\
-							(void) ::fprintf( stderr, (str) )
-			#define KDPRINTF1( str, arg1 )						\
-							(void) ::fprintf( stderr, (str), (arg1) )
-			#define KDPRINTF2( str, arg1, arg2 )				\
-							(void) ::fprintf( stderr, (str), (arg1), (arg2) )
-			#define KDPRINTF3( str, arg1, arg2, arg3 )			\
-							(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3) )
-			#define KDPRINTF4( str, arg1, arg2, arg3, arg4 )	\
-							(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4) )
-			#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
-							(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
-			#define KDPRINTF_SETUP
-		#endif
-	#elif TARGET_OS_WIN32
+	#else
 		// KDPRINTF va sur stderr
 		#define KDPRINTF( str )								\
 						(void) ::fprintf( stderr, (str) )
@@ -248,18 +170,11 @@
 		#define KDPRINTF5( str, arg1, arg2, arg3, arg4, arg5 )	\
 						(void) ::fprintf( stderr, (str), (arg1), (arg2), (arg3), (arg4), (arg5) )
 		#define KDPRINTF_SETUP
-	#else
-		#if KDebugOn
-			#warning KDPRINTF is not defined
-		#endif
 	#endif
 #endif
 
 #ifndef KDEBUGSTR
-	#if TARGET_OS_NEWTON
-		// DebugStr existe et prend une CStr.
-		#define KDEBUGSTR( cstr )	DebugStr( cstr )
-	#elif TARGET_OS_COMPAT_POSIX
+	#ifndef _WIN32
 		// DebugStr n'existe pas. On utilise signal pour envoyer un SIGINT
 		#define KDEBUGSTR( cstr )							\
 			{												\
@@ -268,7 +183,7 @@
 						cstr, __FILE__, __LINE__ );			\
 				(void) ::kill( ::getpid(), SIGINT );		\
 			}
-	#elif TARGET_OS_WIN32
+	#else
 		// DebugStr n'existe pas. On utilise fprintf
 		#define KDEBUGSTR( cstr )							\
 			{												\
@@ -276,10 +191,6 @@
 						"DebugStr - %s (%s:%i)\n",			\
 						cstr, __FILE__, __LINE__ );			\
 			}
-	#else
-		#if KDebugOn
-			#warning KDEBUGSTR is not defined
-		#endif
 	#endif
 #endif
 

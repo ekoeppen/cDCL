@@ -35,7 +35,7 @@
 #include <mutex>
 #include <stop_token>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <winsock2.h>
 typedef SOCKET dcl_wait_handle_t;
 #else
@@ -125,7 +125,7 @@ private:
 
 	std::mutex mWakeMutex;
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	SOCKET mWakeSend;
 	SOCKET mWakeRecv;
 #else

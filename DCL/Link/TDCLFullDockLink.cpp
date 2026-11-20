@@ -131,22 +131,22 @@ TDCLFullDockLink::~TDCLFullDockLink( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLFullDockLink::ProcessDockCommand(
 				TDCLDockCommand* inCommand,
-				Boolean* outProcessed )
+				bool* outProcessed )
 {
 	TDCLLink::EState theResult = kRunning;	// Par défaut on reste connecté.
-	Boolean processed = false;
+	bool processed = false;
 
 	// Y a-t-il un moteur courant?
 	// Si oui, on lui demande de faire le boulot.
 	if (mCurrentEngine)
 	{
 		try {
-			Boolean workIsNotOver =
+			bool workIsNotOver =
 					mCurrentEngine->ProcessDockCommand( inCommand, &processed );
 			if (processed)
 			{
@@ -258,15 +258,15 @@ TDCLFullDockLink::ProcessDockCommand(
 }
 
 // --------------------------------------------------------------------------------	//
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  * ProcessAppCommand( TDCLAppCommand*, bool* )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLFullDockLink::ProcessAppCommand(
 				TDCLAppCommand* inCommand,
-				Boolean* outProcessed )
+				bool* outProcessed )
 {
 	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
-	Boolean processed = false;
+	bool processed = false;
 
 	// Si on a un moteur de lien, on lui demande.
 	if (mCurrentEngine)
@@ -376,7 +376,7 @@ TDCLFullDockLink::ProcessAppCommand(
 // --------------------------------------------------------------------------------	//
 //  * IntallPackage( TDCLFSItemRef )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::InstallPackage( TDCLFSItemRef inPackage )
 {
 	// Création de la commande à envoyer.
@@ -387,7 +387,7 @@ TDCLFullDockLink::InstallPackage( TDCLFSItemRef inPackage )
 				inPackage );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{
@@ -401,7 +401,7 @@ TDCLFullDockLink::InstallPackage( TDCLFSItemRef inPackage )
 // --------------------------------------------------------------------------------	//
 //  * Synchronize( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::Synchronize( void )
 {
 	// Création de la commande à envoyer.
@@ -411,7 +411,7 @@ TDCLFullDockLink::Synchronize( void )
 				TDCLAppCommand::kSynchronize );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{
@@ -425,7 +425,7 @@ TDCLFullDockLink::Synchronize( void )
 // --------------------------------------------------------------------------------	//
 //  * StartUsingKeyboard( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::StartUsingKeyboard( void )
 {
 	// Création de la commande à envoyer.
@@ -435,7 +435,7 @@ TDCLFullDockLink::StartUsingKeyboard( void )
 				TDCLAppCommand::kStartUsingKeyboard );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{
@@ -449,7 +449,7 @@ TDCLFullDockLink::StartUsingKeyboard( void )
 // --------------------------------------------------------------------------------	//
 //  * SendKeyboardString( const KUInt16* )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::SendKeyboardString( const KUInt16* inString )
 {
 	// Création de la commande à envoyer.
@@ -460,7 +460,7 @@ TDCLFullDockLink::SendKeyboardString( const KUInt16* inString )
 				inString );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{
@@ -474,7 +474,7 @@ TDCLFullDockLink::SendKeyboardString( const KUInt16* inString )
 // --------------------------------------------------------------------------------	//
 //  * SendKeyboardChar( KUInt16, KUInt16 )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags )
 {
 	// Création de la commande à envoyer.
@@ -482,7 +482,7 @@ TDCLFullDockLink::SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags )
 		new TDCLAppCmdKbdChar( inChar, inFlags );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{
@@ -496,7 +496,7 @@ TDCLFullDockLink::SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags )
 // --------------------------------------------------------------------------------	//
 //  * StopUsingKeyboard( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLFullDockLink::StopUsingKeyboard( void )
 {
 	// Création de la commande à envoyer.
@@ -506,7 +506,7 @@ TDCLFullDockLink::StopUsingKeyboard( void )
 				TDCLAppCommand::kEndUsingKeyboard );
 
 	// Envoi (si possible).
-	Boolean theResult = PostAppCommand( theCommand );
+	bool theResult = PostAppCommand( theCommand );
 
 	if (!theResult)
 	{

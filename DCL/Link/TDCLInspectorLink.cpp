@@ -100,7 +100,7 @@ void TDCLInspectorLink::DoConnect( void )
 void TDCLInspectorLink::Connected( void )
 {
 	TSmartPtr<TDCLInspectorCommand> theNewtMessage;
-	Boolean processed;
+	bool processed;
 
 	// LOGFN();
 	mApplication->ConnectedToNewtonDevice( this, mNewtonName );
@@ -115,7 +115,7 @@ void TDCLInspectorLink::Connected( void )
 
 TDCLLink::EState TDCLInspectorLink::ProcessDockCommand(
 	TDCLDockCommand* inCommand,
-	Boolean* outProcessed )
+	bool* outProcessed )
 {
     TDCLInspectorCmdText* cmd;
     
@@ -138,7 +138,7 @@ TDCLLink::EState TDCLInspectorLink::ProcessDockCommand(
 
 TDCLLink::EState TDCLInspectorLink::ProcessAppCommand(
 	TDCLAppCommand* inCommand,
-	Boolean* outProcessed )
+	bool* outProcessed )
 {
 	// LOGFN();
 	TDCLLink::EState r = kRunning;

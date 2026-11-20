@@ -151,7 +151,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
 	///
-	Boolean operator == ( TString& inAlter ) const;
+	bool operator == ( TString& inAlter ) const;
 
 	///
 	/// Égalité.
@@ -161,7 +161,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
 	///
-	Boolean operator == ( const TString& inAlter ) const;
+	bool operator == ( const TString& inAlter ) const;
 
 	///
 	/// Comparaison (ordre quelconque compatible avec l'égalité).
@@ -171,7 +171,7 @@ public:
 	/// \param inAlter		objet à comparer avec \c this.
 	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
 	///
-	Boolean operator < ( TString& inAlter ) const;
+	bool operator < ( TString& inAlter ) const;
 
 	///
 	/// Écrit la chaîne sur un flux (8 bits).
@@ -246,8 +246,8 @@ private:
 	mutable KUInt32		mHashCode;			///< Valeur de hachage.
 	mutable size_t		mStringSize;		///< Taille de la chaîne (en cache, en caractères).
 	size_t				mBufferSize;		///< Taille de la mémoire tampon (en octets).
-	mutable Boolean		mHashCodeIsValid;	///< Si la valeur de hachage a été calculée.
-	mutable Boolean		mStringSizeIsValid;	///< Si la taille de la chaîne a été calculée.
+	mutable bool		mHashCodeIsValid;	///< Si la valeur de hachage a été calculée.
+	mutable bool		mStringSizeIsValid;	///< Si la taille de la chaîne a été calculée.
 };
 
 // -------------------------------------------------------------------------- //

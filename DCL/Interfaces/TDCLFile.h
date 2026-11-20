@@ -72,7 +72,7 @@ public:
 	/// \param inReadOnly	si le fichier doit être ouvert en lecture seule
 	/// \throws TDCLIOException si l'ouverture a échoué.
 	///
-	virtual void		Open( Boolean inReadOnly ) = 0;	
+	virtual void		Open( bool inReadOnly ) = 0;	
 
 	///
 	/// Crée le fichier.
@@ -93,7 +93,7 @@ public:
 	///
 	/// \return \c true si le fichier est ouvert, \c false sinon.
 	///
-	virtual Boolean		IsOpen( void ) const = 0;
+	virtual bool		IsOpen( void ) const = 0;
 
 	///
 	/// Determine si le fichier est ouvert en lecture seule.
@@ -102,7 +102,7 @@ public:
 	///			\c false sinon. Le résultat est indéterminé si le fichier
 	///			n'est pas ouvert.
 	///
-	virtual Boolean		IsReadOnly( void ) const = 0;
+	virtual bool		IsReadOnly( void ) const = 0;
 	
 	///
 	/// Retourne la longueur (logique) du fichier.
@@ -188,7 +188,7 @@ public:
 	///
 	/// \return \c true si le fichier est un paquet, \c false sinon.
 	///
-	Boolean				IsPackage( void );
+	bool				IsPackage( void );
 
 protected:
 	///

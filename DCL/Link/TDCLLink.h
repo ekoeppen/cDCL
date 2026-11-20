@@ -155,7 +155,7 @@ public:
 	/// \param inServer	Serveur qui gère l'interface de communication.
 	/// \return \c true si le lien était déconnecté, \c false sinon.
 	///
-	Boolean				Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer );
+	bool				Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer );
 		
 	///
 	/// Méthode asynchrone pour déconnecter le Newton.
@@ -165,14 +165,14 @@ public:
 	///
 	/// \return \c true si le lien était connecté, \c false sinon.
 	///
-	Boolean				Disconnect( void );
+	bool				Disconnect( void );
 		
 	///
 	/// Méthode invoquée lorsque l'interface de connexion a été fermée.
 	///
 	/// \return \c true si le lien était connecté, \c false sinon.
 	///
-	Boolean				Close( void );
+	bool				Close( void );
 
 	///
 	/// Requests cooperative stop of the link worker.
@@ -207,14 +207,14 @@ public:
 	///
 	/// \return \c true si le lien est connecté, \c false sinon.
 	///
-	Boolean				IsConnected( void );
+	bool				IsConnected( void );
 
 	///
 	/// Détermine si le lien est occupé à exécuter une commande.
 	///
 	/// \return \c true si le lien est occupé, \c false sinon.
 	///
-	inline Boolean		IsBusy( void )
+	inline bool		IsBusy( void )
 		{
 			return mIsBusy;
 		}
@@ -429,7 +429,7 @@ protected:
 	///
 	/// \return \c true si le lien était établi, \c false sinon.
 	///
-	Boolean				PostAppCommand( TDCLAppCommand* inCommand );
+	bool				PostAppCommand( TDCLAppCommand* inCommand );
 
 	///
 	/// Méthode synchrone pour connecter le Newton.
@@ -476,7 +476,7 @@ protected:
 	///
 	virtual	EState	ProcessDockCommand(
 								TDCLDockCommand* inCommand,
-								Boolean* outProcessed ) = 0;
+								bool* outProcessed ) = 0;
 
 	///
 	/// Méthode appelée lorsqu'on a reçu une commande de l'application.
@@ -492,7 +492,7 @@ protected:
 	///
 	virtual	EState	ProcessAppCommand(
 								TDCLAppCommand* inCommand,
-								Boolean* outProcessed );
+								bool* outProcessed );
 
 	///
 	/// Méthode appelée de temps en temps lorsqu'on n'a pas de nouvelles
@@ -614,7 +614,7 @@ protected:
 	KUInt32						mType;				///< Type de connexion Dock.
 	KUInt32						mIdlePeriod;		///< Temps en millisecondes entre les
 													///< appels à Idle
-	Boolean						mIsBusy;			///< Si le lien est occupé.
+	bool						mIsBusy;			///< Si le lien est occupé.
 	
 	/// \name Informations sur le Newton.
 	const KUInt16*				mNewtonName;		///< Nom du (possesseur du) Newton

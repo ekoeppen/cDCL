@@ -80,7 +80,7 @@ public:
 	///
 	/// \return \c true si l'objet est de la classe TDCLPkgNOSPart
 	///
-	virtual Boolean		IsNOSPart( void ) const;
+	virtual bool		IsNOSPart( void ) const;
 
 	///
 	/// Détermine la taille de la partie.
@@ -192,7 +192,7 @@ private:
 	///
 	/// \return \c true si les données dépendent du décalage dans le paquet.
 	///
-	virtual Boolean IsOffsetDependant( void ) const;
+	virtual bool IsOffsetDependant( void ) const;
 
 	///
 	/// Détermine si la partie a été modifiée et doit être ré-encodée.
@@ -201,7 +201,7 @@ private:
 	/// \return \c true si les données ont été modifiées et doivent être
 	///			ré-encodées.
 	///
-	virtual Boolean IsDirty( void ) const;
+	virtual bool IsDirty( void ) const;
 
 	///
 	/// Encode la partie pour un décalage donné (la décode si nécessaire).

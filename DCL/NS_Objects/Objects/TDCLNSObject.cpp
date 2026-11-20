@@ -56,7 +56,7 @@ TDCLNSObject::RemoveWeakRef( TDCLNSWeakRef* /* inWeakRef */ )
 // ------------------------------------------------------------------------- //
 //  * IsFrame( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsFrame( void ) const
 {
 	return false;
@@ -65,7 +65,7 @@ TDCLNSObject::IsFrame( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsFunction( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsFunction( void ) const
 {
 	return false;
@@ -74,7 +74,7 @@ TDCLNSObject::IsFunction( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsSymbol( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsSymbol( void ) const
 {
 	return false;
@@ -83,7 +83,7 @@ TDCLNSObject::IsSymbol( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsArray( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsArray( void ) const
 {
 	return false;
@@ -92,7 +92,7 @@ TDCLNSObject::IsArray( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsBinary( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsBinary( void ) const
 {
 	return false;
@@ -101,7 +101,7 @@ TDCLNSObject::IsBinary( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsString( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSObject::IsString( void ) const
 {
 	return false;

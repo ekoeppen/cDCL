@@ -103,7 +103,7 @@ public:
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsArray( void ) const;
+	virtual bool IsArray( void ) const;
 
 	///
 	/// Accesseur sur un élément du tableau
@@ -166,7 +166,7 @@ public:
 	///
 	static	TDCLNSArray*	FromNSOF(
 								TDCLNSOFDecoder* inDecoder,
-								Boolean isPlain );
+								bool isPlain );
 
 	///
 	/// Crée un objet à partir d'un paquet.

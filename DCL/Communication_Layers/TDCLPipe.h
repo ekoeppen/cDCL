@@ -85,7 +85,7 @@ public:
 	///
 	/// \return \c true s'il y a des octets disponibles, \c false sinon.
 	///
-	virtual	Boolean		BytesAvailable( void ) = 0;
+	virtual	bool		BytesAvailable( void ) = 0;
 	
 	///
 	/// Vide la mémoire tampon de sortie et retourne une fois que toutes les
@@ -123,7 +123,7 @@ public:
 	/// \return	\c true si la couche de communication sait vider la mémoire
 	///			tampon de sortie, \c false sinon.
 	///
-	inline	Boolean		FlushAvailable( void )
+	inline	bool		FlushAvailable( void )
 		{
 			return mCommLayer->FlushAvailable();
 		}
@@ -197,7 +197,7 @@ public:
 	///
 	/// \return \c true if the peer disconnected, \c false otherwise.
 	///
-	virtual	Boolean		PeerDisconnected( void ) { return false; }
+	virtual	bool		PeerDisconnected( void ) { return false; }
 
 	///
 	/// Indique si l'appelant s'exécute sur le processus léger interne du pipe.

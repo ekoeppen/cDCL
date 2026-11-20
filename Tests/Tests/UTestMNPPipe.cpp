@@ -306,7 +306,7 @@ public:
 		return mNext;
 	}
 
-	Boolean
+	bool
 	BytesAvailable( void ) override
 	{
 		if ( onPoll )

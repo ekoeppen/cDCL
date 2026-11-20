@@ -21,7 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Interfaces/POSIX/Compat/libgen.h>
@@ -173,7 +173,7 @@ main( int inArgc, char** inArgv )
         (void) ::printf( "Version:        %u\n", (unsigned int) thePackage.GetPackageVersion() );
         KUInt32 theFlags = thePackage.GetPackageFlags();
         (void) ::printf( "Flags:          %.8X", (unsigned int) theFlags );
-        Boolean hasSomeFlag = false;
+        bool hasSomeFlag = false;
         if (theFlags & TDCLPackage::kDirAutoRemoveFlag)
         {
             hasSomeFlag = true;

@@ -36,7 +36,7 @@
 #include <stop_token>
 #include <thread>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
@@ -45,7 +45,7 @@
 
 namespace
 {
-#if !TARGET_OS_WIN32
+#ifndef _WIN32
 struct TPipePair
 {
 	int fds[2];
@@ -72,7 +72,7 @@ struct TPipePair
 
 TEST_SUITE("WakeableWait")
 {
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	TEST_CASE("Invalid socket returns kError")
 	{
 		int err = 0;

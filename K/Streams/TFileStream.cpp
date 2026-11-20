@@ -90,7 +90,7 @@ TFileStream::TFileStream(FILE* inFile) :
 		mFile(inFile),
 		mWeOpenedTheFile(false)
 {
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	mIsWriting = mIsReading = 1;
 	// Windows does not have a standard API for getting this value
 	// see: NtQueryInformationFile
@@ -195,8 +195,12 @@ TFileStream::PeekByte(void)
 KSInt64
 TFileStream::GetCursor(void) const
 {
+#ifdef _WIN32
+	return (KSInt64) ::_ftelli64(mFile);
+#else
 	off_t thePos = ::ftello(mFile);
 	return (KSInt64) thePos;
+#endif
 }
 
 // ------------------------------------------------------------------------- //
@@ -220,7 +224,11 @@ TFileStream::SetCursor(KSInt64 inPos, ECursorMode inMode)
 			whence = SEEK_END;
 	}
 
+#ifdef _WIN32
+	int theErr = ::_fseeki64(mFile, (long long) inPos, whence);
+#else
 	int theErr = ::fseeko(mFile, (off_t) inPos, whence);
+#endif
 	if (theErr != 0)
 	{
 		throw TIOException();

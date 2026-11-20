@@ -175,9 +175,9 @@ public:
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
-	virtual	Boolean	ProcessDockCommand(
+	virtual	bool	ProcessDockCommand(
 									TDCLDockCommand* inCommand,
-									Boolean* outProcessed );
+									bool* outProcessed );
 
 	///
 	/// Progression de la synchronisation.
@@ -237,7 +237,7 @@ protected:
 	/// \return \c true si on synchronise les informations système, \c false
 	/// 		sinon.
 	///
-	virtual Boolean				DoSynchronizePatches( void );
+	virtual bool				DoSynchronizePatches( void );
 
 	///
 	/// Si on synchronise les paquets.
@@ -246,7 +246,7 @@ protected:
 	///
 	/// \return \c true si on synchronise les paquets, \c false sinon.
 	///
-	virtual Boolean				DoSynchronizePackages( void );
+	virtual bool				DoSynchronizePackages( void );
 
 	///
 	/// (Re)met le curseur sur les sources au début.
@@ -416,7 +416,7 @@ private:
 	///
 	EState						TransitionFromUninitialized(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -429,7 +429,7 @@ private:
 	///
 	EState						TransitionFromWFOptions(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -442,7 +442,7 @@ private:
 	///
 	EState						TransitionFromWFStoreNames(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -455,7 +455,7 @@ private:
 	///
 	EState						TransitionFromWFPreliminaryTime(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -468,7 +468,7 @@ private:
 	///
 	EState						TransitionFromWFSetStoreResult(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -481,7 +481,7 @@ private:
 	///
 	EState						TransitionFromWFPackageIDs(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -494,7 +494,7 @@ private:
 	///
 	EState						TransitionFromWFSetStoreResult2(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -507,7 +507,7 @@ private:
 	///
 	EState						TransitionFromWFStoreSyncTime(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -520,7 +520,7 @@ private:
 	///
 	EState						TransitionFromWFSoupInfo(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -533,7 +533,7 @@ private:
 	///
 	EState						TransitionFromWFSoupIDs(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -546,7 +546,7 @@ private:
 	///
 	EState						TransitionFromWFChangedIDs(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -559,7 +559,7 @@ private:
 	///
 	EState						TransitionFromWFEntry(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -572,7 +572,7 @@ private:
 	///
 	EState						TransitionFromWFModifiedResult(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -585,7 +585,7 @@ private:
 	///
 	EState						TransitionFromWFSetStoreToDefaultResult(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -598,7 +598,7 @@ private:
 	///
 	EState						TransitionFromWFAddedID(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Fonction de transition
@@ -611,7 +611,7 @@ private:
 	///
 	EState						TransitionFromInterrupted(
 										TDCLDockCommand* inCommand,
-										Boolean* outProcessed );
+										bool* outProcessed );
 
 	///
 	/// Crée une structure NewtonScript avec des informations sur le Newton
@@ -668,8 +668,8 @@ private:
 
 	TDCLNSRef			mSyncOptions;	///< Options pour la synchronisation
 										///< (envoyées par le Newton).
-	Boolean				mDoPackages;	///< Si on fait les paquets.
-	Boolean				mSyncAll;		///< Si on synchronise tout.
+	bool				mDoPackages;	///< Si on fait les paquets.
+	bool				mSyncAll;		///< Si on synchronise tout.
 	TDCLNSRef			mStoresRef;		///< Liste des magasins (référence)
 	TDCLNSArray*		mStores;		///< Liste des magasins
 	KUInt32				mStoresCount;	///< Nombre de magasins à synchroniser.
@@ -707,10 +707,10 @@ private:
 	TDCLSyncSourceEngine*
 						mCurrentSourceEngine;
 										///< Moteur pour la source en cours.
-	Boolean				mAddingEntries;	///< Si on ajoute les entrées.
-	Boolean				mCompleteSync;	///< Si on fait une synchronisation
+	bool				mAddingEntries;	///< Si on ajoute les entrées.
+	bool				mCompleteSync;	///< Si on fait une synchronisation
 										///< complète ou pas.
-	Boolean				mInterrupted;	///< Si on a été interrompu.
+	bool				mInterrupted;	///< Si on a été interrompu.
 };
 
 #endif

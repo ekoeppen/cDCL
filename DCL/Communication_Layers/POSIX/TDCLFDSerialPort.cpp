@@ -63,12 +63,12 @@
 #include <DCL/Exceptions/IO_Exceptions/TDCLTimeoutException.h>
 
 // -------------------------------------------------------------------------- //
-//  * TDCLFDSerialPort( const char*, long, Boolean )
+//  * TDCLFDSerialPort( const char*, long, bool )
 // -------------------------------------------------------------------------- //
 TDCLFDSerialPort::TDCLFDSerialPort(
 				const char* inDevPath,
 				long inBaud /* = 38400 */,
-				Boolean inUseMNP /* = true */ )
+				bool inUseMNP /* = true */ )
 	:
 		TDCLSyncCommLayer( true ),
 		mIsConnected( false ),
@@ -212,7 +212,7 @@ TDCLFDSerialPort::DoStopListening( void )
 // -------------------------------------------------------------------------- //
 //  * WaitForIncomingRequest( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLFDSerialPort::WaitForIncomingRequest( void )
 {
 	{
@@ -226,7 +226,7 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 		}
 	}
 
-	Boolean theResult = Select();
+	bool theResult = Select();
 
 	if (theResult)
 	{
@@ -244,7 +244,7 @@ TDCLFDSerialPort::WaitForIncomingRequest( void )
 // -------------------------------------------------------------------------- //
 //  * Select( long )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLFDSerialPort::Select( long inTimeoutMs )
 {
 	for (;;)
@@ -612,7 +612,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::Write(
 // -------------------------------------------------------------------------- //
 //  * BytesAvailable( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void ) 
 {
 	if (mSerialFD < 0)
@@ -637,7 +637,7 @@ TDCLFDSerialPort::TFDSerialPortPipe::BytesAvailable( void )
 // -------------------------------------------------------------------------- //
 //  * WaitForIncomingData( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLFDSerialPort::TFDSerialPortPipe::WaitForIncomingData( void )
 {
 	int theErr = 0;
@@ -899,8 +899,8 @@ TDCLFDSerialPort::Reset( void )
 
 	struct TResetGuard
 	{
-		Boolean& mResetRef;
-		Boolean& mRequestPresentRef;
+		bool& mResetRef;
+		bool& mRequestPresentRef;
 		~TResetGuard( void )
 		{
 			mResetRef = false;

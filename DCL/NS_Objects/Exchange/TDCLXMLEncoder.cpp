@@ -109,7 +109,7 @@ TDCLXMLEncoder::PutRef( const TDCLNSRef& inRef )
 // ------------------------------------------------------------------------- //
 //  * CanHavePrecedentID( TDCLNSObject* )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLXMLEncoder::CanHavePrecedentID( TDCLNSObject* inObject )
 {
 	return !(inObject->IsSymbol());
