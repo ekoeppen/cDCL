@@ -37,7 +37,7 @@
 #include <DCL/Server/TDCLOneLinkServer.h>
 #include <DCL/Server/TDCLSimpleServer.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Communication_Layers/Win32/TDCLWin32Socket.h>
 typedef TDCLWin32Socket TDCLPlatformSocket;
 #else
@@ -51,7 +51,7 @@ typedef TDCLWin32Socket TDCLPlatformSocket;
 typedef TDCLBSDSocket TDCLPlatformSocket;
 #endif
 
-#if TARGET_OS_COMPAT_POSIX
+#ifndef _WIN32
 #include <DCL/Communication_Layers/POSIX/TDCLFDSerialPort.h>
 #endif
 
@@ -64,7 +64,7 @@ typedef TDCLBSDSocket TDCLPlatformSocket;
 void
 UTestCommLayers::ConnectAndDisconnectBSDSocket( void )
 {
-#if !TARGET_OS_COMPAT_POSIX && !TARGET_OS_WIN32
+#if 0
 	(void)::printf( "Test not available for this platform\n" );
 #else
 	// Création de l'application.
@@ -83,7 +83,7 @@ UTestCommLayers::ConnectAndDisconnectBSDSocket( void )
 void
 UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 {
-#if !TARGET_OS_COMPAT_POSIX
+#ifdef _WIN32
 	(void)::printf( "Test not available for this platform\n" );
 #else
 	// Création de l'application.
@@ -101,7 +101,7 @@ UTestCommLayers::ConnectAndDisconnectFDSerialPort( const char* inDevPath )
 void
 UTestCommLayers::StartAndStopTwiceFDSerialPort( const char* inDevPath )
 {
-#if !TARGET_OS_COMPAT_POSIX
+#ifdef _WIN32
 	(void)::printf( "Test not available for this platform\n" );
 #else
 	// Création de l'application.

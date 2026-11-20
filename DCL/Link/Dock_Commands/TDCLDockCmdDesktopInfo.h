@@ -76,7 +76,7 @@ public:
 				TDCLNSArray&	inDesktopAppArray,
 				KUInt32			inEncKey1,
 				KUInt32			inEncKey2,
-				Boolean			inSelectiveBackup,
+				bool			inSelectiveBackup,
 				KUInt32			inSessionType,
 				KUInt32			inPlatformKind = kThis_DType );
 		

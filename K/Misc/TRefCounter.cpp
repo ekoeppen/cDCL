@@ -92,7 +92,7 @@ TRefCounter::IncrementRef( void )
 // ------------------------------------------------------------------------- //
 //  * DecrementRef( void )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TRefCounter::DecrementRef( void )
 {
 	KASSERT(mRefCount > 0);

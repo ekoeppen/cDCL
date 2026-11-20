@@ -75,12 +75,12 @@ TDCLLoadPkgEngine::InstallPackage(
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLLoadPkgEngine::ProcessDockCommand(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDResult )
 	{

@@ -123,7 +123,7 @@ TDCLPkgDecoder::~TDCLPkgDecoder( void )
 TDCLNSRef
 TDCLPkgDecoder::GetNextObject( void )
 {
-	Boolean topLevel = mTopLevel;
+	bool topLevel = mTopLevel;
 	TDCLNSRef theResult;
 	
 	TDCLRandomAccessStream* theStream = GetInputStream();

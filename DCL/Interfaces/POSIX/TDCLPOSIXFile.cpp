@@ -122,10 +122,10 @@ TDCLPOSIXFile::~TDCLPOSIXFile( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * Open( Boolean )
+//  * Open( bool )
 // -------------------------------------------------------------------------- //
 void
-TDCLPOSIXFile::Open( Boolean inReadOnly )
+TDCLPOSIXFile::Open( bool inReadOnly )
 {
 	// On s'arrête si le fichier est déjà ouvert.
 	if (mFile)
@@ -236,7 +236,7 @@ TDCLPOSIXFile::Delete( void )
 // -------------------------------------------------------------------------- //
 //  * IsOpen( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPOSIXFile::IsOpen( void ) const
 {
 	return mFile != nil;
@@ -245,7 +245,7 @@ TDCLPOSIXFile::IsOpen( void ) const
 // -------------------------------------------------------------------------- //
 //  * IsReadOnly( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPOSIXFile::IsReadOnly( void ) const
 {
 	return (mFile != nil) && mReadOnly;

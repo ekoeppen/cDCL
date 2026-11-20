@@ -503,7 +503,7 @@ public:
 	// This is used for file browsing, so you'd better say Win on non MacOS
 	// machines.
 
-#if TARGET_OS_MAC
+#ifdef __APPLE__
 		kThis_DType					= kMac_DType,
 #else
 		kThis_DType					= kWin_DType,

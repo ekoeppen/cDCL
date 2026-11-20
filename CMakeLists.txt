@@ -1,56 +1,51 @@
-cmake_minimum_required (VERSION 3.31)
+cmake_minimum_required (VERSION 3.21)
 project (dcl)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+option(CDCL_BUILD_SAMPLES "Build cDCL sample programs" ${PROJECT_IS_TOP_LEVEL})
+option(CDCL_BUILD_TESTS "Build cDCL tests" ${PROJECT_IS_TOP_LEVEL})
+option(CDCL_INSTALL "Enable cDCL install rules" ${PROJECT_IS_TOP_LEVEL})
 
-# build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
-set(default_build_type "Release")
-if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
-  set(default_build_type "Debug")
-endif()
+if(PROJECT_IS_TOP_LEVEL)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
-endif()
+    # build type -- https://blog.kitware.com/cmake-and-the-default-build-type/
+    set(default_build_type "Release")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+        set(default_build_type "Debug")
+    endif()
 
-# Default to building shared libraries unless specified otherwise
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+    if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+        message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+        set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+    endif()
 
-if(WIN32)
-    message(STATUS "Platform: WIN32")
-    add_definitions(-DTARGET_OS_WIN32=1)
-    if(MINGW)
+    # Default to building shared libraries when built standalone
+    option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
+    if(WIN32 AND MINGW)
         if(NOT BUILD_SHARED_LIBS)
             add_link_options(-static)
         endif()
         add_link_options(-static-libgcc -static-libstdc++)
     endif()
-else()
-    message(STATUS "Platform: POSIX")
-    add_definitions(-DTARGET_OS_POSIX=1)
+
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+    if("${isSystemDir}" STREQUAL "-1")
+        set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    endif()
 endif()
 
-add_definitions (-DHAS_C99_LONGLONG=1 -DTARGET_RT_BIG_ENDIAN=0 -DTARGET_RT_LITTLE_ENDIAN=1 -Wno-multichar)
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_definitions(-DNDEBUG)
+if(CDCL_BUILD_TESTS)
+    include(CTest)
 endif()
-
-include_directories (${CMAKE_SOURCE_DIR}/K ${CMAKE_SOURCE_DIR}/DCL ${CMAKE_SOURCE_DIR})
-include(CTest)
-
-SET(CMAKE_MACOSX_RPATH 1)
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-IF("${isSystemDir}" STREQUAL "-1")
-   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-ENDIF("${isSystemDir}" STREQUAL "-1")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -87,7 +82,6 @@ add_library(cDCL::K ALIAS K)
 
 target_include_directories(K PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/K>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -96,9 +90,10 @@ target_sources(K PRIVATE
 )
 target_link_libraries(K PRIVATE Threads::Threads)
 target_compile_features(K PUBLIC cxx_std_20)
-if(APPLE)
-    target_compile_definitions(K PRIVATE TARGET_OS_OSX=1)
-endif()
+set_target_properties(K PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_options(K PRIVATE
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-multichar>
+)
 
 add_library (DCL
 DCL/Communication_Layers/TDCLBufferedPipe.cpp
@@ -235,14 +230,14 @@ add_library(cDCL::DCL ALIAS DCL)
 
 target_include_directories(DCL PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/DCL>
     $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(DCL PUBLIC K)
-if(APPLE)
-    target_compile_definitions(DCL PRIVATE TARGET_OS_OSX=1)
-endif()
+set_target_properties(DCL PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_options(DCL PRIVATE
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-multichar>
+)
 
 if (WIN32)
     target_sources(DCL PRIVATE
@@ -470,19 +465,24 @@ DCL/Streams/TDCLStream.h
 )
 
 
-add_subdirectory (Sample_Code/ToolchainUtils)
-add_subdirectory (Sample_Code/PackageUtils)
-if (BUILD_TESTING)
+if(CDCL_BUILD_SAMPLES)
+    add_subdirectory (Sample_Code/ToolchainUtils)
+    add_subdirectory (Sample_Code/PackageUtils)
+    add_subdirectory (Sample_Code/NSOFtoXML)
+endif()
+
+if(CDCL_BUILD_TESTS AND BUILD_TESTING)
     add_subdirectory (Tests)
 endif()
-add_subdirectory (Sample_Code/NSOFtoXML)
 
-foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})
-   string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-   install(FILES ${HEADER} DESTINATION include/${DIR})
-endforeach()
+if(CDCL_INSTALL)
+    foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})
+        string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+        install(FILES ${HEADER} DESTINATION include/${DIR})
+    endforeach()
 
-install(TARGETS K DCL 
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+    install(TARGETS K DCL
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+endif()

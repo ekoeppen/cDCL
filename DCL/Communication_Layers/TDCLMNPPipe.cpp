@@ -113,7 +113,7 @@ TDCLMNPPipe::~TDCLMNPPipe( void )
 }
 
 void
-TDCLMNPPipe::SetKeepAlive( Boolean inKeepAlive )
+TDCLMNPPipe::SetKeepAlive( bool inKeepAlive )
 {
 	mKeepAlive = inKeepAlive;
 }
@@ -242,7 +242,7 @@ TDCLMNPPipe::FlushOutput( void )
 // ------------------------------------------------------------------------- //
 //	* BytesAvailable( void )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLMNPPipe::BytesAvailable( void )
 {
 	if ( mInputBuffer.empty() && !IsTerminal() && mPhase == EPhase::kRunning )
@@ -345,7 +345,7 @@ TDCLMNPPipe::GetOutcome( void ) const
 // ------------------------------------------------------------------------- //
 //  * PeerDisconnected( void )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLMNPPipe::PeerDisconnected( void )
 {
 	// A peer LD may end an idle session or complete local teardown. A clean
@@ -409,7 +409,7 @@ TDCLMNPPipe::ServiceTransport( TimePoint inLimit )
 		{
 			break;
 		}
-		Boolean hasData = false;
+		bool hasData = false;
 		try
 		{
 			hasData = GetSubPipe()->BytesAvailable();
@@ -510,7 +510,7 @@ TDCLMNPPipe::ProcessAvailableInput( void )
 void
 TDCLMNPPipe::ServiceOutput( void )
 {
-	Boolean theSent = false;
+	bool theSent = false;
 	try
 	{
 		while ( !mOutputFrames.empty() )
@@ -1267,7 +1267,7 @@ TDCLMNPPipe::LogFrame( EFrameDirection inDirection, const KUInt8* inFrame, KUInt
 	const auto now = std::chrono::system_clock::now();
 	const auto seconds = std::chrono::system_clock::to_time_t( now );
 	std::tm local{};
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	localtime_s( &local, &seconds );
 #else
 	localtime_r( &seconds, &local );

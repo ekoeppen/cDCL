@@ -90,7 +90,7 @@ public:
 	/// \return \c true si les données renvoyées par le Newton correspond au
 	///			défi et au mot de passe.
 	///
-	Boolean	VerifyPassword(
+	bool	VerifyPassword(
 						const KUInt32 inChallenge[2],
 						const KUInt16* inPassword = nil );
 

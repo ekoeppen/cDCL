@@ -11,4 +11,6 @@ if(WIN32)
     target_link_options(NSOFtoXML PRIVATE -static)
 endif()
 
-install(TARGETS NSOFtoXML RUNTIME DESTINATION bin)
+if(CDCL_INSTALL)
+    install(TARGETS NSOFtoXML RUNTIME DESTINATION bin)
+endif()

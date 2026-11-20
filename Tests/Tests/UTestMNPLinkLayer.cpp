@@ -153,7 +153,7 @@ public:
 
 protected:
 	virtual EState
-	ProcessDockCommand( TDCLDockCommand* inCommand, Boolean* outProcessed ) override
+	ProcessDockCommand( TDCLDockCommand* inCommand, bool* outProcessed ) override
 	{
 		if ( inCommand )
 		{
@@ -212,7 +212,7 @@ public:
 	{
 	}
 
-	Boolean BytesAvailable( void ) override { return mTarget->BytesAvailable(); }
+	bool BytesAvailable( void ) override { return mTarget->BytesAvailable(); }
 	void FlushOutput( void ) override { mTarget->FlushOutput(); }
 	void Disconnect( void ) override { mTarget->Disconnect(); }
 	void Idle( void ) override { mTarget->Idle(); }
@@ -221,7 +221,7 @@ public:
 	KUInt8 PeekByte( void ) override { return mTarget->PeekByte(); }
 	TDCLCommLayer* Connected( TDCLLink* inLink ) override { return mTarget->Connected( inLink ); }
 	void ClearDataPresent( void ) override { mTarget->ClearDataPresent(); }
-	Boolean PeerDisconnected( void ) override { return mTarget->PeerDisconnected(); }
+	bool PeerDisconnected( void ) override { return mTarget->PeerDisconnected(); }
 	void Read( void* outBuffer, KUInt32* ioCount ) override { mTarget->Read( outBuffer, ioCount ); }
 	void Write( const void* inBuffer, KUInt32* ioCount ) override { mTarget->Write( inBuffer, ioCount ); }
 	bool RequestStop( void ) override

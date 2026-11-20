@@ -245,7 +245,7 @@ TDCLDockLink::DoConnect( void )
 				(TDCLDockCmdPassword*) theNewtMessage.Get();
 		
 			// Je vérifie le mot de passe.
-			Boolean correct =
+			bool correct =
 				thePassword->VerifyPassword( theChallenge, GetPassword() );
 			theNewtMessage.Delete();	// Libération.
 			
@@ -287,12 +287,12 @@ TDCLDockLink::DoConnect( void )
 }
 
 // ------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // ------------------------------------------------------------------------- //
 TDCLLink::EState
 TDCLDockLink::ProcessDockCommand(
 					TDCLDockCommand* inCommand,
-					Boolean* outProcessed )
+					bool* outProcessed )
 {
 	TDCLLink::EState theResult = kRunning;	// Par défaut, on reste connecté.
 

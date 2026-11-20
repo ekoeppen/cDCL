@@ -112,7 +112,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean InstallPackage( TDCLFSItemRef inPackage );
+	bool InstallPackage( TDCLFSItemRef inPackage );
 		
 	///
 	/// Indique au Newton que l'on souhaite utiliser le clavier et
@@ -121,7 +121,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean StartUsingKeyboard( void );
+	bool StartUsingKeyboard( void );
 
 	///
 	/// Envoie une chaîne au Newton. Asynchrone aussi.
@@ -133,7 +133,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean SendKeyboardString( const KUInt16* inString );
+	bool SendKeyboardString( const KUInt16* inString );
 		
 	///
 	/// Envoie un caractère au Newton.
@@ -144,7 +144,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags );
+	bool SendKeyboardChar( KUInt16 inChar, KUInt16 inFlags );
 		
 	///
 	/// Arrête d'utiliser le clavier.
@@ -153,7 +153,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean StopUsingKeyboard( void );
+	bool StopUsingKeyboard( void );
 		
 	///
 	/// Indique au Newton que l'on souhaite synchroniser et effectue
@@ -163,7 +163,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean Synchronize( void );
+	bool Synchronize( void );
 
 protected:
 	///
@@ -179,7 +179,7 @@ protected:
 	///
 	virtual	EState		ProcessDockCommand(
 								TDCLDockCommand* inCommand,
-								Boolean* outProcessed );
+								bool* outProcessed );
 
 	///
 	/// Méthode appelée pour gérer des commandes venant de l'application.
@@ -191,7 +191,7 @@ protected:
 	///
 	virtual	EState		ProcessAppCommand(
 								TDCLAppCommand* inCommand,
-								Boolean* outProcessed );
+								bool* outProcessed );
 
 	///
 	/// Installe véritablement un paquet.

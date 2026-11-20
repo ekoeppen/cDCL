@@ -34,13 +34,14 @@
 #ifndef _UBYTESEX_H
 #define _UBYTESEX_H
 
+#include <bit>
 #include <K/Defines/KDefinitions.h>
 
 ///
 /// Classe pour gérer le sexe des octets (endianness).
 ///
 /// Convertit des mots de grand indien vers petit indien et inversement.
-/// Fournit des macros pour faire la conversion selon la plateforme.
+/// Fournit des helpers pour faire la conversion selon la plateforme.
 ///
 /// \author	Paul Guyot <pguyot@kallisys.net>
 /// \version $Revision: 1.4 $
@@ -55,7 +56,7 @@ public:
 	/// \param inWord	mot de 16 bits en entrée.
 	/// \return le mot de 16 bits inversé.
 	///
-	static inline KUInt16	Swap( const KUInt16 inWord )
+	static constexpr KUInt16	Swap( const KUInt16 inWord )
 		{
 #if defined(__GNUC__) || defined(__clang__)
 			return __builtin_bswap16(inWord);
@@ -71,15 +72,15 @@ public:
 	/// \param inWord	mot de 32 bits en entrée.
 	/// \return le mot de 32 bits inversé.
 	///
-	static inline KUInt32	Swap( const KUInt32 inWord )
+	static constexpr KUInt32	Swap( const KUInt32 inWord )
 		{
 #if defined(__GNUC__) || defined(__clang__)
 			return __builtin_bswap32(inWord);
 #else
 			return (
-					((inWord >> 24)	& 0x000000FF) | 
-					((inWord >> 8)	& 0x0000FF00) | 
-					((inWord << 8)	& 0x00FF0000) | 
+					((inWord >> 24)	& 0x000000FF) |
+					((inWord >> 8)	& 0x0000FF00) |
+					((inWord << 8)	& 0x00FF0000) |
 					((inWord << 24)	& 0xFF000000));
 #endif
 		}
@@ -90,7 +91,7 @@ public:
 	/// \param inWord	mot de 64 bits en entrée.
 	/// \return le mot de 64 bits inversé.
 	///
-	static inline KUInt64	Swap( const KUInt64 inWord )
+	static constexpr KUInt64	Swap( const KUInt64 inWord )
 		{
 #if defined(__GNUC__) || defined(__clang__)
 			return __builtin_bswap64(inWord);
@@ -109,7 +110,7 @@ public:
 	/// \return the byte-swapped value.
 	///
 	template<typename T>
-	static inline T Swap(T inWord)
+	static constexpr T Swap(T inWord)
 		{
 			static_assert(
 				sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8,
@@ -122,19 +123,40 @@ public:
 				return (T) Swap((KUInt64) inWord);
 		}
 
-#if TARGET_RT_LITTLE_ENDIAN
-	// Macros pour une plateforme en petit indien
-	#define	UByteSex_FromBigEndian( inWord )	( UByteSex::Swap( inWord ) )
-	#define	UByteSex_FromLittleEndian( inWord )	( inWord )
-	#define	UByteSex_ToBigEndian( inWord )		( UByteSex::Swap( inWord ) )
-	#define	UByteSex_ToLittleEndian( inWord )	( inWord )
-#else
-	// Macros pour une plateforme en grand indien
-	#define	UByteSex_FromBigEndian( inWord )	( inWord )
-	#define	UByteSex_FromLittleEndian( inWord )	( UByteSex::Swap( inWord ) )
-	#define	UByteSex_ToBigEndian( inWord )		( inWord )
-	#define	UByteSex_ToLittleEndian( inWord )	( UByteSex::Swap( inWord ) )
-#endif
+	template<typename T>
+	static constexpr T FromBigEndian(T inWord)
+		{
+			if constexpr (std::endian::native == std::endian::little)
+				return Swap(inWord);
+			else
+				return inWord;
+		}
+
+	template<typename T>
+	static constexpr T FromLittleEndian(T inWord)
+		{
+			if constexpr (std::endian::native == std::endian::little)
+				return inWord;
+			else
+				return Swap(inWord);
+		}
+
+	template<typename T>
+	static constexpr T ToBigEndian(T inWord)
+		{
+			return FromBigEndian(inWord);
+		}
+
+	template<typename T>
+	static constexpr T ToLittleEndian(T inWord)
+		{
+			return FromLittleEndian(inWord);
+		}
+
+	#define	UByteSex_FromBigEndian( inWord )	( UByteSex::FromBigEndian( inWord ) )
+	#define	UByteSex_FromLittleEndian( inWord )	( UByteSex::FromLittleEndian( inWord ) )
+	#define	UByteSex_ToBigEndian( inWord )		( UByteSex::ToBigEndian( inWord ) )
+	#define	UByteSex_ToLittleEndian( inWord )	( UByteSex::ToLittleEndian( inWord ) )
 };
 
 #endif

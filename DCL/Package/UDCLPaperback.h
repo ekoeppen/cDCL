@@ -80,7 +80,7 @@ public:
 			EEncoding inEncoding,
 			const char* inBookTitle,
 			const char* inTOCPrefix /* = nil */,
-			Boolean inDeleteTOCLines /* = true */,
+			bool inDeleteTOCLines /* = true */,
 			const char* inFontName /* = nil */,
 			int inFontSize /* = 9 */ );
 
@@ -126,7 +126,7 @@ private:
 				KUInt16* inText,
 				KUInt32* ioTextSize,
 				const char* inTOCLinePrefix,
-				Boolean inDeleteTOCLines,
+				bool inDeleteTOCLines,
 				KUInt16*** outTOCEntries,
 				KUInt32** outTOCIndexes,
 				KUInt32* outTOCSize );

@@ -912,7 +912,7 @@ typedef struct {
    interpretation of the AUXV. Must be > 16.  */
 #define AT_IGNOREPPC	22		/* Entry should be ignored.  */
 
-#define	AT_SECURE	23		/* Boolean, was exec setuid-like?  */
+#define	AT_SECURE	23		/* bool, was exec setuid-like?  */
 
 #define AT_BASE_PLATFORM 24		/* String identifying real platforms.*/
 

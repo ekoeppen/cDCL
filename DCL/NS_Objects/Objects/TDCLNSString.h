@@ -109,21 +109,21 @@ public:
 	///
 	/// \return \c true si les deux chaînes sont égales à la casse près.
 	///
-	Boolean StrEqual( const char* inAlter ) const;
+	bool StrEqual( const char* inAlter ) const;
 
 	///
 	/// Compare cette chaîne avec une autre chaîne unicode.
 	///
 	/// \return \c true si les deux chaînes sont égales à la casse près.
 	///
-	Boolean StrEqual( const KUInt16* inAlter ) const;
+	bool StrEqual( const KUInt16* inAlter ) const;
 
 	///
 	/// Compare cette chaîne avec une autre chaîne.
 	///
 	/// \return \c true si les deux chaînes sont égales à la casse près.
 	///
-	Boolean StrEqual( const TDCLNSString& inAlter ) const;
+	bool StrEqual( const TDCLNSString& inAlter ) const;
 
 	///
 	/// Accesseur sur la chaîne.

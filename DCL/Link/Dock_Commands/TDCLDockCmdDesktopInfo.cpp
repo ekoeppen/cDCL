@@ -47,13 +47,13 @@
 #include <DCL/Streams/TDCLMemStream.h>
 
 // --------------------------------------------------------------------------------	//
-//  * TDCLDockCmdDesktopInfo( TDCLNSArray&, KUInt32, KUInt32, Boolean, KUInt32 )
+//  * TDCLDockCmdDesktopInfo( TDCLNSArray&, KUInt32, KUInt32, bool, KUInt32 )
 // --------------------------------------------------------------------------------	//
 TDCLDockCmdDesktopInfo::TDCLDockCmdDesktopInfo(
 					TDCLNSArray& inDesktopAppArray,
 					KUInt32 inEncKey1,
 					KUInt32 inEncKey2,
-					Boolean inSelectiveBackup,
+					bool inSelectiveBackup,
 					KUInt32 inSessionType,
 					KUInt32 inPlatformKind /* = kThis_DType */ )
 	:

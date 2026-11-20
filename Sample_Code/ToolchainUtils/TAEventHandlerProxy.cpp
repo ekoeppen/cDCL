@@ -126,7 +126,7 @@ TAEventHandlerProxy::~TAEventHandlerProxy( void )
 // ------------------------------------------------------------------------ //
 //  * AETestEvent( TAEvent* )
 // ------------------------------------------------------------------------ //
-Boolean
+bool
 TAEventHandlerProxy::AETestEvent( TAEvent* /* inEvent */ )
 {
     // Default behavior is to return true. I could actually
@@ -185,7 +185,7 @@ TAEventHandlerProxy::__AEDestructor( SAEHandlerWPtrToProxy* inThis )
 // ------------------------------------------------------------------------ //
 //  * __AETestEvent( SAEHandlerWPtrToProxy*, TAEvent* )
 // ------------------------------------------------------------------------ //
-Boolean
+bool
 TAEventHandlerProxy::__AETestEvent(
             SAEHandlerWPtrToProxy* inThis,
             TAEvent* inEvent )

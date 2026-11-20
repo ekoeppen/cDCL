@@ -29,7 +29,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
 
-#if !TARGET_OS_COMPAT_POSIX
+#ifdef _WIN32
 #error TDCLWakeableWaitPOSIX requires POSIX compatibility
 #endif
 

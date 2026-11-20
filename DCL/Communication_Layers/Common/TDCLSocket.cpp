@@ -43,7 +43,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#if !TARGET_OS_WIN32
+#ifndef _WIN32
 #include <netinet/tcp.h>
 #include <unistd.h>
 #endif
@@ -221,7 +221,7 @@ TDCLSocket::DoStopListening( void )
 	mWakeWait.Trigger();
 }
 
-Boolean
+bool
 TDCLSocket::WaitForIncomingRequest( void )
 {
 	int theErr = 0;
@@ -336,7 +336,7 @@ TDCLSocket::CreateSocketPipe( dcl_socket_t inSocket, long inTimeout )
 static void
 ClosePipeSocket( dcl_socket_t inSocket )
 {
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	(void)::closesocket( inSocket );
 #else
 	(void)::close( inSocket );
@@ -390,7 +390,7 @@ TDCLSocket::TSocketPipe::Disconnect( void )
 	mClientSocketIsClosed = true;
 }
 
-Boolean
+bool
 TDCLSocket::TSocketPipe::BytesAvailable( void )
 {
 	if ( mClientSocket == kInvalidSocket )
@@ -424,7 +424,7 @@ TDCLSocket::TSocketPipe::SetTimeout( long inTimeout )
 	mTimeout = inTimeout;
 }
 
-Boolean
+bool
 TDCLSocket::TSocketPipe::WaitForIncomingData( void )
 {
 	int theErr = 0;
@@ -479,7 +479,7 @@ TDCLSocket::TSocketPipe::Read( void* outBuffer, KUInt32* ioCount )
 			throw DCLUserCancelled;
 		}
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 		int chunkSize = (int)std::min<size_t>( toRead, (size_t)INT_MAX );
 		int readBytes = ::recv( mClientSocket, theBuffer, chunkSize, 0 );
 #else
@@ -586,7 +586,7 @@ TDCLSocket::TSocketPipe::Write( const void* inBuffer, KUInt32* ioCount )
 			throw DCLUserCancelled;
 		}
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 		int chunkSize = (int)std::min<size_t>( toWrite, (size_t)INT_MAX );
 		int sentBytes = ::send( mClientSocket, theBuffer, chunkSize, 0 );
 #else

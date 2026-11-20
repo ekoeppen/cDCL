@@ -45,7 +45,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <io.h>
 #include <windows.h>
 #else
@@ -103,7 +103,7 @@ TMappedFile::Map(
 	mCreated = false;
 
 	int openFlags = inFlags | O_BINARY;
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	mFileFd = ::open( inFilePath, openFlags, _S_IREAD | _S_IWRITE );
 #else
 	mFileFd = ::open( inFilePath, openFlags, 0777 );
@@ -149,7 +149,7 @@ TMappedFile::Map(
 		return 0;
 	}
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	HANDLE hFile = (HANDLE) ::_get_osfhandle( mFileFd );
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -247,7 +247,7 @@ TMappedFile::Unmap( void )
 	{
 		if (mMapped)
 		{
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 			::UnmapViewOfFile( mBuffer );
 #else
 			if (::munmap( mBuffer, mSize ) < 0)
@@ -272,7 +272,7 @@ TMappedFile::Unmap( void )
 		mBuffer = nullptr;
 	}
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	if (mFileMapping != nullptr)
 	{
 		::CloseHandle( (HANDLE) mFileMapping );
@@ -303,7 +303,7 @@ TMappedFile::Sync( void ) const
 	{
 		if (mMapped)
 		{
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 			if (!::FlushViewOfFile( mBuffer, mSize ))
 			{
 				(void) ::fprintf(
@@ -332,7 +332,11 @@ TMappedFile::Sync( void ) const
 							errno, __FILE__, __LINE__ );
 				::abort();
 			}
+#ifdef _WIN32
+			if (::_write( mFileFd, mBuffer, (unsigned int) mSize ) != (int) mSize)
+#else
 			if (::write( mFileFd, mBuffer, mSize ) != (ssize_t) mSize)
+#endif
 			{
 				(void) ::fprintf(
 							stderr,

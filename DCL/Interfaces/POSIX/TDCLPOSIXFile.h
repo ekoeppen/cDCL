@@ -81,7 +81,7 @@ public:
 	/// \param inReadOnly	si le fichier doit être ouvert en lecture seule
 	/// \throws TDCLIOException si l'ouverture a échoué.
 	///
-	virtual void		Open( Boolean inReadOnly );	
+	virtual void		Open( bool inReadOnly );	
 
 	///
 	/// Crée le fichier.
@@ -102,7 +102,7 @@ public:
 	///
 	/// \return \c true si le fichier est ouvert, \c false sinon.
 	///
-	virtual Boolean		IsOpen( void ) const;
+	virtual bool		IsOpen( void ) const;
 
 	///
 	/// Determine si le fichier est ouvert en lecture seule.
@@ -111,7 +111,7 @@ public:
 	///			\c false sinon. Le résultat est indéterminé si le fichier
 	///			n'est pas ouvert.
 	///
-	virtual Boolean		IsReadOnly( void ) const;
+	virtual bool		IsReadOnly( void ) const;
 
 	///
 	/// Déplace le curseur dans le fichier. Peut lancer une exception
@@ -269,7 +269,7 @@ private:
 									///< \c nil si le fichier n'a pas été
 									///< ouvert.
 	const char*			mPath;		///< Chemin du fichier.
-	Boolean				mReadOnly;	///< Si le fichier a été ouvert en lecture seule.
+	bool				mReadOnly;	///< Si le fichier a été ouvert en lecture seule.
 };
 
 #endif

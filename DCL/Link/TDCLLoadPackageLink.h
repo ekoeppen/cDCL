@@ -87,7 +87,7 @@ public:
 	/// \return \c true si le lien était connecté, \c false sinon (auquel cas
 	///			le paquet ne sera pas installé).
 	///
-	Boolean InstallPackage( TDCLFSItemRef inPackage );
+	bool InstallPackage( TDCLFSItemRef inPackage );
 
 protected:
 	///
@@ -129,7 +129,7 @@ private:
 	///
 	virtual	EState	ProcessAppCommand(
 								TDCLAppCommand* inCommand,
-								Boolean* outProcessed );
+								bool* outProcessed );
 
 	///
 	/// Méthode appelée par \c SendCommand pour savoir la progression de

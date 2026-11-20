@@ -33,12 +33,12 @@
 // ***** END LICENSE BLOCK *****
 // ===========
 
+#include <windows.h>
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Interfaces/Win32/TDCLWin32DirBase.h>
 #include <DCL/Interfaces/Win32/TDCLWin32RootDir.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
-#include <windows.h>
 
 TDCLWin32Files::TDCLWin32Files()
 	: mRootFolder(nil)

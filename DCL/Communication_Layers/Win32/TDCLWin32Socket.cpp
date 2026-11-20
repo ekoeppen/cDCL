@@ -91,7 +91,7 @@ TDCLWin32Socket::~TDCLWin32Socket( void )
 	Destroy();
 }
 
-Boolean
+bool
 TDCLWin32Socket::IsAvailable( void )
 {
 	try
@@ -102,7 +102,7 @@ TDCLWin32Socket::IsAvailable( void )
 	{
 		return false;
 	}
-	Boolean theResult = false;
+	bool theResult = false;
 	dcl_socket_t tmpsocket = ::socket( AF_INET, SOCK_STREAM, 0 );
 	if ( tmpsocket != INVALID_SOCKET )
 	{

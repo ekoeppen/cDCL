@@ -77,7 +77,7 @@ TCondVar::Signal( void )
 // -------------------------------------------------------------------------- //
 //  * TimedWait( TMutex*, const struct timespec* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TCondVar::TimedWait( TMutex* inMutex, const struct timespec* inAbsTime )
 {
 	auto dur = std::chrono::seconds(inAbsTime->tv_sec) +
@@ -91,7 +91,7 @@ TCondVar::TimedWait( TMutex* inMutex, const struct timespec* inAbsTime )
 // -------------------------------------------------------------------------- //
 //  * TimedWaitRelative( TMutex*, const struct timespec* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TCondVar::TimedWaitRelative( TMutex* inMutex, const struct timespec* inRelTime )
 {
 	auto rel_dur = std::chrono::seconds(inRelTime->tv_sec) +

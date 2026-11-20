@@ -316,7 +316,7 @@ TDCLServer::Run( void )
 	const std::stop_token theStopToken = mWorkerStopToken;
 
 	// Server main loop.
-	Boolean keepLooping = true;
+	bool keepLooping = true;
 	while( keepLooping )
 	{
 		EState theState;
@@ -358,7 +358,7 @@ TDCLServer::Run( void )
 						DoIdle();
 					} else {
 						// Process the event.
-						Boolean processed = false;
+						bool processed = false;
 						theNextState = ProcessEvent(
 										theNextEvent.Get(), &processed );
 						
@@ -406,10 +406,10 @@ TDCLServer::HandleCommLayerException(
 }
 
 // ------------------------------------------------------------------------- //
-//  * ProcessEvent( TDCLEvent*, Boolean* )
+//  * ProcessEvent( TDCLEvent*, bool* )
 // ------------------------------------------------------------------------- //
 TDCLServer::EState
-TDCLServer::ProcessEvent( TDCLEvent* inEvent, Boolean* outProcessed )
+TDCLServer::ProcessEvent( TDCLEvent* inEvent, bool* outProcessed )
 {
 	EState theNextState = kRunning;
 	

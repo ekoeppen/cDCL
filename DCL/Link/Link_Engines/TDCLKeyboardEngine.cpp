@@ -58,14 +58,14 @@ TDCLKeyboardEngine::TDCLKeyboardEngine( TDCLFullDockLink* inLink )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  * ProcessAppCommand( TDCLAppCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLKeyboardEngine::ProcessAppCommand(
 					TDCLAppCommand* inCommand,
-					Boolean* outProcessed )
+					bool* outProcessed )
 {
-	Boolean theResult = true;
+	bool theResult = true;
 	*outProcessed = false;
 
 	switch (inCommand->GetCommandID())

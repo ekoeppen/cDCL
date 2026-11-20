@@ -73,7 +73,7 @@ public:
 	///
 	TDCLPkgNOSPart(
 			const TDCLNSRef& inObject,
-			Boolean inFourBytesPadding = false );
+			bool inFourBytesPadding = false );
 
 	///
 	/// Constructeur à partir de données et d'un décalage.
@@ -93,7 +93,7 @@ public:
 	///
 	/// \return \c true.
 	///
-	Boolean	IsNOSPart( void ) const override;
+	bool	IsNOSPart( void ) const override;
 
 	///
 	/// Retourne l'objet de cette partie (la décode si nécessaire).
@@ -114,7 +114,7 @@ private:
 	///
 	/// \return \c true si les données dépendent du décalage dans le paquet.
 	///
-	Boolean IsOffsetDependant( void ) const override;
+	bool IsOffsetDependant( void ) const override;
 
 	///
 	/// Détermine si la partie a été modifiée et doit être ré-encodée.
@@ -123,7 +123,7 @@ private:
 	/// \return \c true si les données ont été modifiées et doivent être
 	///			ré-encodées.
 	///
-	Boolean IsDirty( void ) const override;
+	bool IsDirty( void ) const override;
 
 	///
 	/// Encode la partie pour un décalage donné (la décode si nécessaire).
@@ -142,8 +142,8 @@ private:
 	/// \name Variables
 	TDCLNSRef				mObject;	///< Objet (ou nil s'il n'est pas encore
 										///< décodé)
-	mutable Boolean			mDirty;		///< Si l'objet a été modifié.
-	Boolean			mFourBytesPadding;	///< Si on aligne sur 32 bits (vs 64).
+	mutable bool			mDirty;		///< Si l'objet a été modifié.
+	bool			mFourBytesPadding;	///< Si on aligne sur 32 bits (vs 64).
 };
 
 #endif

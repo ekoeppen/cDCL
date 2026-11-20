@@ -49,9 +49,9 @@ const KUInt32 TDCLPOSIXFiles::kMinutesBetween1904and1970 = 34714080;
 const KUInt16 TDCLPOSIXFiles::kRootFolderName[3] = { '/', ':', '\0' };
 
 // ------------------------------------------------------------------------- //
-//  * TDCLPOSIXFiles( Boolean )
+//  * TDCLPOSIXFiles( bool )
 // ------------------------------------------------------------------------- //
-TDCLPOSIXFiles::TDCLPOSIXFiles( Boolean inFollowSymLinks )
+TDCLPOSIXFiles::TDCLPOSIXFiles( bool inFollowSymLinks )
 	:
 		mRootFolder( new TDCLPOSIXRootDir( this ) ),
 		mFollowSymLinks( inFollowSymLinks )

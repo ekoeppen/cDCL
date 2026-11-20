@@ -94,9 +94,9 @@ public:
 	///			dans la boucle)
 	/// \throws TDCLException si une erreur est survenue.
 	///
-	virtual	Boolean		ProcessDockCommand(
+	virtual	bool		ProcessDockCommand(
 									TDCLDockCommand* inCommand,
-									Boolean* outProcessed );
+									bool* outProcessed );
 
 protected:
 	///
@@ -169,7 +169,7 @@ private:
 	IDCLFiles*				mFilesIntf;			///< Interface pour les fichiers.
 	TDCLFSItemRef			mCurrentFolderRef;	///< Référence sur le dossier courant.
 	TDCLFolder*				mCurrentFolder;		///< Dossier courant.
-	Boolean					mIsMac;				///< Si on réagit comme un Mac.
+	bool					mIsMac;				///< Si on réagit comme un Mac.
 	TDCLNSRef				mFileTypes;			///< Types des fichiers.
 };
 

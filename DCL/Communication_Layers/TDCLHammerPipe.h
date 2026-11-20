@@ -162,7 +162,7 @@ public:
 	///
 	/// \return \c true s'il y a des octets disponibles, \c false sinon.
 	///
-	virtual	Boolean		BytesAvailable( void );
+	virtual	bool		BytesAvailable( void );
 
 	///
 	/// Déconnecte le canal de communication avec le client.

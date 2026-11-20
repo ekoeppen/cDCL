@@ -36,7 +36,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Communication_Layers/Common/TDCLSocket.h>
 
-#if !TARGET_OS_WIN32
+#ifndef _WIN32
 #error TDCLWin32Socket requires Win32
 #endif
 
@@ -55,7 +55,7 @@ public:
 
 	virtual ~TDCLWin32Socket( void );
 
-	static Boolean IsAvailable( void );
+	static bool IsAvailable( void );
 
 protected:
 	virtual int SetListenSocketOptions( dcl_socket_t inSocket ) override;

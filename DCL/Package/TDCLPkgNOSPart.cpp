@@ -52,11 +52,11 @@
 // -------------------------------------------------------------------------- //
 
 // -------------------------------------------------------------------------- //
-//  * TDCLPkgNOSPart( const TDCLNSRef&, Boolean )
+//  * TDCLPkgNOSPart( const TDCLNSRef&, bool )
 // -------------------------------------------------------------------------- //
 TDCLPkgNOSPart::TDCLPkgNOSPart(
 		const TDCLNSRef& inObject,
-		Boolean inFourBytesPadding /* = false */ )
+		bool inFourBytesPadding /* = false */ )
 	:
 		mObject( inObject ),
 		mDirty( true ),
@@ -116,7 +116,7 @@ TDCLPkgNOSPart::GetObject( void )
 // -------------------------------------------------------------------------- //
 //  * IsNOSPart( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgNOSPart::IsNOSPart( void ) const
 {
 	return true;
@@ -125,7 +125,7 @@ TDCLPkgNOSPart::IsNOSPart( void ) const
 // -------------------------------------------------------------------------- //
 //  * IsOffsetDependant( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgNOSPart::IsOffsetDependant( void ) const
 {
 	return true;
@@ -134,7 +134,7 @@ TDCLPkgNOSPart::IsOffsetDependant( void ) const
 // -------------------------------------------------------------------------- //
 //  * IsDirty( void ) const
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgNOSPart::IsDirty( void ) const
 {
 	return mDirty;

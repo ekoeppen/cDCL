@@ -79,9 +79,9 @@ public:
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
-	virtual	Boolean		ProcessDockCommand(
+	virtual	bool		ProcessDockCommand(
 									TDCLDockCommand* inCommand,
-									Boolean* outProcessed );
+									bool* outProcessed );
 
 	///
 	/// Méthode appelée pour gérer des commandes venant de l'application.
@@ -92,9 +92,9 @@ public:
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
-	virtual	Boolean		ProcessAppCommand(
+	virtual	bool		ProcessAppCommand(
 									TDCLAppCommand* inCommand,
-									Boolean* outProcessed );
+									bool* outProcessed );
 
 	///
 	/// Méthode appelée par le lien pour signifier que le travail du

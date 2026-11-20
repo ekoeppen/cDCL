@@ -32,7 +32,7 @@
 #include "TTestApplication.h"
 #include "TTestServer.h"
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Communication_Layers/Win32/TDCLWin32Socket.h>
 using PlatformSocket = TDCLWin32Socket;
 #else
@@ -106,7 +106,7 @@ protected:
         changed.notify_all();
     }
 
-    Boolean WaitForIncomingRequest() override
+    bool WaitForIncomingRequest() override
     {
         std::unique_lock<std::mutex> lock(mutex);
         started = true;

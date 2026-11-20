@@ -58,13 +58,13 @@ TDCLNSEncoder::~TDCLNSEncoder( void )
 // ------------------------------------------------------------------------- //
 //  * WasObjectEncoded( TDCLNSObject*, KUInt32*, KUIntPtr* )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSEncoder::WasObjectEncoded(
 					TDCLNSObject* inObject,
 					KUInt32* outObjectID,
 					KUIntPtr* outObjectCookie )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 
 	KUInt32 indexObjects;				// index pour cette liste.
 	KUInt32 nbObjects = GetListSize();	// nombre d'objets dans cette liste.
@@ -133,7 +133,7 @@ TDCLNSEncoder::AddObject( const TDCLNSRef& inObject )
 // ------------------------------------------------------------------------- //
 //  * CanHavePrecedentID( TDCLNSObject* )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSEncoder::CanHavePrecedentID( TDCLNSObject* /* inObject */ )
 {
 	return true;

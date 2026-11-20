@@ -98,42 +98,42 @@ public:
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsFrame( void ) const;
+	virtual bool IsFrame( void ) const;
 
 	///
 	/// Détermine si cet objet est une fonction.
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsFunction( void ) const;
+	virtual bool IsFunction( void ) const;
 
 	///
 	/// Détermine si cet objet est un symbole.
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsSymbol( void ) const;
+	virtual bool IsSymbol( void ) const;
 
 	///
 	/// Détermine si cet objet est un tableau.
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsArray( void ) const;
+	virtual bool IsArray( void ) const;
 
 	///
 	/// Détermine si cet objet est un binaire.
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsBinary( void ) const;
+	virtual bool IsBinary( void ) const;
 
 	///
 	/// Détermine si cet objet est une chaîne.
 	///
 	/// \return \c false
 	///
-	virtual Boolean IsString( void ) const;
+	virtual bool IsString( void ) const;
 
 	///
 	/// Détermine la classe de cet objet.

@@ -132,7 +132,7 @@ public:
 	///
 	/// \return \c true si l'alignement se fait sur 8 octets.
 	///
-	inline Boolean		GetFourBytesPadding( void )
+	inline bool		GetFourBytesPadding( void )
 		{
 			return mFourBytesPadding;
 		}
@@ -148,8 +148,8 @@ private:
 	
 	KSInt64		mOriginOffset;		///< Décalage dans le flux du début du paquet.
 	KSInt64		mMaxOffset;			///< Décalage maximal.
-	Boolean		mTopLevel;			///< Si on est à la racine de l'arbre de récursion.
-	Boolean		mFourBytesPadding;	///< Si l'alignement se fait sur 8 octets.
+	bool		mTopLevel;			///< Si on est à la racine de l'arbre de récursion.
+	bool		mFourBytesPadding;	///< Si l'alignement se fait sur 8 octets.
 };
 
 #endif

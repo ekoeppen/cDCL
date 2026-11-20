@@ -55,12 +55,12 @@
 // -------------------------------------------------------------------------- //
 
 // ------------------------------------------------------------------------- //
-//  * TDCLPkgEncoder( TDCLRandomAccessStream*, KUInt32, Boolean )
+//  * TDCLPkgEncoder( TDCLRandomAccessStream*, KUInt32, bool )
 // ------------------------------------------------------------------------- //
 TDCLPkgEncoder::TDCLPkgEncoder(
 					TDCLRandomAccessStream* inStream,
 					KUInt32 inOffset,
-					Boolean inFourBytesPadding /* = false */ )
+					bool inFourBytesPadding /* = false */ )
 	:
 		TDCLNSEncoder( inStream ),
 		mOriginOffset( inStream->GetCursor() - inOffset ),
@@ -76,11 +76,11 @@ TDCLPkgEncoder::TDCLPkgEncoder(
 }
 
 // ------------------------------------------------------------------------- //
-//  * TDCLPkgEncoder( TDCLRandomAccessStream*, Boolean )
+//  * TDCLPkgEncoder( TDCLRandomAccessStream*, bool )
 // ------------------------------------------------------------------------- //
 TDCLPkgEncoder::TDCLPkgEncoder(
 					TDCLRandomAccessStream* inStream,
-					Boolean inFourBytesPadding /* = false */ )
+					bool inFourBytesPadding /* = false */ )
 	:
 		TDCLNSEncoder( inStream ),
 		mOriginOffset( 0 ),
@@ -380,7 +380,7 @@ TDCLPkgEncoder::AddMap( const TDCLNSFrame* frame, KUInt32 mapRef )
 // ------------------------------------------------------------------------- //
 //  * GetBestSupermap(const TDCLNSFrame*, KUInt32*, KUInt32*)
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLPkgEncoder::GetBestSupermap(const TDCLNSFrame* frame, KUInt32* outSharedKeysCount, KUInt32* outSupermapRef)
 {
     KUInt32 thisSize = frame->GetLength();

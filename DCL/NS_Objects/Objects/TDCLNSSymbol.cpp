@@ -184,7 +184,7 @@ TDCLNSSymbol::operator = ( const TDCLNSSymbol& inCopy )
 // ------------------------------------------------------------------------- //
 //  * IsSymbol( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSSymbol::IsSymbol( void ) const
 {
 	return true;
@@ -263,10 +263,10 @@ TDCLNSSymbol::PrimClassOf( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsSubClass( const TDCLNSSymbol& ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSSymbol::IsSubClass( const TDCLNSSymbol& inSuper ) const
 {
-	Boolean theResult = false;
+	bool theResult = false;
 
 	// Comparaison lexicographique.
 	// Cette comparaison n'est pas sensible à la casse.

@@ -222,7 +222,7 @@ TDCLNSFrame::operator = ( const TDCLNSFrame& inCopy )
 // ------------------------------------------------------------------------- //
 //  * IsFrame( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSFrame::IsFrame( void ) const
 {
 	return true;
@@ -231,7 +231,7 @@ TDCLNSFrame::IsFrame( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsFunction( void ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSFrame::IsFunction( void ) const
 {
 	return mIsFunction;
@@ -240,10 +240,10 @@ TDCLNSFrame::IsFunction( void ) const
 // ------------------------------------------------------------------------- //
 //  * HasSlot( const TDCLNSSymbol& ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSFrame::HasSlot( const TDCLNSSymbol& inSymbol ) const
 {
-	Boolean theResult = false;	// Supposons que la clé ne soit pas là.
+	bool theResult = false;	// Supposons que la clé ne soit pas là.
 	
 	// Index de la clé, si elle est dans le dictionnaire.
 	KUInt32 indexKey;
@@ -255,10 +255,10 @@ TDCLNSFrame::HasSlot( const TDCLNSSymbol& inSymbol ) const
 // ------------------------------------------------------------------------- //
 //  * RemoveSlot( const TDCLNSSymbol& )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSFrame::RemoveSlot( const TDCLNSSymbol& inSymbol )
 {
-	Boolean theResult = false;	// Supposons que la clé ne soit pas là.
+	bool theResult = false;	// Supposons que la clé ne soit pas là.
 	
 	// Index de la clé, si elle est dans le dictionnaire.
 	KUInt32 indexKey;
@@ -449,17 +449,17 @@ TDCLNSFrame::Clone( void ) const
 // ------------------------------------------------------------------------- //
 //  * GetKeyIndex( const TDCLNSSymbol&, KUInt32* ) const
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLNSFrame::GetKeyIndex( const TDCLNSSymbol& inSymbol, KUInt32* outIndex ) const
 {
 	// On suppose que la clé n'est pas présente.
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	// Boucle sur tous les symboles, sauf si le dictionnaire est trié.
 	// (remarque: on n'a pas d'index).
 	KUInt32 indexKeys;			// index pour itérer.
 	KUInt32 nbKeys = mLength;	// Nombre de clés (plus rapide)
-	Boolean sorted = mKeysAreSorted;	// Si les clés sont triées.
+	bool sorted = mKeysAreSorted;	// Si les clés sont triées.
 	
 	for (indexKeys = 0; indexKeys < nbKeys; indexKeys++)
 	{
@@ -828,7 +828,7 @@ TDCLNSFrame::ToNSOF(
 	
 	// C'est peut-être un rectangle.
 	KUInt32 nbPairs = mLength;
-	Boolean isRect = false;
+	bool isRect = false;
 	KUInt8 rectVals[4];
 	if ( nbPairs == 4 )
 	{

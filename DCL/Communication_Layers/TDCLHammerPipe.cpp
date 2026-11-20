@@ -307,10 +307,10 @@ TDCLHammerPipe::FlushOutput( void )
 // ------------------------------------------------------------------------- //
 //	* BytesAvailable( void )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLHammerPipe::BytesAvailable( void )
 {
-	Boolean theResult;
+	bool theResult;
 	
 	if (mInputBufferCrsr < mInputBufferSize)
 	{

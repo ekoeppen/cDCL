@@ -56,7 +56,7 @@ public:
 	virtual void Read( void* outBuffer, KUInt32* ioCount ) override;
 	virtual void Write( const void* inBuffer, KUInt32* ioCount ) override;
 	virtual void FlushOutput( void ) override;
-	virtual Boolean BytesAvailable( void ) override;
+	virtual bool BytesAvailable( void ) override;
 	virtual void Disconnect( void ) override;
 	virtual KUInt8 PeekByte( void ) override;
 	virtual long GetTimeout( void ) override;

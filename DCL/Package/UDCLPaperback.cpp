@@ -71,7 +71,7 @@ UDCLPaperback::BuildBook(
 			EEncoding inEncoding,
 			const char* inBookTitle,
 			const char* inTOCPrefix /* = nil */,
-			Boolean inDeleteTOCLines /* = true */,
+			bool inDeleteTOCLines /* = true */,
 			const char* inFontName /* = nil */,
 			int inFontSize /* = 9 */ )
 {
@@ -304,14 +304,14 @@ UDCLPaperback::ConvertEndLines(
 }
 
 // -------------------------------------------------------------------------- //
-//  * BuildTOC( KUInt16*, KUInt32*, const char*, Boolean, KUInt16***, ... )
+//  * BuildTOC( KUInt16*, KUInt32*, const char*, bool, KUInt16***, ... )
 // -------------------------------------------------------------------------- //
 void
 UDCLPaperback::BuildTOC(
 		KUInt16* inText,
 		KUInt32* ioTextSize,
 		const char* inTOCLinePrefix,
-		Boolean inDeleteTOCLines,
+		bool inDeleteTOCLines,
 		KUInt16*** outTOCEntries,
 		KUInt32** outTOCIndexes,
 		KUInt32* outTOCSize )
@@ -332,7 +332,7 @@ UDCLPaperback::BuildTOC(
 		KUInt32 lineStart = indexString;
 		
 		// Commence-t-elle par notre préfixe?
-		Boolean matches = true;
+		bool matches = true;
 		KUInt32 indexPrefix;
 		for (
 				indexPrefix = 0;

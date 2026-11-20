@@ -99,7 +99,7 @@ TDCLTextEncoder::PutRef( const TDCLNSRef& inRef )
 // ------------------------------------------------------------------------- //
 //  * CanHavePrecedentID( TDCLNSObject* )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLTextEncoder::CanHavePrecedentID( TDCLNSObject* inObject )
 {
 	return !(inObject->IsSymbol());

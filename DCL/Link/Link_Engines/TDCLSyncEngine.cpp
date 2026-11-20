@@ -165,12 +165,12 @@ TDCLSyncEngine::StopSynchronizing( void )
 }
 
 // -------------------------------------------------------------------------- //
-//  * ProcessDockCommand( TDCLDockCommand*, Boolean* )
+//  * ProcessDockCommand( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLSyncEngine::ProcessDockCommand(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE1( "ProcessDockCommand (%p)", inCommand );
 
@@ -269,24 +269,24 @@ TDCLSyncEngine::ProcessDockCommand(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromUninitialized( TDCLDockCommand*, Boolean* )
+//  * TransitionFromUninitialized( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromUninitialized(
 							TDCLDockCommand* /* inCommand */,
-							Boolean* /* outProcessed */ )
+							bool* /* outProcessed */ )
 {
 	KTRACE( "Transition: kUninitialized ->" );
 	throw DCLBadStateError;
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFOptions( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFOptions( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFOptions(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFOptions ->" );
 	EState theResult = mState;
@@ -343,12 +343,12 @@ TDCLSyncEngine::TransitionFromWFOptions(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFStoreNames( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFStoreNames( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFStoreNames(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFStoreNames ->" );
 	EState theResult = mState;
@@ -379,12 +379,12 @@ TDCLSyncEngine::TransitionFromWFStoreNames(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFPreliminaryTime( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFPreliminaryTime( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFPreliminaryTime(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFPreliminaryTime ->" );
 	EState theResult = mState;
@@ -423,12 +423,12 @@ TDCLSyncEngine::TransitionFromWFPreliminaryTime(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFSetStoreResult( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFSetStoreResult( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFSetStoreResult(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFSetStoreResult ->" );
 	EState theResult = mState;
@@ -465,12 +465,12 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFPackageIDs( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFPackageIDs( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFPackageIDs(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFPackageIDs ->" );
 	if ( inCommand->GetCommand() == TDCLDockCommand::kDPackageIDList )
@@ -485,12 +485,12 @@ TDCLSyncEngine::TransitionFromWFPackageIDs(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFSetStoreResult2( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFSetStoreResult2( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFSetStoreResult2 ->" );
 	EState theResult = mState;
@@ -547,12 +547,12 @@ TDCLSyncEngine::TransitionFromWFSetStoreResult2(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFStoreSyncTime( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFStoreSyncTime( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFStoreSyncTime(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFStoreSyncTime ->" );
 	EState theResult = mState;
@@ -570,12 +570,12 @@ TDCLSyncEngine::TransitionFromWFStoreSyncTime(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFSoupInfo( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFSoupInfo( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFSoupInfo(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFSoupInfo ->" );
 	EState theResult = mState;
@@ -650,12 +650,12 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFSoupIDs( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFSoupIDs( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFSoupIDs(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFSoupIDs ->" );
 	EState theResult = mState;
@@ -702,12 +702,12 @@ TDCLSyncEngine::TransitionFromWFSoupIDs(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFChangedIDs( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFChangedIDs( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFChangedIDs(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFChangedIDs ->" );
 	EState theResult = mState;
@@ -747,12 +747,12 @@ TDCLSyncEngine::TransitionFromWFChangedIDs(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFEntry( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFEntry( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFEntry(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFEntry ->" );
 	EState theResult = mState;
@@ -805,12 +805,12 @@ TDCLSyncEngine::TransitionFromWFEntry(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFSetStoreToDefaultResult( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFSetStoreToDefaultResult( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFSetStoreToDefaultResult(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFSetStoreToDefaultResult ->" );
 	EState theResult = mState;
@@ -837,12 +837,12 @@ TDCLSyncEngine::TransitionFromWFSetStoreToDefaultResult(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFModifiedResult( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFModifiedResult( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFModifiedResult(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFModifiedResult ->" );
 	EState theResult = mState;
@@ -867,12 +867,12 @@ TDCLSyncEngine::TransitionFromWFModifiedResult(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromWFAddedID( TDCLDockCommand*, Boolean* )
+//  * TransitionFromWFAddedID( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromWFAddedID(
 							TDCLDockCommand* inCommand,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kWFAddedID ->" );
 	EState theResult = mState;
@@ -905,12 +905,12 @@ TDCLSyncEngine::TransitionFromWFAddedID(
 }
 
 // -------------------------------------------------------------------------- //
-//  * TransitionFromInterrupted( TDCLDockCommand*, Boolean* )
+//  * TransitionFromInterrupted( TDCLDockCommand*, bool* )
 // -------------------------------------------------------------------------- //
 TDCLSyncEngine::EState
 TDCLSyncEngine::TransitionFromInterrupted(
 							TDCLDockCommand* /* inCommand */,
-							Boolean* outProcessed )
+							bool* outProcessed )
 {
 	KTRACE( "Transition: kInterrupted ->" );
 	
@@ -924,7 +924,7 @@ TDCLSyncEngine::TransitionFromInterrupted(
 // -------------------------------------------------------------------------- //
 //  * DoSynchronizePatches( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLSyncEngine::DoSynchronizePatches( void )
 {
 	KTRACE( "DoSynchronizePatches" );
@@ -934,7 +934,7 @@ TDCLSyncEngine::DoSynchronizePatches( void )
 // -------------------------------------------------------------------------- //
 //  * DoSynchronizePackages( void )
 // -------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLSyncEngine::DoSynchronizePackages( void )
 {
 	KTRACE( "DoSynchronizePackages" );
@@ -1013,7 +1013,7 @@ TDCLSyncEngine::SyncNextSource( void )
 		
 		if (mSoupsCount > 0)
 		{
-			Boolean canProceedWithSource = true;
+			bool canProceedWithSource = true;
 
 			// Vérification qu'elle colle avec les desiderata de l'utilisateur.
 			if (!mSyncAll)
@@ -1160,7 +1160,7 @@ TDCLSyncEngine::FetchNextEntry( void )
 		// On récupère l'entrée (les données), uniquement si l'entrée a été
 		// modifiée ou si elle n'était pas présente ou si on fait une
 		// synchronisation complète.
-		Boolean isNewEntry = mCurrentEntry->Get( "key" ).IsNIL();
+		bool isNewEntry = mCurrentEntry->Get( "key" ).IsNIL();
 		mCurrentEntry->Set( "new", TDCLNSRef::MakeBoolean( isNewEntry ));
 
 		if (mCompleteSync
@@ -1264,7 +1264,7 @@ TDCLSyncEngine::SyncNextEntry( void )
 									theKey,
 									theEntry );
 				
-				Boolean stateChanged = false;
+				bool stateChanged = false;
 				switch( theSyncResult )
 				{
 					case TDCLSyncSourceEngine::kModified:
@@ -1569,7 +1569,7 @@ TDCLSyncEngine::LookForCurrentNewtonInSyncData( void )
 	TDCLNSArray& theNewtonsArray =
 		mSyncData.ToFrame().Get( "newtons" ).ToArray();
 	
-	Boolean foundNewton = false;
+	bool foundNewton = false;
 	
 	KUInt32 nbNewtons = theNewtonsArray.GetLength();
 	KUInt32 indexNewtons;

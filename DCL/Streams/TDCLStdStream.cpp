@@ -42,11 +42,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <io.h>
 #endif
 
-#if TARGET_OS_COMPAT_POSIX
+#ifndef _WIN32
 #include <unistd.h>
 #endif
 
@@ -58,7 +58,7 @@
 // ------------------------------------------------------------------------- //
 TDCLStdStream::TDCLStdStream( void )
 {
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 	(void) _setmode( _fileno( stdin ), _O_BINARY );
 	(void) _setmode( _fileno( stdout ), _O_BINARY );
 #endif

@@ -30,7 +30,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Server/TDCLServer.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Communication_Layers/Win32/TDCLWin32Socket.h>
 typedef TDCLWin32Socket TDCLPlatformSocket;
 #else
@@ -47,7 +47,7 @@ typedef TDCLBSDSocket TDCLPlatformSocket;
 #include <condition_variable>
 #include <mutex>
 
-#if TARGET_OS_COMPAT_POSIX || TARGET_OS_WIN32
+#if 1
 namespace
 {
 class TSASTApp : public TTestApplication

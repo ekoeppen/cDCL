@@ -100,7 +100,7 @@ public:
 	/// \return \c true si cette référence pointe sur un style de texte,
 	///			\c false si elle pointe sur une image ou sur rien.
 	///
-	inline Boolean	IsFontSpecification( void ) const
+	inline bool	IsFontSpecification( void ) const
 		{
 			return (mFontSpecification != nil);
 		}
@@ -111,7 +111,7 @@ public:
 	/// \return \c true si cette référence pointe sur une image,
 	///			\c false si elle pointe sur un style ou sur rien.
 	///
-	inline Boolean	IsPicture( void ) const
+	inline bool	IsPicture( void ) const
 		{
 			return (mPicture != nil);
 		}

@@ -68,9 +68,9 @@ public:
 	/// \return \c true si le moteur continue, \c false sinon
 	/// \throws TDCLException si une erreur est survenue.
 	///
-	virtual	Boolean				ProcessAppCommand(
+	virtual	bool				ProcessAppCommand(
 									TDCLAppCommand* inCommand,
-									Boolean* outProcessed );
+									bool* outProcessed );
 
 	///
 	/// Méthode appelée par le lien pour commencer à utiliser le clavier.

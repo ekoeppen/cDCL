@@ -95,7 +95,7 @@ public:
     /// \param inEvent  event to consider
     /// \return \c true if this event should be passed to the handler.
     ///
-    virtual Boolean AETestEvent( TAEvent* inEvent );
+    virtual bool AETestEvent( TAEvent* inEvent );
 
     ///
     /// Method called when an event this handler is registered for
@@ -205,7 +205,7 @@ public:
     NewtonErr   InitIdler(
                     TTimeout inIdle,
                     ULong inRefCon = 0,
-                    Boolean inStart = true)
+                    bool inStart = true)
         {
             return mEventHandler->fEH.fHandler.InitIdler( inIdle, inRefCon, inStart );
         }
@@ -224,7 +224,7 @@ public:
                     ULong inIdleAmount,
                     TimeUnits inIdleUnits,
                     ULong inRefCon = 0,
-                    Boolean inStart = true)
+                    bool inStart = true)
         {
             return mEventHandler->fEH.fHandler.InitIdler( inIdleAmount, inIdleUnits, inRefCon, inStart );
         }
@@ -293,7 +293,7 @@ private:
     typedef void (*AEDestructorPtr)( SAEHandlerWPtrToProxy* );
 
     /// Type for the TestEvent proxy callback method
-    typedef Boolean (*AETestEventProcPtr)( SAEHandlerWPtrToProxy*, TAEvent* );
+    typedef bool (*AETestEventProcPtr)( SAEHandlerWPtrToProxy*, TAEvent* );
 
     /// Type for the other proxy callback methods
     typedef void (*AEUserRoutineProcPtr)( SAEHandlerWPtrToProxy*, TUMsgToken*, ULong*, TAEvent* );
@@ -359,7 +359,7 @@ private:
     static void     __AEDestructor( SAEHandlerWPtrToProxy* inThis );
 
     /// AETestEvent callback
-    static Boolean  __AETestEvent( SAEHandlerWPtrToProxy* inThis, TAEvent* inEvent );
+    static bool  __AETestEvent( SAEHandlerWPtrToProxy* inThis, TAEvent* inEvent );
 
     /// AEHandlerProc callback
     static void     __AEHandlerProc( SAEHandlerWPtrToProxy* inThis, TUMsgToken* inToken, ULong* inSize, TAEvent* inEvent );

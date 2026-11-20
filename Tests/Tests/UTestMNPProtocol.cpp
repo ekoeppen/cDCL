@@ -145,7 +145,7 @@ private:
 		{
 			std::abort();
 		}
-		Boolean
+		bool
 		BytesAvailable( void ) override
 		{
 			std::abort();

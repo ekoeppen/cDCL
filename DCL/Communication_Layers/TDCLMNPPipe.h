@@ -179,7 +179,7 @@ public:
 	/// Processes frames that have arrived and reports whether delivered
 	/// payload is waiting. Never blocks.
 	///
-	virtual	Boolean		BytesAvailable( void );
+	virtual	bool		BytesAvailable( void );
 
 	///
 	/// Re-notifies the attached link immediately if decoded payload remains in
@@ -199,7 +199,7 @@ public:
 	/// Whether the Newton closed the MNP link with a valid LD frame.
 	/// False after a local protocol failure.
 	///
-	virtual	Boolean		PeerDisconnected( void );
+	virtual	bool		PeerDisconnected( void );
 
 	///
 	/// Runs the MNP handshake (LR, LR reply, LA) once. A repeated call fails
@@ -214,7 +214,7 @@ public:
 	/// Answer every inbound LA with LA(last received, 1) (K1). Used by
 	/// TDCLInspectorLink.
 	///
-	void				SetKeepAlive( Boolean inKeepAlive );
+	void				SetKeepAlive( bool inKeepAlive );
 
 	/// \name Stall timeout
 	static constexpr std::chrono::milliseconds kDefaultStallTimeout{ 6000 };

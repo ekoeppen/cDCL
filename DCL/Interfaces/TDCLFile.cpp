@@ -112,10 +112,10 @@ TDCLFile::GetIcon( void ) const
 // ------------------------------------------------------------------------- //
 //  * IsPackage( void )
 // ------------------------------------------------------------------------- //
-Boolean
+bool
 TDCLFile::IsPackage( void )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	// On protège l'appel à TDCLPackage::IsPackage.
 	try {

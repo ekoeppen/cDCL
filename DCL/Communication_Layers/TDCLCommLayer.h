@@ -107,7 +107,7 @@ public:
 	///							0 signifie pas de limite.
 	///
 						TDCLCommLayer(
-								Boolean	inFlushAvailable = false,
+								bool	inFlushAvailable = false,
 								KUInt32	inMaxPipeCount = kDefaultPipeCount
 							);
 	
@@ -175,7 +175,7 @@ public:
 	/// \return \c true si la couche de communication sait le faire, \c false
 	/// sinon.
 	///
-	inline	Boolean		FlushAvailable( void )
+	inline	bool		FlushAvailable( void )
 		{
 			return mFlushAvailable;
 		}
@@ -233,7 +233,7 @@ protected:
 	/// 							communication sait vider la mémoire tampon
 	///								de sortie, \c false sinon.
 	///
-	inline	void		SetFlushAvailable( Boolean inNewFlushAvailable )
+	inline	void		SetFlushAvailable( bool inNewFlushAvailable )
 		{
 			mFlushAvailable = inNewFlushAvailable;
 		}
@@ -296,7 +296,7 @@ private:
 	///
 	TDCLCommLayer& operator = ( const TDCLCommLayer& inCopy );
 
-	Boolean				mFlushAvailable;	///< Si cette couche de
+	bool				mFlushAvailable;	///< Si cette couche de
 											///< communication sait vider la
 											///< mémoire tampon.
 	KUInt32				mMaxPipeCount;		///< Nombre maximum de connexion

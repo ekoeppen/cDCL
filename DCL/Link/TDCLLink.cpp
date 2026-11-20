@@ -215,10 +215,10 @@ TDCLLink::Wait( void )
 // --------------------------------------------------------------------------------	//
 //  * Connect( TDCLPipe*, TDCLServer* )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	{
 		std::unique_lock<std::mutex> lock( mStateMutex );
@@ -295,10 +295,10 @@ TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 // --------------------------------------------------------------------------------	//
 //  * Disconnect( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLLink::Disconnect( void )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	{
 		std::lock_guard<std::mutex> lock( mStateMutex );
@@ -322,10 +322,10 @@ TDCLLink::Disconnect( void )
 // --------------------------------------------------------------------------------	//
 //  * PostAppCommand( TDCLAppCommand* )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 {
-	Boolean theResult = false;
+	bool theResult = false;
 	
 	{
 		std::lock_guard<std::mutex> lock( mStateMutex );
@@ -347,10 +347,10 @@ TDCLLink::PostAppCommand( TDCLAppCommand* inCommand )
 // --------------------------------------------------------------------------------	//
 //  * Close( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLLink::Close( void )
 {
-	Boolean theResult = IsConnected();
+	bool theResult = IsConnected();
 	
 	// On envoie un événement si on est connecté.
 	if (theResult)
@@ -364,7 +364,7 @@ TDCLLink::Close( void )
 // --------------------------------------------------------------------------------	//
 //  * IsConnected( void )
 // --------------------------------------------------------------------------------	//
-Boolean
+bool
 TDCLLink::IsConnected( void )
 {
 	std::lock_guard<std::mutex> lock( mStateMutex );
@@ -537,7 +537,7 @@ TDCLLink::DoDisconnect( void )
 		}
 
 		// Récupération du résultat.
-		Boolean gotResult = false;
+		bool gotResult = false;
 		
 		try {
 			while ((gotResult == false) && mPipe->BytesAvailable())
@@ -617,7 +617,7 @@ TDCLLink::Run( void )
 	}
 
 	// Boucle principale du lien.
-	Boolean keepLooping = true;
+	bool keepLooping = true;
 	while( keepLooping )
 	{
 		EState theState;
@@ -735,7 +735,7 @@ TDCLLink::TransitionFromRunning( void )
 		try {
 			// L'événement est-il une commande de l'application?
 			// Si on a un événement de l'application, on le gère.
-			Boolean outProcessed = false;
+			bool outProcessed = false;
 			if (theNextEvent->GetEventKind() & TDCLEvent::kAnyAppCommandMask)
 			{
 				try {
@@ -913,12 +913,12 @@ TDCLLink::Idle( void )
 }
 
 // --------------------------------------------------------------------------------	//
-//  * ProcessAppCommand( TDCLAppCommand*, Boolean* )
+//  * ProcessAppCommand( TDCLAppCommand*, bool* )
 // --------------------------------------------------------------------------------	//
 TDCLLink::EState
 TDCLLink::ProcessAppCommand(
 					TDCLAppCommand* /* inCommand */,
-					Boolean* outProcessed )
+					bool* outProcessed )
 {
 	// On ne fait rien par défaut.
 	*outProcessed = false;

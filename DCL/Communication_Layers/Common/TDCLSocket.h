@@ -42,7 +42,7 @@
 #include <DCL/Communication_Layers/Common/TDCLWakeableWait.h>
 #include <DCL/Communication_Layers/TDCLSyncCommLayer.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
 typedef SOCKET dcl_socket_t;
@@ -92,7 +92,7 @@ public:
 protected:
 	virtual void DoStartListening( void ) override;
 	virtual void DoStopListening( void ) override;
-	virtual Boolean WaitForIncomingRequest( void ) override;
+	virtual bool WaitForIncomingRequest( void ) override;
 	virtual std::unique_ptr<TDCLPipe> DoAccept( void ) override;
 	virtual void DoRefuse( void ) override;
 
@@ -127,10 +127,10 @@ protected:
 		virtual ~TSocketPipe( void );
 
 		virtual void Disconnect( void ) override;
-		virtual Boolean BytesAvailable( void ) override;
+		virtual bool BytesAvailable( void ) override;
 		virtual long GetTimeout( void ) override;
 		virtual void SetTimeout( long inTimeout ) override;
-		virtual Boolean WaitForIncomingData( void ) override;
+		virtual bool WaitForIncomingData( void ) override;
 		virtual void DoDisconnect( void ) override;
 		virtual void Read( void* outBuffer, KUInt32* ioCount ) override;
 		virtual void Write( const void* inBuffer, KUInt32* ioCount ) override;
@@ -147,7 +147,7 @@ protected:
 		long mTimeout;
 		TDCLWakeableWait mDataWakeWait;
 		TDCLWakeableWait mIOWakeWait;
-		Boolean mClientSocketIsClosed;
+		bool mClientSocketIsClosed;
 	};
 
 private:
@@ -161,7 +161,7 @@ private:
 	KUInt32 mBackLogSize;
 	long mTimeout;
 	TDCLWakeableWait mWakeWait;
-	Boolean mSocketsAreClosed;
+	bool mSocketsAreClosed;
 	unsigned short mPort;
 };
 

@@ -22,7 +22,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Interfaces/POSIX/Compat/libgen.h>
@@ -470,11 +470,11 @@ main( int inArgc, char** inArgv )
 	int theResult = 0;
 
 	char* theFilePath = nil;
-	Boolean wantStdout = false;
+	bool wantStdout = false;
 	char* theOutputPath = nil;
-	Boolean theOutputPathWasAllocated = false;
+	bool theOutputPathWasAllocated = false;
 	char* thePackageName = nil;
-	Boolean thePackageNameWasAllocated = false;
+	bool thePackageNameWasAllocated = false;
 	char* theTemplatePath = nil;
 
 	int theOptionChar;

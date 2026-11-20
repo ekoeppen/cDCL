@@ -126,7 +126,7 @@ private:
     ///
     /// \return \c true si \c mRelocationCount > 0.
     ///
-    Boolean IsOffsetDependant( void ) const override;
+    bool IsOffsetDependant( void ) const override;
 
     ///
     /// Relocalise les données par rapport à l'offset dans le paquet.

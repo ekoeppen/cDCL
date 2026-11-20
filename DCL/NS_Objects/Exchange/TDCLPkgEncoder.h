@@ -75,7 +75,7 @@ public:
 	TDCLPkgEncoder(
 			TDCLRandomAccessStream* inStream,
 			KUInt32 inOffset,
-			Boolean inFourBytesPadding = false );
+			bool inFourBytesPadding = false );
 
 	///
 	/// Constructeur à partir d'un flux. Le décalage est la position
@@ -88,7 +88,7 @@ public:
 	///
 	TDCLPkgEncoder(
 			TDCLRandomAccessStream* inStream,
-			Boolean inFourBytesPadding = false );
+			bool inFourBytesPadding = false );
 
 	///
 	/// Destructeur.
@@ -147,7 +147,7 @@ public:
 	///
 	/// \return \c true si l'alignement se fait sur 4 octets.
 	///
-	inline Boolean	IsFourBytesPadded( void ) const
+	inline bool	IsFourBytesPadded( void ) const
 		{
 			return mFourBytesPadding;
 		}
@@ -155,7 +155,7 @@ public:
 	///
 	/// Get the best supermap during encoding for a given frame.
 	///
-	Boolean GetBestSupermap(const TDCLNSFrame*, KUInt32* outSharedKeysCount, KUInt32* outSupermapRef);
+	bool GetBestSupermap(const TDCLNSFrame*, KUInt32* outSharedKeysCount, KUInt32* outSupermapRef);
 
 	///
 	/// Add a map to be used as supermap.
@@ -228,14 +228,14 @@ private:
 	KUInt32			mOffset;				///< Décalage courant dans le flux.
 	KUInt32			mPartOffset;			///< Décalage de la partie par
 											///< rapport au début du paquet.
-	Boolean			mFourBytesPadding;		///< Alignement sur 4 octets (au lieu
+	bool			mFourBytesPadding;		///< Alignement sur 4 octets (au lieu
 											///< de 8).
 	SStackItem*		mStack;					///< Pile des objets à stocker.
 	KUInt32			mStackAllocatedSize;	///< Nombre d'éléments que la pile
 											///< peut contenir.
 	KUInt32			mStackSize;				///< Nombre d'éléments que la pile
 											///< contient.
-	Boolean			mInSlottedObject;		///< Si le flux est dans un objet.
+	bool			mInSlottedObject;		///< Si le flux est dans un objet.
 	std::list<std::pair<const TDCLNSFrame*, KUInt32>> mEncodedMaps;
 };
 

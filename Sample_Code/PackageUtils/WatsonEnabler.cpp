@@ -19,7 +19,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if TARGET_OS_WIN32
+#ifdef _WIN32
 #include <DCL/Interfaces/Win32/TDCLWin32File.h>
 #include <DCL/Interfaces/Win32/TDCLWin32Files.h>
 #include <DCL/Interfaces/POSIX/Compat/libgen.h>
