@@ -79,7 +79,120 @@ jobs:
         shell: bash
         run: ctest --test-dir build -C Release -LE optional --output-on-failure
 
-      - name: Stage release archive
+      - name: Stage release files
+        shell: bash
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          STAGE_NAME="cDCL-${TAG}-${PLATFORM}"
+          STAGE_DIR="stage/${STAGE_NAME}"
+          cmake --install build --component tools --prefix "${STAGE_DIR}" --strip
+          cp COPYING README.md "${STAGE_DIR}/"
+
+      - name: Sign and notarize macOS binaries
+        if: runner.os == 'macOS'
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          PLATFORM: ${{ matrix.platform }}
+          MACOS_CERT_BASE64: ${{ secrets.MACOS_CERT_BASE64 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          APPLE_NOTARY_KEY_BASE64: ${{ secrets.APPLE_NOTARY_KEY_BASE64 }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
+        run: |
+          STAGE_NAME="cDCL-${TAG}-${PLATFORM}"
+          BIN_DIR="stage/${STAGE_NAME}/bin"
+
+          if [ -z "${MACOS_CERT_BASE64}" ]; then
+            if [ "${REF_TYPE}" = "tag" ]; then
+              echo "::error::MACOS_CERT_BASE64 must be set for tag releases"
+              exit 1
+            fi
+            echo "::warning::MACOS_CERT_BASE64 is not set; skipping Developer ID signing and notarization (ad-hoc signing stripped binaries)"
+            for bin in "${BIN_DIR}/"*; do
+              [ -f "$bin" ] || continue
+              codesign --force --sign - "$bin"
+            done
+            exit 0
+          fi
+
+          for var in MACOS_CERT_PASSWORD APPLE_NOTARY_KEY_BASE64 APPLE_NOTARY_KEY_ID; do
+            if [ -z "${!var}" ]; then
+              echo "::error::${var} must be set when MACOS_CERT_BASE64 is configured"
+              exit 1
+            fi
+          done
+
+          KEYCHAIN_PATH="${RUNNER_TEMP}/signing.keychain-db"
+          CERT_PATH="${RUNNER_TEMP}/cert.p12"
+          NOTARY_KEY_PATH="${RUNNER_TEMP}/AuthKey.p8"
+          NOTARY_ZIP="${RUNNER_TEMP}/notarize.zip"
+          KEYCHAIN_PASS="$(openssl rand -hex 24)"
+
+          printf '%s' "${MACOS_CERT_BASE64}" | base64 --decode > "${CERT_PATH}"
+          printf '%s' "${APPLE_NOTARY_KEY_BASE64}" | base64 --decode > "${NOTARY_KEY_PATH}"
+          chmod 600 "${CERT_PATH}" "${NOTARY_KEY_PATH}"
+
+          security create-keychain -p "${KEYCHAIN_PASS}" "${KEYCHAIN_PATH}"
+          security set-keychain-settings -lut 21600 "${KEYCHAIN_PATH}"
+          security unlock-keychain -p "${KEYCHAIN_PASS}" "${KEYCHAIN_PATH}"
+          security import "${CERT_PATH}" -P "${MACOS_CERT_PASSWORD}" -A -t cert -f pkcs12 -k "${KEYCHAIN_PATH}"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${KEYCHAIN_PASS}" "${KEYCHAIN_PATH}"
+          security list-keychains -d user -s "${KEYCHAIN_PATH}" $(security list-keychains -d user | tr -d '"')
+
+          IDENTITY="${MACOS_SIGNING_IDENTITY}"
+          if [ -z "${IDENTITY}" ]; then
+            IDENTITY="$(security find-identity -v -p codesigning "${KEYCHAIN_PATH}" | sed -n 's/.*"\(Developer ID Application: [^"]*\)".*/\1/p' | head -n 1)"
+          fi
+          if [ -z "${IDENTITY}" ]; then
+            echo "::error::No Developer ID Application signing identity found in imported certificate"
+            exit 1
+          fi
+
+          for bin in "${BIN_DIR}/"*; do
+            [ -f "$bin" ] || continue
+            codesign --force --options runtime --timestamp \
+              --keychain "${KEYCHAIN_PATH}" \
+              --sign "${IDENTITY}" "$bin"
+            codesign --verify --strict --verbose=2 "$bin"
+          done
+
+          NOTARY_AUTH=(--key "${NOTARY_KEY_PATH}" --key-id "${APPLE_NOTARY_KEY_ID}")
+          if [ -n "${APPLE_NOTARY_ISSUER_ID}" ]; then
+            NOTARY_AUTH+=(--issuer "${APPLE_NOTARY_ISSUER_ID}")
+          fi
+
+          ditto -c -k --keepParent "stage/${STAGE_NAME}" "${NOTARY_ZIP}"
+          set +e
+          SUBMIT_JSON="$(xcrun notarytool submit "${NOTARY_ZIP}" \
+            "${NOTARY_AUTH[@]}" \
+            --wait \
+            --output-format json)"
+          STATUS=$?
+          set -e
+          echo "${SUBMIT_JSON}"
+          NOTARY_STATUS="$(printf '%s' "${SUBMIT_JSON}" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status",""))' 2>/dev/null || true)"
+          if [ "${STATUS}" -ne 0 ] || [ "${NOTARY_STATUS}" != "Accepted" ]; then
+            SUBMISSION_ID="$(printf '%s' "${SUBMIT_JSON}" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))' 2>/dev/null || true)"
+            if [ -n "${SUBMISSION_ID}" ]; then
+              xcrun notarytool log "${SUBMISSION_ID}" "${NOTARY_AUTH[@]}" || true
+            fi
+            echo "::error::macOS notarization failed (exit=${STATUS}, status=${NOTARY_STATUS:-unknown})"
+            exit 1
+          fi
+
+      - name: Cleanup macOS signing credentials
+        if: always() && runner.os == 'macOS'
+        run: |
+          if [ -f "${RUNNER_TEMP}/signing.keychain-db" ]; then
+            security delete-keychain "${RUNNER_TEMP}/signing.keychain-db" || true
+          fi
+          rm -f "${RUNNER_TEMP}/cert.p12" "${RUNNER_TEMP}/AuthKey.p8" "${RUNNER_TEMP}/notarize.zip"
+
+      - name: Package release archive
         shell: bash
         env:
           TAG: ${{ needs.prepare.outputs.tag }}
@@ -87,14 +200,11 @@ jobs:
           EXT: ${{ matrix.ext }}
         run: |
           STAGE_NAME="cDCL-${TAG}-${PLATFORM}"
-          STAGE_DIR="stage/${STAGE_NAME}"
-          cmake --install build --component tools --prefix "${STAGE_DIR}" --strip
-          cp COPYING README.md "${STAGE_DIR}/"
           mkdir -p dist
           if [ "${EXT}" = "zip" ]; then
             (cd stage && cmake -E tar cf "../dist/${STAGE_NAME}.zip" --format=zip "${STAGE_NAME}")
           else
-            tar -C stage -czf "dist/${STAGE_NAME}.tar.gz" "${STAGE_NAME}"
+            COPYFILE_DISABLE=1 tar -C stage -czf "dist/${STAGE_NAME}.tar.gz" "${STAGE_NAME}"
           fi
 
       - name: Upload release archive
