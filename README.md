@@ -82,11 +82,11 @@ target_link_libraries(my_app PRIVATE cDCL::K cDCL::DCL)
 ### Subproject Behavior (`FetchContent` / `add_subdirectory`)
 
 When `cDCL` is embedded as a subproject (`PROJECT_IS_TOP_LEVEL` is `FALSE`),
-samples, tests, install rules, RPATH settings, and the standalone
+tools, tests, install rules, RPATH settings, and the standalone
 `BUILD_SHARED_LIBS=ON` default are disabled automatically so `cDCL` follows the
 parent project's build configuration. Explicit override options are available:
 
-- `CDCL_BUILD_SAMPLES` (defaults to `ON` standalone, `OFF` when embedded)
+- `CDCL_BUILD_TOOLS` (defaults to `ON` standalone, `OFF` when embedded)
 - `CDCL_BUILD_TESTS` (defaults to `ON` standalone, `OFF` when embedded)
 - `CDCL_INSTALL` (defaults to `ON` standalone, `OFF` when embedded)
 

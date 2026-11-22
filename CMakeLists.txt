@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.21)
 project (dcl)
 
-option(CDCL_BUILD_SAMPLES "Build cDCL sample programs" ${PROJECT_IS_TOP_LEVEL})
+option(CDCL_BUILD_TOOLS "Build cDCL CLI tools" ${PROJECT_IS_TOP_LEVEL})
 option(CDCL_BUILD_TESTS "Build cDCL tests" ${PROJECT_IS_TOP_LEVEL})
 option(CDCL_INSTALL "Enable cDCL install rules" ${PROJECT_IS_TOP_LEVEL})
 
@@ -465,10 +465,10 @@ DCL/Streams/TDCLStream.h
 )
 
 
-if(CDCL_BUILD_SAMPLES)
-    add_subdirectory (Sample_Code/ToolchainUtils)
-    add_subdirectory (Sample_Code/PackageUtils)
-    add_subdirectory (Sample_Code/NSOFtoXML)
+if(CDCL_BUILD_TOOLS)
+    add_subdirectory (Tools/ToolchainUtils)
+    add_subdirectory (Tools/PackageUtils)
+    add_subdirectory (Tools/NSOFtoXML)
 endif()
 
 if(CDCL_BUILD_TESTS AND BUILD_TESTING)

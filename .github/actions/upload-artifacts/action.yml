@@ -22,36 +22,36 @@ runs:
     - uses: actions/upload-artifact@v7
       with:
         name: NSOFtoXML ${{ inputs.label }}
-        path: build/Sample_Code/NSOFtoXML/NSOFtoXML${{ inputs.suffix }}
+        path: build/Tools/NSOFtoXML/NSOFtoXML${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: DumpPkgPart ${{ inputs.label }}
-        path: build/Sample_Code/PackageUtils/DumpPkgPart${{ inputs.suffix }}
+        path: build/Tools/PackageUtils/DumpPkgPart${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: DumpPkgDir ${{ inputs.label }}
-        path: build/Sample_Code/PackageUtils/DumpPkgDir${{ inputs.suffix }}
+        path: build/Tools/PackageUtils/DumpPkgDir${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: WatsonEnabler ${{ inputs.label }}
-        path: build/Sample_Code/PackageUtils/WatsonEnabler${{ inputs.suffix }}
+        path: build/Tools/PackageUtils/WatsonEnabler${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: nespackager ${{ inputs.label }}
-        path: build/Sample_Code/PackageUtils/nespackager${{ inputs.suffix }}
+        path: build/Tools/PackageUtils/nespackager${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: pbbookmaker ${{ inputs.label }}
-        path: build/Sample_Code/PackageUtils/pbbookmaker${{ inputs.suffix }}
+        path: build/Tools/PackageUtils/pbbookmaker${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: ELFtoNTK ${{ inputs.label }}
-        path: build/Sample_Code/ToolchainUtils/ELFtoNTK${{ inputs.suffix }}
+        path: build/Tools/ToolchainUtils/ELFtoNTK${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: ELFtoPKG ${{ inputs.label }}
-        path: build/Sample_Code/ToolchainUtils/ELFtoPKG${{ inputs.suffix }}
+        path: build/Tools/ToolchainUtils/ELFtoPKG${{ inputs.suffix }}
     - uses: actions/upload-artifact@v7
       with:
         name: Rex ${{ inputs.label }}
-        path: build/Sample_Code/ToolchainUtils/Rex${{ inputs.suffix }}
+        path: build/Tools/ToolchainUtils/Rex${{ inputs.suffix }}
