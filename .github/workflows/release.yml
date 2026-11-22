@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version label for dry-run archives (no GitHub Release published)'
+        required: false
+        default: 'snapshot'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      is_prerelease: ${{ steps.meta.outputs.is_prerelease }}
+    steps:
+      - name: Determine release metadata
+        id: meta
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$REF_TYPE" = "tag" ]; then
+            TAG="$REF_NAME"
+          else
+            TAG="${INPUT_TAG:-snapshot}"
+          fi
+          if [[ "$TAG" == *-* ]]; then
+            PRERELEASE="true"
+          else
+            PRERELEASE="false"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "is_prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux-x86_64
+            ext: tar.gz
+            cmake_args: -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+          - os: macos-latest
+            platform: macos-universal
+            ext: tar.gz
+            cmake_args: '-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"'
+          - os: windows-latest
+            platform: windows-x86_64
+            ext: zip
+            cmake_args: '-G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF'
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Disable git autocrlf on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
+
+      - name: Checkout source code
+        uses: actions/checkout@v6
+
+      - name: Configure
+        shell: bash
+        run: cmake -B build ${{ matrix.cmake_args }}
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        shell: bash
+        run: ctest --test-dir build -C Release -LE optional --output-on-failure
+
+      - name: Stage release archive
+        shell: bash
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+          PLATFORM: ${{ matrix.platform }}
+          EXT: ${{ matrix.ext }}
+        run: |
+          STAGE_NAME="cDCL-${TAG}-${PLATFORM}"
+          STAGE_DIR="stage/${STAGE_NAME}"
+          cmake --install build --component tools --prefix "${STAGE_DIR}" --strip
+          cp COPYING README.md "${STAGE_DIR}/"
+          mkdir -p dist
+          if [ "${EXT}" = "zip" ]; then
+            (cd stage && cmake -E tar cf "../dist/${STAGE_NAME}.zip" --format=zip "${STAGE_NAME}")
+          else
+            tar -C stage -czf "dist/${STAGE_NAME}.tar.gz" "${STAGE_NAME}"
+          fi
+
+      - name: Upload release archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.platform }}
+          path: dist/*
+
+  release:
+    needs: [prepare, build]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release archives
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums
+        working-directory: dist
+        run: sha256sum *.tar.gz *.zip > SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          IS_PRERELEASE: ${{ needs.prepare.outputs.is_prerelease }}
+        run: |
+          FLAGS=(--generate-notes)
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            FLAGS+=(--prerelease)
+          fi
+          gh release create "$TAG" dist/* "${FLAGS[@]}"

@@ -478,11 +478,11 @@ endif()
 if(CDCL_INSTALL)
     foreach(HEADER ${K_HEADERS} ${DCL_HEADERS})
         string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/${DIR})
+        install(FILES ${HEADER} DESTINATION include/${DIR} COMPONENT dev)
     endforeach()
 
     install(TARGETS K DCL
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+        RUNTIME DESTINATION bin COMPONENT dev
+        LIBRARY DESTINATION lib COMPONENT dev
+        ARCHIVE DESTINATION lib COMPONENT dev)
 endif()

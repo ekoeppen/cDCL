@@ -12,5 +12,5 @@ if(WIN32)
 endif()
 
 if(CDCL_INSTALL)
-    install(TARGETS NSOFtoXML RUNTIME DESTINATION bin)
+    install(TARGETS NSOFtoXML RUNTIME DESTINATION bin COMPONENT tools)
 endif()

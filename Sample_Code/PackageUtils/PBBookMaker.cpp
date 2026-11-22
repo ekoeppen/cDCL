@@ -59,13 +59,13 @@ using namespace std;
 /// PBBookMaker utilise le fichier pbbooktemplate.nsof comme modèle.
 /// Celui-ci doit être ou bien:
 /// - à côté de PBBookMaker (c'est là qu'il le cherche d'abord)
-/// - dans ../share/dcl/
+/// - dans ../share/DCL/
 /// (le chemin est relatif au chemin de PBBookMaker).
 /// - ou bien fourni par l'option -m de la ligne de commande.
 ///
 
 #define bookTemplatePathSuffix1	"/pbbooktemplate.nsof"
-#define bookTemplatePathSuffix2	"/../share/dcl/pbbooktemplate.nsof"
+#define bookTemplatePathSuffix2	"/../share/DCL/pbbooktemplate.nsof"
 
 // -------------------------------------------------------------------------- //
 // Prototypes

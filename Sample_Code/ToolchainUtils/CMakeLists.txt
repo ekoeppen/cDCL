@@ -25,16 +25,15 @@ Rex.cpp
 target_link_libraries (Rex PUBLIC DCL PRIVATE Threads::Threads)
 
 if(CDCL_INSTALL)
-    install(TARGETS ELFtoNTK RUNTIME DESTINATION bin)
-    install(TARGETS ELFtoPKG RUNTIME DESTINATION bin)
-    install(TARGETS Rex RUNTIME DESTINATION bin)
+    install(TARGETS ELFtoNTK RUNTIME DESTINATION bin COMPONENT tools)
+    install(TARGETS ELFtoPKG RUNTIME DESTINATION bin COMPONENT tools)
+    install(TARGETS Rex RUNTIME DESTINATION bin COMPONENT tools)
 endif()
 
 if(CDCL_BUILD_TESTS AND BUILD_TESTING)
     file(GLOB TEST_SRC_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff-*.src)
     foreach(TEST_SRC ${TEST_SRC_SCRIPTS})
         add_test(NAME ${TEST_SRC}
-                 CONFIGURATIONS Debug
                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex
                  COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Rex/test-diff.sh $<TARGET_FILE:Rex> ${TEST_SRC})
     endforeach(TEST_SRC ${TEST_SRC_SCRIPTS})

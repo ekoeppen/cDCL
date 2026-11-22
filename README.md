@@ -9,8 +9,9 @@ provide core streaming and serialization utilities.
 
 The repository consists of two main libraries:
 
-- **`DCL`**: Domain-specific implementation of the [Newton Dock protocol](Documentation/Dante-Connection-Protocol.md),
-  [MNP over serial encoding](Documentation/MNP.md), package encoding/decoding, and object stores.
+- **`DCL`**: Domain-specific implementation of the [Newton Dock
+  protocol](Documentation/Dante-Connection-Protocol.md), [MNP over serial
+  encoding](Documentation/MNP.md), package encoding/decoding, and object stores.
 - **`K`**: Foundational systems library providing binary streams, ring buffers,
   memory-mapped files, and endianness utilities.
 
@@ -43,10 +44,10 @@ To permit downstream consumers (such as Einstein) and legacy tools to migrate
 smoothly without high churn:
 
 - Legacy fixed-width aliases (`KUInt32`, `KSInt16`, etc.) are provided in
-  `K/Defines/KDefinitions.h` as lightweight `using` aliases to `<cstdint>`
-  types (`uint32_t`, `int16_t`).
-- Concurrency facades (`TThread`, `TMutex`, `TCondVar`) remain available as
-  thin wrappers encapsulating standard C++20 concurrency.
+  `K/Defines/KDefinitions.h` as lightweight `using` aliases to `<cstdint>` types
+  (`uint32_t`, `int16_t`).
+- Concurrency facades (`TThread`, `TMutex`, `TCondVar`) remain available as thin
+  wrappers encapsulating standard C++20 concurrency.
 
 ## CMake Integration (Downstream Consumers)
 
@@ -158,7 +159,37 @@ not run by `ctest`:
 ./build/Tests/DCLManualTests cl-cad-fdserial /dev/ttyUSB0
 ```
 
-Pass `-DCDCL_BUILD_TESTS=OFF` (or `-DBUILD_TESTING=OFF`) to CMake to skip building the test suite.
+Pass `-DCDCL_BUILD_TESTS=OFF` (or `-DBUILD_TESTING=OFF`) to CMake to skip
+building the test suite.
+
+## Releases
+
+Prebuilt standalone CLI tool archives (`linux-x86_64`, `macos-universal`, and
+`windows-x86_64`) along with `SHA256SUMS.txt` are published on [GitHub
+Releases](https://github.com/ekoeppen/cDCL/releases).
+
+To stage a standalone CLI tools tree locally:
+
+```sh
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+cmake --build build
+cmake --install build --component tools --prefix dist --strip
+```
+
+### Cutting a Release
+
+[`.github/workflows/release.yml`](.github/workflows/release.yml) builds and
+publishes releases automatically when a version tag starting with a digit (e.g.,
+`3.2` or `3.2.0-rc1`) is pushed:
+
+```sh
+git tag -a 3.2 -m "Release 3.2"
+git push origin 3.2
+```
+
+Tags containing `-` are published as pre-releases. The workflow can also be
+triggered manually via `workflow_dispatch` to produce dry-run archive artifacts
+without creating a GitHub Release.
 
 ## License and authors
 
