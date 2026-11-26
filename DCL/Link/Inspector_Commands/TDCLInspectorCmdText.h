@@ -40,7 +40,7 @@
 class TDCLInspectorCmdText: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdText( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdText( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

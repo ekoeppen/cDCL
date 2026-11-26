@@ -217,8 +217,8 @@ GetTemplate(
 		char* inToolName )
 {
 	TDCLNSRef theResult;
-	TDCLFile* theTemplateFile = nil;
-	char* theTemplatePath = nil;
+	TDCLFile* theTemplateFile = nullptr;
+	char* theTemplatePath = nullptr;
 	try {
 		if (inTemplatePath)
 		{
@@ -256,7 +256,7 @@ GetTemplate(
 			}
 			
 			::free( theTemplatePath );
-			theTemplatePath = nil;
+			theTemplatePath = nullptr;
 		} // if (inTemplatePath)
 
 		{
@@ -266,7 +266,7 @@ GetTemplate(
 		
 		theTemplateFile->Close();
 		delete theTemplateFile;
-		theTemplateFile = nil;
+		theTemplateFile = nullptr;
 	} catch (TDCLDoesntExistException& anException) {
 		if (inTemplatePath)
 		{
@@ -381,8 +381,8 @@ BuildPackage(
 			const TDCLNSRef& inPackageSym,
 			bool inNOS1Compatible )
 {
-	TDCLStream* theOutputStream = nil;
-	TDCLFile* theOutputFile = nil;
+	TDCLStream* theOutputStream = nullptr;
+	TDCLFile* theOutputFile = nullptr;
 	
 	if (outPkgFilePath)
 	{
@@ -452,18 +452,18 @@ main( int inArgc, char** inArgv )
 
 	int theResult = 0;
 
-	char* theFilePath = nil;
+	char* theFilePath = nullptr;
 	bool wantStdout = false;
-	char* theOutputPath = nil;
+	char* theOutputPath = nullptr;
 	bool theOutputPathWasAllocated = false;
-	char* thePackageName = nil;
+	char* thePackageName = nullptr;
 	bool thePackageNameWasAllocated = false;
-	char* theBookTitle = nil;
-	char* theFontFamily = nil;
+	char* theBookTitle = nullptr;
+	char* theFontFamily = nullptr;
 	int theFontSize = 9;
 	UDCLPaperback::EEncoding theEncoding = UDCLPaperback::kISO88591;
-	char* theTemplatePath = nil;
-	char* tocLinesPrefix = nil;
+	char* theTemplatePath = nullptr;
+	char* tocLinesPrefix = nullptr;
 	bool suppressTocLines = false;
 	bool newtonOS1xCompatible = false;
 
@@ -578,14 +578,14 @@ main( int inArgc, char** inArgv )
 		::exit( 1 );
 	}
 
-	if (suppressTocLines && (tocLinesPrefix == nil))
+	if (suppressTocLines && (tocLinesPrefix == nullptr))
 	{
 		(void) ::fprintf( stderr, "-d option requires -i option.\n" );
 		::usage( ::basename( theToolName ) );
 		::exit( 1 );
 	}
 	
-	if ((!wantStdout) && (theOutputPath == nil) && (theFilePath != nil))
+	if ((!wantStdout) && (theOutputPath == nullptr) && (theFilePath != nullptr))
 	{
 		// On détermine le nom du fichier de sortie en ajoutant .pkg.
 		size_t theFilePathLength = ::strlen( theFilePath );
@@ -602,14 +602,14 @@ main( int inArgc, char** inArgv )
 						5 );		
 	}
 	
-	if (thePackageName == nil)
+	if (thePackageName == nullptr)
 	{
-		if (theBookTitle == nil)
+		if (theBookTitle == nullptr)
 		{
 			// On devine le nom du paquet.
-			if (theFilePath == nil)
+			if (theFilePath == nullptr)
 			{
-				if (theOutputPath == nil)
+				if (theOutputPath == nullptr)
 				{
 					// Aléatoire (enfin, presque)
 					thePackageName = (char*) ::malloc( 64 );
@@ -647,7 +647,7 @@ main( int inArgc, char** inArgv )
 		}
 	}
 	
-	if (theBookTitle == nil)
+	if (theBookTitle == nullptr)
 	{
 		theBookTitle = thePackageName;
 	}
@@ -656,10 +656,10 @@ main( int inArgc, char** inArgv )
 	TDCLPlatformFiles theFilesIntf;
 	
 	// Flux d'entrée.
-	TDCLStream* theTextStream = nil;
+	TDCLStream* theTextStream = nullptr;
 	
 	// Fichier d'entrée.
-	TDCLFile* theFile = nil;
+	TDCLFile* theFile = nullptr;
 
 	if (theFilePath)
 	{
@@ -671,7 +671,7 @@ main( int inArgc, char** inArgv )
 	}
 	
 	// Fichier du modèle.
-	TDCLFile* theTemplateFile = nil;
+	TDCLFile* theTemplateFile = nullptr;
 	
 	try {
 		TDCLNSRef thePkgFrame = GetTemplate(

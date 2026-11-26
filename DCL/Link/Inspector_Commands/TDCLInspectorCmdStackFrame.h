@@ -37,7 +37,7 @@
 class TDCLInspectorCmdStackFrame: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdStackFrame( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdStackFrame( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

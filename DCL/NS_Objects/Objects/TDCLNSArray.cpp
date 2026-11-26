@@ -68,7 +68,7 @@ TDCLNSArray::TDCLNSArray( void )
 	:
 		mClass( KDCLSYM::kSYMarray ),
 		mSize( 0 ),
-		mItems( nil )
+		mItems( nullptr )
 {
 	mItems = (TDCLNSRef*) ::malloc( 0 );
 }
@@ -82,13 +82,13 @@ TDCLNSArray::TDCLNSArray(
 	:
 		mClass( KDCLSYM::kSYMarray ),
 		mSize( inSize ),
-		mItems( nil )
+		mItems( nullptr )
 {
 	mItems = (TDCLNSRef*) ::malloc( inSize * sizeof(TDCLNSRef) );
 	
 	if (inSize > 0)
 	{
-		if (mItems == nil)
+		if (mItems == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -110,14 +110,14 @@ TDCLNSArray::TDCLNSArray( const TDCLNSArray& inCopy )
 		TDCLNSObject( inCopy ),
 		mClass( inCopy.mClass ),
 		mSize( inCopy.mSize ),
-		mItems( nil )
+		mItems( nullptr )
 {
 	KUInt32 theSize = mSize;
 	mItems = (TDCLNSRef*) ::malloc( theSize * sizeof(TDCLNSRef) );
 	
 	if (theSize > 0)
 	{
-		if (mItems == nil)
+		if (mItems == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -137,7 +137,7 @@ TDCLNSArray::TDCLNSArray( const TDCLNSArray& inCopy )
 TDCLNSArray::~TDCLNSArray( void )
 {
 	// Suppression des éléments
-	if (mItems != nil)
+	if (mItems != nullptr)
 	{
 		KUInt32 nbItems = mSize;
 		KUInt32 indexItems;
@@ -172,7 +172,7 @@ TDCLNSArray::operator = ( const TDCLNSArray& inCopy )
 	
 	if (theSize > 0)
 	{
-		if (mItems == nil)
+		if (mItems == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -236,7 +236,7 @@ TDCLNSArray::Add( const TDCLNSRef& inItem )
 	mSize++;
 	mItems = (TDCLNSRef*) ::realloc( mItems, mSize * sizeof(TDCLNSRef) );
 	
-	if (mItems == nil)
+	if (mItems == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -277,7 +277,7 @@ TDCLNSArray::RemoveSlot( KUInt32 inIndex )
 	// Rétrécicement du tableau.
 	mItems = (TDCLNSRef*) ::realloc( mItems, mSize * sizeof(TDCLNSRef) );
 	
-	if (mItems == nil)
+	if (mItems == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -299,7 +299,7 @@ TDCLNSArray::Insert( KUInt32 inIndex, const TDCLNSRef& inItem )
 	mSize++;
 	mItems = (TDCLNSRef*) ::realloc( mItems, mSize * sizeof(TDCLNSRef) );
 	
-	if (mItems == nil)
+	if (mItems == nullptr)
 	{
 		throw DCLMemError;
 	}

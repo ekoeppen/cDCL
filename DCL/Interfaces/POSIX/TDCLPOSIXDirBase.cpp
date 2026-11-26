@@ -71,13 +71,13 @@ TDCLPOSIXDirBase::TDCLPOSIXDirBase(
 				const char* inPath )
 	:
 		TDCLFolder( inFilesIntf, inFolder ),
-		mDirRef( nil ),
-		mPath( nil )
+		mDirRef( nullptr ),
+		mPath( nullptr )
 {
 	// Copie du chemin.
 	size_t thePathLength = ::strlen( inPath ) + 1;
 	mPath = (const char*) ::malloc( thePathLength );
-	if (mPath == nil)
+	if (mPath == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -110,7 +110,7 @@ TDCLPOSIXDirBase::GetItemByName(
 						const KUInt16* inName,
 						KSInt32 /* inVolRefNum *//* = 0 */ )
 {
-	TDCLFSItem* theItem = nil;
+	TDCLFSItem* theItem = nullptr;
 	
 	// Recherche de l'élément.
 	if (mDirRef)
@@ -124,7 +124,7 @@ TDCLPOSIXDirBase::GetItemByName(
 		::rewinddir( mDirRef );
 		do {
 			dirent* theEntry = ::readdir( mDirRef );
-			if (theEntry == nil)
+			if (theEntry == nullptr)
 			{
 				break;
 			}
@@ -307,7 +307,7 @@ TDCLPOSIXDirBase::OpenDir( void )
 {
 	// Ouverture du dossier.
 	mDirRef = ::opendir( mPath );
-	if (mDirRef == nil)
+	if (mDirRef == nullptr)
 	{
 		// Une erreur est survenue.
 		int theErr = errno;
@@ -344,7 +344,7 @@ TDCLPOSIXDirBase::CountElements( void )
 		do
 		{
 			dirent* theEntry = ::readdir( mDirRef );
-			if (theEntry == nil)
+			if (theEntry == nullptr)
 			{
 				break;
 			}
@@ -407,7 +407,7 @@ TDCLPOSIXDirBase::GetItems( void )
 		while (true)
 		{
 			dirent* theEntry = ::readdir( mDirRef );
-			if ((theEntry == nil) || (indexItems == nbItems))
+			if ((theEntry == nullptr) || (indexItems == nbItems))
 			{
 				// C'est la fin.
 				// Ajout du terminateur.
@@ -455,7 +455,7 @@ TDCLPOSIXDirBase::GetItems( void )
 							throw DCLPlatformUnknownError( theErr );
 					}
 				} else {
-					TDCLFSItem* theItem = nil;
+					TDCLFSItem* theItem = nullptr;
 
 					if (S_ISDIR(theFileInfos.st_mode))
 					{

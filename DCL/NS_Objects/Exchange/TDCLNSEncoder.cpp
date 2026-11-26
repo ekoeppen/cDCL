@@ -123,7 +123,7 @@ TDCLNSEncoder::AddObject( const TDCLNSRef& inObject )
 			}
 		} else {
 			// Ajout le flux avec l'ID -1
-			PutObject( theObject, (KUInt32) -1, nil );
+			PutObject( theObject, (KUInt32) -1, nullptr );
 		}
 	} else {
 		PutRef( inObject );

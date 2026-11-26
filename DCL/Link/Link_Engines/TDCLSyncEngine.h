@@ -652,7 +652,7 @@ private:
 	/// \param outLastSyncDate	en sortie, date de la dernière synchronisation.
 	///
 	TDCLNSFrame&				GetCurrentStoreFrame(
-										KUInt32* outLastSyncDate = nil );
+										KUInt32* outLastSyncDate = nullptr );
 	
 	///
 	/// Récupère la clé d'une entrée à partir de la liste des entrées des

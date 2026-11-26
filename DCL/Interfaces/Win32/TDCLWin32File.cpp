@@ -55,7 +55,7 @@
 const KUInt32 kMinutesBetween1904and1970 = 34714080;
 
 TDCLWin32File::TDCLWin32File( IDCLFiles* inFilesIntf, const char* inPath )
-	: TDCLFile( inFilesIntf, nil ),
+	: TDCLFile( inFilesIntf, nullptr ),
 	  mPath( _strdup(inPath) ),
 	  mFile( NULL ),
 	  mReadOnly( false )
@@ -71,7 +71,7 @@ TDCLWin32File::~TDCLWin32File()
 void TDCLWin32File::Open( bool inReadOnly )
 {
 	mFile = ::fopen(mPath, inReadOnly ? "rb" : "r+b");
-	if (mFile == nil)
+	if (mFile == nullptr)
 	{
 		int theErr = errno;
 		
@@ -96,7 +96,7 @@ void TDCLWin32File::Open( bool inReadOnly )
 void TDCLWin32File::Create()
 {
 	mFile = ::fopen(mPath, "w+b");
-	if (mFile == nil)
+	if (mFile == nullptr)
 	{
 		int theErr = errno;
 		
@@ -147,7 +147,7 @@ bool TDCLWin32File::IsOpen() const
 
 bool TDCLWin32File::IsReadOnly() const
 {
-	return (mFile != nil) && mReadOnly;
+	return (mFile != nullptr) && mReadOnly;
 }
 
 KUInt64 TDCLWin32File::GetLength()
@@ -314,7 +314,7 @@ TDCLNSRef TDCLWin32File::GetStringPath() const
 
 const KUInt16* TDCLWin32File::GetName() const
 {
-	return nil;
+	return nullptr;
 }
 
 KUInt16* TDCLWin32File::MakeName() const

@@ -42,7 +42,7 @@ using namespace std;
 // -------------------------------------------------------------------------- //
 TStringRef::TStringRef( void )
 	:
-		mString( nil )
+		mString( nullptr )
 {
 }
 

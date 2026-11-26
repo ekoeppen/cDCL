@@ -155,8 +155,8 @@ public:
 		{
 			return
 				((mString != inAlter.mString)
-				&& (mString != nil)
-				&& (inAlter.mString != nil)
+				&& (mString != nullptr)
+				&& (inAlter.mString != nullptr)
 				&& (*mString < *inAlter.mString));
 		}
 
@@ -170,8 +170,8 @@ public:
 		{
 			return
 				((mString != inAlter.GetString())
-				&& (mString != nil)
-				&& (inAlter.GetString() != nil)
+				&& (mString != nullptr)
+				&& (inAlter.GetString() != nullptr)
 				&& (*mString < *inAlter.GetString()));
 		}
 
@@ -186,8 +186,8 @@ public:
 			return
 				((mString == inAlter.mString)
 				||
-					((mString != nil)
-					&& (inAlter.mString != nil)
+					((mString != nullptr)
+					&& (inAlter.mString != nullptr)
 					&& (*mString == *inAlter.mString)));
 		}
 
@@ -202,8 +202,8 @@ public:
 			return
 				((mString == inAlter.GetString())
 				||
-					((mString != nil)
-					&& (inAlter.GetString() != nil)
+					((mString != nullptr)
+					&& (inAlter.GetString() != nullptr)
 					&& (*mString == *inAlter.GetString())));
 		}
 

@@ -91,7 +91,7 @@ KUInt32 TDCLInspectorCommand::SendHeader( TDCLStream* inStream )
 TDCLInspectorCommand* TDCLInspectorCommand::ReceiveCommand(	TDCLStream* inStream, ProgressFuncPtr inProgressFuncPtr /* = nil */, void* inRefCon /* = nil */ )
 {
 	// LOGFN();
-	TDCLInspectorCommand* theCommandObject = nil;
+	TDCLInspectorCommand* theCommandObject = nullptr;
 	
 	KUInt32 theCommand;	// Command ID.
 	
@@ -156,7 +156,7 @@ TDCLInspectorCommand* TDCLInspectorCommand::ReceiveCommand(	TDCLStream* inStream
 	} else {
 		void* theData = ::malloc( theLength );
 	
-		if ( theData == nil ) {
+		if ( theData == nullptr ) {
 			throw DCLMemError;
 		}
 	

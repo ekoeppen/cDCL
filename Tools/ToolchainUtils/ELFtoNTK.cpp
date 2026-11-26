@@ -67,7 +67,7 @@ ParseExpFile(TDCLNSFrame& frame, TDCLStream& expFile) {
 
     while (true) {
         KUInt8* str = expFile.GetLine();
-        if (str == nil) {
+        if (str == nullptr) {
             break;
         }
         if (str[0] != ';' && str[0] != '\n' && str[0] != 0) {

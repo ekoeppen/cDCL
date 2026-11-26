@@ -53,7 +53,7 @@ TDCLDockCmdArray::TDCLDockCmdArray(
 								KUInt32 inSize )
 	:
 		TDCLDockCommand( inCommand ),
-		mBufferData( nil )
+		mBufferData( nullptr )
 {
 	size_t theLength = (inSize + 1) * sizeof( KUInt32 );
 	
@@ -68,7 +68,7 @@ TDCLDockCmdArray::TDCLDockCmdArray(
 TDCLDockCmdArray::TDCLDockCmdArray( KUInt32 inCommand, KUInt32 inSize )
 	:
 		TDCLDockCommand( inCommand ),
-		mBufferData( nil )
+		mBufferData( nullptr )
 {
 	size_t theLength = (inSize + 1) * sizeof( KUInt32 );
 	
@@ -85,13 +85,13 @@ TDCLDockCmdArray::TDCLDockCmdArray(
 					void* inBuffer )
 	:
 		TDCLDockCommand( inCommand ),
-		mBufferData( nil )
+		mBufferData( nullptr )
 {
 	mBufferData = (KUInt32*) ::malloc( inBufferSize );
 	
 	if (inBufferSize > 0)
 	{
-		if (mBufferData == nil)
+		if (mBufferData == nullptr)
 		{
 			// Not enough memory.
 			throw DCLMemError;

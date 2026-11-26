@@ -166,7 +166,7 @@ int main( int argc, char** argv )
         bool fatalError = false;
         while (true) {
             KUInt8* str = srcFile.GetLine();
-            if (str == nil) {
+            if (str == nullptr) {
                 break;
             }
             int lineLen = strlen((char*) str);

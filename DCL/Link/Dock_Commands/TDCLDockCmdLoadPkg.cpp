@@ -57,7 +57,7 @@ TDCLDockCmdLoadPkg::TDCLDockCmdLoadPkg( TDCLFSItemRef inPackage )
 	:
 		TDCLDockCommand( kDLoadPackage ),
 		mPackage( inPackage ),
-		mPackageFile( nil )
+		mPackageFile( nullptr )
 {
 	mPackageFile = (TDCLFile*) mPackage;
 }
@@ -94,7 +94,7 @@ TDCLDockCmdLoadPkg::SendBody(
 	KUInt32 remaining = inLength;				// Number of bytes left.
 	
 	char* theBuffer = new char [ kChunkSize ];	// Buffer for a chunk.
-	if (theBuffer == nil)
+	if (theBuffer == nullptr)
 	{
 		throw DCLMemError;
 	}

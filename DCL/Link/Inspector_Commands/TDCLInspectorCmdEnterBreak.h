@@ -37,7 +37,7 @@
 class TDCLInspectorCmdEnterBreak: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdEnterBreak( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdEnterBreak( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

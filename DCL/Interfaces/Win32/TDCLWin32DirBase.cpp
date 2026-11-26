@@ -160,7 +160,7 @@ TDCLFSItemRef* TDCLWin32DirBase::GetItems()
 {
 	KUInt32 theCount = CountElements();
 	TDCLFSItemRef* theResult = (TDCLFSItemRef*) ::malloc( (theCount + 1) * sizeof( TDCLFSItemRef ) );
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -187,7 +187,7 @@ TDCLFSItemRef* TDCLWin32DirBase::GetItems()
 				char theItemPath[MAX_PATH];
 				::sprintf( theItemPath, "%s\\%s", mPath, theFindData.cFileName );
 				
-				TDCLFSItem* theItem = nil;
+				TDCLFSItem* theItem = nullptr;
 				if (theFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
 					theItem = new TDCLWin32Dir( (TDCLWin32Files*) GetFilesIntf(), TDCLFSItemRef( this ), theItemPath );

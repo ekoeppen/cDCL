@@ -208,7 +208,7 @@ class TBorrowedPipe : public TDCLPipe
 {
 public:
 	explicit TBorrowedPipe( TDCLPipe* inTarget )
-	    : TDCLPipe( nil ), mTarget( inTarget )
+	    : TDCLPipe( nullptr ), mTarget( inTarget )
 	{
 	}
 

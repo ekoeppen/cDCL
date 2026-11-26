@@ -222,7 +222,7 @@ TDCLNSString::Catenate( const char* inAlter ) const
 	size_t theNewSize = (theNewStrLen + 1) * sizeof(KUInt16);
 	
 	KUInt16* theNewString = (KUInt16*) ::malloc( theNewSize );
-	if (theNewString == nil)
+	if (theNewString == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -251,7 +251,7 @@ TDCLNSString::Catenate( const KUInt16* inAlter ) const
 	size_t theNewSize = (theNewStrLen + 1) * sizeof(KUInt16);
 	
 	KUInt16* theNewString = (KUInt16*) ::malloc( theNewSize );
-	if (theNewString == nil)
+	if (theNewString == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -277,7 +277,7 @@ TDCLNSString::CatenateWithSpace( const char* inAlter ) const
 	size_t theNewSize = (theNewStrLen + 1) * sizeof(KUInt16);
 	
 	KUInt16* theNewString = (KUInt16*) ::malloc( theNewSize );
-	if (theNewString == nil)
+	if (theNewString == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -308,7 +308,7 @@ TDCLNSString::CatenateWithSpace( const KUInt16* inAlter ) const
 	size_t theNewSize = (theNewStrLen + 1) * sizeof(KUInt16);
 	
 	KUInt16* theNewString = (KUInt16*) ::malloc( theNewSize );
-	if (theNewString == nil)
+	if (theNewString == nullptr)
 	{
 		throw DCLMemError;
 	}

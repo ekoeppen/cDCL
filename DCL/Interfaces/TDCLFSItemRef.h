@@ -64,7 +64,7 @@ public:
 	///
 	/// \param inItem	objet TDCLFSItem à référencer
 	///
-	TDCLFSItemRef( TDCLFSItem* inItem = nil );
+	TDCLFSItemRef( TDCLFSItem* inItem = nullptr );
 
 	///
 	/// Destructeur.

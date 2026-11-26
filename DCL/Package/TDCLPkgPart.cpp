@@ -54,7 +54,7 @@
 TDCLPkgPart::TDCLPkgPart( void )
 	:
 		mOffset( 0 ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mSize( 0 )
 {
 	mBuffer = ::malloc( 0 );
@@ -66,11 +66,11 @@ TDCLPkgPart::TDCLPkgPart( void )
 TDCLPkgPart::TDCLPkgPart( KUInt32 inOffset, const void* inData, KUInt32 inSize )
 	:
 		mOffset( inOffset ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mSize( inSize )
 {
 	mBuffer = ::malloc( inSize );
-	if ((inSize != 0) && (mBuffer == nil))
+	if ((inSize != 0) && (mBuffer == nullptr))
 	{
 		throw DCLMemError;
 	}

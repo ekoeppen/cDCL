@@ -71,14 +71,14 @@ TDCLNSBinary::TDCLNSBinary(
 					KUInt32 inSize /* = 0 */ )
 	:
 		mClass( inClass ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inSize )
 {
 	mBuffer = ::malloc( inSize );
 	
 	if (inSize > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -92,7 +92,7 @@ TDCLNSBinary::TDCLNSBinary( const TDCLNSBinary& inCopy )
 	:
 		TDCLNSObject( inCopy ),
 		mClass( inCopy.mClass ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inCopy.mBufferSize )
 {
 	KUInt32 theSize = mBufferSize;
@@ -100,7 +100,7 @@ TDCLNSBinary::TDCLNSBinary( const TDCLNSBinary& inCopy )
 	
 	if (theSize > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -119,7 +119,7 @@ TDCLNSBinary::TDCLNSBinary(
 				const TDCLNSRef& inClass /* = KDCLSYM::kSYMbinary */ )
 	:
 		mClass( inClass ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inLength )
 {
 	// Allocation de la mémoire tampon.
@@ -127,7 +127,7 @@ TDCLNSBinary::TDCLNSBinary(
 	
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -146,7 +146,7 @@ TDCLNSBinary::TDCLNSBinary(
 				const TDCLNSRef& inClass /* = KDCLSYM::kSYMbinary */ )
 	:
 		mClass( inClass ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inLength )
 {
 	// Allocation de la mémoire tampon.
@@ -154,7 +154,7 @@ TDCLNSBinary::TDCLNSBinary(
 	
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -205,7 +205,7 @@ TDCLNSBinary::operator = ( const TDCLNSBinary& inCopy )
 	
 	if (theSize > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -257,7 +257,7 @@ TDCLNSBinary::SetLength( KUInt32 inLength )
 
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}

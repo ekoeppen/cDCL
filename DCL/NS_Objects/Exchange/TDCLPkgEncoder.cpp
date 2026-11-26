@@ -67,7 +67,7 @@ TDCLPkgEncoder::TDCLPkgEncoder(
 		mOffset( inOffset ),
 		mPartOffset( inOffset ),
 		mFourBytesPadding( inFourBytesPadding ),
-		mStack( nil ),
+		mStack( nullptr ),
 		mStackAllocatedSize( 0 ),
 		mStackSize( 0 ),
 		mInSlottedObject( false )
@@ -87,7 +87,7 @@ TDCLPkgEncoder::TDCLPkgEncoder(
 		mOffset( UTInt64::ToKUInt32( inStream->GetCursor() ) ),
 		mPartOffset( mOffset ),
 		mFourBytesPadding( inFourBytesPadding ),
-		mStack( nil ),
+		mStack( nullptr ),
 		mStackAllocatedSize( 0 ),
 		mStackSize( 0 ),
 		mInSlottedObject( false )
@@ -124,7 +124,7 @@ TDCLPkgEncoder::AddObject( const TDCLNSRef& inObject )
 			KUIntPtr theOffset;
 			if (WasObjectEncoded(
 						inObject.GetPointer(),
-						nil,
+						nullptr,
 						&theOffset ))
 			{
 				// Oui.

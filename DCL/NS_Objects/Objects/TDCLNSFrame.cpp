@@ -69,8 +69,8 @@ TDCLNSFrame::TDCLNSFrame( void )
 	:
 		mLength( 0 ),
 		mCapacity( 0 ),
-		mKeys( nil ),
-		mValues( nil ),
+		mKeys( nullptr ),
+		mValues( nullptr ),
 		mKeysAreSorted( true ),
 		mIsFunction( false )
 {
@@ -79,7 +79,7 @@ TDCLNSFrame::TDCLNSFrame( void )
 	
 	mCapacity = kListChunkSize;
 
-	if ((mKeys == nil) || (mValues == nil))
+	if ((mKeys == nullptr) || (mValues == nullptr))
 	{
 		throw DCLMemError;
 	}
@@ -92,8 +92,8 @@ TDCLNSFrame::TDCLNSFrame( KUInt32 inCapacity )
 	:
 		mLength( 0 ),
 		mCapacity( inCapacity ),
-		mKeys( nil ),
-		mValues( nil ),
+		mKeys( nullptr ),
+		mValues( nullptr ),
 		mKeysAreSorted( true ),
 		mIsFunction( false )
 {
@@ -102,7 +102,7 @@ TDCLNSFrame::TDCLNSFrame( KUInt32 inCapacity )
 
 	if (inCapacity > 0)
 	{
-		if ((mKeys == nil) || (mValues == nil))
+		if ((mKeys == nullptr) || (mValues == nullptr))
 		{
 			throw DCLMemError;
 		}
@@ -117,8 +117,8 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 		TDCLNSObject( inCopy ),
 		mLength( inCopy.mLength ),
 		mCapacity( inCopy.mLength ),
-		mKeys( nil ),
-		mValues( nil ),
+		mKeys( nullptr ),
+		mValues( nullptr ),
 		mKeysAreSorted( inCopy.mKeysAreSorted ),
 		mIsFunction( inCopy.mIsFunction )
 {
@@ -129,7 +129,7 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 	
 	if (nbPairs > 0)
 	{
-		if ((mKeys == nil) || (mValues == nil))
+		if ((mKeys == nullptr) || (mValues == nullptr))
 		{
 			throw DCLMemError;
 		}
@@ -152,7 +152,7 @@ TDCLNSFrame::TDCLNSFrame( const TDCLNSFrame& inCopy )
 TDCLNSFrame::~TDCLNSFrame( void )
 {
 	// Suppression des clés et des références.
-	if ((mKeys != nil) && (mValues != nil))
+	if ((mKeys != nullptr) && (mValues != nullptr))
 	{
 		KUInt32 nbPairs = mLength;
 		KUInt32 indexPairs;
@@ -166,12 +166,12 @@ TDCLNSFrame::~TDCLNSFrame( void )
 		::free( mValues );
 	} else {
 		// Echec lors de l'initialisation.
-		if (mKeys != nil)
+		if (mKeys != nullptr)
 		{
 			::free( mKeys );
 		}
 
-		if (mValues != nil)
+		if (mValues != nullptr)
 		{
 			::free( mValues );
 		}
@@ -201,7 +201,7 @@ TDCLNSFrame::operator = ( const TDCLNSFrame& inCopy )
 	
 	if (nbPairs > 0)
 	{
-		if ((mKeys == nil) || (mValues == nil))
+		if ((mKeys == nullptr) || (mValues == nullptr))
 		{
 			throw DCLMemError;
 		}

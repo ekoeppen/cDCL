@@ -54,13 +54,13 @@
 // ------------------------------------------------------------------------- //
 TDCLMemStream::TDCLMemStream( void )
 	:
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 ),
 		mAllocatedSize( 0 ),
 		mCursor( 0 )
 {
 	mBuffer = ::malloc( kSizeIncrement );
-	if (mBuffer == nil)
+	if (mBuffer == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -73,7 +73,7 @@ TDCLMemStream::TDCLMemStream( void )
 // ------------------------------------------------------------------------- //
 TDCLMemStream::TDCLMemStream( const void* inBuffer, KUInt32 inLength )
 	:
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inLength ),
 		mAllocatedSize( inLength ),
 		mCursor( 0 )
@@ -81,7 +81,7 @@ TDCLMemStream::TDCLMemStream( const void* inBuffer, KUInt32 inLength )
 	mBuffer = ::malloc( inLength );
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -145,7 +145,7 @@ TDCLMemStream::Write( const void* inBuffer, KUInt32* ioCount )
 		}
 		
 		mBuffer = ::realloc( mBuffer, mAllocatedSize );
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}

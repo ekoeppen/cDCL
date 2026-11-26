@@ -68,7 +68,7 @@ public:
 	TDCLAppCommand(
 				EEventKind inCommandKind,
 				EEventID inCommandID,
-				void* inData = nil );
+				void* inData = nullptr );
 
 	///
 	/// Accesseur sur l'identifiant de la commande.

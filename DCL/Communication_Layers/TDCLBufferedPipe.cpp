@@ -58,12 +58,12 @@ TDCLBufferedPipe::TDCLBufferedPipe(
 			KUInt32 inBufferCapacity /* = kDefaultBufferCapacity */ )
 	:
 		TDCLPipeProxy( inSubPipe ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 ),
 		mBufferCapacity( inBufferCapacity )
 {
 	mBuffer = ::malloc( inBufferCapacity );
-	if ((inBufferCapacity > 0) && (mBuffer == nil))
+	if ((inBufferCapacity > 0) && (mBuffer == nullptr))
 	{
 		throw DCLMemError;
 	}

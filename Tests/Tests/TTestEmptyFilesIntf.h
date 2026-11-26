@@ -49,7 +49,7 @@ public:
 	/// \return rien du tout
 	/// \throws DCLNotImplementedError dans tous les cas.
 	///
-	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
+	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nullptr );
 
 	///
 	/// Détermine le nombre de dossiers racine.

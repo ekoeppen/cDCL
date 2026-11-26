@@ -47,8 +47,8 @@
 // -------------------------------------------------------------------------- //
 TDCLStyleRef::TDCLStyleRef( void )
 	:
-		mFontSpecification( nil ),
-		mPicture( nil )
+		mFontSpecification( nullptr ),
+		mPicture( nullptr )
 {
 }
 
@@ -58,7 +58,7 @@ TDCLStyleRef::TDCLStyleRef( void )
 TDCLStyleRef::TDCLStyleRef( TDCLFontSpecification* inTextStyle )
 	:
 		mFontSpecification( inTextStyle ),
-		mPicture( nil )
+		mPicture( nullptr )
 {
 	if (inTextStyle)
 	{
@@ -71,7 +71,7 @@ TDCLStyleRef::TDCLStyleRef( TDCLFontSpecification* inTextStyle )
 // -------------------------------------------------------------------------- //
 TDCLStyleRef::TDCLStyleRef( TDCLPicture* inPicture )
 	:
-		mFontSpecification( nil ),
+		mFontSpecification( nullptr ),
 		mPicture( inPicture )
 {
 	if (inPicture)
@@ -125,7 +125,7 @@ TDCLStyleRef::operator = ( const TDCLStyleRef& inCopy )
 		{
 			delete mPicture;
 		}
-		mPicture = nil;
+		mPicture = nullptr;
 
 		if (mFontSpecification != inCopy.mFontSpecification)
 		{
@@ -142,7 +142,7 @@ TDCLStyleRef::operator = ( const TDCLStyleRef& inCopy )
 		{
 			delete mFontSpecification;
 		}
-		mFontSpecification = nil;
+		mFontSpecification = nullptr;
 
 		if (mPicture != inCopy.mPicture)
 		{
@@ -159,13 +159,13 @@ TDCLStyleRef::operator = ( const TDCLStyleRef& inCopy )
 		{
 			delete mFontSpecification;
 		}
-		mFontSpecification = nil;
+		mFontSpecification = nullptr;
 
 		if (mPicture && mPicture->DecrementRef())
 		{
 			delete mPicture;
 		}
-		mPicture = nil;
+		mPicture = nullptr;
 	}
 	
 	return *this;
@@ -176,7 +176,7 @@ TDCLStyleRef::operator = ( const TDCLStyleRef& inCopy )
 // -------------------------------------------------------------------------- //
 TDCLStyleRef::operator TDCLFontSpecification& ( void ) const
 {
-	if (mFontSpecification == nil)
+	if (mFontSpecification == nullptr)
 	{
 		throw DCLClassCast;
 	}
@@ -189,7 +189,7 @@ TDCLStyleRef::operator TDCLFontSpecification& ( void ) const
 // -------------------------------------------------------------------------- //
 TDCLStyleRef::operator TDCLPicture& ( void ) const
 {
-	if (mPicture == nil)
+	if (mPicture == nullptr)
 	{
 		throw DCLClassCast;
 	}

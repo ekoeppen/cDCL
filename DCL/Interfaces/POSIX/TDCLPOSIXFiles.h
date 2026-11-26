@@ -86,7 +86,7 @@ public:
 	/// Cette méthode retourne le dossier racine. Ce dossier appartient à l'objet
 	/// TDCLPOSIXFiles.
 	///
-	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
+	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nullptr );
 
 	///
 	/// Détermine le nombre de dossiers racine.

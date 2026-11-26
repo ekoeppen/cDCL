@@ -48,7 +48,7 @@
 // ------------------------------------------------------------------------- //
 TDCLNSCodec::TDCLNSCodec( TDCLStream* inStream )
 	:
-		mList( nil ),
+		mList( nullptr ),
 		mListAllocatedSize( 0 ),
 		mListSize( 0 ),
 		mStream( inStream )

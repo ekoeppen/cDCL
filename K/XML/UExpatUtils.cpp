@@ -51,11 +51,11 @@ UExpatUtils::GetAttrValue(
 					const XML_Char** const inAttributes,
 					const XML_Char* const inAttrName )
 {
-	const XML_Char* theResult = nil;
+	const XML_Char* theResult = nullptr;
 	const XML_Char** theAttributes = inAttributes;
 	
 	// Itération dans la liste.
-	while (*theAttributes != nil)
+	while (*theAttributes != nullptr)
 	{
 		if (::strcmp( *theAttributes, inAttrName ) == 0)
 		{

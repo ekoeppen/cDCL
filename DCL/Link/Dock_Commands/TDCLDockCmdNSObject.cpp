@@ -53,7 +53,7 @@
 TDCLDockCmdNSObject::TDCLDockCmdNSObject( void )
 	:
 		TDCLDockCommand(),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 )
 {
 	// This space for rent.
@@ -67,7 +67,7 @@ TDCLDockCmdNSObject::TDCLDockCmdNSObject(
 			const TDCLNSRef& inObject )
 	:
 		TDCLDockCommand( inCommand ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 )
 {
 	// Conversion de la référence en données NSOF.
@@ -91,13 +91,13 @@ TDCLDockCmdNSObject::TDCLDockCmdNSObject(
 				)
 	:
 		TDCLDockCommand( inCommand ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inLength )
 {
 	mBuffer = (KUInt8*) ::malloc( inLength );
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			// Pas assez de mémoire.
 			throw DCLMemError;
@@ -147,7 +147,7 @@ TDCLDockCmdNSObject::SetObject( const TDCLNSRef& inObject )
 	if (mBuffer)
 	{
 		::free( mBuffer );
-		mBuffer = nil;
+		mBuffer = nullptr;
 		mBufferSize = 0;
 	}
 

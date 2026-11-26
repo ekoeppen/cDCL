@@ -51,7 +51,7 @@ TDCLDockCmdGeneric::TDCLDockCmdGeneric( void )
 	:
 		TDCLDockCommand (),
 		mLength ( 0 ),
-		mData( nil )
+		mData( nullptr )
 {
 	// Allocation d'un pointeur vide.
 	mData = ::malloc( 0 );
@@ -67,14 +67,14 @@ TDCLDockCmdGeneric::TDCLDockCmdGeneric(
 	:
 		TDCLDockCommand ( inCommand ),
 		mLength ( inLength ),
-		mData( nil )
+		mData( nullptr )
 {
 	// I first allocate a pointer of the size inLength.
 	mData = ::malloc( inLength );	// I use malloc because this code should be portable.
 	
 	if (inLength > 0)
 	{
-		if (mData == nil)
+		if (mData == nullptr)
 		{
 			// Not enough memory.
 			throw DCLMemError;
@@ -107,7 +107,7 @@ TDCLDockCmdGeneric::SetLength( KUInt32 inLength )
 	
 	mData = ::realloc( mData, inLength );
 
-	if ((inLength > 0) && (mData == nil))
+	if ((inLength > 0) && (mData == nullptr))
 	{
 		// Not enough memory.
 		throw DCLMemError;

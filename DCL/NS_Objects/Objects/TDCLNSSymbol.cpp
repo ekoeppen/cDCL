@@ -85,14 +85,14 @@ TDCLNSSymbol::TDCLNSSymbol( const KUInt16* inString )
 TDCLNSSymbol::TDCLNSSymbol( const char* inString, KUInt32 inHashCode )
 	:
 		TDCLNSObject(),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( inHashCode )
 {
 	// Copie de la chaîne
 	size_t theStrLen = ::strlen( inString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
-	if (mString == nil)
+	if (mString == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -106,14 +106,14 @@ TDCLNSSymbol::TDCLNSSymbol( const char* inString, KUInt32 inHashCode )
 TDCLNSSymbol::TDCLNSSymbol( const TDCLNSSymbol& inCopy )
 	:
 		TDCLNSObject( inCopy ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( inCopy.mHashCode )
 {
 	// Copie de la chaîne
 	size_t theStrLen = ::strlen( inCopy.mString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
-	if (mString == nil)
+	if (mString == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -149,7 +149,7 @@ TDCLNSSymbol::TDCLNSSymbol(
 // ------------------------------------------------------------------------- //
 TDCLNSSymbol::~TDCLNSSymbol( void )
 {
-	if (mString != nil)
+	if (mString != nullptr)
 	{
 		::free( (void*) mString );
 	}
@@ -162,7 +162,7 @@ TDCLNSSymbol&
 TDCLNSSymbol::operator = ( const TDCLNSSymbol& inCopy )
 {
 	// Libération de la chaîne précédente.
-	if (mString != nil)
+	if (mString != nullptr)
 	{
 		::free( (void*) mString );
 	}
@@ -171,7 +171,7 @@ TDCLNSSymbol::operator = ( const TDCLNSSymbol& inCopy )
 	unsigned long theStrLen = ::strlen( inCopy.mString );
 	mString = (const char*) ::malloc( theStrLen + 1 );
 	
-	if (mString == nil)
+	if (mString == nullptr)
 	{
 		throw DCLMemError;
 	}

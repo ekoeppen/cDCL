@@ -46,7 +46,7 @@
 // ------------------------------------------------------------------------- //
 TDCLApplication::TDCLApplication( void )
 	:
-		mFilesIntf( nil )
+		mFilesIntf( nullptr )
 {
 	// Kilroy was here.
 }
@@ -69,7 +69,7 @@ TDCLApplication::~TDCLApplication( void )
 IDCLFiles*
 TDCLApplication::GetFilesIntf( void )
 {
-	if (mFilesIntf == nil)
+	if (mFilesIntf == nullptr)
 	{
 		mFilesIntf = CreateFilesIntf();
 	}

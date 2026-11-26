@@ -96,13 +96,13 @@ public:
 	/// \param outError		optional OS error code when result is kError.
 	///
 	EResult WaitReady( dcl_wait_handle_t inHandle, EDirection inDirection, std::chrono::milliseconds inTimeout,
-	                   const std::stop_token& inStopToken, int* outError = nil );
+	                   const std::stop_token& inStopToken, int* outError = nullptr );
 
 	///
 	/// Checks without blocking (timeout 0) whether \p inHandle is ready.
 	/// Stateless and safe to call from any thread.
 	///
-	static EResult PollNow( dcl_wait_handle_t inHandle, EDirection inDirection, int* outError = nil );
+	static EResult PollNow( dcl_wait_handle_t inHandle, EDirection inDirection, int* outError = nullptr );
 
 private:
 	enum class EPollResult

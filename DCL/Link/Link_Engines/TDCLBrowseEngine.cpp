@@ -71,14 +71,14 @@ TDCLBrowseEngine::TDCLBrowseEngine(
 				TDCLFSItemRef inDefaultFolder /* = TDCLFSItemRef() */ )
 	:
 		TDCLLinkEngine( inLink ),
-		mFilesIntf( nil ),
-		mCurrentFolderRef( nil ),
-		mCurrentFolder( nil ),
+		mFilesIntf( nullptr ),
+		mCurrentFolderRef( nullptr ),
+		mCurrentFolder( nullptr ),
 		mIsMac( false ),
 		mFileTypes()
 {
 	mFilesIntf = inLink->GetApplication()->GetFilesIntf();
-	if (inDefaultFolder.GetFSItem() == nil)
+	if (inDefaultFolder.GetFSItem() == nullptr)
 	{
 		mCurrentFolderRef = mFilesIntf->GetRootFolder();
 	} else {
@@ -285,7 +285,7 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 	TDCLNSArray& theResultAsArray = theResult.ToArray();
 	
 	// Récupération des éléments.
-	TDCLFSItemRef* theItems = nil;
+	TDCLFSItemRef* theItems = nullptr;
 	try {
 		theItems = mCurrentFolder->GetItems();
 	} catch ( TDCLException& inException ) {
@@ -296,7 +296,7 @@ TDCLBrowseEngine::GetFilesAndFolders( void )
 	{
 		// Itération sur les éléments: on les ajoute et on libère la mémoire.
 		TDCLFSItemRef* theCursor = theItems;
-		while ( theCursor->GetFSItem() != nil )
+		while ( theCursor->GetFSItem() != nullptr )
 		{
 			TDCLFSItemRef theElement = *theCursor++;
 			TDCLFSItem* theItem = theElement.GetFSItem();
@@ -339,7 +339,7 @@ TDCLBrowseEngine::GetFileInfo( const TDCLNSRef& inFileName )
 	TDCLFSItemRef theElement = GetFile( inFileName );
 	
 	TDCLFSItem* theItem = theElement.GetFSItem();
-	if ((theItem == nil) || (theItem->GetClass() != TDCLFSItem::kFile))
+	if ((theItem == nullptr) || (theItem->GetClass() != TDCLFSItem::kFile))
 	{
 		// On ne s'attend pas à ça. On dégage.
 		throw DCLBadDockCmd;
@@ -382,7 +382,7 @@ TDCLBrowseEngine::SetPath( const TDCLNSRef& inPath )
 	TDCLNSArray& thePath = inPath.ToArray();
 	
 	// Interprétation du chemin.
-	const KUInt16* theRootName = nil;
+	const KUInt16* theRootName = nullptr;
 	TDCLNSRef theElement;
 	TDCLNSRef theElementName;
 	// Si on est sur Mac, le premier élément doit être Desktop

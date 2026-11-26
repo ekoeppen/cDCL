@@ -150,8 +150,8 @@ DumpPart(
         bool inXMLize,
         bool inNSOFize )
 {
-    TDCLStream* theOutputStream = nil;
-    TDCLFile* theOutputFile = nil;
+    TDCLStream* theOutputStream = nullptr;
+    TDCLFile* theOutputFile = nullptr;
 
     if (outPartFilePath)
     {
@@ -221,11 +221,11 @@ main( int inArgc, char** inArgv )
 
     int theResult = 0;
 
-    char* theFilePath = nil;
+    char* theFilePath = nullptr;
     bool wantOnePartOnly = false;
     int partIndex = 0;
     bool wantStdout = false;
-    char* theOutputPrefix = nil;
+    char* theOutputPrefix = nullptr;
     bool wantXML = false;
     bool wantNSOF = false;
     KUInt32 theVAddr = 0;
@@ -304,7 +304,7 @@ main( int inArgc, char** inArgv )
         ::exit( 1 );
     }
 
-    if ((!wantStdout) && (theOutputPrefix == nil))
+    if ((!wantStdout) && (theOutputPrefix == nullptr))
     {
         // Si theFilePath vaut nil, on aura toujours theOutputPrefix
         // égal à nil.
@@ -312,8 +312,8 @@ main( int inArgc, char** inArgv )
     }
 
     TDCLPlatformFiles theFilesIntf;
-    TDCLStream* theStream = nil;
-    TDCLFile* theFile = nil;
+    TDCLStream* theStream = nullptr;
+    TDCLFile* theFile = nullptr;
 
     if (theFilePath)
     {
@@ -324,7 +324,7 @@ main( int inArgc, char** inArgv )
         theStream = new TDCLStdStream();
     }
 
-    char* thePartFilePath = nil;
+    char* thePartFilePath = nullptr;
 
     try {
         // Lecture du paquet.
@@ -348,7 +348,7 @@ main( int inArgc, char** inArgv )
 
             DumpPart( &theFilesIntf, &thePackage, theActualPartIndex, theOutputPrefix, wantXML, wantNSOF );
         } else {
-            char* thePartFilePathIndexPart = nil;
+            char* thePartFilePathIndexPart = nullptr;
             if (theOutputPrefix)
             {
                 size_t thePrefixSize = ::strlen( theOutputPrefix );

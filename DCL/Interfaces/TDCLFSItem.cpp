@@ -57,7 +57,7 @@ TDCLFSItem::TDCLFSItem(
 		mFilesIntf( inFilesIntf ),
 		mClass( inItemClass ),
 		mParentFolder( inParentFolder ),
-		mName( nil )
+		mName( nullptr )
 {
 }
 
@@ -67,7 +67,7 @@ TDCLFSItem::TDCLFSItem(
 TDCLFSItem::~TDCLFSItem( void )
 {
 	// Si le nom existe, le supprimer.
-	if (mName != nil)
+	if (mName != nullptr)
 	{
 		::free( mName );
 	}
@@ -80,7 +80,7 @@ TDCLFSItemRef
 TDCLFSItem::GetParentFolder( void )
 {
 	// Si le parent n'existe pas, le créer, puis incrémenter son compteur de référence.
-	if (mParentFolder.GetFSItem() == nil)
+	if (mParentFolder.GetFSItem() == nullptr)
 	{
 		mParentFolder = MakeParentFolder();
 	}
@@ -97,7 +97,7 @@ TDCLFSItem::GetName( void )
 	KUInt16* theResult = mName;
 
 	// Si le nom n'existe pas, le créer.
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		theResult = MakeName();
 		mName = theResult;
@@ -127,7 +127,7 @@ void
 TDCLFSItem::SetName( KUInt16* inName )
 {
 	// Le nom ne doit pas déjà exister.
-	if (mName!= nil)
+	if (mName!= nullptr)
 	{
 		throw DCLUnknownError;
 	}

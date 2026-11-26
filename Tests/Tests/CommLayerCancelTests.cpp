@@ -197,16 +197,16 @@ public:
 	std::unique_ptr<TDCLPipe> WaitForAcceptedPipe( void )
 	{
 		std::unique_lock<std::mutex> lock( mMutex );
-		mCV.wait( lock, [this] { return mAcceptedPipe != nil; } );
+		mCV.wait( lock, [this] { return mAcceptedPipe != nullptr; } );
 		return std::move( mAcceptedPipe );
 	}
 
 	std::unique_ptr<TDCLPipe> WaitForAcceptedPipeFor( std::chrono::milliseconds inTimeout )
 	{
 		std::unique_lock<std::mutex> lock( mMutex );
-		if (!mCV.wait_for( lock, inTimeout, [this] { return mAcceptedPipe != nil; } ))
+		if (!mCV.wait_for( lock, inTimeout, [this] { return mAcceptedPipe != nullptr; } ))
 		{
-			return nil;
+			return nullptr;
 		}
 		return std::move( mAcceptedPipe );
 	}
@@ -280,7 +280,7 @@ class TKillOnConnectApp : public TCancelProbeApp
 public:
 	TKillOnConnectApp( void )
 		: TCancelProbeApp(),
-		  mTargetServer( nil )
+		  mTargetServer( nullptr )
 	{
 	}
 
@@ -308,7 +308,7 @@ public:
 	THandshakeFailApp( void )
 		: TCancelProbeApp(),
 		  mLinkExceptions( 0 ),
-		  mKillOnException( nil )
+		  mKillOnException( nullptr )
 	{
 	}
 

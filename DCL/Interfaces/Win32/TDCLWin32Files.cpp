@@ -41,9 +41,9 @@
 #include <DCL/Link/Dock_Commands/TDCLDockCommand.h>
 
 TDCLWin32Files::TDCLWin32Files()
-	: mRootFolder(nil)
+	: mRootFolder(nullptr)
 {
-	mRootFolder = GetRootFolder(nil);
+	mRootFolder = GetRootFolder(nullptr);
 }
 
 TDCLWin32Files::~TDCLWin32Files()
@@ -57,7 +57,7 @@ KUInt32 TDCLWin32Files::GetKind()
 
 TDCLFSItemRef TDCLWin32Files::GetRootFolder(const KUInt16* inRootName)
 {
-	if (inRootName == nil) {
+	if (inRootName == nullptr) {
 		KUInt32 theCount = CountRootFolders();
 		if (theCount > 0) {
 			return TDCLFSItemRef(new TDCLWin32RootDir(this, (const char*)GetRootFolderName(0)));
@@ -112,5 +112,5 @@ const KUInt16* TDCLWin32Files::GetRootFolderName(KUInt32 inFolderIndex) const
 			theCurrentIndex++;
 		}
 	}
-	return nil;
+	return nullptr;
 }

@@ -70,14 +70,14 @@ TDCLPOSIXFile::TDCLPOSIXFile(
 					const char* inPath )
 	:
 		TDCLFile( inFilesIntf, DoMakeParentFolder( inFilesIntf, inPath ) ),
-		mFile( nil ),
-		mPath( nil ),
+		mFile( nullptr ),
+		mPath( nullptr ),
 		mReadOnly( false )
 {
 	// Copie du chemin.
 	size_t thePathLength = ::strlen( inPath ) + 1;
 	mPath = (const char*) ::malloc( thePathLength );
-	if (mPath == nil)
+	if (mPath == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -93,14 +93,14 @@ TDCLPOSIXFile::TDCLPOSIXFile(
 					const char* inPath )
 	:
 		TDCLFile( inFilesIntf, inParentFolder ),
-		mFile( nil ),
-		mPath( nil ),
+		mFile( nullptr ),
+		mPath( nullptr ),
 		mReadOnly( false )
 {
 	// Copie du chemin.
 	size_t thePathLength = ::strlen( inPath ) + 1;
 	mPath = (const char*) ::malloc( thePathLength );
-	if (mPath == nil)
+	if (mPath == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -136,7 +136,7 @@ TDCLPOSIXFile::Open( bool inReadOnly )
 	mFile = ::fopen( mPath, inReadOnly ? "r" : "r+" );
 	mReadOnly = inReadOnly;
 	
-	if (mFile == nil)
+	if (mFile == nullptr)
 	{
 		// Une erreur est survenue.
 		int theErr = errno;
@@ -173,7 +173,7 @@ TDCLPOSIXFile::Create( void )
 	mFile = ::fopen( mPath, "r+" );
 	mReadOnly = false;
 	
-	if (mFile != nil)
+	if (mFile != nullptr)
 	{
 		throw DCLPlatformExistsAlready( errno );
 	}
@@ -181,7 +181,7 @@ TDCLPOSIXFile::Create( void )
 	// Création du fichier.
 	mFile = ::fopen( mPath, "w" );
 
-	if (mFile == nil)
+	if (mFile == nullptr)
 	{
 		// Une erreur est survenue.
 		int theErr = errno;
@@ -239,7 +239,7 @@ TDCLPOSIXFile::Delete( void )
 bool
 TDCLPOSIXFile::IsOpen( void ) const
 {
-	return mFile != nil;
+	return mFile != nullptr;
 }
 
 // -------------------------------------------------------------------------- //
@@ -248,7 +248,7 @@ TDCLPOSIXFile::IsOpen( void ) const
 bool
 TDCLPOSIXFile::IsReadOnly( void ) const
 {
-	return (mFile != nil) && mReadOnly;
+	return (mFile != nullptr) && mReadOnly;
 }
 
 // -------------------------------------------------------------------------- //
@@ -436,7 +436,7 @@ TDCLPOSIXFile::Close( void )
 	if (mFile)
 	{
 		(void) ::fclose( mFile );
-		mFile = nil;
+		mFile = nullptr;
 	}
 }
 

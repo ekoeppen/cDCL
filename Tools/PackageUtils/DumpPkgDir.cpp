@@ -91,7 +91,7 @@ main( int inArgc, char** inArgv )
     int theResult = 0;
     KUInt32 theVAddr = 0;
 
-    char* theFilePath = nil;
+    char* theFilePath = nullptr;
     int indexOpt = 1;
     while (indexOpt < inArgc)
     {
@@ -133,8 +133,8 @@ main( int inArgc, char** inArgv )
     }
 
     TDCLPlatformFiles theFilesIntf;
-    TDCLStream* theStream = nil;
-    TDCLFile* theFile = nil;
+    TDCLStream* theStream = nullptr;
+    TDCLFile* theFile = nullptr;
 
     if (theFilePath)
     {

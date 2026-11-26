@@ -72,7 +72,7 @@ public:
 	///
 	TDCLDockCmdPassword(
 						const KUInt32 inChallenge[2],
-						const KUInt16* inPassword = nil );
+						const KUInt16* inPassword = nullptr );
 
 	///
 	/// Crée un défi à l'aide de deux nombres aléatoires.
@@ -92,7 +92,7 @@ public:
 	///
 	bool	VerifyPassword(
 						const KUInt32 inChallenge[2],
-						const KUInt16* inPassword = nil );
+						const KUInt16* inPassword = nullptr );
 
 protected:
 	///

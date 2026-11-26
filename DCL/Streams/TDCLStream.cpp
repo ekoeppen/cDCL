@@ -58,7 +58,7 @@ TDCLStream::GetCString( KUInt32 inNbChars )
 {
 	KUInt8* theResult = (KUInt8*) ::malloc( inNbChars + 1 );
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -98,7 +98,7 @@ TDCLStream::GetCString( void )
 	size_t strLength = 0;		// Taille de la chaîne
 	KUInt8* theResult = (KUInt8*) ::malloc( bufferLength );
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -149,7 +149,7 @@ TDCLStream::GetLine( void )
 	size_t strLength = 0;		// Taille de la chaîne
 	KUInt8* theResult = (KUInt8*) ::malloc( bufferLength );
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw DCLMemError;
 	}
@@ -166,7 +166,7 @@ TDCLStream::GetLine( void )
 			    if (strLength == 0)
 			    {
                     ::free(theResult);
-                    theResult = nil;
+                    theResult = nullptr;
 			    }
 			    break;
 			}
@@ -256,7 +256,7 @@ TDCLStream::GetUniString( void )
 	KUInt16* theResult =
 					(KUInt16*) ::malloc( bufferLength * sizeof( KUInt16 ) );
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw DCLMemError;
 	}

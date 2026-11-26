@@ -37,7 +37,7 @@
 class TDCLInspectorCmdLoadPkg: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdLoadPkg( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdLoadPkg( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif
