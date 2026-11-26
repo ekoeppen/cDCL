@@ -102,21 +102,21 @@ TDCLSyncEngine::TDCLSyncEngine( TDCLFullDockLink* inLink )
 		mSyncOptions(),
 		mDoPackages( false ),
 		mSyncAll( false ),
-		mStores( nil ),
+		mStores( nullptr ),
 		mStoresCount( 0 ),
         mState( kUninitialized ),
         mNewtonTime( 0 ),
         mStoreIndex( 0 ),
         mSoups(),
-		mSoupsArray( nil ),
+		mSoupsArray( nullptr ),
 		mSoupsCount( 0 ),
 		mSoupIndex( 0 ),
 		mSoupInfo(),
 		mEntries(),
-		mEntriesArray( nil ),
+		mEntriesArray( nullptr ),
 		mEntriesCount( 0 ),
 		mEntryIndex( 0 ),
-		mCurrentSourceEngine( nil ),
+		mCurrentSourceEngine( nullptr ),
 		mAddingEntries( false ),
 		mCompleteSync( true ),
 		mInterrupted( false )
@@ -603,7 +603,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 			}
 		} else {
 			// Récupération de la liste des entrées des données de synchronisation.
-			mSyncDataEntriesArray = nil;
+			mSyncDataEntriesArray = nullptr;
 			
 			KUInt32 nbSoups = mSyncDataSoupsArray->GetLength();
 			KUInt32 indexSoups;
@@ -621,7 +621,7 @@ TDCLSyncEngine::TransitionFromWFSoupInfo(
 				}
 			}
 			
-			if (mSyncDataEntriesArray == nil)
+			if (mSyncDataEntriesArray == nullptr)
 			{
 				// Soupe non trouvée.
 				// Création de la structure.
@@ -791,7 +791,7 @@ TDCLSyncEngine::TransitionFromWFEntry(
 		} else {
 			// La source n'est pas intéressée par cette entrée.
 			// Suppression du tableau.
-			mCurrentEntry = nil;
+			mCurrentEntry = nullptr;
 			mEntriesArray->Set( (KUInt32) mEntryIndex, TDCLNSRef::kNILREF );
 		}
 		
@@ -957,7 +957,7 @@ TDCLSyncSourceEngine*
 TDCLSyncEngine::GetNextSourceEngine( void )
 {
 	KTRACE( "GetNextSourceEngine" );
-	return nil;
+	return nullptr;
 }
 
 // -------------------------------------------------------------------------- //
@@ -988,7 +988,7 @@ TDCLSyncEngine::SyncNextSource( void )
 	do {
 		mCurrentSourceEngine = GetNextSourceEngine();
 		
-		if (mCurrentSourceEngine == nil)
+		if (mCurrentSourceEngine == nullptr)
 		{
 			// On a fini avec toutes les sources.
 			theResult = kEnd;

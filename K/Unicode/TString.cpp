@@ -51,7 +51,7 @@ using namespace std;
 TString::TString( void )
 	:
 		mEncoding( kUTF16 ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( 0 ),
 		mBufferSize( 0 ),
@@ -67,7 +67,7 @@ TString::TString( void )
 TString::TString( const char* inCString )
 	:
 		mEncoding( kISO88591 ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( 0 ),
 		mBufferSize( 0 ),
@@ -115,7 +115,7 @@ TString::TString( const char* inCString )
 TString::TString( const char* inCString, EEncoding inEncoding )
 	:
 		mEncoding( inEncoding ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( 0 ),
 		mBufferSize( 0 ),
@@ -162,7 +162,7 @@ TString::TString( const char* inCString, EEncoding inEncoding )
 TString::TString( const KUInt16* inCString )
 	:
 		mEncoding( kUTF16 ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( 0 ),
 		mBufferSize( 0 ),
@@ -210,7 +210,7 @@ TString::TString( const KUInt16* inCString )
 TString::TString( const char* inChars, KUInt32 inSize )
 	:
 		mEncoding( kISO88591 ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( inSize ),
 		mBufferSize( inSize + 1 ),
@@ -254,7 +254,7 @@ TString::TString( const char* inChars, KUInt32 inSize )
 TString::TString( const KUInt16* inChars, KUInt32 inSize )
 	:
 		mEncoding( kUTF16 ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( 0 ),
 		mStringSize( inSize ),
 		mBufferSize( (inSize + 1) * sizeof(KUInt16) ),
@@ -278,7 +278,7 @@ TString::TString( const TString& inCopy )
 	:
 		TRefCounter( inCopy ),
 		mEncoding( inCopy.mEncoding ),
-		mString( nil ),
+		mString( nullptr ),
 		mHashCode( inCopy.mHashCode ),
 		mStringSize( inCopy.mStringSize ),
 		mBufferSize( inCopy.mBufferSize ),
@@ -336,7 +336,7 @@ TString::operator = ( const TString& inCopy )
 		::free( mString );
 	}
 	mEncoding = inCopy.mEncoding;
-	mString = nil;
+	mString = nullptr;
 	mHashCode = inCopy.mHashCode;
 	mStringSize = inCopy.mStringSize;
 	mBufferSize = inCopy.mBufferSize;
@@ -357,68 +357,6 @@ TString::operator = ( const TString& inCopy )
 // -------------------------------------------------------------------------- //
 bool
 TString::operator == ( const TString& inAlter ) const
-{
-	bool theResult = false;
-	do {
-		if ((mStringSizeIsValid && inAlter.mStringSizeIsValid)
-			&& (mStringSize != inAlter.mStringSize))
-		{
-			// Les chaînes sont différentes.
-			break;
-		}
-
-		if ((mHashCodeIsValid && inAlter.mHashCodeIsValid)
-			&& (mHashCode != inAlter.mHashCode))
-		{
-			// Les chaînes sont différentes.
-			break;
-		}
-		
-		// Sinon, on compare les mémoires tampon.
-		if ((mEncoding == inAlter.mEncoding)
-			&& (mEncoding == kUTF16))
-		{
-			// Comparaison UTF-16.
-			theResult = (CompareUTF16Strings( inAlter ) == 0);
-		} else if (((mEncoding == kISO88591) && (inAlter.mEncoding == kUSASCII))
-			|| ((mEncoding == kUSASCII) && (inAlter.mEncoding == kISO88591))
-			|| ((mEncoding == kUSASCII) && (inAlter.mEncoding == kUSASCII))
-			|| ((mEncoding == kISO88591) && (inAlter.mEncoding == kISO88591)))
-		{
-			// Comparaison directe.
-			theResult = (CompareLatin1Strings( inAlter ) == 0);
-		} else if ((mEncoding == inAlter.mEncoding)
-			|| ((mEncoding == kISO88592) && (inAlter.mEncoding == kUSASCII))
-			|| ((mEncoding == kUSASCII) && (inAlter.mEncoding == kISO88592))
-			|| ((mEncoding == kUTF8) && (inAlter.mEncoding == kUSASCII))
-			|| ((mEncoding == kUSASCII) && (inAlter.mEncoding == kUTF8)))
-		{
-			// Comparaison directe.
-			theResult = (Compare8BitsStrings( inAlter ) == 0);
-		} else {
-			// Traduction (au moins d'un) en UTF-16.
-			// Il reste:	UTF-8 & UTF-16
-			//				UTF-8 & ISO 8859-1
-			//				UTF-8 & ISO 8859-2
-			//				UTF-8 & MacRoman
-			//				UTF-16 & ISO 8859-1
-			//				UTF-16 & ISO 8859-2
-			//				UTF-16 & MacRoman
-			//				ISO 8859-1 & ISO 8859-2
-			//				ISO 8859-1 & MacRoman
-			//				ISO 8859-2 & MacRoman
-//			UUTF16Conv
-		}
-	} while (false);
-	
-	return theResult;
-}
-
-// -------------------------------------------------------------------------- //
-//  * operator == ( TString& ) const
-// -------------------------------------------------------------------------- //
-bool
-TString::operator == ( TString& inAlter ) const
 {
 	bool theResult = false;
 	do {

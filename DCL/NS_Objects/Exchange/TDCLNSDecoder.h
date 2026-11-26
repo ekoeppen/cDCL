@@ -128,7 +128,7 @@ protected:
 	///
 	TDCLNSRef	GetNextObjectWithCookie(
 							KUIntPtr inCookie,
-							KUInt32* ioID = nil );
+							KUInt32* ioID = nullptr );
 
 private:
 	///

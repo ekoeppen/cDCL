@@ -88,8 +88,8 @@ main( int inArgc, char** inArgv )
 {
     int theResult = 0;
 
-    char* inputFilePath = nil;
-    char* outputFilePath = nil;
+    char* inputFilePath = nullptr;
+    char* outputFilePath = nullptr;
     if (inArgc >= 2)
     {
         // Ou bien inArgv[1] est --help ou bien c'est le nom du fichier, ou bien
@@ -123,10 +123,10 @@ main( int inArgc, char** inArgv )
     }
 
     TDCLPlatformFiles theFilesIntf;
-    TDCLStream* inputStream = nil;
-    TDCLStream* outputStream = nil;
-    TDCLFile* inputFile = nil;
-    TDCLFile* outputFile = nil;
+    TDCLStream* inputStream = nullptr;
+    TDCLStream* outputStream = nullptr;
+    TDCLFile* inputFile = nullptr;
+    TDCLFile* outputFile = nullptr;
 
     if (inputFilePath)
     {

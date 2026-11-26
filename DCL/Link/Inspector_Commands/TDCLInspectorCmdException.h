@@ -37,7 +37,7 @@
 class TDCLInspectorCmdException: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdException( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdException( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

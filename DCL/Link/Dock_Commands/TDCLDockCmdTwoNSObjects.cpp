@@ -58,7 +58,7 @@
 TDCLDockCmdTwoNSObjects::TDCLDockCmdTwoNSObjects( void )
 	:
 		TDCLDockCommand(),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 )
 {
 	// This space for rent.
@@ -73,7 +73,7 @@ TDCLDockCmdTwoNSObjects::TDCLDockCmdTwoNSObjects(
 			const TDCLNSRef& inSecondObject )
 	:
 		TDCLDockCommand( inCommand ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( 0 )
 {
 	// Conversion des références en données NSOF.
@@ -98,13 +98,13 @@ TDCLDockCmdTwoNSObjects::TDCLDockCmdTwoNSObjects(
 				)
 	:
 		TDCLDockCommand( inCommand ),
-		mBuffer( nil ),
+		mBuffer( nullptr ),
 		mBufferSize( inLength )
 {
 	mBuffer = (KUInt8*) ::malloc( inLength );
 	if (inLength > 0)
 	{
-		if (mBuffer == nil)
+		if (mBuffer == nullptr)
 		{
 			// Pas assez de mémoire.
 			throw DCLMemError;
@@ -159,7 +159,7 @@ TDCLDockCmdTwoNSObjects::SetObjects(
 	if (mBuffer)
 	{
 		::free( mBuffer );
-		mBuffer = nil;
+		mBuffer = nullptr;
 		mBufferSize = 0;
 	}
 

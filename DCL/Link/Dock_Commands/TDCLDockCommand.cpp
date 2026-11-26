@@ -76,7 +76,7 @@ TDCLDockCommand::ReceiveCommand(
 						ProgressFuncPtr inProgressFuncPtr /* = nil */,
 						void* inRefCon /* = nil */ )
 {
-	TDCLDockCommand* theCommandObject = nil;
+	TDCLDockCommand* theCommandObject = nullptr;
 	
 	KUInt32 theCommand;	// Command ID.
 	
@@ -167,7 +167,7 @@ TDCLDockCommand::ReceiveCommand(
 	
 		void* theData = ::malloc( thePaddedLength );
 	
-		if ((thePaddedLength > 0) && (theData == nil))
+		if ((thePaddedLength > 0) && (theData == nullptr))
 		{
 			throw DCLMemError;
 		}
@@ -448,7 +448,7 @@ TDCLDockCommand::GetData( void )
 {
 	throw DCLNotImplementedError;
 	
-	return nil;	// Make compiler happy.
+	return nullptr;	// Make compiler happy.
 }
 
 // ------------------------------------------------------------------------- //

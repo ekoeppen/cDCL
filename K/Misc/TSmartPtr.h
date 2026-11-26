@@ -151,7 +151,7 @@ template< class TClass >
 inline
 TSmartPtr<TClass>::TSmartPtr( void )
 	:
-		mObject( nil )
+		mObject( nullptr )
 {
 }
 
@@ -187,7 +187,7 @@ TSmartPtr<TClass>::Delete( void )
 	if (mObject)
 	{
 		TClass* theObject = mObject;
-		mObject = nil;
+		mObject = nullptr;
 		delete theObject;
 	}
 }

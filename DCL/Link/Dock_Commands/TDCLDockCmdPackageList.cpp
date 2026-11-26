@@ -53,7 +53,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 										KUInt32 inLength, const void* inData )
 	:
 		mPackageCount( 0 ),
-		mInfos( nil )
+		mInfos( nullptr )
 {
 	// Récupération du nombre de paquets.
 	if (inLength < sizeof(KUInt32))
@@ -71,7 +71,7 @@ TDCLDockCmdPackageList::TDCLDockCmdPackageList(
 	KUInt32 indexInfo;
 	for (indexInfo = 0; indexInfo < mPackageCount; indexInfo++)
 	{
-		mInfos[indexInfo] = nil;
+		mInfos[indexInfo] = nullptr;
 	}
 	
 	KUInt32 inDataOffset = sizeof(KUInt32);

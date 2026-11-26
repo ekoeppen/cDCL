@@ -65,7 +65,7 @@ TStream::GetCString(KUInt32 inNbChars)
 {
 	KUInt8* theResult = (KUInt8*) ::malloc(inNbChars + 1);
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw MemError;
 	}
@@ -107,7 +107,7 @@ TStream::GetCString(void)
 	size_t strLength = 0; // Taille de la chaîne
 	KUInt8* theResult = (KUInt8*) ::malloc(bufferLength);
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw MemError;
 	}
@@ -185,7 +185,7 @@ TStream::GetUniString(void)
 	int strLength = 0;
 	KUInt16* theResult = (KUInt16*) ::malloc(bufferLength * sizeof(KUInt16));
 
-	if (theResult == nil)
+	if (theResult == nullptr)
 	{
 		throw MemError;
 	}
@@ -466,7 +466,7 @@ TStream::TransferBoolean(bool& myBool)
 	if (IsReading())
 	{
 		KUInt8 v = GetByte();
-		myBool = v;
+		myBool = (v != 0);
 	} else if (IsWriting())
 	{
 		PutByte(myBool);

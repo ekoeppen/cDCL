@@ -49,7 +49,7 @@ TDCLPipe::TDCLPipe(
 		:
 			TDCLStream(),
 			mCommLayer( inCommLayer ),
-			mLink( nil )
+			mLink( nullptr )
 {
 	// Défense d'afficher.
 }
@@ -73,7 +73,7 @@ TDCLPipe::Disconnect( void )
 
 	mCommLayer->Disconnected( this );
 
-	mLink = nil;
+	mLink = nullptr;
 }
 
 // ------------------------------------------------------------------------- //

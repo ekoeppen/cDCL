@@ -133,11 +133,11 @@ TDCLHammerPipe::TDCLHammerPipe(
 			KUInt32 inOutputMaxBufferSize /* = kDefaultOutputMaxBufferSize */ )
 	:
 		TDCLPipeProxy( inSubPipe ),
-		mInputBuffer( nil ),
+		mInputBuffer( nullptr ),
 		mInputBufferCapacity( kInputFrameIncrement ),
 		mInputBufferSize( 0 ),
 		mInputBufferCrsr( 0 ),
-		mOutputBuffer( nil ),
+		mOutputBuffer( nullptr ),
 		mOutputBufferCapacity( inOutputMaxBufferSize ),
 		mOutputBufferCrsr( 0 ),
 		mInputPacketIndex( 0 ),

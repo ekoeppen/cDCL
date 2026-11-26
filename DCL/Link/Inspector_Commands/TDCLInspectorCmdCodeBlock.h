@@ -37,7 +37,7 @@
 class TDCLInspectorCmdCodeBlock: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdCodeBlock( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdCodeBlock( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

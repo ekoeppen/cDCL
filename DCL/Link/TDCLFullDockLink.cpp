@@ -104,9 +104,9 @@ TDCLFullDockLink::TDCLFullDockLink(
 	:
 		TDCLDockLink( inApplication, inIcons ),
 		mHandledCommandSets( inWhatToProcess ),
-		mCurrentEngine( nil ),
-		mDefaultBrowseEngine( nil ),
-		mDefaultLoadPkgEngine( nil )
+		mCurrentEngine( nullptr ),
+		mDefaultBrowseEngine( nullptr ),
+		mDefaultLoadPkgEngine( nullptr )
 {
 	// Création des moteurs par défaut.
 	mDefaultBrowseEngine = new TDCLBrowseEngine( this );
@@ -154,13 +154,13 @@ TDCLFullDockLink::ProcessDockCommand(
 				GetApplication()->DockCommandProcessed(
 						this,
 						mCurrentEngine,
-						nil );
+						nullptr );
 			}
 			if (!workIsNotOver)
 			{
 				// Le moteur en a terminé.
 				mCurrentEngine->WorkIsOver();
-				mCurrentEngine = nil;
+				mCurrentEngine = nullptr;
 			}
 		} catch ( TDCLException& inException ) {
 			// On va dire que la commande a été gérée.
@@ -186,9 +186,9 @@ TDCLFullDockLink::ProcessDockCommand(
 			GetApplication()->DockCommandProcessed(
 					this,
 					mCurrentEngine,
-					nil );
+					nullptr );
 			mCurrentEngine->WorkIsOver();
-			mCurrentEngine = nil;
+			mCurrentEngine = nullptr;
 		}
 
 		switch( inCommand->GetCommand() )
@@ -276,9 +276,9 @@ TDCLFullDockLink::ProcessAppCommand(
 			GetApplication()->DockCommandProcessed(
 					this,
 					mCurrentEngine,
-					nil );
+					nullptr );
 			mCurrentEngine->WorkIsOver();
-			mCurrentEngine = nil;
+			mCurrentEngine = nullptr;
 		}
 	} else {
 		// Commandes exécutées lorsqu'il n'y a pas de moteur.
@@ -526,7 +526,7 @@ TDCLFullDockLink::DoInstallPackage( TDCLFSItemRef inPackage )
 	// Récupération de l'objet pour faire la synchro.
 	TDCLLoadPkgEngine* theEngine = GetLoadPkgEngine();
 
-	if (theEngine == nil)
+	if (theEngine == nullptr)
 	{
 		TDCLDockCmdSingleLong theResultCmd(
 										TDCLDockCommand::kDResult, (KUInt32) -28031 );
@@ -547,7 +547,7 @@ TDCLFullDockLink::DoSynchronize( void )
 	// Récupération de l'objet pour faire la synchro.
 	TDCLSyncEngine* theEngine = GetSyncEngine();
 
-	if (theEngine == nil)
+	if (theEngine == nullptr)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
 		theResultCmd.SendCommand( GetPipe() );
@@ -566,7 +566,7 @@ TDCLFullDockLink::DoUseKeyboard( void )
 	// Récupération de l'objet pour utiliser le clavier.
 	TDCLKeyboardEngine* theEngine = GetKeyboardEngine();
 
-	if (theEngine == nil)
+	if (theEngine == nullptr)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
 		theResultCmd.SendCommand( GetPipe() );
@@ -607,7 +607,7 @@ TDCLFullDockLink::DoBrowse( const TDCLNSRef& inFileTypes )
 	// Récupération de l'objet pour faire le butinage.
 	TDCLBrowseEngine* theEngine = GetBrowseEngine();
 
-	if (theEngine == nil)
+	if (theEngine == nullptr)
 	{
 		TDCLDockCmdSingleLong theResultCmd( TDCLDockCommand::kDResult, (KUInt32) -28031 );
 		theResultCmd.SendCommand( GetPipe() );
@@ -641,7 +641,7 @@ TDCLFullDockLink::GetLoadPkgEngine( void )
 TDCLKeyboardEngine*
 TDCLFullDockLink::GetKeyboardEngine( void )
 {
-	return nil;
+	return nullptr;
 }
 
 // --------------------------------------------------------------------------------	//
@@ -650,7 +650,7 @@ TDCLFullDockLink::GetKeyboardEngine( void )
 TDCLSyncEngine*
 TDCLFullDockLink::GetSyncEngine( void )
 {
-	return nil;
+	return nullptr;
 }
 
 // --------------------------------------------------------------------------------	//

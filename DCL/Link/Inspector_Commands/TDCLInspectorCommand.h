@@ -67,11 +67,11 @@ public:
 		kDResult					= FOUR_CHAR_CODE('rslt'),
 	};
 
-									TDCLInspectorCommand( KUInt32 inCommand, KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCommand( KUInt32 inCommand, KUInt32 inLength = 0, const void* inData = nullptr );
 
 	KUInt32							SendHeader( TDCLStream* inPipe );
-	static TDCLInspectorCommand*	ReceiveCommand( TDCLStream* inPipe, ProgressFuncPtr inProgressFuncPtr = nil, void* inRefCon = nil );
-	void							SendCommand( TDCLStream* inPipe, ProgressFuncPtr inProgressFuncPtr = nil, void* inRefCon = nil );
+	static TDCLInspectorCommand*	ReceiveCommand( TDCLStream* inPipe, ProgressFuncPtr inProgressFuncPtr = nullptr, void* inRefCon = nullptr );
+	void							SendCommand( TDCLStream* inPipe, ProgressFuncPtr inProgressFuncPtr = nullptr, void* inRefCon = nullptr );
 };
 
 #endif

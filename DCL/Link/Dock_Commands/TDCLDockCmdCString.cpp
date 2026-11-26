@@ -53,7 +53,7 @@
 TDCLDockCmdCString::TDCLDockCmdCString( KUInt32 inCommand, const KUInt16* inString )
 	:
 		TDCLDockCommand( inCommand ),
-		mString( nil ),
+		mString( nullptr ),
 		mLength( (UUTF16CStr::StrLen( inString ) + 1) * sizeof( KUInt16 ) )
 {
 	mString = (KUInt16*) ::malloc( mLength );
@@ -67,7 +67,7 @@ TDCLDockCmdCString::TDCLDockCmdCString(
 									KUInt32 inCommand, const TDCLNSString& inString )
 	:
 		TDCLDockCommand( inCommand ),
-		mString( nil ),
+		mString( nullptr ),
 		mLength( inString.GetLength() )
 {
 	mString = (KUInt16*) ::malloc( mLength );
@@ -83,14 +83,14 @@ TDCLDockCmdCString::TDCLDockCmdCString(
 					void* inBuffer )
 	:
 		TDCLDockCommand( inCommand ),
-		mString( nil ),
+		mString( nullptr ),
 		mLength( inBufferSize )
 {
 	mString = (KUInt16*) ::malloc( inBufferSize );
 	
 	if (inBufferSize > 0)
 	{
-		if (mString == nil)
+		if (mString == nullptr)
 		{
 			// Not enough memory.
 			throw DCLMemError;

@@ -77,9 +77,9 @@ UDCLPaperback::BuildBook(
 {
 	TDCLNSRef theResult;
 
-	KUInt16* theText = nil;
-	KUInt16** theTOCEntries = nil;
-	KUInt32* theTOCIndexes = nil;
+	KUInt16* theText = nullptr;
+	KUInt16** theTOCEntries = nullptr;
+	KUInt32* theTOCIndexes = nullptr;
 	KUInt32 theTOCSize = 0;
 	
 	try {
@@ -109,7 +109,7 @@ UDCLPaperback::BuildBook(
 		// Construction du livre.
 		TDCLNSRef theString = TDCLNSRef::MakeString( theText, theTextSize );
 		::free(theText);
-		theText = nil;
+		theText = nullptr;
 
 		theResult = BuildBook(
 					theString,
@@ -169,7 +169,7 @@ UDCLPaperback::ExtractString(
 	KUInt32 theBufferSize = 0;
 	KUInt32 theChunkSize = 65536;
 	KUInt8* theBuffer = (KUInt8*) ::malloc( 0 );
-	KUInt16* theUTF16Text = nil;
+	KUInt16* theUTF16Text = nullptr;
 	
 	try {
 		do {
@@ -242,7 +242,7 @@ UDCLPaperback::ExtractString(
 			{
 				theUTF16Text = (KUInt16*)
 					::realloc( theBuffer, sizeof(KUInt16) * theBufferSize  );
-				theBuffer = nil;
+				theBuffer = nullptr;
 			}
 			break;
 		}

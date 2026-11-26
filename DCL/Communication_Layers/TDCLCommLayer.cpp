@@ -54,7 +54,7 @@ TDCLCommLayer::TDCLCommLayer(
 	:
 		mFlushAvailable( inFlushAvailable ),
 		mMaxPipeCount( inMaxPipeCount ),
-		mServer( nil )
+		mServer( nullptr )
 {
 	// Défense de stationner.
 }
@@ -112,7 +112,7 @@ TDCLCommLayer::StopListening( void )
 		}
 
 		// On n'a plus besoin de référence sur le serveur.
-		mServer = nil;
+		mServer = nullptr;
 	}
 }
 

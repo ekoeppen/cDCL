@@ -37,7 +37,7 @@
 class TDCLInspectorCmdFuncObj: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdFuncObj( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdFuncObj( KUInt32 inLength = 0, const void* inData = nullptr );
 };
 
 #endif

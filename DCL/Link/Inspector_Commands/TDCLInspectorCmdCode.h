@@ -37,7 +37,7 @@
 class TDCLInspectorCmdCode: public TDCLInspectorCommand
 {
 public:
-									TDCLInspectorCmdCode( KUInt32 inLength = 0, const void* inData = nil );
+									TDCLInspectorCmdCode( KUInt32 inLength = 0, const void* inData = nullptr );
 	KUInt32							SendHeader( TDCLStream* inPipe );
 };
 

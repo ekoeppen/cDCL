@@ -30,7 +30,7 @@
 #include <DCL/Headers/DCLDefinitions.h>
 #include <DCL/Interfaces/TDCLEventQueue.h>
 
-TDCLEventQueue::TDCLEventQueue( void ) : mHead( nil ), mTail( nil )
+TDCLEventQueue::TDCLEventQueue( void ) : mHead( nullptr ), mTail( nullptr )
 {
 }
 
@@ -44,8 +44,8 @@ TDCLEventQueue::Clear( void )
 {
 	std::lock_guard<std::mutex> lock( mMutex );
 	TDCLEvent* theEvent = mHead;
-	mHead = nil;
-	mTail = nil;
+	mHead = nullptr;
+	mTail = nullptr;
 	while ( theEvent )
 	{
 		TDCLEvent* theNext = theEvent->GetNextEvent();
@@ -58,7 +58,7 @@ void
 TDCLEventQueue::RemoveEvents( KUInt32 inEventMask, const void* inData )
 {
 	std::lock_guard<std::mutex> lock( mMutex );
-	TDCLEvent* thePrevious = nil;
+	TDCLEvent* thePrevious = nullptr;
 	TDCLEvent* theCurrent = mHead;
 	while ( theCurrent )
 	{
@@ -74,7 +74,7 @@ TDCLEventQueue::RemoveEvents( KUInt32 inEventMask, const void* inData )
 			{
 				mHead = theNext;
 			}
-			if ( theNext == nil )
+			if ( theNext == nullptr )
 			{
 				mTail = thePrevious;
 			}
@@ -93,7 +93,7 @@ TDCLEventQueue::PostEvent( TDCLEvent* inEvent )
 {
 	{
 		std::lock_guard<std::mutex> lock( mMutex );
-		if ( mTail == nil )
+		if ( mTail == nullptr )
 		{
 			mHead = inEvent;
 			mTail = inEvent;
@@ -103,7 +103,7 @@ TDCLEventQueue::PostEvent( TDCLEvent* inEvent )
 			mTail->SetNextEvent( inEvent );
 			mTail = inEvent;
 		}
-		inEvent->SetNextEvent( nil );
+		inEvent->SetNextEvent( nullptr );
 	}
 	mCV.notify_all();
 }
@@ -126,7 +126,7 @@ TDCLEventQueue::HasMatchingLocked( KUInt32 inEventMask ) const
 TDCLEvent*
 TDCLEventQueue::PopMatchingLocked( KUInt32 inEventMask )
 {
-	TDCLEvent* thePrevious = nil;
+	TDCLEvent* thePrevious = nullptr;
 	TDCLEvent* theCurrent = mHead;
 	while ( theCurrent )
 	{
@@ -141,17 +141,17 @@ TDCLEventQueue::PopMatchingLocked( KUInt32 inEventMask )
 			{
 				mHead = theNext;
 			}
-			if ( theNext == nil )
+			if ( theNext == nullptr )
 			{
 				mTail = thePrevious;
 			}
-			theCurrent->SetNextEvent( nil );
+			theCurrent->SetNextEvent( nullptr );
 			return theCurrent;
 		}
 		thePrevious = theCurrent;
 		theCurrent = theCurrent->GetNextEvent();
 	}
-	return nil;
+	return nullptr;
 }
 
 TDCLEvent*
@@ -162,7 +162,7 @@ TDCLEventQueue::WaitNextEvent( KUInt32 inEventMask, std::chrono::milliseconds in
 
 	if ( inStopToken.stop_requested() )
 	{
-		return nil;
+		return nullptr;
 	}
 
 	if ( TDCLEvent* immediate = PopMatchingLocked( inEventMask ) )
@@ -172,7 +172,7 @@ TDCLEventQueue::WaitNextEvent( KUInt32 inEventMask, std::chrono::milliseconds in
 
 	if ( inTimeout == std::chrono::milliseconds::zero() )
 	{
-		return nil;
+		return nullptr;
 	}
 
 	auto pred = [this, inEventMask] { return HasMatchingLocked( inEventMask ); };
@@ -187,7 +187,7 @@ TDCLEventQueue::WaitNextEvent( KUInt32 inEventMask, std::chrono::milliseconds in
 
 	if ( inStopToken.stop_requested() )
 	{
-		return nil;
+		return nullptr;
 	}
 
 	return PopMatchingLocked( inEventMask );

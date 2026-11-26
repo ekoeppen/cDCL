@@ -59,7 +59,7 @@ TDCLDockCmdDesktopInfo::TDCLDockCmdDesktopInfo(
 	:
 		TDCLDockCommand( kDDesktopInfo ),
 		mDesktopArraySize( 0 ),
-		mDesktopArrayPtr( nil ),
+		mDesktopArrayPtr( nullptr ),
 		mLength( 0 )
 {
 	mDesktopInfo.fProtocolVersion = UByteSex_ToBigEndian( (KUInt32) kProtocolVersion );

@@ -102,7 +102,7 @@ public:
 	///
 	inline bool	IsFontSpecification( void ) const
 		{
-			return (mFontSpecification != nil);
+			return (mFontSpecification != nullptr);
 		}
 
 	///
@@ -113,7 +113,7 @@ public:
 	///
 	inline bool	IsPicture( void ) const
 		{
-			return (mPicture != nil);
+			return (mPicture != nullptr);
 		}
 
 	///

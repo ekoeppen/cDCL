@@ -195,8 +195,8 @@ GetTemplate(
 		char* inToolName )
 {
 	TDCLNSRef theResult;
-	TDCLFile* theTemplateFile = nil;
-	char* theTemplatePath = nil;
+	TDCLFile* theTemplateFile = nullptr;
+	char* theTemplatePath = nullptr;
 	try {
 		if (inTemplatePath)
 		{
@@ -239,7 +239,7 @@ GetTemplate(
 			}
 			
 			::free( theTemplatePath );
-			theTemplatePath = nil;
+			theTemplatePath = nullptr;
 		} // if (inTemplatePath)
 
 		{
@@ -249,7 +249,7 @@ GetTemplate(
 		
 		theTemplateFile->Close();
 		delete theTemplateFile;
-		theTemplateFile = nil;
+		theTemplateFile = nullptr;
 	} catch (TDCLDoesntExistException& anException) {
 		if (inTemplatePath)
 		{
@@ -357,7 +357,7 @@ BuildPackageFrame(
 	void* ROMBuffer = ::malloc( ROMPtrSize );
 	while (true)
 	{
-		if (ROMBuffer == nil)
+		if (ROMBuffer == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -395,8 +395,8 @@ BuildPackage(
 		const char* outPkgFilePath,
 		const TDCLNSRef& inPackageSym )
 {
-	TDCLStream* theOutputStream = nil;
-	TDCLFile* theOutputFile = nil;
+	TDCLStream* theOutputStream = nullptr;
+	TDCLFile* theOutputFile = nullptr;
 	
 	if (outPkgFilePath)
 	{
@@ -469,13 +469,13 @@ main( int inArgc, char** inArgv )
 
 	int theResult = 0;
 
-	char* theFilePath = nil;
+	char* theFilePath = nullptr;
 	bool wantStdout = false;
-	char* theOutputPath = nil;
+	char* theOutputPath = nullptr;
 	bool theOutputPathWasAllocated = false;
-	char* thePackageName = nil;
+	char* thePackageName = nullptr;
 	bool thePackageNameWasAllocated = false;
-	char* theTemplatePath = nil;
+	char* theTemplatePath = nullptr;
 
 	int theOptionChar;
 	while ((theOptionChar = getopt( inArgc, inArgv, "h?n:o:m:")) != -1)
@@ -531,7 +531,7 @@ main( int inArgc, char** inArgv )
 		::exit( 1 );
 	}
 	
-	if ((!wantStdout) && (theOutputPath == nil) && (theFilePath != nil))
+	if ((!wantStdout) && (theOutputPath == nullptr) && (theFilePath != nullptr))
 	{
 		// On détermine le nom du fichier de sortie en ajoutant .pkg.
 		size_t theFilePathLength = ::strlen( theFilePath );
@@ -548,10 +548,10 @@ main( int inArgc, char** inArgv )
 						5 );		
 	}
 	
-	if (thePackageName == nil)
+	if (thePackageName == nullptr)
 	{
 		// On devine le nom du paquet.
-		if (theFilePath == nil)
+		if (theFilePath == nullptr)
 		{
 			// Aléatoire (enfin, presque)
 			thePackageName = (char*) ::malloc( 64 );
@@ -578,10 +578,10 @@ main( int inArgc, char** inArgv )
 	TDCLPlatformFiles theFilesIntf;
 	
 	// Flux d'entrée.
-	TDCLStream* theROMStream = nil;
+	TDCLStream* theROMStream = nullptr;
 	
 	// Fichier d'entrée.
-	TDCLFile* theFile = nil;
+	TDCLFile* theFile = nullptr;
 
 	if (theFilePath)
 	{

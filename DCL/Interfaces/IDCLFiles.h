@@ -79,7 +79,7 @@ public:
 	/// \return une instance de TDCLFolder qui appartient à IDCLFiles.
 	///
 	virtual TDCLFSItemRef	GetRootFolder(
-									const KUInt16* inRootName = nil ) = 0;
+									const KUInt16* inRootName = nullptr ) = 0;
 
 	///
 	/// Détermine le nombre de dossiers racine.

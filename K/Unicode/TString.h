@@ -146,16 +146,6 @@ public:
 	///
 	/// Égalité.
 	/// Compare la valeur de hachage et la taille s'ils sont valides.
-	/// Sinon, les calcule. C'est pour ceci que l'autre chaîne n'est pas \c const.
-	///
-	/// \param inAlter		objet à comparer avec \c this.
-	/// \return \c true si \c this est égal à \c inAlter, \c false sinon.
-	///
-	bool operator == ( TString& inAlter ) const;
-
-	///
-	/// Égalité.
-	/// Compare la valeur de hachage et la taille s'ils sont valides.
 	/// Sinon, fait sans. Cette fonction ne modifie pas inAlter.
 	///
 	/// \param inAlter		objet à comparer avec \c this.

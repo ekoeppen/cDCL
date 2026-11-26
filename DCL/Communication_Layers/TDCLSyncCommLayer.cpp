@@ -89,7 +89,7 @@ TDCLSyncCommLayer::WorkerEntry( void )
 		}
 	} catch ( ... ) {
 		try {
-			HandleException( nil );
+			HandleException( nullptr );
 		} catch ( ... ) {
 		}
 	}
@@ -177,7 +177,7 @@ TDCLSyncCommLayer::StopListening( void )
 			// On reste silencieux.
 		}
 		
-		SetServer( nil );
+		SetServer( nullptr );
 	}
 }
 
@@ -300,7 +300,7 @@ TDCLSyncCommLayer::TSyncPipe::WorkerEntry( void )
 		}
 	} catch ( ... ) {
 		try {
-			HandleException( nil );
+			HandleException( nullptr );
 		} catch ( ... ) {
 		}
 	}

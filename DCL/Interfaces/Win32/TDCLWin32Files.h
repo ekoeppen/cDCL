@@ -72,7 +72,7 @@ public:
 	/// \return instance of TDCLFolder.
 	///
 	///
-	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nil );
+	virtual TDCLFSItemRef	GetRootFolder( const KUInt16* inRootName = nullptr );
 
 	///
 	/// Return the number of root folders.

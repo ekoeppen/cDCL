@@ -48,7 +48,7 @@ TDCLEvent::TDCLEvent(
 		mEventKind( inEventKind ),
 		mEventID( inEventID ),
 		mEventData( inData ),
-		mNextEvent( nil )
+		mNextEvent( nullptr )
 {
 	// Défense d'afficher.
 }
@@ -61,7 +61,7 @@ TDCLEvent::TDCLEvent( const TDCLEvent& inCopy )
 		mEventKind( inCopy.mEventKind ),
 		mEventID( inCopy.mEventID ),
 		mEventData( inCopy.mEventData ),
-		mNextEvent( nil )
+		mNextEvent( nullptr )
 {
 	// Loi du 29 juillet 1881
 }

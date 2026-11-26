@@ -684,7 +684,7 @@ public:
 			KASSERT( inPartIndex < mNumParts );
 			// Ici, les données doivent être en mémoire (elles ne sont sur
 			// le disque que pendant l'analyse du paquet)
-			KASSERT( mParts[inPartIndex].fInfoData != nil );
+			KASSERT( mParts[inPartIndex].fInfoData != nullptr );
 			*outSize = mParts[inPartIndex].fInfoSize;
 			return mParts[inPartIndex].fInfoData;
 		}
@@ -700,7 +700,7 @@ public:
 			KASSERT( inPartIndex < mNumParts );
 			// Ici, les données doivent être en mémoire (elles ne sont sur
 			// le disque que pendant l'analyse du paquet)
-			KASSERT( mParts[inPartIndex].fPart != nil );
+			KASSERT( mParts[inPartIndex].fPart != nullptr );
 			return mParts[inPartIndex].fPart;
 		}
 
@@ -715,7 +715,7 @@ public:
 			KASSERT( inPartIndex < mNumParts );
 			// Ici, les données doivent être en mémoire (elles ne sont sur
 			// le disque que pendant l'analyse du paquet)
-			KASSERT( mParts[inPartIndex].fPart != nil );
+			KASSERT( mParts[inPartIndex].fPart != nullptr );
 			return mParts[inPartIndex].fPart;
 		}
 

@@ -89,7 +89,7 @@ TDCLServer::ThreadEntry( std::stop_token inStopToken )
 		}
 	} catch ( ... ) {
 		try {
-			HandleException( nil );
+			HandleException( nullptr );
 		} catch ( ... ) {
 		}
 	}
@@ -353,7 +353,7 @@ TDCLServer::Run( void )
 					if (theStopToken.stop_requested())
 					{
 						theNextState = kStopped;
-					} else if (theNextEvent.Get() == nil) {
+					} else if (theNextEvent.Get() == nullptr) {
 						// Slept the entire time.
 						DoIdle();
 					} else {

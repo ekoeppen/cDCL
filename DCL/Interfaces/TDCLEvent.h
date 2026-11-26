@@ -109,7 +109,7 @@ public:
 	/// \param inEventID	ID de l'événement
 	/// \param inData		données associées à l'événement.
 	///
-	TDCLEvent( EEventKind inEventKind, EEventID inEventID, void* inData = nil );
+	TDCLEvent( EEventKind inEventKind, EEventID inEventID, void* inData = nullptr );
 
 	///
 	/// Constructeur par copie.

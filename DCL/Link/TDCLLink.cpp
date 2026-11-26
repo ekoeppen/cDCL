@@ -104,15 +104,15 @@ TDCLLink::TDCLLink(
 					KUInt32 inType /* = TDCLDockCommand::kNone_SType */,
 					KUInt32 inIdlePeriod /* = kDefaultIdlePeriod */)
 	:
-		mPipe( nil ),
-		mServer( nil ),
+		mPipe( nullptr ),
+		mServer( nullptr ),
 		mApplication( inApplication ),
 		mThreadId(),
 		mState( kDisconnected ),
 		mType( inType ),
 		mIdlePeriod( inIdlePeriod ),
 		mIsBusy( false ),
-		mNewtonName( nil ),
+		mNewtonName( nullptr ),
 		mNewtonID( 0 ),
 		mManufacturer( 0 ),
 		mROMVersion( 0 ),
@@ -161,7 +161,7 @@ TDCLLink::ThreadEntry( std::stop_token inStopToken )
 		}
 	} catch ( ... ) {
 		try {
-			HandleException( nil );
+			HandleException( nullptr );
 		} catch ( ... ) {
 		}
 	}
@@ -274,7 +274,7 @@ TDCLLink::Connect( std::unique_ptr<TDCLPipe> inPipe, TDCLServer* inServer )
 						}
 						mPipe.reset();
 					}
-					mServer = nil;
+					mServer = nullptr;
 					throw;
 				}
 			}
@@ -395,7 +395,7 @@ TDCLLink::Disconnected( void )
 	if (mNewtonName)
 	{
 		delete [] (char*) mNewtonName;
-		mNewtonName = nil;
+		mNewtonName = nullptr;
 	}
 }
 
@@ -492,7 +492,7 @@ TDCLLink::DoConnect( void )
 		// then I allocate the name.
 		mNewtonName = (KUInt16*) ::malloc( theSize );
 
-		if (mNewtonName == nil)
+		if (mNewtonName == nullptr)
 		{
 			throw DCLMemError;
 		}
@@ -725,7 +725,7 @@ TDCLLink::TransitionFromRunning( void )
 		return kDisconnected;
 	}
 
-	if (theNextEvent == nil)
+	if (theNextEvent == nullptr)
 	{
 		// On a dormi tout le temps.
 		theNextState = Idle();
@@ -754,7 +754,7 @@ TDCLLink::TransitionFromRunning( void )
 
 					mApplication->AppCommandProcessed(
 							this,
-							(TDCLAppCommand*) theNextEvent, nil );
+							(TDCLAppCommand*) theNextEvent, nullptr );
 				} catch( TDCLException& inException ) {
 					mApplication->AppCommandProcessed(
 							this,
@@ -763,7 +763,7 @@ TDCLLink::TransitionFromRunning( void )
 				}
 				
 				delete theNextEvent;
-				theNextEvent = nil;
+				theNextEvent = nullptr;
 			} else {
 				TDCLEvent::EEventID theEventID = theNextEvent->GetEventID();
 
@@ -826,7 +826,7 @@ TDCLLink::TransitionFromRunning( void )
 			if (theNextEvent)
 			{
 				delete theNextEvent;
-				theNextEvent = nil;
+				theNextEvent = nullptr;
 			}
 			
 			// On n'est plus occupé.

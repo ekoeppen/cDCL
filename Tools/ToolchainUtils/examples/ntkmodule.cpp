@@ -86,7 +86,7 @@ ProtocolGetConstString( RefArg inRcvr )
 {
     RefVar result;
 	PDemoInterface* interface = (PDemoInterface*) ::NewByName("PDemoInterface", "PDemo");
-	if (interface == nil)
+	if (interface == nullptr)
 	{
         OutOfMemory();
 	} else {
@@ -107,7 +107,7 @@ ProtocolGetArrayElement( RefArg inRcvr, RefArg inArg )
 {
     RefVar result;
 	PDemoInterface* interface = PDemoInterface::New("PDemo");
-	if (interface == nil)
+	if (interface == nullptr)
 	{
         OutOfMemory();
 	} else {
@@ -128,7 +128,7 @@ ProtocolBreakInMonitor( RefArg inRcvr )
 {
     RefVar result;
 	PDemoInterface* interface = (PDemoInterface*) ::NewByName("PDemoInterface", "PDemo");
-	if (interface == nil)
+	if (interface == nullptr)
 	{
         OutOfMemory();
 	} else {

@@ -70,7 +70,7 @@ public:
 	TDCLDockCmdGeneric(
 					KUInt32 inCommand,
 					KUInt32 inLength = 0,
-					const void* inData = nil );
+					const void* inData = nullptr );
 
 	///
 	/// Destructeur.

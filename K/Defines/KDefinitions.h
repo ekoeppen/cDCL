@@ -52,13 +52,6 @@ using KUIntPtr = uintptr_t;
 #define FOUR_CHAR_CODE(x) (x)
 #endif
 
-#ifndef NULL
-#define NULL 0
-#endif
-
-#if !defined(__OBJC__) && !defined(nil)
-#define nil nullptr
-#endif
 
 #endif
 		// _KDEFINITIONS_H

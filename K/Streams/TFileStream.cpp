@@ -63,7 +63,7 @@ TFileStream::TFileStream(const char* inPath, const char* inMode) :
 		mWeOpenedTheFile(true)
 {
 	mFile = ::fopen(inPath, inMode);
-	if (mFile == NULL)
+	if (mFile == nullptr)
 	{
 		throw TIOException();
 	}

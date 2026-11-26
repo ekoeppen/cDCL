@@ -78,7 +78,7 @@
 TDCLDockCmdNewtonName::TDCLDockCmdNewtonName( KUInt32 inLength, const void* inData )
 		:
 			TDCLDockCommand( kDNewtonName ),
-			mNewtonName( nil ),
+			mNewtonName( nullptr ),
 			mNameLength( 0 )
 {
 	KUInt32 theLength = UByteSex_FromBigEndian( ((SVersionInfo*) inData)->fLength );
@@ -108,7 +108,7 @@ TDCLDockCmdNewtonName::TDCLDockCmdNewtonName( KUInt32 inLength, const void* inDa
 	}
 	
 	mNewtonName = (KUInt16*) ::malloc( theNewtonNameLength );
-	if ((theNewtonNameLength > 0) && (mNewtonName == nil))
+	if ((theNewtonNameLength > 0) && (mNewtonName == nullptr))
 	{
 		throw DCLMemError;
 	}

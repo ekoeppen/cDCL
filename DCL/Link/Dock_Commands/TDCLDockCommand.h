@@ -107,8 +107,8 @@ public:
 	///
 	static	TDCLDockCommand*	ReceiveCommand(
 									TDCLStream* inPipe,
-									ProgressFuncPtr inProgressFuncPtr = nil,
-									void* inRefCon = nil );
+									ProgressFuncPtr inProgressFuncPtr = nullptr,
+									void* inRefCon = nullptr );
 
 	///
 	/// Reçoit une commande kDResult et retourne le code d'erreur.
@@ -132,8 +132,8 @@ public:
 	///
 	virtual	void				SendCommand(
 									TDCLStream* inPipe,
-									ProgressFuncPtr inProgressFuncPtr = nil,
-									void* inRefCon = nil );
+									ProgressFuncPtr inProgressFuncPtr = nullptr,
+									void* inRefCon = nullptr );
 
 	///
 	/// Constantes pour cette classe.

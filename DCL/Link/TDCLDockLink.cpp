@@ -324,7 +324,7 @@ TDCLDockLink::ProcessDockCommand(
 const KUInt16*
 TDCLDockLink::GetPassword( void )
 {
-	return nil;
+	return nullptr;
 }
 
 // ============================================================================= //

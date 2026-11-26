@@ -78,13 +78,13 @@ TDCLPackage::TDCLPackage( void )
 		mPackageFlags( 0 ),
 		mVersion( 0 ),
 		mCreationDate( UDCLTime::TimeInSecondsSince1904() ),
-		mCopyrightStr( nil ),
-		mNameStr( nil ),
-		mExtraInfo( nil ),
+		mCopyrightStr( nullptr ),
+		mNameStr( nullptr ),
+		mExtraInfo( nullptr ),
 		mExtraInfoLen( 0 ),
 		mNumParts( 0 ),
-		mParts( nil ),
-		mRelocationData( nil )
+		mParts( nullptr ),
+		mRelocationData( nullptr )
 {
 	mParts = (SPartData*) ::malloc( 0 );
 
@@ -107,13 +107,13 @@ TDCLPackage::TDCLPackage( TDCLFile* inFile, KUInt32 inPackageOffset )
 		mPackageFlags( 0 ),
 		mVersion( 0 ),
 		mCreationDate( 0 ),
-		mCopyrightStr( nil ),
-		mNameStr( nil ),
-		mExtraInfo( nil ),
+		mCopyrightStr( nullptr ),
+		mNameStr( nullptr ),
+		mExtraInfo( nullptr ),
 		mExtraInfoLen( 0 ),
 		mNumParts( 0 ),
-		mParts( nil ),
-		mRelocationData( nil )
+		mParts( nullptr ),
+		mRelocationData( nullptr )
 {
 	bool wasOpen = false;
 	KSInt64 theOldPosition = 0;
@@ -160,13 +160,13 @@ TDCLPackage::TDCLPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 		mPackageFlags( 0 ),
 		mVersion( 0 ),
 		mCreationDate( 0 ),
-		mCopyrightStr( nil ),
-		mExtraInfo( nil ),
+		mCopyrightStr( nullptr ),
+		mExtraInfo( nullptr ),
 		mExtraInfoLen( 0 ),
-		mNameStr( nil ),
+		mNameStr( nullptr ),
 		mNumParts( 0 ),
-		mParts( nil ),
-		mRelocationData( nil )
+		mParts( nullptr ),
+		mRelocationData( nullptr )
 {
 	// Lecture.
 	ReadPackage( inStream, inPackageOffset );
@@ -268,7 +268,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream, KUInt32 loadAdd
 	{
 		// Données.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
-		KASSERT( thePart != nil );
+		KASSERT( thePart != nullptr );
 		relocationPageCount += thePart->GetRelocationPageCountEstimate();
 		allRelocationCount += thePart->GetRelocationCount();
 	}
@@ -293,7 +293,7 @@ TDCLPackage::WriteToStream( TDCLRandomAccessStream* inOutStream, KUInt32 loadAdd
 	{
 		// Données.
 		TDCLPkgPart* thePart = mParts[indexParts].fPart;
-		KASSERT( thePart != nil );
+		KASSERT( thePart != nullptr );
 		theGlobalSize += thePart->GetSize( theGlobalSize + loadAddr );
 		KUInt32 remain = 4 - (theGlobalSize % 4);
 		if (remain != 4)
@@ -604,10 +604,10 @@ TDCLPackage::IsPackage( TDCLFile* inFile )
 void
 TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 {
-	KASSERT(mParts == nil);
-	KASSERT(mCopyrightStr == nil);
-	KASSERT(mNameStr == nil);
-	KASSERT(mExtraInfo == nil);
+	KASSERT(mParts == nullptr);
+	KASSERT(mCopyrightStr == nullptr);
+	KASSERT(mNameStr == nullptr);
+	KASSERT(mExtraInfo == nullptr);
 
 	// Lecture de la signature.
 	KUInt8 theSignature[8];
@@ -664,9 +664,9 @@ TDCLPackage::ReadPackage( TDCLStream* inStream, KUInt32 inPackageOffset )
 	KUInt32 indexParts;
 	for (indexParts = 0; indexParts < mNumParts; indexParts++)
 	{
-		mParts[indexParts].fInfoData = nil;
-		mParts[indexParts].fExtraInfoData = nil;
-		mParts[indexParts].fPart = nil;
+		mParts[indexParts].fInfoData = nullptr;
+		mParts[indexParts].fExtraInfoData = nullptr;
+		mParts[indexParts].fPart = nullptr;
 	}
 
 	KUInt32 theDirectoryInfoSize = sizeof( SPackageDirectory )
