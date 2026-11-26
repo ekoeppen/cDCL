@@ -5,7 +5,7 @@ let package = Package(
     name: "cDCL",
     platforms: [
         .macOS(.v10_13),
-        .iOS(.v13),
+        .iOS(.v12),
     ],
     products: [
         .library(
