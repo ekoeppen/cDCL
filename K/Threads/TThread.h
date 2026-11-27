@@ -42,6 +42,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <memory>
 
 ///
 /// Class for a thread.
@@ -80,9 +81,14 @@ public:
 
 	///
 	/// Destructor.
-	/// Detaches or joins the thread.
+	/// Detaches the thread if still joinable.
 	///
 	~TThread( void );
+
+	///
+	/// Wait for the thread to finish execution.
+	///
+	void Join( void );
 
 	///
 	/// Determine if the thread is the current thread.
@@ -138,15 +144,22 @@ private:
 	///
 	TThread& operator = ( const TThread& inCopy );
 
+	/// Shared thread synchronization state so detached workers never
+	/// touch destroyed TThread members after ~TThread().
+	struct SState
+	{
+		mutable std::mutex		mMutex;
+		std::condition_variable	mSleepCond;
+		std::condition_variable	mSuspendCond;
+		std::thread::id			mThreadId{};
+		EState					mState{ kRunning };
+		KUInt32					mWakeCount{ 0 };
+		KUInt32					mSuspendCount{ 0 };
+	};
+
 	/// \name Variables
-	std::thread			mThread;		///< Standard thread object.
-	std::thread::id		mThreadId;		///< Thread id.
-	mutable std::mutex	mMutex;			///< Mutex protecting state.
-	std::condition_variable	mSleepCond;	///< CondVar for sleep.
-	std::condition_variable	mSuspendCond;	///< CondVar for suspend/resume.
-	EState				mState;			///< State of the thread.
-	KUInt32				mWakeCount;		///< Wake counter.
-	KUInt32				mSuspendCount;	///< Count suspend calls.
+	std::thread				mThread;		///< Standard thread object.
+	std::shared_ptr<SState>	mState;			///< Shared thread state.
 };
 
 // -------------------------------------------------------------------------- //
@@ -155,23 +168,20 @@ private:
 template<class TRunnable>
 TThread::TThread( TRunnable* inRunnable )
 	:
-		mThreadId(),
-		mState( kRunning ),
-		mWakeCount( 0 ),
-		mSuspendCount( 0 )
+		mState( std::make_shared<SState>() )
 {
-	mThread = std::thread([this, inRunnable]() {
+	auto state = mState;
+	mThread = std::thread([state, inRunnable]() {
 		{
-			std::lock_guard<std::mutex> lock(mMutex);
-			mThreadId = std::this_thread::get_id();
+			std::lock_guard<std::mutex> lock(state->mMutex);
+			state->mThreadId = std::this_thread::get_id();
 		}
 		inRunnable->Run();
 		{
-			std::lock_guard<std::mutex> lock(mMutex);
-			mState = kStopped;
+			std::lock_guard<std::mutex> lock(state->mMutex);
+			state->mState = kStopped;
 		}
 	});
-	mThreadId = mThread.get_id();
 }
 
 #endif

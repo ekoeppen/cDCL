@@ -121,7 +121,7 @@ private:
 	TCondVar& operator = ( const TCondVar& inCopy );
 
 	/// \name Variables
-	std::condition_variable_any	mCondVar;	///< Condition variable.
+	std::condition_variable	mCondVar;	///< Condition variable.
 };
 
 #endif

@@ -34,23 +34,43 @@
 namespace {
 	class TTestWorker {
 	public:
-		TTestWorker(TThread** inThreadSlot, std::atomic<bool>* inStarted, std::atomic<bool>* inFinished)
+		TTestWorker(std::atomic<TThread*>* inThreadSlot, std::atomic<bool>* inStarted, std::atomic<bool>* inFinished)
 			: mThreadSlot(inThreadSlot), mStarted(inStarted), mFinished(inFinished) {}
 
 		void Run(void) {
-			*mStarted = true;
-			TThread* myThread = *mThreadSlot;
-			// Sleep for 500 ms or until awakened
-			if (myThread) {
-				myThread->Sleep(500);
+			TThread* myThread = nullptr;
+			while ((myThread = mThreadSlot->load()) == nullptr) {
+				std::this_thread::yield();
 			}
+			*mStarted = true;
+			myThread->Sleep(500);
 			*mFinished = true;
 		}
 
 	private:
-		TThread** mThreadSlot;
+		std::atomic<TThread*>* mThreadSlot;
 		std::atomic<bool>* mStarted;
 		std::atomic<bool>* mFinished;
+	};
+
+	class TSignalExitWorker {
+	public:
+		TSignalExitWorker(TMutex* inMutex, TCondVar* inCond, std::atomic<bool>* inExiting)
+			: mMutex(inMutex), mCond(inCond), mExiting(inExiting) {}
+
+		void Run(void) {
+			mMutex->Lock();
+			while (!mExiting->load()) {
+				mCond->Wait(mMutex);
+			}
+			mMutex->Unlock();
+			mExiting->store(false);
+		}
+
+	private:
+		TMutex* mMutex;
+		TCondVar* mCond;
+		std::atomic<bool>* mExiting;
 	};
 }
 
@@ -115,10 +135,10 @@ TEST_SUITE("KThreads")
 	{
 		std::atomic<bool> started(false);
 		std::atomic<bool> finished(false);
-		TThread* threadPtr = nullptr;
+		std::atomic<TThread*> threadPtr{nullptr};
 		TTestWorker worker(&threadPtr, &started, &finished);
 		TThread thread(&worker);
-		threadPtr = &thread;
+		threadPtr.store(&thread);
 
 		auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
 		while (!started.load() && std::chrono::steady_clock::now() < deadline) {
@@ -128,12 +148,59 @@ TEST_SUITE("KThreads")
 
 		auto t0 = std::chrono::steady_clock::now();
 		thread.WakeUp();
-		deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
-		while (!finished.load() && std::chrono::steady_clock::now() < deadline) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(5));
-		}
+		thread.Join();
 		REQUIRE(finished.load());
 		auto elapsed = std::chrono::steady_clock::now() - t0;
 		CHECK(elapsed < std::chrono::milliseconds(400));
+	}
+
+	TEST_CASE("TThread immediate teardown after Run completes is safe")
+	{
+		for (int i = 0; i < 100; ++i) {
+			TMutex mutex;
+			TCondVar cond;
+			std::atomic<bool> exiting(false);
+			TSignalExitWorker worker(&mutex, &cond, &exiting);
+			TThread* thread = new TThread(&worker);
+
+			mutex.Lock();
+			exiting.store(true);
+			cond.Signal();
+			mutex.Unlock();
+
+			while (exiting.load()) {
+				std::this_thread::yield();
+			}
+			delete thread;
+		}
+	}
+
+	TEST_CASE("TThread preserves multiple WakeUp signals")
+	{
+		struct TDoubleWakeWorker {
+			std::atomic<TThread*> threadPtr{nullptr};
+			std::atomic<bool> firstAwake{false};
+			std::atomic<bool> secondAwake{false};
+			void Run(void) {
+				TThread* t = nullptr;
+				while ((t = threadPtr.load()) == nullptr) {
+					std::this_thread::yield();
+				}
+				CHECK(t->IsCurrentThread());
+				CHECK_FALSE(t->Sleep(500));
+				firstAwake.store(true);
+				CHECK_FALSE(t->Sleep(500));
+				secondAwake.store(true);
+			}
+		} worker;
+
+		TThread thread(&worker);
+		CHECK_FALSE(thread.IsCurrentThread());
+		thread.WakeUp();
+		thread.WakeUp();
+		worker.threadPtr.store(&thread);
+		thread.Join();
+		CHECK(worker.firstAwake.load());
+		CHECK(worker.secondAwake.load());
 	}
 }

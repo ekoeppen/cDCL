@@ -52,12 +52,25 @@ TThread::~TThread( void )
 }
 
 // -------------------------------------------------------------------------- //
+//  * Join( void )
+// -------------------------------------------------------------------------- //
+void
+TThread::Join( void )
+{
+	if (mThread.joinable() && !IsCurrentThread())
+	{
+		mThread.join();
+	}
+}
+
+// -------------------------------------------------------------------------- //
 //  * IsCurrentThread( void ) const
 // -------------------------------------------------------------------------- //
 bool
 TThread::IsCurrentThread( void ) const
 {
-	return (std::this_thread::get_id() == mThreadId);
+	std::lock_guard<std::mutex> lock(mState->mMutex);
+	return (std::this_thread::get_id() == mState->mThreadId);
 }
 
 // -------------------------------------------------------------------------- //
@@ -66,15 +79,15 @@ TThread::IsCurrentThread( void ) const
 void
 TThread::CheckSuspend( void )
 {
-	std::unique_lock<std::mutex> lock(mMutex);
-	while (mSuspendCount > 0)
+	std::unique_lock<std::mutex> lock(mState->mMutex);
+	while (mState->mSuspendCount > 0)
 	{
-		mState = kSuspended;
-		mSuspendCond.wait(lock);
+		mState->mState = kSuspended;
+		mState->mSuspendCond.wait(lock);
 	}
-	if (mState == kSuspended)
+	if (mState->mState == kSuspended)
 	{
-		mState = kRunning;
+		mState->mState = kRunning;
 	}
 }
 
@@ -84,11 +97,11 @@ TThread::CheckSuspend( void )
 void
 TThread::Suspend( void )
 {
-	std::lock_guard<std::mutex> lock(mMutex);
-	mSuspendCount++;
-	if (mState == kRunning)
+	std::lock_guard<std::mutex> lock(mState->mMutex);
+	mState->mSuspendCount++;
+	if (mState->mState == kRunning)
 	{
-		mState = kSuspended;
+		mState->mState = kSuspended;
 	}
 }
 
@@ -98,17 +111,17 @@ TThread::Suspend( void )
 void
 TThread::Resume( void )
 {
-	std::lock_guard<std::mutex> lock(mMutex);
-	if (mSuspendCount > 0)
+	std::lock_guard<std::mutex> lock(mState->mMutex);
+	if (mState->mSuspendCount > 0)
 	{
-		mSuspendCount--;
-		if (mSuspendCount == 0)
+		mState->mSuspendCount--;
+		if (mState->mSuspendCount == 0)
 		{
-			if (mState == kSuspended)
+			if (mState->mState == kSuspended)
 			{
-				mState = kRunning;
+				mState->mState = kRunning;
 			}
-			mSuspendCond.notify_all();
+			mState->mSuspendCond.notify_all();
 		}
 	}
 }
@@ -123,41 +136,52 @@ TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 	bool theResult = false;
 	bool forever = (inMilliseconds == kForever);
 
-	std::unique_lock<std::mutex> lock(mMutex);
+	std::unique_lock<std::mutex> lock(mState->mMutex);
 
-	if (mWakeCount > 0)
+	if (mState->mWakeCount > 0)
 	{
-		mWakeCount--;
+		mState->mWakeCount--;
 		theResult = false;
 	} else {
-		mState = kSleeping;
+		mState->mState = kSleeping;
 
 		if (!forever)
 		{
-			auto duration = std::chrono::milliseconds(inMilliseconds);
-			std::cv_status status = mSleepCond.wait_for(lock, duration);
-			theResult = (status == std::cv_status::timeout);
+			auto deadline = std::chrono::steady_clock::now()
+				+ std::chrono::milliseconds(inMilliseconds);
+			bool woken = mState->mSleepCond.wait_until(
+				lock,
+				deadline,
+				[this] { return mState->mWakeCount > 0; });
+			if (woken)
+			{
+				mState->mWakeCount--;
+			}
+			theResult = !woken;
 		} else {
-			mSleepCond.wait(lock);
+			mState->mSleepCond.wait(
+				lock,
+				[this] { return mState->mWakeCount > 0; });
+			mState->mWakeCount--;
 			theResult = false;
 		}
 
-		if (mSuspendCount > 0)
+		if (mState->mSuspendCount > 0)
 		{
-			mState = kSuspended;
+			mState->mState = kSuspended;
 		} else {
-			mState = kRunning;
+			mState->mState = kRunning;
 		}
 	}
 
-	while (mSuspendCount > 0)
+	while (mState->mSuspendCount > 0)
 	{
-		mState = kSuspended;
-		mSuspendCond.wait(lock);
+		mState->mState = kSuspended;
+		mState->mSuspendCond.wait(lock);
 	}
-	if (mState == kSuspended)
+	if (mState->mState == kSuspended)
 	{
-		mState = kRunning;
+		mState->mState = kRunning;
 	}
 
 	return theResult;
@@ -169,13 +193,12 @@ TThread::Sleep( KUInt32 inMilliseconds /* = kForever */ )
 void
 TThread::WakeUp( void )
 {
-	std::lock_guard<std::mutex> lock(mMutex);
+	std::lock_guard<std::mutex> lock(mState->mMutex);
 
-	if (mState == kSleeping)
+	mState->mWakeCount++;
+	if (mState->mState == kSleeping)
 	{
-		mSleepCond.notify_one();
-	} else {
-		mWakeCount++;
+		mState->mSleepCond.notify_one();
 	}
 }
 

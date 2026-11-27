@@ -38,6 +38,7 @@
 #include "TCondVar.h"
 
 #include <chrono>
+#include <mutex>
 
 // K
 #include <K/Threads/TMutex.h>
@@ -84,7 +85,9 @@ TCondVar::TimedWait( TMutex* inMutex, const struct timespec* inAbsTime )
 	           std::chrono::nanoseconds(inAbsTime->tv_nsec);
 	auto target_tp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
 		std::chrono::system_clock::time_point(std::chrono::duration_cast<std::chrono::system_clock::duration>(dur)));
-	std::cv_status status = mCondVar.wait_until(inMutex->mMutex, target_tp);
+	std::unique_lock<std::mutex> lock(inMutex->mMutex, std::adopt_lock);
+	std::cv_status status = mCondVar.wait_until(lock, target_tp);
+	lock.release();
 	return (status == std::cv_status::no_timeout);
 }
 
@@ -96,7 +99,9 @@ TCondVar::TimedWaitRelative( TMutex* inMutex, const struct timespec* inRelTime )
 {
 	auto rel_dur = std::chrono::seconds(inRelTime->tv_sec) +
 	               std::chrono::nanoseconds(inRelTime->tv_nsec);
-	std::cv_status status = mCondVar.wait_for(inMutex->mMutex, rel_dur);
+	std::unique_lock<std::mutex> lock(inMutex->mMutex, std::adopt_lock);
+	std::cv_status status = mCondVar.wait_for(lock, rel_dur);
+	lock.release();
 	return (status == std::cv_status::no_timeout);
 }
 
@@ -106,7 +111,9 @@ TCondVar::TimedWaitRelative( TMutex* inMutex, const struct timespec* inRelTime )
 void
 TCondVar::Wait( TMutex* inMutex )
 {
-	mCondVar.wait( inMutex->mMutex );
+	std::unique_lock<std::mutex> lock(inMutex->mMutex, std::adopt_lock);
+	mCondVar.wait( lock );
+	lock.release();
 }
 
 // =============================================================================== //
