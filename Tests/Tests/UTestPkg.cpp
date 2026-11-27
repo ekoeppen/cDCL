@@ -20,6 +20,8 @@
 #include <DCL/NS_Objects/Exchange/TDCLPkgEncoder.h>
 #include <DCL/NS_Objects/Exchange/TDCLPkgDecoder.h>
 #include <DCL/Package/TDCLPackage.h>
+#include <DCL/Package/TDCLPkgRelocatablePart.h>
+#include <K/Defines/UByteSex.h>
 #include <DCL/Streams/TDCLMemStream.h>
 #include <DCL/NS_Objects/Objects/TDCLNSSymbol.h>
 
@@ -232,5 +234,49 @@ TEST_SUITE("Pkg")
 		KUInt32 theDataCount = copy.GetBufferSize();
 		REQUIRE( theDataCount == sizeof(minPackage) );
 		CHECK( std::memcmp(theData, minPackage, sizeof(minPackage)) == 0 );
+	}
+
+	TEST_CASE("Relocatable part sorting and non-zero base address round-trip")
+	{
+		const KUInt32 baseAddr = 0x00008000;
+		KUInt8 payload[1040];
+		std::memset(payload, 0, sizeof(payload));
+		// Big-endian pointers relative to baseAddr (0x8000) at offsets 0x04 and 0x408 (across 1KB pages)
+		KUInt32 ptr0 = UByteSex_ToBigEndian(baseAddr + 0x10);
+		KUInt32 ptr1 = UByteSex_ToBigEndian(baseAddr + 0x20);
+		std::memcpy(payload + 0x04, &ptr0, 4);
+		std::memcpy(payload + 0x408, &ptr1, 4);
+
+		TDCLPkgRelocatablePart* part = new TDCLPkgRelocatablePart(baseAddr, payload, sizeof(payload));
+		// Deliberately pass relocations in descending order (as ARMLink does)
+		KUInt32 relocs[2] = { 0x408, 0x04 };
+		part->SetRelocations(2, relocs, baseAddr);
+
+		TDCLPackage package;
+		package.SetNOS1Compatible(false);
+		package.SetPackageID(TDCLPackage::kDefaultID);
+		package.SetPackageVersion(1);
+		package.SetPackageName("RelocTest");
+		package.AddPart('prot', TDCLPackage::kPartProtocolPart, part);
+
+		TDCLMemStream pkgStream;
+		package.WriteToStream(&pkgStream);
+		pkgStream.SetCursor(0, TDCLMemStream::kFromStart);
+
+		TDCLPackage reloaded(&pkgStream);
+		TDCLMemStream rexStream;
+		const KUInt32 rexLoadAddr = 0x00800100;
+		reloaded.WriteToStream(&rexStream, rexLoadAddr);
+
+		const KUInt8* rexBytes = (const KUInt8*) rexStream.GetBuffer();
+		KUInt32 rexSize = rexStream.GetBufferSize();
+		REQUIRE(rexSize > sizeof(payload));
+		KUInt32 partOffset = rexSize - sizeof(payload);
+		KUInt32 relocated0 = 0;
+		KUInt32 relocated1 = 0;
+		std::memcpy(&relocated0, rexBytes + partOffset + 0x04, 4);
+		std::memcpy(&relocated1, rexBytes + partOffset + 0x408, 4);
+		CHECK(UByteSex_FromBigEndian(relocated0) == rexLoadAddr + partOffset + 0x10);
+		CHECK(UByteSex_FromBigEndian(relocated1) == rexLoadAddr + partOffset + 0x20);
 	}
 }

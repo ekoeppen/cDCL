@@ -87,11 +87,11 @@ extern "C" int compare_relocations(const void* a, const void* b)
 {
     KUInt32 aValue = *((const KUInt32*) a);
     KUInt32 bValue = *((const KUInt32*) b);
-    if (a < b)
+    if (aValue < bValue)
     {
         return -1;
     }
-    if (a > b)
+    if (aValue > bValue)
     {
         return 1;
     }

@@ -35,6 +35,8 @@ add_executable(DCLTests
     Tests/UTestNS.cpp
     Tests/UTestNSOF.cpp
     Tests/UTestPkg.cpp
+    Tests/UTestAIF.cpp
+    ../Tools/ToolchainUtils/TAIFFile.cpp
     Tests/UTestTime.cpp
     Tests/UTestXML.cpp
     Tests/CommLayerCancelTests.cpp
@@ -42,6 +44,7 @@ add_executable(DCLTests
     Tests/ServerConfigurationTests.cpp
     $<TARGET_OBJECTS:doctest_main>
 )
+target_include_directories(DCLTests PRIVATE ${CMAKE_SOURCE_DIR}/Tools/ToolchainUtils)
 target_link_libraries(DCLTests PUBLIC DCL PRIVATE doctest Threads::Threads)
 
 add_executable(NSReferencesDeathTest
